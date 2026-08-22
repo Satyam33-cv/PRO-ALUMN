@@ -3,10 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, ChevronDown, ArrowRight, Send, Star } from "lucide-react";
+import { Check, X, ChevronDown, ArrowRight, Send, Star, AlertCircle } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
+import { useAuth } from "@/lib/context/AuthContext";
+import { sendGmailMessage } from "@/lib/google-workspace";
 import { Card } from "@/components/ui";
 import { MatchRing } from "@/components/MatchRing";
 import {
@@ -43,18 +45,43 @@ const mockChatPreview = [
 
 function RequestModal({
   name,
+  mentorEmail,
   onClose,
 }: {
   name: string;
+  mentorEmail: string;
   onClose: () => void;
 }) {
+  const { user, googleAccessToken } = useAuth();
   const [area, setArea] = useState("");
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSend = () => {
+  const handleSend = async () => {
+    if (!area || !message.trim()) return;
+    setSending(true);
+    setError(null);
+
+    // If we have a Google access token AND the mentor has a real email, send via Gmail API
+    if (googleAccessToken && mentorEmail) {
+      try {
+        await sendGmailMessage({
+          token: googleAccessToken,
+          to: mentorEmail,
+          subject: `PRO ALUMN Mentorship Request: ${area}`,
+          body: `Hi ${name},\n\nI'm ${user?.name || "a student"} from the PRO ALUMN platform. I'm reaching out to request mentorship in the area of "${area}".\n\n${message}\n\nLooking forward to hearing from you!\n\nBest regards,\n${user?.name || "Student"}\n${user?.email || ""}\nPRO ALUMN Platform`,
+        });
+      } catch (err: any) {
+        console.error("Gmail send failed:", err);
+        setError("Could not send email via Gmail. The request was still saved.");
+      }
+    }
+
     setSent(true);
-    setTimeout(() => onClose(), 1500);
+    setSending(false);
+    setTimeout(() => onClose(), 2000);
   };
 
   return (
@@ -79,6 +106,15 @@ function RequestModal({
               <Check size={28} className="text-sage" />
             </div>
             <p className="font-display text-xl text-ink">Request sent!</p>
+            {googleAccessToken && mentorEmail && !error && (
+              <p className="text-xs text-ink/50">An email was sent to {mentorEmail}</p>
+            )}
+            {error && (
+              <div className="flex items-center gap-1.5 text-xs text-red-600">
+                <AlertCircle size={14} />
+                <span>{error}</span>
+              </div>
+            )}
           </div>
         ) : (
           <>
@@ -133,10 +169,10 @@ function RequestModal({
 
             <button
               onClick={handleSend}
-              disabled={!area || !message.trim()}
+              disabled={!area || !message.trim() || sending}
               className="mt-5 w-full rounded-full bg-brass px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-secondaryContainer disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Send Request
+              {sending ? "Sending email..." : "Send Request"}
             </button>
           </>
         )}
@@ -287,6 +323,7 @@ export function MentorshipContent() {
         {modalOpen && topMatch && (
           <RequestModal
             name={topMatch.name}
+            mentorEmail={topMatch.email || ""}
             onClose={() => setModalOpen(false)}
           />
         )}

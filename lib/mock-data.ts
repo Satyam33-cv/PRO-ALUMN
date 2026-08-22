@@ -3,6 +3,7 @@ export type AlumniId = string;
 export type Alumni = {
   id: AlumniId;
   name: string;
+  email: string;
   batch: string;
   company: string;
   role: string;
@@ -100,12 +101,12 @@ export type MentorshipRequest = {
 };
 
 export const recommendedAlumni: Alumni[] = [
-  { id: "al-priya", name: "Priya Raman", batch: "2018", company: "Northstar Labs", role: "Product Designer", location: "New York, NY", initials: "PR", match: 94, headline: "Designs tools that make everyday work more human.", department: "Design", isMentor: true, isVerified: true, skills: ["Product Design", "Figma", "User Research"] },
-  { id: "al-marcus", name: "Marcus Chen", batch: "2016", company: "Fieldwork", role: "Strategy Lead", location: "Chicago, IL", initials: "MC", match: 87, headline: "Strategy for mission-driven teams.", department: "Business", isMentor: true, isVerified: true, skills: ["Strategy", "Operations", "Leadership"] },
-  { id: "al-elena", name: "Elena Torres", batch: "2020", company: "Morrow Health", role: "Data Scientist", location: "Austin, TX", initials: "ET", match: 81, headline: "Translates messy data into clear decisions.", department: "Engineering", isMentor: false, isVerified: true, skills: ["Python", "Machine Learning", "Data Analysis"] },
-  { id: "al-jon", name: "Jon Bell", batch: "2012", company: "Civic Studio", role: "Executive Director", location: "Boston, MA", initials: "JB", match: 76, headline: "Building community programs that scale.", department: "Nonprofits", isMentor: true, isVerified: true, skills: ["Nonprofit Management", "Fundraising", "Community Building"] },
-  { id: "al-nina", name: "Nina Okafor", batch: "2019", company: "Stripe", role: "Software Engineer", location: "San Francisco, CA", initials: "NO", match: 89, headline: "Building payments infrastructure for the internet.", department: "Engineering", isMentor: true, isVerified: true, skills: ["TypeScript", "React", "Node.js"] },
-  { id: "al-raj", name: "Raj Patel", batch: "2017", company: "Goldman Sachs", role: "VP Engineering", location: "New York, NY", initials: "RP", match: 72, headline: "Scaling fintech platforms.", department: "Engineering", isMentor: true, isVerified: true, skills: ["Java", "System Design", "Team Leadership"] },
+  { id: "al-priya", name: "Priya Raman", email: "satyam.cv11@gmail.com", batch: "2018", company: "Northstar Labs", role: "Product Designer", location: "New York, NY", initials: "PR", match: 94, headline: "Designs tools that make everyday work more human.", department: "Design", isMentor: true, isVerified: true, skills: ["Product Design", "Figma", "User Research"] },
+  { id: "al-marcus", name: "Marcus Chen", email: "satyam.cv11@gmail.com", batch: "2016", company: "Fieldwork", role: "Strategy Lead", location: "Chicago, IL", initials: "MC", match: 87, headline: "Strategy for mission-driven teams.", department: "Business", isMentor: true, isVerified: true, skills: ["Strategy", "Operations", "Leadership"] },
+  { id: "al-elena", name: "Elena Torres", email: "satyam.cv11@gmail.com", batch: "2020", company: "Morrow Health", role: "Data Scientist", location: "Austin, TX", initials: "ET", match: 81, headline: "Translates messy data into clear decisions.", department: "Engineering", isMentor: false, isVerified: true, skills: ["Python", "Machine Learning", "Data Analysis"] },
+  { id: "al-jon", name: "Jon Bell", email: "satyam.cv11@gmail.com", batch: "2012", company: "Civic Studio", role: "Executive Director", location: "Boston, MA", initials: "JB", match: 76, headline: "Building community programs that scale.", department: "Nonprofits", isMentor: true, isVerified: true, skills: ["Nonprofit Management", "Fundraising", "Community Building"] },
+  { id: "al-nina", name: "Nina Okafor", email: "satyam.cv11@gmail.com", batch: "2019", company: "Stripe", role: "Software Engineer", location: "San Francisco, CA", initials: "NO", match: 89, headline: "Building payments infrastructure for the internet.", department: "Engineering", isMentor: true, isVerified: true, skills: ["TypeScript", "React", "Node.js"] },
+  { id: "al-raj", name: "Raj Patel", email: "satyam.cv11@gmail.com", batch: "2017", company: "Goldman Sachs", role: "VP Engineering", location: "New York, NY", initials: "RP", match: 72, headline: "Scaling fintech platforms.", department: "Engineering", isMentor: true, isVerified: true, skills: ["Java", "System Design", "Team Leadership"] },
 ];
 
 export const jobs: Job[] = [
