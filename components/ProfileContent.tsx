@@ -21,12 +21,17 @@ import {
   Trash2,
   FileText,
   Sparkles,
+  CalendarPlus,
+  Video,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { Card, Badge } from "@/components/ui";
 import { fadeIn, slideUp, staggerContainer } from "@/lib/motion";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
+import { createCalendarEvent } from "@/lib/google-workspace";
 
 const timelineEntries = [
   {
@@ -328,7 +333,7 @@ function EditProfileModal({
 }
 
 export function ProfileContent() {
-  const { user, signOut, setUser, setSession } = useAuth();
+  const { user, signOut, setUser, setSession, googleAccessToken } = useAuth();
   const router = useRouter();
   const { data: fullProfile, mutate: mutateProfile } = useApi("profile:me", () => apiClient.auth.me());
   const [mentoring, setMentoring] = useState(true);
@@ -346,6 +351,49 @@ export function ProfileContent() {
   const [skills, setSkills] = useState<string[]>(DEFAULT_SKILLS);
   const [newSkill, setNewSkill] = useState("");
   const newSkillInputRef = useRef<HTMLInputElement>(null);
+
+  // Schedule Google Meet state
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [meetTopic, setMeetTopic] = useState("");
+  const [meetDate, setMeetDate] = useState(new Date(Date.now() + 86400000).toISOString().slice(0, 10));
+  const [meetTime, setMeetTime] = useState("10:00");
+  const [schedulingMeet, setSchedulingMeet] = useState(false);
+  const [scheduleStatus, setScheduleStatus] = useState<"idle" | "success" | "error">("idle");
+
+  const handleScheduleMeet = async () => {
+    if (!meetTopic.trim() || !googleAccessToken) {
+      setScheduleStatus("error");
+      return;
+    }
+    setSchedulingMeet(true);
+    setScheduleStatus("idle");
+    try {
+      const startISO = new Date(`${meetDate}T${meetTime}:00`).toISOString();
+      const endDate = new Date(`${meetDate}T${meetTime}:00`);
+      endDate.setHours(endDate.getHours() + 1);
+      const endISO = endDate.toISOString();
+
+      await createCalendarEvent({
+        token: googleAccessToken,
+        summary: meetTopic,
+        description: `PRO ALUMN Meeting scheduled by ${user.name}`,
+        startDateTime: startISO,
+        endDateTime: endISO,
+        attendees: [user.email],
+      });
+      setScheduleStatus("success");
+      setTimeout(() => {
+        setScheduleOpen(false);
+        setScheduleStatus("idle");
+        setMeetTopic("");
+      }, 2500);
+    } catch (err) {
+      console.error("Calendar event creation failed:", err);
+      setScheduleStatus("error");
+    } finally {
+      setSchedulingMeet(false);
+    }
+  };
 
   useEffect(() => {
     if (fullProfile) {
@@ -536,9 +584,104 @@ export function ProfileContent() {
                 <Pencil size={14} /> Edit profile
               </span>
             </button>
+            <button 
+              onClick={() => setScheduleOpen(true)}
+              className="rounded-full border border-sage/30 bg-sage/10 px-4 py-2.5 text-sm font-semibold text-sage transition-colors hover:bg-sage/20"
+            >
+              <span className="flex items-center gap-2">
+                <Video size={14} /> Schedule Google Meet
+              </span>
+            </button>
           </div>
         </Card>
       </motion.div>
+
+      {/* Schedule Google Meet Modal */}
+      <AnimatePresence>
+        {scheduleOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/50 pt-10 sm:pt-20 px-4 pb-20"
+            onClick={() => setScheduleOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.97 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-xl bg-white shadow-xl overflow-hidden"
+            >
+              <div className="flex items-center justify-between border-b border-ink/10 px-6 py-4 bg-paper/30">
+                <h2 className="font-display text-xl text-ink flex items-center gap-2">
+                  <CalendarPlus size={20} className="text-sage" />
+                  Schedule Google Meet
+                </h2>
+                <button onClick={() => setScheduleOpen(false)} className="p-1 text-ink/40 transition-colors hover:text-ink" type="button">
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                {scheduleStatus === "success" ? (
+                  <div className="flex flex-col items-center gap-3 py-6">
+                    <CheckCircle2 size={40} className="text-sage" />
+                    <p className="font-display text-lg text-ink">Meeting Scheduled!</p>
+                    <p className="text-xs text-ink/50">A Google Calendar invite has been sent to {user.email}</p>
+                  </div>
+                ) : (
+                  <>
+                    <label className="block">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Meeting Topic</span>
+                      <input
+                        type="text"
+                        value={meetTopic}
+                        onChange={(e) => setMeetTopic(e.target.value)}
+                        placeholder="e.g. Career Guidance Session"
+                        className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
+                      />
+                    </label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <label className="block">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Date</span>
+                        <input
+                          type="date"
+                          value={meetDate}
+                          onChange={(e) => setMeetDate(e.target.value)}
+                          className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Time</span>
+                        <input
+                          type="time"
+                          value={meetTime}
+                          onChange={(e) => setMeetTime(e.target.value)}
+                          className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
+                        />
+                      </label>
+                    </div>
+                    {scheduleStatus === "error" && (
+                      <div className="flex items-center gap-1.5 text-xs text-red-600">
+                        <AlertCircle size={14} />
+                        <span>Failed to schedule. Please ensure you are signed in with Google.</span>
+                      </div>
+                    )}
+                    <button
+                      onClick={handleScheduleMeet}
+                      disabled={schedulingMeet || !meetTopic.trim()}
+                      className="w-full rounded-full bg-sage px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sage/90 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {schedulingMeet ? "Creating event..." : "Schedule & Send Invite"}
+                    </button>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isEditingProfile && (
