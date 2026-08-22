@@ -27,7 +27,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
-import { Card, Badge } from "@/components/ui";
+import { Card, Badge, ProfileEditModal } from "@/components/ui";
 import { fadeIn, slideUp, staggerContainer } from "@/lib/motion";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
@@ -170,167 +170,7 @@ function TimelineModal({
   );
 }
 
-function EditProfileModal({
-  user,
-  onClose,
-  onSave,
-}: {
-  user: any;
-  onClose: () => void;
-  onSave: (data: any) => Promise<void>;
-}) {
-  const [formData, setFormData] = useState({
-    name: user?.name || "",
-    department: user?.department || "",
-    batchYear: user?.batchYear || user?.classYear || "",
-    jobTitle: user?.jobTitle || "",
-    currentCompany: user?.currentCompany || "",
-    location: user?.location || "",
-    linkedinUrl: user?.linkedinUrl || "",
-  });
-  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      await onSave({
-        ...formData,
-        batchYear: formData.batchYear ? parseInt(formData.batchYear) : undefined,
-      });
-      onClose();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/50 pt-10 sm:pt-20 px-4 pb-20"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.97 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-xl bg-white shadow-xl overflow-hidden"
-      >
-        <div className="flex items-center justify-between border-b border-ink/10 px-6 py-4 bg-paper/30">
-          <h2 className="font-display text-xl text-ink">Edit Profile</h2>
-          <button
-            onClick={onClose}
-            className="p-1 text-ink/40 transition-colors hover:text-ink"
-            type="button"
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Name</span>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
-              />
-            </label>
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">LinkedIn URL</span>
-              <input
-                type="url"
-                value={formData.linkedinUrl}
-                onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
-                className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
-              />
-            </label>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Department</span>
-              <input
-                type="text"
-                required
-                value={formData.department}
-                onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
-              />
-            </label>
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Class Year</span>
-              <input
-                type="number"
-                required
-                value={formData.batchYear}
-                onChange={(e) => setFormData({ ...formData, batchYear: e.target.value })}
-                className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
-              />
-            </label>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Job Title</span>
-              <input
-                type="text"
-                value={formData.jobTitle}
-                onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
-                className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
-              />
-            </label>
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Company</span>
-              <input
-                type="text"
-                value={formData.currentCompany}
-                onChange={(e) => setFormData({ ...formData, currentCompany: e.target.value })}
-                className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
-              />
-            </label>
-          </div>
-
-          <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">Location</span>
-            <input
-              type="text"
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass"
-            />
-          </label>
-
-          <div className="mt-6 flex justify-end gap-3 border-t border-ink/10 pt-5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-full border border-ink/20 px-5 py-2 text-sm font-semibold text-ink/70 transition-colors hover:border-ink/40"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-full bg-brass px-6 py-2 text-sm font-semibold text-ink transition-colors hover:bg-secondaryContainer disabled:opacity-50"
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
-          </div>
-        </form>
-      </motion.div>
-    </motion.div>
-  );
-}
 
 export function ProfileContent() {
   const { user, signOut, setUser, setSession, googleAccessToken } = useAuth();
@@ -685,7 +525,7 @@ export function ProfileContent() {
 
       <AnimatePresence>
         {isEditingProfile && (
-          <EditProfileModal
+          <ProfileEditModal
             user={fullProfile || user}
             onClose={() => setIsEditingProfile(false)}
             onSave={handleSaveProfile}
