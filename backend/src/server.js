@@ -115,8 +115,8 @@ const io = new Server(httpServer, {
 });
 initSocket(io);
 
-const server = httpServer.listen(PORT, () => {
-  console.log(`PRO ALUMN API running on http://localhost:${PORT}`);
+const server = httpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`PRO ALUMN API running on port ${PORT}`);
 });
 
 // --- Graceful shutdown ---
