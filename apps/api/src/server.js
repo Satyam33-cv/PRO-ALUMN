@@ -8,6 +8,10 @@ const morgan = require('morgan');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 
+const http = require('http');
+const { Server } = require('socket.io');
+const { initSocket } = require('./socket');
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -102,7 +106,16 @@ app.use((err, req, res, next) => {
 });
 
 // --- Start server ---
-const server = app.listen(PORT, () => {
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: Array.from(allowedOrigins),
+    credentials: true,
+  },
+});
+initSocket(io);
+
+const server = httpServer.listen(PORT, () => {
   console.log(`PRO ALUMN API running on http://localhost:${PORT}`);
 });
 

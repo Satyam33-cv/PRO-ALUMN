@@ -22,6 +22,7 @@ import {
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { useAuth } from "@/lib/context/AuthContext";
+import { getSocket } from "@/lib/socket";
 import type { Alumni } from "@/lib/api/types";
 import { ReferralThread } from "@/components/ReferralThread";
 import { Card } from "@/components/ui";
@@ -254,16 +255,39 @@ export function ChatContent() {
     }
   }, [selectedId, localThreads]);
 
+  // Real-time WebSockets Integration
   useEffect(() => {
     if (!selectedId || !user) return;
-    let isActive = true;
+    const socket = getSocket();
+    
+    // Connect to server and join the specific chat room
+    socket.connect();
+    socket.emit("join_room", selectedId);
 
+    // Listen for incoming messages
+    const handleReceiveMessage = (data: any) => {
+      if (data.roomId === selectedId) {
+        setLocalThreads((prev) => {
+          const current = prev[selectedId] || [];
+          // Avoid duplicates
+          if (current.find(m => m.id === data.id)) return prev;
+          
+          return {
+            ...prev,
+            [selectedId]: [...current, data],
+          };
+        });
+      }
+    };
+
+    socket.on("receive_message", handleReceiveMessage);
+
+    // Initial fetch of historical messages
     const fetchMessages = async () => {
       try {
         const data = (await apiClient.chat.getThread(selectedId)) as {
           messages: ThreadMessage[];
         };
-        if (!isActive) return;
 
         const formatted = data.messages.map((m) => ({
           id: m.id,
@@ -283,13 +307,10 @@ export function ChatContent() {
         console.error("Failed to fetch thread", err);
       }
     };
-
     fetchMessages();
-    const interval = setInterval(fetchMessages, 3500);
 
     return () => {
-      isActive = false;
-      clearInterval(interval);
+      socket.off("receive_message", handleReceiveMessage);
     };
   }, [selectedId, user]);
 
@@ -313,8 +334,11 @@ export function ChatContent() {
     }));
     setReplyInputs((prev) => ({ ...prev, [threadId]: "" }));
 
-    // API Call
+    // API Call & WebSockets
     try {
+      const socket = getSocket();
+      socket.emit("send_message", { ...newMsg, roomId: threadId });
+      
       await apiClient.chat.sendMessage(threadId, text);
       mutateThreads();
     } catch (err) {
