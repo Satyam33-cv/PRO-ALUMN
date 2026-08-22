@@ -1,7 +1,7 @@
 services:
   web:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
@@ -12,8 +12,8 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: api.Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "4000:4000"
     environment:
@@ -21,7 +21,7 @@ services:
       - WEB_URL=http://localhost:3000
       - JWT_SECRET=d7b0efae583b446e621560ca2ab896a79c5cda49944f0b652aceef7271f9c3c48d16df19066b0f9ceb29a9b819a46e0a
     env_file:
-      - apps/api/.env
+      - ./backend/.env
     depends_on:
       db:
         condition: service_healthy
