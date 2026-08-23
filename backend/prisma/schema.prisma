@@ -51,6 +51,19 @@ model User {
   embedding       Unsupported("vector(384)")?  // pgvector embedding of profile
   timeline        Json?              // editable career timeline [{ role, company, range }]
 
+  // Gamification & Streaks
+  currentStreak      Int       @default(0)
+  longestStreak      Int       @default(0)
+  lastActiveDate     DateTime? 
+  totalPoints        Int       @default(0)
+  
+  // Profile Tracking
+  lastProfileUpdate  DateTime  @default(now())
+  lastJobUpdate      DateTime  @default(now())
+  lastEducationUpdate DateTime @default(now())
+  lastProjectUpdate  DateTime  @default(now())
+  profileCompleteness Int      @default(0)
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -68,6 +81,8 @@ model User {
   chatThreads     ChatThreadMember[]
   chatMessages    ChatMessage[]
   storyVotes      StoryVote[]
+  activities      ActivityLog[]
+  badges          UserBadge[]
 
   @@index([batchYear])
   @@index([department])
@@ -207,6 +222,9 @@ enum NotificationType {
   JOB_POSTED
   STORY_APPROVED
   GENERAL
+  PROFILE_UPDATE_REMINDER
+  STREAK_LOST_WARNING
+  REWARD_UNLOCKED
 }
 
 model Notification {
@@ -341,3 +359,54 @@ model ChatMessage {
   @@index([threadId, createdAt])
   @@index([senderId])
 }
+
+// =================== GAMIFICATION & REWARDS ===================
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  actionType  String   // e.g. "DAILY_LOGIN", "POSTED_JOB", "PROFILE_UPDATED", "REFERRAL_GIVEN"
+  pointsEarned Int
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Badge {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  imageUrl    String
+  requiredPts Int      // Points required to unlock
+
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  userId    String
+  badgeId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  earnedAt  DateTime @default(now())
+
+  @@unique([userId, badgeId])
+}
+
+// =================== NEWSLETTER ===================
+model Newsletter {
+  id          String   @id @default(uuid())
+  title       String
+  issueDate   DateTime
+  year        Int
+  coverImage  String
+  fileUrl     String   // URL to PDF or external link
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([year])
+  @@index([issueDate])
+}
+

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   ShieldCheck,
   Pencil,
@@ -25,6 +26,9 @@ import {
   Video,
   CheckCircle2,
   AlertCircle,
+  Camera,
+  Download,
+  Award,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { Card, Badge, ProfileEditModal } from "@/components/ui";
@@ -176,12 +180,37 @@ export function ProfileContent() {
   const { user, signOut, setUser, setSession, googleAccessToken } = useAuth();
   const router = useRouter();
   const { data: fullProfile, mutate: mutateProfile } = useApi("profile:me", () => apiClient.auth.me());
+  const { data: gamificationData, reload: reloadGamification } = useApi("profile:gamification", () => apiClient.gamification.getStatus());
+  const [toast, setToast] = useState<string | null>(null);
   const [mentoring, setMentoring] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isAddingTimeline, setIsAddingTimeline] = useState(false);
+  const [verifyingStatus, setVerifyingStatus] = useState(false);
   const [bio, setBio] = useState(
     fullProfile?.bio || "Passionate about building products that make everyday work more human. Open to mentoring students and early-career professionals."
   );
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2500);
+  };
+
+  const completeness = gamificationData?.completeness || (fullProfile?.profileCompleteness || 60);
+
+  const handleVerifyJobStatus = async () => {
+    setVerifyingStatus(true);
+    try {
+      const res = await apiClient.gamification.verifyJob();
+      showToast(res.message);
+      reloadGamification();
+      mutateProfile();
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to verify job status");
+    } finally {
+      setVerifyingStatus(false);
+    }
+  };
   const [editingBio, setEditingBio] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshDone, setRefreshDone] = useState(false);
@@ -241,14 +270,13 @@ export function ProfileContent() {
       if (fullProfile.skills) setSkills(fullProfile.skills.split(",").map((s: string) => s.trim()).filter(Boolean));
     }
   }, [fullProfile]);
-  const [toast, setToast] = useState<string | null>(null);
   const [uploadingResume, setUploadingResume] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingCert, setUploadingCert] = useState(false);
+  const [certificates, setCertificates] = useState<Array<{ name: string; url: string }>>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 2500);
-  };
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const certInputRef = useRef<HTMLInputElement>(null);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -269,6 +297,35 @@ export function ProfileContent() {
     if (window.confirm("Are you sure you want to sign out?")) {
       signOut();
       router.push("/login");
+    }
+  };
+
+  const uploadAvatar = async (file: File) => {
+    try {
+      setUploadingAvatar(true);
+      const res = await apiClient.uploads.avatar(file);
+      await mutateProfile();
+      const updatedUser = await apiClient.auth.me();
+      const token = localStorage.getItem("auth-token") || "";
+      setSession({ user: updatedUser, token });
+      showToast("Profile photo updated on Supabase & publicly visible!");
+    } catch (err: any) {
+      showToast(err.message || "Failed to upload avatar");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const uploadCertificate = async (file: File) => {
+    try {
+      setUploadingCert(true);
+      const res = await apiClient.uploads.certificate(file);
+      setCertificates((prev) => [...prev, { name: file.name, url: res.url }]);
+      showToast("Experience certificate / proof stored on Supabase!");
+    } catch (err: any) {
+      showToast(err.message || "Failed to upload certificate");
+    } finally {
+      setUploadingCert(false);
     }
   };
 
@@ -298,7 +355,8 @@ export function ProfileContent() {
       setResumePreview(file.name);
       const { url } = await apiClient.uploads.resume(file);
       await apiClient.users.updateProfile({ resumeUrl: url });
-      showToast("Resume uploaded successfully!");
+      await mutateProfile();
+      showToast("Resume saved to Supabase storage successfully!");
     } catch (err) {
       console.error(err);
       showToast("Failed to upload resume");
@@ -400,8 +458,38 @@ export function ProfileContent() {
         <Card padding="lg">
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="flex items-center gap-5">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-brass text-2xl font-semibold text-white">
-                {user.initials}
+              <div className="relative group flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-brass text-2xl font-semibold text-white overflow-hidden shadow-md">
+                {fullProfile?.avatarUrl || user.avatarUrl ? (
+                  <Image
+                    src={fullProfile?.avatarUrl || user.avatarUrl!}
+                    alt={user.name}
+                    width={80}
+                    height={80}
+                    unoptimized
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  user.initials
+                )}
+                <button
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[10px] font-bold cursor-pointer"
+                  title="Upload profile photo to Supabase"
+                >
+                  {uploadingAvatar ? <Loader2 size={16} className="animate-spin" /> : <Camera size={18} />}
+                  <span>{uploadingAvatar ? "Saving..." : "Change"}</span>
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) uploadAvatar(file);
+                  }}
+                />
               </div>
               <div>
                 <h2 className="font-display text-3xl">{fullProfile?.name || user.name}</h2>
@@ -416,22 +504,113 @@ export function ProfileContent() {
                 </div>
               </div>
             </div>
-            <button 
-              onClick={() => setIsEditingProfile(true)}
-              className="rounded-full border border-ink/15 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-brass hover:text-brass"
-            >
-              <span className="flex items-center gap-2">
-                <Pencil size={14} /> Edit profile
-              </span>
-            </button>
-            <button 
-              onClick={() => setScheduleOpen(true)}
-              className="rounded-full border border-sage/30 bg-sage/10 px-4 py-2.5 text-sm font-semibold text-sage transition-colors hover:bg-sage/20"
-            >
-              <span className="flex items-center gap-2">
-                <Video size={14} /> Schedule Google Meet
-              </span>
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button 
+                onClick={() => setIsEditingProfile(true)}
+                className="rounded-full border border-ink/15 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-brass hover:text-brass"
+              >
+                <span className="flex items-center gap-2">
+                  <Pencil size={14} /> Edit profile
+                </span>
+              </button>
+              <button 
+                onClick={() => setScheduleOpen(true)}
+                className="rounded-full border border-sage/30 bg-sage/10 px-4 py-2.5 text-sm font-semibold text-sage transition-colors hover:bg-sage/20"
+              >
+                <span className="flex items-center gap-2">
+                  <Video size={14} /> Schedule Google Meet
+                </span>
+              </button>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* ================= PROFILE COMPLETENESS & FRESHNESS TRACKER ================= */}
+      <motion.div variants={slideUp}>
+        <Card padding="lg" className="border-blue-200 dark:border-blue-900/50 bg-gradient-to-br from-blue-50/40 via-white to-indigo-50/20 dark:from-slate-900 dark:to-slate-900">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-ink/10">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-display text-xl">Profile Completeness</h3>
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-600 text-white font-mono">
+                  {completeness}%
+                </span>
+              </div>
+              <p className="text-xs text-ink/60 mt-0.5">
+                Complete all sections to unlock the <strong>Profile Pro</strong> badge and boost your alumni network match score!
+              </p>
+            </div>
+
+            {/* Career Status Verification */}
+            {(fullProfile?.role === "ALUMNI" || user.role === "alumni") && (
+              <button
+                onClick={handleVerifyJobStatus}
+                disabled={verifyingStatus}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs shadow-emerald-600/20 transition-all disabled:opacity-50 cursor-pointer self-start sm:self-auto"
+                title="Confirm current role to keep profile fresh and earn points"
+              >
+                <CheckCircle2 size={15} />
+                {verifyingStatus ? "Verifying..." : "Confirm Career Info (+30 pts)"}
+              </button>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mt-4 space-y-2">
+            <div className="h-2 w-full rounded-full bg-ink/10 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-500"
+                style={{ width: `${completeness}%` }}
+              />
+            </div>
+
+            {/* Checklist */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              <div className="flex items-center gap-2 text-xs">
+                {bio && bio.length > 10 ? (
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                ) : (
+                  <div className="h-3.5 w-3.5 rounded-full border border-ink/30 shrink-0" />
+                )}
+                <span className={bio && bio.length > 10 ? "text-ink font-medium" : "text-ink/50"}>
+                  Bio {!(bio && bio.length > 10) && "(+15 pts)"}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs">
+                {skills.length > 0 ? (
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                ) : (
+                  <div className="h-3.5 w-3.5 rounded-full border border-ink/30 shrink-0" />
+                )}
+                <span className={skills.length > 0 ? "text-ink font-medium" : "text-ink/50"}>
+                  Skills {skills.length === 0 && "(+15 pts)"}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs">
+                {fullProfile?.currentCompany || fullProfile?.jobTitle ? (
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                ) : (
+                  <div className="h-3.5 w-3.5 rounded-full border border-ink/30 shrink-0" />
+                )}
+                <span className={fullProfile?.currentCompany ? "text-ink font-medium" : "text-ink/50"}>
+                  Career Role {!fullProfile?.currentCompany && "(+20 pts)"}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs">
+                {fullProfile?.resumeUrl || resumeFile ? (
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+                ) : (
+                  <div className="h-3.5 w-3.5 rounded-full border border-ink/30 shrink-0" />
+                )}
+                <span className={fullProfile?.resumeUrl ? "text-ink font-medium" : "text-ink/50"}>
+                  Resume {!fullProfile?.resumeUrl && "(+10 pts)"}
+                </span>
+              </div>
+            </div>
           </div>
         </Card>
       </motion.div>
@@ -641,15 +820,86 @@ export function ProfileContent() {
               />
             </div>
 
-            {resumeFile && (
-              <div className="p-4 rounded-lg bg-brass/5 border border-brass/20">
-                <p className="font-mono text-xs uppercase tracking-wider text-brass">Resume uploaded</p>
-                <p className="mt-1 text-sm text-ink/60">
-                  Your resume will be parsed to extract skills and experience for better AI matching.
-                </p>
+            {(fullProfile?.resumeUrl || resumeFile) && (
+              <div className="p-4 rounded-xl bg-brass/5 border border-brass/20 flex items-center justify-between">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-wider text-brass font-bold">Resume Active on Supabase</p>
+                  <p className="mt-0.5 text-xs text-ink/60">
+                    Stored in Supabase <code className="bg-ink/5 px-1 rounded">resumes</code> storage bucket.
+                  </p>
+                </div>
+                {fullProfile?.resumeUrl && (
+                  <a
+                    href={fullProfile.resumeUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-brass/30 bg-brass/10 hover:bg-brass/20 text-brass text-xs font-semibold transition-all"
+                  >
+                    <Download size={13} />
+                    View / Download
+                  </a>
+                )}
               </div>
             )}
           </div>
+        </Card>
+      </motion.div>
+
+      {/* ================= EXPERIENCE CERTIFICATES & PROOF UPLOADS ================= */}
+      <motion.div variants={slideUp}>
+        <Card padding="lg">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-display text-xl">Experience Proofs & Certificates</h3>
+              <p className="text-xs text-ink/60 mt-0.5">
+                Upload degree certificates, internship letters, or achievement proofs to Supabase Storage
+              </p>
+            </div>
+            <button
+              onClick={() => certInputRef.current?.click()}
+              disabled={uploadingCert}
+              className="flex items-center gap-1.5 rounded-full border border-brass/40 bg-brass/10 px-3.5 py-1.5 text-xs font-semibold text-brass hover:bg-brass/20 transition-all cursor-pointer"
+            >
+              {uploadingCert ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
+              Upload Proof
+            </button>
+            <input
+              ref={certInputRef}
+              type="file"
+              accept=".pdf,image/*,.doc,.docx"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) uploadCertificate(file);
+              }}
+            />
+          </div>
+
+          {certificates.length === 0 ? (
+            <div className="text-center py-6 border border-dashed border-ink/15 rounded-xl">
+              <Award size={24} className="mx-auto text-brass mb-2 opacity-60" />
+              <p className="text-xs text-ink/50">No certificates uploaded yet. Click &ldquo;Upload Proof&rdquo; to add.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {certificates.map((cert, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 rounded-xl border border-ink/10 bg-paper/50">
+                  <div className="flex items-center gap-2">
+                    <FileText size={16} className="text-brass" />
+                    <span className="text-xs font-bold text-ink">{cert.name}</span>
+                  </div>
+                  <a
+                    href={cert.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline"
+                  >
+                    <Download size={13} /> View on Supabase
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
       </motion.div>
 
@@ -753,13 +1003,40 @@ export function ProfileContent() {
 
       <motion.div variants={slideUp}>
         <Card padding="lg">
-          <h3 className="font-display text-xl">Achievements</h3>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {achievements.map((a) => (
-              <Badge key={a.label} tone={a.tone}>
-                {a.label}
-              </Badge>
-            ))}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-xl">Badges & Achievements</h3>
+            <Link
+              href="/rewards"
+              className="text-xs font-semibold text-brass hover:text-brass-600 flex items-center gap-1"
+            >
+              View Rewards Hub <ArrowRight size={13} />
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap gap-2.5">
+            {gamificationData?.badges && gamificationData.badges.length > 0 ? (
+              gamificationData.badges.map((b) => (
+                <div
+                  key={b.id || b.name}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold ${
+                    b.isUnlocked
+                      ? "border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 shadow-2xs"
+                      : "border-ink/10 bg-ink/5 text-ink/40 opacity-70"
+                  }`}
+                  title={b.description}
+                >
+                  <span>{b.isUnlocked ? "🏆" : "🔒"}</span>
+                  <span>{b.name}</span>
+                  {!b.isUnlocked && <span className="text-[10px] font-mono">({b.requiredPts} pts)</span>}
+                </div>
+              ))
+            ) : (
+              achievements.map((a) => (
+                <Badge key={a.label} tone={a.tone}>
+                  {a.label}
+                </Badge>
+              ))
+            )}
           </div>
         </Card>
       </motion.div>

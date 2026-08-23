@@ -69,6 +69,25 @@ export type User = {
   role?: "student" | "alumni" | "admin" | "faculty";
   batchYear?: number | string;
   department?: string;
+  currentCompany?: string;
+  jobTitle?: string;
+  location?: string;
+  avatarUrl?: string;
+  bio?: string;
+  skills?: string;
+  interests?: string;
+  timeline?: any;
+  resumeUrl?: string;
+  currentStreak?: number;
+  longestStreak?: number;
+  totalPoints?: number;
+  lastActiveDate?: string;
+  lastProfileUpdate?: string;
+  lastJobUpdate?: string;
+  lastEducationUpdate?: string;
+  lastProjectUpdate?: string;
+  profileCompleteness?: number;
+  freshness?: ProfileFreshness;
   alumni?: {
     graduationYear?: number;
     department?: string;
@@ -114,3 +133,87 @@ export type AdminMetrics = {
   totalReferrals?: number;
   hiredThroughReferrals?: number;
 };
+
+// =================== GAMIFICATION & PROFILE TRACKING ===================
+export type Badge = {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  requiredPts: number;
+  isUnlocked?: boolean;
+  unlockedAt?: string | null;
+  progress?: number;
+  _count?: {
+    users: number;
+  };
+};
+
+export type ActivityLog = {
+  id: string;
+  userId: string;
+  actionType: string;
+  pointsEarned: number;
+  createdAt: string;
+};
+
+export type ProfileNudge = {
+  id: string;
+  type: "JOB_UPDATE" | "ANNIVERSARY" | "SEMESTER_UPDATE" | "SKILLS_UPDATE" | "COMPLETENESS";
+  title: string;
+  message: string;
+  points: number;
+  actionLabel: string;
+  actionHref: string;
+};
+
+export type ProfileFreshness = {
+  completeness: number;
+  nudges: ProfileNudge[];
+  isStale: boolean;
+  lastJobUpdate?: string;
+  lastEducationUpdate?: string;
+  lastProjectUpdate?: string;
+};
+
+export type GamificationStatus = {
+  streak: {
+    current: number;
+    longest: number;
+    lastActiveDate: string | null;
+  };
+  totalPoints: number;
+  rank: number;
+  completeness: number;
+  freshness: ProfileFreshness;
+  badges: Badge[];
+  recentActivities: ActivityLog[];
+};
+
+export type LeaderboardEntry = {
+  rank: number;
+  id: string;
+  name: string;
+  role: string;
+  avatarUrl?: string;
+  department?: string;
+  batchYear?: number;
+  currentCompany?: string;
+  jobTitle?: string;
+  totalPoints: number;
+  currentStreak: number;
+  badges: Badge[];
+};
+
+// =================== NEWSLETTER ===================
+export type Newsletter = {
+  id: string;
+  title: string;
+  issueDate: string;
+  year: number;
+  coverImage: string;
+  fileUrl: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+

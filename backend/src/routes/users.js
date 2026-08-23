@@ -1,9 +1,12 @@
-// apps/api/src/routes/users.js
-// User profile management + alumni directory
 const express = require('express');
 const router = express.Router();
 const prisma = require('../db');
 const { authenticate, requireRole } = require('../middleware/auth');
+const {
+  calculateProfileCompleteness,
+  checkProfileFreshness,
+  awardPoints,
+} = require('../services/gamification');
 
 // =================== GET /api/users/me ===================
 router.get('/me', authenticate, async (req, res) => {
@@ -16,10 +19,15 @@ router.get('/me', authenticate, async (req, res) => {
         currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
         skills: true, interests: true, timeline: true, resumeUrl: true,
         isVerified: true, isActive: true, createdAt: true,
+        currentStreak: true, longestStreak: true, totalPoints: true, lastActiveDate: true,
+        lastProfileUpdate: true, lastJobUpdate: true, lastEducationUpdate: true, lastProjectUpdate: true,
+        profileCompleteness: true,
       },
     });
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json({ user });
+    
+    const freshness = checkProfileFreshness(user);
+    res.json({ user: { ...user, freshness } });
   } catch (err) {
     console.error('GET /users/me error:', err);
     res.status(500).json({ error: 'Failed to fetch user' });
@@ -41,6 +49,20 @@ router.patch('/me', authenticate, async (req, res) => {
     }
     if (data.batchYear) data.batchYear = parseInt(data.batchYear);
 
+    // Profile tracking timestamps
+    const now = new Date();
+    data.lastProfileUpdate = now;
+
+    if (data.currentCompany !== undefined || data.jobTitle !== undefined) {
+      data.lastJobUpdate = now;
+    }
+    if (data.department !== undefined || data.batchYear !== undefined) {
+      data.lastEducationUpdate = now;
+    }
+    if (data.skills !== undefined || data.interests !== undefined || data.timeline !== undefined) {
+      data.lastProjectUpdate = now;
+    }
+
     const user = await prisma.user.update({
       where: { id: req.user.id },
       data,
@@ -49,9 +71,27 @@ router.patch('/me', authenticate, async (req, res) => {
         batchYear: true, department: true, currentCompany: true, jobTitle: true,
         location: true, linkedinUrl: true, bio: true, resumeUrl: true,
         skills: true, interests: true, timeline: true,
+        currentStreak: true, longestStreak: true, totalPoints: true,
+        lastProfileUpdate: true, lastJobUpdate: true, lastEducationUpdate: true, lastProjectUpdate: true,
+        profileCompleteness: true,
       },
     });
-    res.json({ user });
+
+    // Recompute completeness
+    const completeness = calculateProfileCompleteness(user);
+    if (completeness !== user.profileCompleteness) {
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: { profileCompleteness: completeness },
+      });
+      user.profileCompleteness = completeness;
+    }
+
+    // Award points for active profile updates (+20 pts)
+    await awardPoints(req.user.id, 'PROFILE_UPDATED', 20).catch(() => {});
+
+    const freshness = checkProfileFreshness(user);
+    res.json({ user: { ...user, freshness } });
   } catch (err) {
     console.error('PATCH /users/me error:', err);
     res.status(500).json({ error: 'Failed to update profile' });

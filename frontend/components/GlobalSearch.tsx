@@ -23,6 +23,8 @@ import {
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useAuth } from "@/lib/context/AuthContext";
+import { apiClient } from "@/lib/api/client";
+import { useApi } from "@/lib/hooks/useApi";
 
 import { listUserDocsFromDrive } from "@/lib/google-workspace";
 
@@ -162,6 +164,10 @@ export function GlobalSearch() {
   const [firestoreNotes, setFirestoreNotes] = useState<SearchResultItem[]>([]);
   const [driveDocs, setDriveDocs] = useState<SearchResultItem[]>([]);
 
+  const { data: alumniList } = useApi("search:alumni", () => apiClient.alumni.list());
+  const { data: jobList } = useApi("search:jobs", () => apiClient.jobs.list());
+  const { data: annList } = useApi("search:announcements", () => apiClient.announcements.list());
+
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
@@ -300,12 +306,44 @@ export function GlobalSearch() {
       ...FALLBACK_KEEP_NOTES.filter((fn) => !firestoreNotes.some((fd) => fd.title === fn.title)),
     ];
 
-    const alumniResults: SearchResultItem[] = []; // Replaced mock data
-    const jobResults: SearchResultItem[] = []; // Replaced mock data
-    const announcementResults: SearchResultItem[] = []; // Replaced mock data
+    const alumniResults: SearchResultItem[] = (alumniList || []).map((a: any) => ({
+      id: `alumni-${a.id}`,
+      type: "alumni",
+      title: a.name,
+      subtitle: `${a.jobTitle ? `${a.jobTitle} at ` : ""}${a.currentCompany || "Alumni Member"}${a.batchYear ? ` · Class of ${a.batchYear}` : ""}`,
+      snippet: `Alumni member · Department: ${a.department || "Engineering"} · ${a.skills ? `Skills: ${a.skills}` : "Open to connect"}`,
+      tag: a.currentCompany || "Alumni",
+      url: `/directory?search=${encodeURIComponent(a.name)}`,
+      badge: "Alumni Profile",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    }));
+
+    const jobResults: SearchResultItem[] = (jobList || []).map((j: any) => ({
+      id: `job-${j.id}`,
+      type: "job",
+      title: j.title,
+      subtitle: `${j.company} · ${j.location || "Remote"} · ${j.type || "Full-time"}`,
+      snippet: j.description || "Career opportunity posted by alumni community member.",
+      tag: j.company,
+      url: `/jobs?jobId=${j.id}`,
+      badge: "Job Posting",
+      badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    }));
+
+    const announcementResults: SearchResultItem[] = (annList || []).map((ann: any) => ({
+      id: `ann-${ann.id}`,
+      type: "announcement",
+      title: ann.title,
+      subtitle: `Official Announcement${ann.priority === "URGENT" ? " · 🚨 Urgent" : ""}`,
+      snippet: ann.content || ann.body || "Official institutional announcement.",
+      tag: "Notice",
+      url: `/announcements`,
+      badge: "Announcement",
+      badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+    }));
 
     return [...combinedDocs, ...combinedNotes, ...alumniResults, ...jobResults, ...announcementResults];
-  }, [firestoreDocs, driveDocs, firestoreNotes]);
+  }, [firestoreDocs, driveDocs, firestoreNotes, alumniList, jobList, annList]);
 
   // Filtered results based on search text and active category
   const filteredResults = useMemo(() => {

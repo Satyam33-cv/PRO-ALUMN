@@ -1,0 +1,68 @@
+# Web Application Production Upgrade Plan
+
+This plan outlines the steps required to wire up the remaining partially implemented frontend features to their fully functioning backend APIs, preparing the "Ink & Brass" root web app for a production-ready hackathon demo. We will prioritize chat history and resume/avatar uploads as requested.
+
+## User Review Required
+
+> [!WARNING]
+> **Google OAuth Approach**: I will integrate `passport-google-oauth20` with the existing JWT-based `auth.js` routes as you suggested. This allows avoiding a full rewrite with NextAuth at the last minute and maintains a single JWT authentication system.
+> 
+> **Stories Schema**: The `SuccessStory` schema currently lacks fields for upvotes/celebrates. I will add an `upvoteCount Int @default(0)` field to `schema.prisma` and run a migration to support real voting in `StoriesContent.tsx`. 
+
+## Open Questions
+
+> [!IMPORTANT]
+> - Do you have the Google Client ID and Secret ready to place in `.env` for the OAuth integration?
+> - For Stories, do we need to track *who* voted to prevent double-voting (requires a new `StoryVote` junction table), or is a simple incrementing counter sufficient for the hackathon demo?
+
+## Proposed Changes
+
+---
+
+### Phase 1: High-Priority Demo Features (Starting Here)
+
+#### [MODIFY] `components/ChatContent.tsx`
+- Replace `mockConversation` fallback with a `useEffect` block that calls `apiClient.chat.getThread(selectedId)`.
+- Set an interval (e.g., 3-5 seconds) for polling the selected thread to fetch new messages seamlessly.
+- Ensure sent messages optimistically update the state and are correctly synced using `apiClient.chat.sendMessage()`.
+
+#### [MODIFY] `lib/api/client.ts`
+- Add an `uploads` object to handle `FormData` and POST requests to `/uploads/resume`.
+- Add a `users` object containing `updateProfile` to send a `PATCH` request to `/users/me`.
+
+#### [MODIFY] `components/ProfileContent.tsx`
+- Wire the resume dropzone to call `apiClient.uploads.resume(file)`.
+- Upon successful upload, immediately call the `PATCH /users/me` endpoint to save the `resumeUrl`.
+- Display real loading states and success toasts using the existing UI components.
+
+---
+
+### Phase 2: Stories & Voting
+
+#### [MODIFY] `prisma/schema.prisma`
+- Add `upvoteCount Int @default(0)` to the `SuccessStory` model.
+
+#### [MODIFY] `apps/api/src/routes/stories.js`
+- Create a `POST /:id/vote` route that increments the `upvoteCount`.
+
+#### [MODIFY] `components/StoriesContent.tsx`
+- Wire the Upvote button to call `apiClient.stories.vote(id)`.
+- Replace `mockUpvotes` with the real backend field.
+
+---
+
+### Phase 3: Google OAuth & Validation
+
+#### [MODIFY] `apps/api/src/routes/auth.js` (or a dedicated `auth-google.js`)
+- Install `passport` and `passport-google-oauth20`.
+- Implement Google OAuth callback that finds or creates a user, then issues a JWT token exactly matching the current email/password flow.
+- Enhance the `/register` route with stronger validation:
+  - Add password complexity check (e.g., minimum 8 characters, at least 1 number).
+
+## Verification Plan
+
+### Manual Verification
+1. **Chat**: Open two browser windows with different users, select the same thread, send a message in one, and verify it appears in the other via polling within 3-5s.
+2. **Profile Uploads**: Upload a PDF resume in Profile, verify the network tab shows a 201 response, and refresh the page to ensure the `resumeUrl` is saved.
+3. **Stories Voting**: Click the upvote button on a story, refresh the page, and verify the count persists.
+4. **Google OAuth**: Test the full "Sign in with Google" flow and ensure a valid JWT is issued and stored in the client.

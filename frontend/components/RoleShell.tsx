@@ -30,11 +30,18 @@ import {
   FileText,
   Calendar,
   StickyNote,
+  Flame,
+  Coins,
+  Award,
+  Newspaper,
+  Trophy,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { apiClient } from "@/lib/api/client";
+import { useApi } from "@/lib/hooks/useApi";
 
 type Role = UserRole;
 
@@ -51,6 +58,7 @@ const primaryNav: Record<Role, NavItem[]> = {
     { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
+    { label: "Rewards", href: "/rewards", icon: Flame },
     { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
   alumni: [
@@ -59,6 +67,7 @@ const primaryNav: Record<Role, NavItem[]> = {
     { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
+    { label: "Rewards", href: "/rewards", icon: Flame },
     { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
   admin: [
@@ -66,6 +75,7 @@ const primaryNav: Record<Role, NavItem[]> = {
     { label: "Announcements", href: "/announcements", icon: Megaphone },
     { label: "Directory", href: "/directory", icon: Users },
     { label: "Analytics", href: "/admin/analytics", icon: LayoutDashboard },
+    { label: "Rewards", href: "/rewards", icon: Trophy },
     { label: "Settings", href: "/admin/settings", icon: Settings },
     { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
@@ -75,11 +85,13 @@ const primaryNav: Record<Role, NavItem[]> = {
     { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
+    { label: "Rewards", href: "/rewards", icon: Flame },
     { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
 };
 
 const secondaryNav: NavItem[] = [
+  { label: "Somaiya Sparsh", href: "/newsletter", icon: Newspaper },
   { label: "Google Docs", href: "/docs", icon: FileText },
   { label: "Google Keep", href: "/keep", icon: StickyNote },
   { label: "Gmail", href: "/communications", icon: Mail },
@@ -96,50 +108,18 @@ const roleMeta: Record<Role, { label: string; icon: typeof Users }> = {
   admin: { label: "Admin", icon: ShieldCheck },
 };
 
-const mockNotifications = [
-  { id: 1, text: "Sarah Chen accepted your mentorship request", time: "2m ago", unread: true },
-  { id: 2, text: "New event: Fall Reunion Networking Night", time: "1h ago", unread: true },
-  { id: 3, text: "David Park endorsed you for Python", time: "3h ago", unread: false },
-  { id: 4, text: "Your referral request was viewed", time: "5h ago", unread: false },
-  { id: 5, text: "Welcome to PRO ALUMN", time: "1d ago", unread: false },
-];
-
-function isActive(pathname: string, href: string) {
-  if (href === "/home") return pathname === "/home" || pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function getNavClasses(
-  isActive: boolean,
-  activeVariant: "primary" | "secondary" | "outline"
-) {
-  if (activeVariant === "primary") {
-    return isActive
-      ? "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold shadow-2xs"
-      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-100 transition-colors";
-  }
-  if (activeVariant === "secondary") {
-    return isActive
-      ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold shadow-2xs"
-      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-100 transition-colors";
-  }
-  return isActive
-    ? "border-b-2 border-blue-600 dark:border-blue-400 text-slate-900 dark:text-slate-100 font-semibold"
-    : "hover:text-slate-900 dark:hover:text-slate-100 border-b-2 border-transparent text-slate-600 dark:text-slate-400 transition-colors";
-}
-
 function NotificationPanel({
   open,
   onClose,
   triggerRef,
+  notifications,
+  onMarkAllRead,
 }: {
   open: boolean;
   onClose: () => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
+  notifications: any[];
+  onMarkAllRead: () => void;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -183,7 +163,17 @@ function NotificationPanel({
       className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
     >
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-4 py-3 bg-slate-50/50 dark:bg-slate-800/40">
-        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Notifications</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Notifications</p>
+          {notifications.some(n => !n.isRead) && (
+            <button
+              onClick={onMarkAllRead}
+              className="text-[11px] text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium"
+            >
+              Mark all read
+            </button>
+          )}
+        </div>
         <button
           type="button"
           onClick={() => {
@@ -197,19 +187,28 @@ function NotificationPanel({
         </button>
       </div>
       <ul className="max-h-80 divide-y divide-slate-100 dark:divide-slate-800/80 overflow-y-auto">
-        {mockNotifications.map((n) => (
-          <li
-            key={n.id}
-            className={`px-4 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
-              n.unread ? "bg-blue-50/40 dark:bg-blue-950/20" : ""
-            }`}
-          >
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{n.text}</p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              {n.time}
-            </p>
+        {notifications.length === 0 ? (
+          <li className="px-4 py-6 text-center text-xs text-slate-400">
+            No notifications yet
           </li>
-        ))}
+        ) : (
+          notifications.map((n) => (
+            <li
+              key={n.id}
+              className={`px-4 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
+                !n.isRead ? "bg-blue-50/40 dark:bg-blue-950/20" : ""
+              }`}
+            >
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{n.title || n.message || n.text}</p>
+              {n.message && n.title && (
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{n.message}</p>
+              )}
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                {n.createdAt ? new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently"}
+              </p>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );
@@ -316,9 +315,29 @@ export function RoleShell({
   const router = useRouter();
   const notifTriggerRef = useRef<HTMLButtonElement>(null);
   const items = primaryNav[role];
-  const unreadCount = useMemo(
-    () => mockNotifications.filter((n) => n.unread).length,
-    [],
+
+  const { data: notifData, reload: reloadNotifs } = useApi(
+    "shell:notifications",
+    () => apiClient.notifications.list(),
+    { enabled: Boolean(user) }
+  );
+
+  const notifications = notifData?.notifications || [];
+  const unreadCount = notifData?.unreadCount ?? notifications.filter((n: any) => !n.isRead).length;
+
+  const handleMarkAllRead = async () => {
+    try {
+      await apiClient.notifications.readAll();
+      reloadNotifs();
+    } catch (err) {
+      console.error("Mark read error:", err);
+    }
+  };
+
+  const { data: gamificationData } = useApi(
+    "shell:gamification",
+    () => apiClient.gamification.getStatus(),
+    { enabled: Boolean(user) }
   );
 
   useEffect(() => {
@@ -578,6 +597,25 @@ export function RoleShell({
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Gamification Streak & Points Header Indicators */}
+            <Link
+              href="/rewards"
+              className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-2.5 py-1 text-xs font-bold text-amber-600 dark:text-amber-400 hover:scale-105 hover:border-amber-500/50 transition-all shadow-xs"
+              title="Daily Active Streak — Visit rewards to view achievements"
+            >
+              <Flame size={15} className="text-orange-500 animate-pulse fill-orange-500/20" />
+              <span>{gamificationData?.streak?.current || 1}d</span>
+            </Link>
+
+            <Link
+              href="/rewards"
+              className="hidden sm:flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 px-2.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:scale-105 hover:border-blue-500/50 transition-all shadow-xs"
+              title="Alumni Contribution Points"
+            >
+              <Coins size={14} className="text-blue-500" />
+              <span>{gamificationData?.totalPoints || 50} pts</span>
+            </Link>
+
             <ThemeToggle className="shrink-0" />
             <RoleSwitcher currentRole={role} />
             
@@ -601,6 +639,8 @@ export function RoleShell({
                 open={notificationsOpen}
                 onClose={() => setNotificationsOpen(false)}
                 triggerRef={notifTriggerRef}
+                notifications={notifications}
+                onMarkAllRead={handleMarkAllRead}
               />
             </div>
 

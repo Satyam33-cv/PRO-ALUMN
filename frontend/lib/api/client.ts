@@ -22,9 +22,40 @@ export const apiClient = {
     resume: async (file: File) => {
       const fd = new FormData();
       fd.append("file", file);
-      return await apiFetch<{ url: string }>({
+      return await apiFetch<{ url: string; filename: string; message: string }>({
         method: "POST",
         url: "/uploads/resume",
+        data: fd,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+    avatar: async (file: File) => {
+      const fd = new FormData();
+      fd.append("file", file);
+      return await apiFetch<{ url: string; user: User; message: string }>({
+        method: "POST",
+        url: "/uploads/avatar",
+        data: fd,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+    certificate: async (file: File) => {
+      const fd = new FormData();
+      fd.append("file", file);
+      return await apiFetch<{ url: string; filename: string; message: string }>({
+        method: "POST",
+        url: "/uploads/certificate",
+        data: fd,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+    media: async (file: File, bucket = "stories") => {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("bucket", bucket);
+      return await apiFetch<{ url: string; bucket: string; filename: string }>({
+        method: "POST",
+        url: "/uploads/media",
         data: fd,
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -56,6 +87,16 @@ export const apiClient = {
     get: async (id: string): Promise<Job> => {
       return await apiFetch<Job>({ method: "GET", url: `/jobs/${id}` });
     },
+    myPostings: async (): Promise<{ jobs: any[] }> => {
+      return await apiFetch<{ jobs: any[] }>({ method: "GET", url: "/jobs/my-postings" });
+    },
+    updateApplicantStatus: async (jobId: string, requestId: string, status: string, alumniNote?: string): Promise<any> => {
+      return await apiFetch<any>({
+        method: "PATCH",
+        url: `/jobs/${jobId}/applicants/${requestId}/status`,
+        data: { status, alumniNote },
+      });
+    },
   },
   events: {
     list: async (): Promise<EventItem[]> => {
@@ -83,8 +124,65 @@ export const apiClient = {
     },
   },
   admin: {
-    stats: async (): Promise<unknown> => {
-      return await apiFetch<unknown>({ method: "GET", url: "/admin/stats" });
+    stats: async (): Promise<any> => {
+      return await apiFetch<any>({ method: "GET", url: "/admin/stats" });
+    },
+    systemHealth: async (): Promise<any> => {
+      return await apiFetch<any>({ method: "GET", url: "/admin/system-health" });
+    },
+    users: async (params?: Record<string, string>): Promise<{ users: any[]; pagination: any }> => {
+      return await apiFetch<{ users: any[]; pagination: any }>({ method: "GET", url: "/admin/users", params });
+    },
+    updateUserVerify: async (id: string, verified: boolean): Promise<any> => {
+      return await apiFetch<any>({ method: "PATCH", url: `/admin/users/${id}/verify`, data: { verified } });
+    },
+    updateUserRole: async (id: string, role: string): Promise<any> => {
+      return await apiFetch<any>({ method: "PATCH", url: `/admin/users/${id}/role`, data: { role } });
+    },
+    updateUserStatus: async (id: string, isActive: boolean): Promise<any> => {
+      return await apiFetch<any>({ method: "PATCH", url: `/admin/users/${id}/status`, data: { isActive } });
+    },
+    deleteUser: async (id: string): Promise<any> => {
+      return await apiFetch<any>({ method: "DELETE", url: `/admin/users/${id}` });
+    },
+    stories: async (status?: string): Promise<{ stories: any[] }> => {
+      const params = status ? { status } : undefined;
+      return await apiFetch<{ stories: any[] }>({ method: "GET", url: "/admin/stories", params });
+    },
+    updateStoryStatus: async (id: string, data: { isApproved?: boolean; isFeatured?: boolean }): Promise<any> => {
+      return await apiFetch<any>({ method: "PATCH", url: `/admin/stories/${id}/status`, data });
+    },
+    jobs: async (status?: string): Promise<{ jobs: any[] }> => {
+      const params = status ? { status } : undefined;
+      return await apiFetch<{ jobs: any[] }>({ method: "GET", url: "/admin/jobs", params });
+    },
+    updateJobStatus: async (id: string, status: string): Promise<any> => {
+      return await apiFetch<any>({ method: "PATCH", url: `/admin/jobs/${id}/status`, data: { status } });
+    },
+    deleteJob: async (id: string): Promise<any> => {
+      return await apiFetch<any>({ method: "DELETE", url: `/admin/jobs/${id}` });
+    },
+    broadcast: async (data: { title: string; content: string; targetRole?: string; priority?: string; isPinned?: boolean }): Promise<any> => {
+      return await apiFetch<any>({ method: "POST", url: "/admin/broadcast", data });
+    },
+    staleProfiles: async (): Promise<{ count: number; users: any[] }> => {
+      return await apiFetch<{ count: number; users: any[] }>({ method: "GET", url: "/admin/stale-profiles" });
+    },
+    nudgeUser: async (id: string): Promise<any> => {
+      return await apiFetch<any>({ method: "POST", url: `/admin/nudge-user/${id}` });
+    },
+    importCsv: async (formData: FormData): Promise<any> => {
+      const token = typeof window !== "undefined" ? localStorage.getItem("pro_alumn_token") : null;
+      const res = await fetch(`${API_BASE_URL}/admin/import-csv`, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "Failed to import CSV" }));
+        throw new Error(errorData.error || "Failed to import CSV");
+      }
+      return await res.json();
     },
   },
   stories: {
@@ -150,6 +248,45 @@ export const apiClient = {
     },
     createThread: async (targetUserId: string): Promise<{ thread: unknown }> => {
       return await apiFetch<{ thread: unknown }>({ method: "POST", url: "/chat", data: { targetUserId } });
+    },
+  },
+  gamification: {
+    getStatus: async () => {
+      return await apiFetch<import("./types").GamificationStatus>({ method: "GET", url: "/gamification/status" });
+    },
+    getLeaderboard: async (role?: string) => {
+      const params: Record<string, string> = {};
+      if (role && role !== "all") params.role = role;
+      return await apiFetch<{ leaderboard: import("./types").LeaderboardEntry[] }>({
+        method: "GET",
+        url: "/gamification/leaderboard",
+        params: Object.keys(params).length ? params : undefined,
+      });
+    },
+    getBadges: async () => {
+      return await apiFetch<{ badges: import("./types").Badge[] }>({ method: "GET", url: "/gamification/badges" });
+    },
+    verifyJob: async () => {
+      return await apiFetch<{ message: string; totalPoints: number }>({ method: "POST", url: "/gamification/verify-job" });
+    },
+    claimAction: async (actionType: string) => {
+      return await apiFetch<{ message: string; totalPoints: number; pointsEarned: number }>({
+        method: "POST",
+        url: "/gamification/claim-action",
+        data: { actionType },
+      });
+    },
+  },
+  newsletters: {
+    list: async (year?: string, search?: string) => {
+      const params: Record<string, string> = {};
+      if (year && year !== "all") params.year = year;
+      if (search) params.search = search;
+      return await apiFetch<{ newsletters: import("./types").Newsletter[]; years: number[] }>({
+        method: "GET",
+        url: "/newsletters",
+        params: Object.keys(params).length ? params : undefined,
+      });
     },
   },
 };

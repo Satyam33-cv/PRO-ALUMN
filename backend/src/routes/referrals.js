@@ -247,6 +247,15 @@ router.patch('/:id/status', authenticate, async (req, res) => {
       });
     }
 
+    // Gamification points
+    const { awardPoints } = require('../services/gamification');
+    if (status === 'REFERRED') {
+      await awardPoints(referral.referredById, 'REFERRAL_GIVEN', 50).catch(() => {});
+    } else if (status === 'HIRED') {
+      await awardPoints(referral.referredById, 'CANDIDATE_HIRED', 100).catch(() => {});
+      await awardPoints(referral.requestedById, 'HIRED_VIA_REFERRAL', 100).catch(() => {});
+    }
+
     res.json({ referral: updated });
   } catch (err) {
     console.error('PATCH /referrals/:id/status error:', err);

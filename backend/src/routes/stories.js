@@ -8,29 +8,40 @@ const { notify } = require('../services/notify');
 const email = require('../services/email');
 
 // =================== POST /api/stories ===================
-// Alumni (or admin) submits a success story -> isApproved = false
-router.post('/', authenticate, requireRole('ALUMNI', 'ADMIN'), async (req, res) => {
+// Students, Alumni, Faculty, Admin can share achievements & stories
+router.post('/', authenticate, async (req, res) => {
   try {
     const { title, story, company, role, batchYear, imageUrl } = req.body;
 
-    if (!title || !story || !company || !role) {
-      return res.status(400).json({ error: 'title, story, company, role are required' });
+    if (!title || !story) {
+      return res.status(400).json({ error: 'title and story content are required' });
     }
 
     const created = await prisma.successStory.create({
       data: {
         alumniId: req.user.id,
-        title, story, company, role,
-        batchYear: batchYear ? parseInt(batchYear) : null,
+        title,
+        story,
+        company: company || 'Somaiya Vidyavihar',
+        role: role || (req.user.role === 'STUDENT' ? 'Student' : req.user.role === 'FACULTY' ? 'Faculty Member' : 'Alumni'),
+        batchYear: batchYear ? parseInt(batchYear) : (req.user.batchYear || new Date().getFullYear()),
         imageUrl,
-        isApproved: false,
+        isApproved: true, // Instantly available in the live achievement feed
+      },
+      include: {
+        alumni: {
+          select: { id: true, name: true, role: true, avatarUrl: true, department: true, currentCompany: true },
+        },
       },
     });
 
-    res.status(201).json({ story: created });
+    const { awardPoints } = require('../services/gamification');
+    await awardPoints(req.user.id, 'SHARED_ACHIEVEMENT', 40).catch(() => {});
+
+    res.status(201).json({ story: created, message: 'Achievement shared to feed successfully!' });
   } catch (err) {
     console.error('POST /stories error:', err);
-    res.status(500).json({ error: 'Failed to submit story' });
+    res.status(500).json({ error: 'Failed to submit achievement story' });
   }
 });
 

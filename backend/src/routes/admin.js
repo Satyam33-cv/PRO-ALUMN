@@ -1,5 +1,5 @@
 // apps/api/src/routes/admin.js
-// Admin-only: analytics, alumni verification, CSV import
+// Super Admin Command Center: System Telemetry, User Governance, Content Moderation, Broadcasts, Bulk Data Tools
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -15,7 +15,7 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 *
 
 const csvImportLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many import requests, please try again later' },
@@ -24,8 +24,65 @@ const csvImportLimiter = rateLimit({
 // Apply admin guard to all routes below
 router.use(authenticate, requireRole('ADMIN'));
 
+// =================== GET /api/admin/system-health ===================
+// Live database connectivity, latency, memory, uptime, table counts
+router.get('/system-health', async (req, res) => {
+  const startTime = Date.now();
+  try {
+    // Ping DB
+    await prisma.$queryRaw`SELECT 1`;
+    const latency = Date.now() - startTime;
+
+    const [userCount, jobCount, storyCount, referralCount, mentorshipCount, eventCount, newsletterCount, logCount] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.jobPosting.count(),
+        prisma.successStory.count(),
+        prisma.referralRequest.count(),
+        prisma.mentorshipRequest.count(),
+        prisma.event.count(),
+        prisma.newsletter.count().catch(() => 0),
+        prisma.activityLog.count().catch(() => 0),
+      ]);
+
+    const memory = process.memoryUsage();
+
+    res.json({
+      status: 'HEALTHY',
+      database: 'CONNECTED',
+      latencyMs: latency,
+      uptimeSeconds: Math.floor(process.uptime()),
+      nodeVersion: process.version,
+      memory: {
+        rssMb: Math.round(memory.rss / (1024 * 1024)),
+        heapUsedMb: Math.round(memory.heapUsed / (1024 * 1024)),
+        heapTotalMb: Math.round(memory.heapTotal / (1024 * 1024)),
+      },
+      tableCounts: {
+        users: userCount,
+        jobs: jobCount,
+        stories: storyCount,
+        referrals: referralCount,
+        mentorships: mentorshipCount,
+        events: eventCount,
+        newsletters: newsletterCount,
+        activityLogs: logCount,
+      },
+    });
+  } catch (err) {
+    console.error('System health check error:', err);
+    res.status(500).json({
+      status: 'DEGRADED',
+      database: 'DISCONNECTED',
+      error: err.message,
+      latencyMs: Date.now() - startTime,
+      uptimeSeconds: Math.floor(process.uptime()),
+    });
+  }
+});
+
 // =================== GET /api/admin/stats ===================
-// Platform analytics
+// Platform analytics & KPIs
 router.get('/stats', async (req, res) => {
   try {
     const [users, byRole, jobs, openJobs, referrals, referralsByStatus, storiesApproved, storiesPending, events, upcomingEvents, announcements] =
@@ -45,11 +102,11 @@ router.get('/stats', async (req, res) => {
 
     const [recentUsers, recentReferrals] = await Promise.all([
       prisma.user.findMany({
-        orderBy: { createdAt: 'desc' }, take: 5,
-        select: { id: true, name: true, email: true, role: true, isVerified: true, createdAt: true },
+        orderBy: { createdAt: 'desc' }, take: 6,
+        select: { id: true, name: true, email: true, role: true, isVerified: true, createdAt: true, currentCompany: true, jobTitle: true },
       }),
       prisma.referralRequest.findMany({
-        orderBy: { createdAt: 'desc' }, take: 5,
+        orderBy: { createdAt: 'desc' }, take: 6,
         select: {
           id: true, status: true, createdAt: true,
           job: { select: { title: true, company: true } },
@@ -79,19 +136,22 @@ router.get('/stats', async (req, res) => {
 });
 
 // =================== GET /api/admin/users ===================
-// List all users for verification (paginated, filterable)
+// List all users with filtering, searching, role toggle & status
 router.get('/users', async (req, res) => {
   try {
-    const { role, verified, search, page = 1, limit = 25 } = req.query;
+    const { role, verified, active, search, page = 1, limit = 25 } = req.query;
     const where = {};
-    if (role && role !== 'ALL') where.role = role;
+    if (role && role !== 'ALL') where.role = role.toUpperCase();
     if (verified === 'true') where.isVerified = true;
     if (verified === 'false') where.isVerified = false;
+    if (active === 'true') where.isActive = true;
+    if (active === 'false') where.isActive = false;
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
         { email: { contains: search, mode: 'insensitive' } },
         { currentCompany: { contains: search, mode: 'insensitive' } },
+        { department: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -105,6 +165,7 @@ router.get('/users', async (req, res) => {
         select: {
           id: true, name: true, email: true, role: true, isVerified: true, isActive: true,
           batchYear: true, department: true, currentCompany: true, jobTitle: true,
+          totalPoints: true, currentStreak: true, lastActiveDate: true, profileCompleteness: true,
           createdAt: true,
         },
       }),
@@ -124,9 +185,6 @@ router.patch('/users/:id/verify', async (req, res) => {
     const { verified } = req.body;
     if (typeof verified !== 'boolean') return res.status(400).json({ error: 'verified must be a boolean' });
 
-    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
     const updated = await prisma.user.update({
       where: { id: req.params.id },
       data: { isVerified: verified },
@@ -140,8 +198,301 @@ router.patch('/users/:id/verify', async (req, res) => {
   }
 });
 
+// =================== PATCH /api/admin/users/:id/role ===================
+// Super Admin: Update User Role (ADMIN, ALUMNI, STUDENT, FACULTY)
+router.patch('/users/:id/role', async (req, res) => {
+  try {
+    const { role } = req.body;
+    const validRoles = ['STUDENT', 'ALUMNI', 'FACULTY', 'ADMIN'];
+    if (!role || !validRoles.includes(role.toUpperCase())) {
+      return res.status(400).json({ error: `Invalid role. Must be one of: ${validRoles.join(', ')}` });
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: req.params.id },
+      data: { role: role.toUpperCase() },
+      select: { id: true, name: true, email: true, role: true },
+    });
+
+    res.json({ user: updated, message: `Role updated to ${updated.role}` });
+  } catch (err) {
+    console.error('PATCH /admin/users/:id/role error:', err);
+    res.status(500).json({ error: 'Failed to update user role' });
+  }
+});
+
+// =================== PATCH /api/admin/users/:id/status ===================
+// Super Admin: Suspend or Activate user account
+router.patch('/users/:id/status', async (req, res) => {
+  try {
+    const { isActive } = req.body;
+    if (typeof isActive !== 'boolean') return res.status(400).json({ error: 'isActive must be a boolean' });
+
+    const updated = await prisma.user.update({
+      where: { id: req.params.id },
+      data: { isActive },
+      select: { id: true, name: true, email: true, isActive: true },
+    });
+
+    res.json({ user: updated, message: `Account ${isActive ? 'activated' : 'suspended'}` });
+  } catch (err) {
+    console.error('PATCH /admin/users/:id/status error:', err);
+    res.status(500).json({ error: 'Failed to update account status' });
+  }
+});
+
+// =================== DELETE /api/admin/users/:id ===================
+// Super Admin: Delete user account
+router.delete('/users/:id', async (req, res) => {
+  try {
+    if (req.params.id === req.user.id) {
+      return res.status(400).json({ error: 'Cannot delete your own super admin account' });
+    }
+
+    await prisma.user.delete({ where: { id: req.params.id } });
+    res.json({ message: 'User account deleted successfully' });
+  } catch (err) {
+    console.error('DELETE /admin/users/:id error:', err);
+    res.status(500).json({ error: 'Failed to delete user account' });
+  }
+});
+
+// =================== GET /api/admin/stories ===================
+// Story moderation queue
+router.get('/stories', async (req, res) => {
+  try {
+    const { status } = req.query;
+    const where = {};
+    if (status === 'pending') where.isApproved = false;
+    if (status === 'approved') where.isApproved = true;
+
+    const stories = await prisma.successStory.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        alumni: {
+          select: { id: true, name: true, email: true, currentCompany: true, jobTitle: true, batchYear: true },
+        },
+      },
+    });
+
+    res.json({ stories });
+  } catch (err) {
+    console.error('GET /admin/stories error:', err);
+    res.status(500).json({ error: 'Failed to fetch stories' });
+  }
+});
+
+// =================== PATCH /api/admin/stories/:id/status ===================
+router.patch('/stories/:id/status', async (req, res) => {
+  try {
+    const { isApproved, isFeatured } = req.body;
+    const data = {};
+    if (typeof isApproved === 'boolean') data.isApproved = isApproved;
+    if (typeof isFeatured === 'boolean') data.isFeatured = isFeatured;
+
+    const updated = await prisma.successStory.update({
+      where: { id: req.params.id },
+      data,
+    });
+
+    res.json({ story: updated, message: 'Story status updated' });
+  } catch (err) {
+    console.error('PATCH /admin/stories/:id/status error:', err);
+    res.status(500).json({ error: 'Failed to update story status' });
+  }
+});
+
+// =================== GET /api/admin/jobs ===================
+// Job board moderation
+router.get('/jobs', async (req, res) => {
+  try {
+    const { status } = req.query;
+    const where = {};
+    if (status) where.status = status.toUpperCase();
+
+    const jobs = await prisma.jobPosting.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        postedBy: { select: { id: true, name: true, email: true, currentCompany: true } },
+        _count: { select: { applications: true, referralRequests: true } },
+      },
+    });
+
+    res.json({ jobs });
+  } catch (err) {
+    console.error('GET /admin/jobs error:', err);
+    res.status(500).json({ error: 'Failed to fetch jobs' });
+  }
+});
+
+// =================== PATCH /api/admin/jobs/:id/status ===================
+router.patch('/jobs/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const updated = await prisma.jobPosting.update({
+      where: { id: req.params.id },
+      data: { status: status.toUpperCase() },
+    });
+    res.json({ job: updated });
+  } catch (err) {
+    console.error('PATCH /admin/jobs/:id/status error:', err);
+    res.status(500).json({ error: 'Failed to update job status' });
+  }
+});
+
+// =================== DELETE /api/admin/jobs/:id ===================
+router.delete('/jobs/:id', async (req, res) => {
+  try {
+    await prisma.jobPosting.delete({ where: { id: req.params.id } });
+    res.json({ message: 'Job posting deleted' });
+  } catch (err) {
+    console.error('DELETE /admin/jobs/:id error:', err);
+    res.status(500).json({ error: 'Failed to delete job' });
+  }
+});
+
+// =================== POST /api/admin/broadcast ===================
+// Super Admin Broadcasts / Announcements with priority
+router.post('/broadcast', async (req, res) => {
+  try {
+    const { title, content, targetRole = 'ALL', priority = 'NORMAL', isPinned = false } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content are required' });
+    }
+
+    const announcement = await prisma.announcement.create({
+      data: {
+        title,
+        content,
+        authorId: req.user.id,
+        isPinned: Boolean(isPinned),
+        targetRole: targetRole.toUpperCase(),
+        priority: priority.toUpperCase(),
+      },
+    });
+
+    // Notify users
+    const where = {};
+    if (targetRole !== 'ALL') where.role = targetRole.toUpperCase();
+    const usersToNotify = await prisma.user.findMany({ where, select: { id: true } });
+
+    if (usersToNotify.length > 0) {
+      await prisma.notification.createMany({
+        data: usersToNotify.map((u) => ({
+          userId: u.id,
+          type: 'ANNOUNCEMENT_NEW',
+          title: `Announcement: ${title}`,
+          message: content.slice(0, 100) + (content.length > 100 ? '...' : ''),
+          link: '/announcements',
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    res.status(201).json({ announcement, notifiedCount: usersToNotify.length });
+  } catch (err) {
+    console.error('POST /admin/broadcast error:', err);
+    res.status(500).json({ error: 'Failed to dispatch broadcast' });
+  }
+});
+
+// =================== GET /api/admin/stale-profiles ===================
+// Intelligent Network Health: Outdated profiles
+router.get('/stale-profiles', async (req, res) => {
+  try {
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const staleUsers = await prisma.user.findMany({
+      where: {
+        role: 'ALUMNI',
+        OR: [
+          { lastJobUpdate: { lt: sixMonthsAgo } },
+          { lastJobUpdate: null },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        currentCompany: true,
+        jobTitle: true,
+        lastJobUpdate: true,
+        lastActiveDate: true,
+        profileCompleteness: true,
+      },
+      take: 50,
+      orderBy: { lastJobUpdate: 'asc' },
+    });
+
+    res.json({ count: staleUsers.length, users: staleUsers });
+  } catch (err) {
+    console.error('GET /admin/stale-profiles error:', err);
+    res.status(500).json({ error: 'Failed to fetch stale profiles' });
+  }
+});
+
+// =================== POST /api/admin/nudge-user/:id ===================
+router.post('/nudge-user/:id', async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    await prisma.notification.create({
+      data: {
+        userId: user.id,
+        type: 'PROFILE_UPDATE_REMINDER',
+        title: 'Career Profile Check-in',
+        message: 'Your alumni network wants to stay connected. Please confirm your current role or update your career details to earn +30 points!',
+        link: '/profile',
+      },
+    });
+
+    res.json({ message: `Re-engagement reminder sent to ${user.name}` });
+  } catch (err) {
+    console.error('POST /admin/nudge-user error:', err);
+    res.status(500).json({ error: 'Failed to send reminder' });
+  }
+});
+
+// =================== GET /api/admin/export/:type ===================
+// Export platform data as CSV
+router.get('/export/:type', async (req, res) => {
+  try {
+    const { type } = req.params;
+    let data = [];
+    let headers = [];
+
+    if (type === 'users') {
+      const users = await prisma.user.findMany({
+        select: { id: true, name: true, email: true, role: true, isVerified: true, department: true, batchYear: true, currentCompany: true, jobTitle: true, totalPoints: true, createdAt: true },
+      });
+      headers = ['ID', 'Name', 'Email', 'Role', 'Verified', 'Department', 'Batch Year', 'Company', 'Job Title', 'Points', 'Joined Date'];
+      data = users.map(u => [u.id, u.name, u.email, u.role, u.isVerified, u.department || '', u.batchYear || '', u.currentCompany || '', u.jobTitle || '', u.totalPoints || 0, u.createdAt.toISOString()]);
+    } else if (type === 'jobs') {
+      const jobs = await prisma.jobPosting.findMany({
+        include: { postedBy: { select: { name: true, email: true } } },
+      });
+      headers = ['ID', 'Title', 'Company', 'Location', 'Type', 'Status', 'Posted By', 'Posted Date'];
+      data = jobs.map(j => [j.id, j.title, j.company, j.location, j.type, j.status, j.postedBy?.name || '', j.createdAt.toISOString()]);
+    } else {
+      return res.status(400).json({ error: 'Invalid export type. Supported: users, jobs' });
+    }
+
+    const csvContent = [headers.join(','), ...data.map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))].join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename=pro-alumn-${type}-${Date.now()}.csv`);
+    res.send(csvContent);
+  } catch (err) {
+    console.error('GET /admin/export error:', err);
+    res.status(500).json({ error: 'Failed to export data' });
+  }
+});
+
 // =================== POST /api/admin/import-csv ===================
-// Bulk import alumni from CSV (multipart 'file' field)
+// Bulk import alumni from CSV
 router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded (field name: file)' });
@@ -171,7 +522,6 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
       const existing = await prisma.user.findUnique({ where: { email: emailAddress } });
       if (existing) { skipped.push({ row: index, email: emailAddress, reason: 'email already registered' }); continue; }
 
-      // Unique per-user credential — no shared temp password
       const tempPassword = crypto.randomBytes(12).toString('base64url');
       const passwordHash = await bcrypt.hash(tempPassword, 10);
 
@@ -196,10 +546,9 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
       importedForEmail.push({ name: String(name).trim(), email: emailAddress, tempPassword });
     }
 
-    // Send welcome emails with each user's unique temporary credential
     if (importedForEmail.length > 0) {
       console.log(`📧 Sending ${importedForEmail.length} welcome email(s)`);
-      await Promise.all(importedForEmail.map((u) => email.sendWelcomeEmail({ to: u.email, name: u.name, tempPassword: u.tempPassword })));
+      await Promise.all(importedForEmail.map((u) => email.sendWelcomeEmail({ to: u.email, name: u.name, tempPassword: u.tempPassword })).catch(() => {}));
     }
 
     res.status(201).json({

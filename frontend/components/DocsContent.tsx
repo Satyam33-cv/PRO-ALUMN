@@ -533,15 +533,25 @@ export function DocsContent() {
                       Doc ID: {activeDoc.documentId}
                     </p>
                   </div>
-                  <a
-                    href={`https://docs.google.com/document/d/${activeDoc.documentId}/edit`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-semibold transition-colors"
-                  >
-                    <ExternalLink size={13} />
-                    Open in Docs
-                  </a>
+                  <div className="flex items-center gap-2">
+                    {(user?.role === "alumni" || user?.role === "admin") && (
+                      <a
+                        href={`/jobs?create=true&title=${encodeURIComponent(activeDoc.title)}`}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-semibold transition-colors"
+                      >
+                        + Post as Job
+                      </a>
+                    )}
+                    <a
+                      href={`https://docs.google.com/document/d/${activeDoc.documentId}/edit`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-semibold transition-colors"
+                    >
+                      <ExternalLink size={13} />
+                      Open in Docs
+                    </a>
+                  </div>
                 </div>
 
                 {/* Document Body */}

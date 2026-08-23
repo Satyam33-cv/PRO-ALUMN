@@ -94,6 +94,14 @@ router.patch('/:id/status', authenticate, async (req, res) => {
       data: { status },
     });
 
+    const { awardPoints } = require('../services/gamification');
+    if (status === 'ACCEPTED') {
+      await awardPoints(mentorship.mentorId, 'MENTORSHIP_ACCEPTED', 40).catch(() => {});
+    } else if (status === 'COMPLETED') {
+      await awardPoints(mentorship.mentorId, 'MENTORSHIP_COMPLETED', 50).catch(() => {});
+      await awardPoints(mentorship.studentId, 'MENTORSHIP_FINISHED', 30).catch(() => {});
+    }
+
     res.json({ mentorship: updated });
   } catch (err) {
     console.error('PATCH /mentorship/:id/status error:', err);

@@ -1,0 +1,84 @@
+# Full-Stack Deployment Guide (Vercel & Render)
+
+To put PRO ALUMN on the internet, we need to deploy three separate pieces: the **Database**, the **Backend API**, and the **Next.js Frontend**. 
+
+Because our backend uses WebSockets (Socket.io) for real-time chat, we cannot deploy the backend to Vercel (Vercel is serverless and closes connections after a few seconds). Instead, we use Vercel for the frontend and Render/Railway for the backend.
+
+Here is the step-by-step deployment playbook:
+
+---
+
+## Step 1: Host the PostgreSQL Database (Supabase)
+
+You need a live database that your backend can connect to.
+
+1. Go to [Supabase](https://supabase.com/) and create a free account.
+2. Create a new Project (name it `alumnia-db`).
+3. Create a strong database password and copy it.
+4. Once the project is provisioned, go to **Project Settings > Database** and copy the **Connection String (URI)**.
+5. It will look like this:
+   `postgresql://postgres:[YOUR-PASSWORD]@db.xxxx.supabase.co:5432/postgres?schema=public`
+
+---
+
+## Step 2: Deploy the Backend API (Koyeb or Fly.io)
+
+Since the backend uses WebSockets (Socket.io) for real-time chat, we cannot use Vercel. While Render is an option, **its free tier puts your app to sleep after 15 minutes of inactivity.**
+
+To keep your backend awake 24/7 for free, we recommend **Koyeb** or **Fly.io**.
+
+### Option A: Koyeb (Easiest Always-On Free Tier)
+Koyeb provides one free "Nano" instance that runs 24/7 and never goes to sleep.
+
+1. Create a free account on [Koyeb](https://www.koyeb.com/).
+2. Click **Create Service** and connect your GitHub account.
+3. Select your `SIH-Alumnia` repository.
+4. Configure the service:
+   - **Builder**: Buildpack
+   - **Work directory**: `apps/api`
+   - **Run command**: `npm install && npm run prisma:generate && npm start`
+5. Add the following **Environment Variables**:
+   - `DATABASE_URL`: *(Paste your Supabase connection string from Step 1)*
+   - `JWT_SECRET`: *(Generate a random string)*
+   - `PORT`: `4000`
+   - `FRONTEND_URL`: `https://your-vercel-app-url.vercel.app`
+6. Choose the **Free** instance type (Eco) and click **Deploy**. Copy the provided URL.
+
+### Option B: Fly.io (Best for Docker/Scale)
+Fly.io gives you up to 3 always-on machines for free, but requires using their CLI.
+
+1. Install the [Fly CLI](https://fly.io/docs/flyctl/install/).
+2. Open your terminal in the `apps/api` folder and run `fly auth login`.
+3. Run `fly launch` to initialize the project (don't deploy yet).
+4. Add your secrets: `fly secrets set DATABASE_URL="your-supabase-url" JWT_SECRET="your-secret" PORT="4000" FRONTEND_URL="https://your-vercel-app-url.vercel.app"`
+5. Deploy using `fly deploy`.
+
+---
+
+## Step 3: Deploy the Frontend (Vercel)
+
+Now we deploy the Next.js user interface.
+
+1. Go to [Vercel](https://vercel.com/) and create a free account.
+2. Click **Add New > Project**.
+3. Import your `SIH-Alumnia` repository from GitHub.
+4. Configure the Project:
+   - **Framework Preset**: Next.js
+   - **Root Directory**: `./` *(Leave as root)*
+5. Add the following **Environment Variables**:
+   - `NEXT_PUBLIC_API_URL`: *(Paste your Render backend URL, e.g., `https://alumnia-api.onrender.com/api`)*
+   - `NEXT_PUBLIC_WS_URL`: *(Paste your Render backend URL without the path, e.g., `https://alumnia-api.onrender.com`)*
+   - *(Include any Firebase or Google OAuth keys you have in your local `.env.local`)*
+6. Click **Deploy**. Vercel will build your Next.js app and give you a live URL.
+
+---
+
+## Step 4: Final Hookups
+
+1. **Update CORS on Backend**: Go back to your Render dashboard, edit the `FRONTEND_URL` environment variable to match your new Vercel URL, and manually redeploy the backend so it allows traffic from your frontend.
+2. **Seed the Database**: Since your Supabase database is empty, you need to run the seed script. Connect to it locally or run `npx prisma db push` and `node src/seed.js` locally using the Supabase `DATABASE_URL`.
+3. **Google OAuth**: Go to your Google Cloud Console and add your new Vercel URL to the "Authorized JavaScript origins" and "Authorized redirect URIs".
+
+> [!TIP]
+> **Need help with any of these steps?**
+> Let me know if you want me to write out a script to seed your remote database, or if you run into any build errors on Vercel or Render!

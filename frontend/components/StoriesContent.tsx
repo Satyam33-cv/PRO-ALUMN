@@ -1,341 +1,440 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Loader2, Heart, Star, MessageSquare, ExternalLink, ChevronDown } from "lucide-react";
+import {
+  X,
+  Send,
+  Loader2,
+  Heart,
+  Star,
+  ExternalLink,
+  Sparkles,
+  Upload,
+  Image as ImageIcon,
+  Building,
+  GraduationCap,
+  Award,
+  CheckCircle2,
+  Share2,
+} from "lucide-react";
 import { Card, Badge } from "@/components/ui";
-import type { Story } from "@/lib/types";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
+import { useAuth } from "@/lib/context/AuthContext";
 import { fadeIn, slideUp, staggerContainer } from "@/lib/motion";
 
-type Filter = "published" | "all";
-
-// Mock data removed in favor of real API
+type CategoryFilter = "all" | "achievements" | "career" | "featured";
 
 export function StoriesContent() {
-  const [filter, setFilter] = useState<Filter>("published");
+  const { user } = useAuth();
+  const [filter, setFilter] = useState<CategoryFilter>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
+  const [company, setCompany] = useState("");
+  const [role, setRole] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: apiStories, mutate: mutateStories } = useApi("stories:list", () => apiClient.stories.list());
   const allStories = (apiStories || []) as any[];
 
-  const filtered =
-    filter === "published"
-      ? allStories.filter((s) => s.status === "published" || s.isApproved)
-      : allStories;
+  const filtered = allStories.filter((s) => {
+    if (filter === "featured") return s.isFeatured;
+    if (filter === "achievements") return s.title?.toLowerCase().includes("placed") || s.title?.toLowerCase().includes("win") || s.title?.toLowerCase().includes("hackathon") || s.title?.toLowerCase().includes("journey");
+    return true;
+  });
 
   const showToast = (msg: string) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 2500);
+    setTimeout(() => setToast(null), 3000);
   };
 
-  const handleSubmit = () => {
+  const handleImageUpload = async (file: File) => {
+    try {
+      setUploadingImage(true);
+      const res = await apiClient.uploads.media(file, "stories");
+      setImageUrl(res.url);
+      showToast("Achievement image uploaded to Supabase!");
+    } catch (err: any) {
+      showToast(err.message || "Failed to upload image");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleSubmit = async () => {
     if (!title.trim() || !story.trim()) return;
     setSubmitting(true);
-    apiClient.stories.create({ title, story, company: "PRO ALUMN", role: "Alumni" })
-      .then(() => {
-        setSubmitting(false);
-        setModalOpen(false);
-        setTitle("");
-        setStory("");
-        showToast("Story submitted for review!");
-        mutateStories([...allStories, { title, story, status: "pending", isApproved: false }]);
-      })
-      .catch((err) => {
-        setSubmitting(false);
-        showToast("Error submitting story.");
-        console.error(err);
+    try {
+      await apiClient.stories.create({
+        title,
+        story,
+        company: company || "Somaiya Vidyavihar",
+        role: role || (user?.role === "student" ? "Student" : user?.role === "faculty" ? "Faculty" : "Alumni"),
+        imageUrl: imageUrl || undefined,
       });
+
+      setSubmitting(false);
+      setModalOpen(false);
+      setTitle("");
+      setStory("");
+      setCompany("");
+      setRole("");
+      setImageUrl("");
+      showToast("Achievement story shared to community feed!");
+      mutateStories();
+    } catch (err: any) {
+      setSubmitting(false);
+      showToast(err.message || "Error submitting story");
+    }
   };
 
   const handleUpvote = async (storyId: string) => {
     // Optimistic UI
-    mutateStories(allStories.map(s => {
-      if (s.id !== storyId) return s;
-      const isUpvoting = !s.hasVoted;
-      return {
-        ...s,
-        hasVoted: isUpvoting,
-        upvoteCount: (s.upvoteCount || 0) + (isUpvoting ? 1 : -1)
-      };
-    }), false);
+    mutateStories(
+      allStories.map((s) => {
+        if (s.id !== storyId) return s;
+        const isUpvoting = !s.hasVoted;
+        return {
+          ...s,
+          hasVoted: isUpvoting,
+          upvoteCount: (s.upvoteCount || 0) + (isUpvoting ? 1 : -1),
+        };
+      }),
+      false
+    );
 
     try {
       const res = await apiClient.stories.vote(storyId);
-      if (res.hasVoted) showToast("Upvoted!");
-      else showToast("Vote removed");
-      // Background revalidate to ensure accuracy
+      if (res.hasVoted) showToast("Upvoted! ⭐");
       mutateStories();
     } catch (err) {
-      console.error(err);
-      mutateStories(); // Revert on failure
+      mutateStories();
       showToast("Failed to vote");
     }
   };
-
-  const handleCelebrate = (storyId: string) => {
-    showToast("Celebrated! 🎉");
-  };
-
-  const upvoteCount = (story: any) => story.upvoteCount || 0;
-  const celebrateCount = (story: any) => 0; // Mocked for now
-  const isUpvoted = (story: any) => Boolean(story.hasVoted);
-  const isCelebrated = (story: any) => false;
 
   return (
     <motion.div
       variants={staggerContainer}
       initial="initial"
       animate="animate"
-      className="space-y-12"
+      className="space-y-10"
     >
       <motion.div variants={fadeIn}>
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-sage">
-          Stories
-        </p>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 font-bold">
+            COMMUNITY SPOTLIGHT
+          </span>
+          <span className="text-slate-400">·</span>
+          <span className="text-xs text-slate-500 font-mono">SUPABASE LIVE FEED</span>
+        </div>
+
         <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-          <h1 className="font-display text-5xl tracking-tight">
-            Spotlight Wall
-          </h1>
+          <div>
+            <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              Student & Alumni Achievements
+            </h1>
+            <p className="mt-2 max-w-xl text-sm text-slate-600 dark:text-slate-400">
+              Celebrate career milestones, placement wins, hackathon victories, and inspirational alumni stories.
+            </p>
+          </div>
           <button
             onClick={() => setModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-brass px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brass-600"
+            className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 hover:bg-blue-700 px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-600/20 transition-all hover:scale-105 cursor-pointer"
           >
-            Share your story
+            <Sparkles size={16} />
+            + Share Achievement / Story
           </button>
         </div>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-ink/55">
-          Alumni success stories and referral outcomes
-        </p>
       </motion.div>
 
+      {/* Filter Tabs */}
       <motion.div variants={slideUp} className="flex gap-2">
-        {(["published", "all"] as Filter[]).map((tab) => (
+        {[
+          { id: "all", label: "All Stories & Feeds" },
+          { id: "featured", label: "⭐ Featured Milestones" },
+          { id: "achievements", label: "🏆 Placement & Hackathon Wins" },
+        ].map((tab) => (
           <button
-            key={tab}
-            onClick={() => setFilter(tab)}
-            className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
-              filter === tab
-                ? "bg-ink text-white"
-                : "border border-ink/15 text-ink/60 hover:border-ink/30"
+            key={tab.id}
+            onClick={() => setFilter(tab.id as CategoryFilter)}
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
+              filter === tab.id
+                ? "bg-blue-600 text-white shadow-xs"
+                : "border border-ink/15 text-slate-600 hover:border-blue-500/40"
             }`}
           >
-            {tab === "published" ? "Published" : "All"}
+            {tab.label}
           </button>
         ))}
       </motion.div>
 
-      <motion.div variants={staggerContainer} className="masonry-grid gap-6">
+      {/* Feed Grid */}
+      <motion.div variants={staggerContainer} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filtered.map((s) => (
-          <StoryCard
-            key={s.id}
-            story={s}
-            expanded={expandedId === s.id}
-            onToggle={() =>
-              setExpandedId(expandedId === s.id ? null : s.id)
-            }
-            upvotes={upvoteCount(s)}
-            celebrates={celebrateCount(s)}
-            isUpvoted={isUpvoted(s)}
-            isCelebrated={isCelebrated(s)}
-            onUpvote={() => handleUpvote(s.id)}
-            onCelebrate={() => handleCelebrate(s.id)}
-          />
+          <motion.div key={s.id} variants={slideUp} className="h-full">
+            <Card padding="lg" className="flex flex-col h-full border-blue-100 dark:border-blue-900/40 hover:border-blue-500/40 transition-all shadow-xs">
+              {/* Card Header with Author Info */}
+              <div className="flex items-start justify-between gap-3 border-b border-ink/10 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 font-bold overflow-hidden">
+                    {s.alumni?.avatarUrl || s.avatarUrl ? (
+                      <Image
+                        src={s.alumni?.avatarUrl || s.avatarUrl}
+                        alt={s.alumni?.name || s.author || "Author"}
+                        width={44}
+                        height={44}
+                        unoptimized
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      (s.alumni?.name || s.author || "User").split(" ").map((n: string) => n[0]).join("")
+                    )}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-sm text-slate-900 dark:text-slate-100">
+                        {s.alumni?.name || s.author || "Anonymous"}
+                      </p>
+                      {s.isFeatured && (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/15 text-amber-600">
+                          ⭐ Featured
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      {s.role || s.alumni?.jobTitle || "Member"} · <strong>{s.company || s.alumni?.currentCompany || "Somaiya"}</strong>
+                      {s.batchYear ? ` · Class of ${s.batchYear}` : ""}
+                    </p>
+                  </div>
+                </div>
+
+                <span className="text-[11px] text-slate-400 font-mono">
+                  {s.createdAt ? new Date(s.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Recent"}
+                </span>
+              </div>
+
+              {/* Title & Body */}
+              <div className="py-4 space-y-3 flex-1">
+                <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100">
+                  {s.title}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                  {s.story || s.excerpt}
+                </p>
+
+                {/* Attached Image from Supabase Stories Bucket */}
+                {s.imageUrl && (
+                  <div className="relative mt-3 rounded-xl overflow-hidden border border-ink/10 max-h-60 bg-black/5">
+                    <Image
+                      src={s.imageUrl}
+                      alt={s.title}
+                      width={600}
+                      height={300}
+                      unoptimized
+                      className="w-full object-cover max-h-60 hover:scale-102 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Card Footer Actions */}
+              <div className="flex items-center justify-between border-t border-ink/10 pt-3 text-xs">
+                <span className="text-[11px] text-slate-400 font-mono">
+                  {s.company ? `📍 ${s.company}` : "🎓 Campus Achievement"}
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleUpvote(s.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      s.hasVoted
+                        ? "bg-amber-500 text-white shadow-xs"
+                        : "border border-ink/15 text-slate-600 hover:border-amber-500/40 hover:text-amber-600"
+                    }`}
+                  >
+                    <Star size={13} className={s.hasVoted ? "fill-current" : ""} />
+                    <span>{s.upvoteCount || 0}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      navigator.clipboard?.writeText(window.location.href);
+                      showToast("Story link copied to clipboard!");
+                    }}
+                    className="p-1.5 rounded-full border border-ink/15 text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                    title="Share story"
+                  >
+                    <Share2 size={13} />
+                  </button>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         ))}
+
         {filtered.length === 0 && (
-          <Card padding="lg">
-            <p className="text-center text-sm text-ink/50">
-              No stories to show.
-            </p>
-          </Card>
+          <div className="col-span-2 text-center py-12 border border-dashed border-ink/15 rounded-2xl">
+            <Sparkles size={32} className="mx-auto text-blue-500 mb-2 opacity-60" />
+            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">No achievement stories found in this category.</p>
+            <p className="text-xs text-slate-400 mt-1">Be the first to share your milestone with the alumni community!</p>
+          </div>
         )}
       </motion.div>
 
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm">
+      {/* ================= CREATE STORY & MEDIA MODAL ================= */}
+      <AnimatePresence>
+        {modalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl border border-ink/10 space-y-4 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between border-b border-ink/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles size={18} className="text-blue-600" />
+                  <h3 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
+                    Share Achievement / Story
+                  </h3>
+                </div>
+                <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Title / Milestone Headline *
+                  </label>
+                  <input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Placed at Google as SDE-1 / Won Hackathon 2026"
+                    className="w-full rounded-xl border border-ink/20 bg-transparent px-3.5 py-2.5 text-xs outline-none focus:border-blue-600 font-medium"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Company / Organization
+                    </label>
+                    <input
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      placeholder="e.g. Google / Microsoft / AWS"
+                      className="w-full rounded-xl border border-ink/20 bg-transparent px-3.5 py-2 text-xs outline-none focus:border-blue-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Role / Position
+                    </label>
+                    <input
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      placeholder="e.g. Software Engineer / Intern"
+                      className="w-full rounded-xl border border-ink/20 bg-transparent px-3.5 py-2 text-xs outline-none focus:border-blue-600"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Your Journey & Advice *
+                  </label>
+                  <textarea
+                    value={story}
+                    onChange={(e) => setStory(e.target.value)}
+                    rows={4}
+                    placeholder="Share how you prepared, projects you built, or advice for fellow students..."
+                    className="w-full rounded-xl border border-ink/20 bg-transparent px-3.5 py-2.5 text-xs leading-relaxed outline-none focus:border-blue-600"
+                  />
+                </div>
+
+                {/* Upload Image to Supabase 'stories' bucket */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Achievement Photo / Banner (Supabase Storage)
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploadingImage}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-blue-500/30 bg-blue-500/10 text-blue-600 text-xs font-bold hover:bg-blue-500/20 cursor-pointer"
+                    >
+                      {uploadingImage ? <Loader2 size={13} className="animate-spin" /> : <ImageIcon size={14} />}
+                      {imageUrl ? "Replace Image" : "Upload Image to Supabase"}
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageUpload(file);
+                      }}
+                    />
+                    {imageUrl && (
+                      <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                        <CheckCircle2 size={13} /> Image attached!
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-ink/10">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-ink/15 text-xs font-bold text-slate-600 hover:bg-slate-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={!title.trim() || !story.trim() || submitting || uploadingImage}
+                  className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 disabled:opacity-50 cursor-pointer"
+                >
+                  {submitting ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
+                  Publish to Feed (+40 pts)
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2 }}
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold shadow-2xl flex items-center gap-2"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="font-display text-xl">Share your story</h3>
-              <button
-                onClick={() => {
-                  setModalOpen(false);
-                  setTitle("");
-                  setStory("");
-                }}
-                className="text-ink/40 hover:text-ink"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <div className="mt-5 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink">
-                  Title
-                </label>
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Give your story a title"
-                  className="mt-2 w-full rounded-lg border border-ink/20 bg-transparent px-4 py-2.5 text-sm outline-none transition-colors focus:border-brass"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-ink">
-                  Story
-                </label>
-                <textarea
-                  value={story}
-                  onChange={(e) => setStory(e.target.value)}
-                  rows={5}
-                  placeholder="Tell us about your journey…"
-                  className="mt-2 w-full rounded-lg border border-ink/20 bg-transparent px-4 py-3 text-sm leading-6 outline-none transition-colors focus:border-brass"
-                />
-              </div>
-            </div>
-            <button
-              onClick={handleSubmit}
-              disabled={!title.trim() || !story.trim() || submitting}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-brass px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brass-600 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {submitting ? (
-                <Loader2 size={15} className="animate-spin" />
-              ) : (
-                <>
-                  Submit <Send size={14} />
-                </>
-              )}
-            </button>
+            <CheckCircle2 size={16} className="text-emerald-400" />
+            <span>{toast}</span>
           </motion.div>
-        </div>
-      )}
-
-      {toast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-5 py-3 text-sm text-white shadow-lg">
-          {toast}
-        </div>
-      )}
-    </motion.div>
-  );
-}
-
-function StoryCard({
-  story: s,
-  expanded,
-  onToggle,
-  upvotes,
-  celebrates,
-  isUpvoted,
-  isCelebrated,
-  onUpvote,
-  onCelebrate,
-}: {
-  story: Story;
-  expanded: boolean;
-  onToggle: () => void;
-  upvotes: number;
-  celebrates: number;
-  isUpvoted: boolean;
-  isCelebrated: boolean;
-  onUpvote: () => void;
-  onCelebrate: () => void;
-}) {
-  const borderColor =
-    s.status === "published" || s.isApproved ? "border-l-tertiaryOnContainer" : "border-l-brass";
-
-  return (
-    <motion.div
-      variants={slideUp}
-      style={{ breakInside: "avoid" }}
-      className="masonry-item"
-    >
-      <Card padding="lg" className={`border-l-2 ${borderColor}`}>
-        <button
-          onClick={onToggle}
-          className="w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-        >
-          <h3 className="font-display text-xl">{s.title}</h3>
-          <AnimatePresence initial={false}>
-            {expanded ? (
-              <motion.p
-                key="full"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="mt-3 overflow-hidden text-sm leading-6 text-ink/70"
-              >
-                {s.excerpt}
-              </motion.p>
-            ) : (
-              <motion.p
-                key="truncated"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-3 line-clamp-3 text-sm leading-6 text-ink/70"
-              >
-                {s.excerpt}
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </button>
-        <div className="mt-5 flex items-center justify-between border-t border-ink/10 pt-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sage/15 text-xs font-semibold text-sage overflow-hidden">
-              {s.avatarUrl ? (
-                <Image src={s.avatarUrl} alt={s.author} width={36} height={36} unoptimized className="h-full w-full object-cover" />
-              ) : s.authorInitials || s.author?.split(" ").map((n: string) => n[0]).join("")}
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-ink">{s.author || "Anonymous"}</p>
-              <p className="text-xs text-ink/50">
-                {s.role} · {s.company}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Badge tone="neutral">{s.batch}</Badge>
-            <span className="font-mono text-[10px] uppercase text-ink/40">
-              {s.date}
-            </span>
-            <button
-              onClick={onUpvote}
-              disabled={isCelebrated}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                isUpvoted
-                  ? "bg-sage text-white"
-                  : "border border-ink/15 text-ink/70 hover:border-sage hover:text-sage"
-              }`}
-            >
-              <Star size={11} className={isUpvoted ? "fill-current" : ""} />
-              {upvotes}
-            </button>
-            <button
-              onClick={onCelebrate}
-              disabled={isUpvoted}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                isCelebrated
-                  ? "bg-brass text-white"
-                  : "border border-ink/15 text-ink/70 hover:border-brass hover:text-brass"
-              }`}
-            >
-              <Heart size={11} className={isCelebrated ? "fill-current" : ""} />
-              {celebrates}
-            </button>
-          </div>
-        </div>
-      </Card>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
