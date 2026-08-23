@@ -13,42 +13,43 @@ type Category = "All" | "Guides" | "Tutorials" | "Best Practices" | "Developer D
 const categories: Category[] = ["All", "Guides", "Tutorials", "Best Practices", "Developer Docs"];
 
 const guides = [
-  { title: "Webhook Integration Guide", category: "Developer Docs" as const, icon: FileCode, time: "5 min read", desc: "Set up webhooks for real-time referral notifications.", color: "text-blue-600" },
-  { title: "Building Deep Research Agents", category: "Tutorials" as const, icon: PlayCircle, time: "12 min video", desc: "Learn to build AI agents that browse and extract alumni data.", color: "text-violet-600" },
-  { title: "Optimizing API Key Security", category: "Best Practices" as const, icon: ShieldCheck, time: "4 min read", desc: "Rotate keys, use scopes, and audit access patterns.", color: "text-emerald-500" },
-  { title: "Configuring Multi-Tenant Workspaces", category: "Guides" as const, icon: Users, time: "8 min read", desc: "Manage alumni groups, departments, and access levels.", color: "text-indigo-600" },
-  { title: "FindAll Crawler Configuration", category: "Developer Docs" as const, icon: Globe, time: "6 min read", desc: "Configure deep crawling patterns for web discovery.", color: "text-blue-600" },
-  { title: "AI Matching Deep Dive", category: "Tutorials" as const, icon: Zap, time: "15 min video", desc: "Understand 384-dim vectors and similarity scoring.", color: "text-amber-500" },
+  { title: "AI Vector Matching Deep Dive", category: "Tutorials" as const, icon: Zap, time: "8 min read", desc: "Understand 384-dim embedding vectors and cosine similarity scoring.", color: "text-amber-500" },
+  { title: "Referral Engine Masterclass", category: "Guides" as const, icon: FileCode, time: "6 min read", desc: "Craft winning referral requests with customized notes and resumes.", color: "text-blue-600" },
+  { title: "Mentorship & Google Meet Scheduling", category: "Best Practices" as const, icon: ShieldCheck, time: "5 min read", desc: "Connect your calendar, set availability, and host 1:1 sessions.", color: "text-emerald-500" },
+  { title: "Alumni Verification & Roles", category: "Guides" as const, icon: Users, time: "4 min read", desc: "Understand Student, Alumni, Faculty, and Admin permissions.", color: "text-indigo-600" },
+  { title: "Publishing Career Success Stories", category: "Tutorials" as const, icon: PlayCircle, time: "7 min read", desc: "Draft inspiring journey spotlights and participate in community voting.", color: "text-violet-600" },
+  { title: "Organizing Events & Capacity RSVPs", category: "Developer Docs" as const, icon: Globe, time: "5 min read", desc: "Manage tech talks, career mixers, and capacity limits.", color: "text-blue-600" },
 ];
 
 const codeSnippets = [
   {
-    title: "Search Alumni",
-    lang: "JavaScript",
-    code: `const results = await pro-alumn.search({
-  company: "Google",
-  skills: ["React", "System Design"],
-  minMatchScore: 85,
-});
+    title: "Search Alumni by AI Match",
+    lang: "TypeScript",
+    code: `import { apiClient } from "@/lib/api/client";
 
-console.log(\`Found \${results.length} alumni\`);`,
+const topMatches = await apiClient.matching.topAlumni();
+console.log(\`Top match: \${topMatches.alumni[0]?.name}\`);`,
   },
   {
-    title: "Create a Referral",
-    lang: "JavaScript",
-    code: `const referral = await pro-alumn.referrals.create({
-  alumniId: "al_abc123",
-  message: "Hi! I'd love to connect about the SWE role.",
-  resumeUrl: "https://my-resume.pdf",
-});`,
+    title: "Request a Referral",
+    lang: "TypeScript",
+    code: `import { apiClient } from "@/lib/api/client";
+
+const request = await apiClient.requests.create(
+  "job_google_swe_123",
+  "Hi! I would love a referral for the Full Stack Engineer opening."
+);
+console.log("Status:", request.status); // "PENDING"`,
   },
   {
-    title: "Configure Webhook",
-    lang: "JavaScript",
-    code: `await pro-alumn.webhooks.create({
-  url: "https://my-app.com/webhook",
-  events: ["referral.accepted", "referral.completed"],
-  secret: process.env.WEBHOOK_SECRET,
+    title: "Book Mentorship Session",
+    lang: "TypeScript",
+    code: `import { apiClient } from "@/lib/api/client";
+
+const session = await apiClient.mentorship.create({
+  mentorId: "alumni_uuid",
+  area: "System Design & Career Guidance",
+  message: "Looking for guidance on backend scalability."
 });`,
   },
 ];
@@ -98,8 +99,8 @@ export default function EducationPage() {
       <main className="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-12">
         {/* Header */}
         <div className="max-w-2xl space-y-3">
-          <h1 className="text-3xl font-extrabold tracking-tight">Education &amp; Developer Guides</h1>
-          <p className="text-slate-500 dark:text-slate-400">Master API webhooks, web agents, and AI-powered alumni matching.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight">Education &amp; Platform Guides</h1>
+          <p className="text-slate-500 dark:text-slate-400">Master AI vector matching, career referrals, mentorship scheduling, and alumni networking.</p>
         </div>
 
         {/* Search */}
