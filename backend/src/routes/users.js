@@ -6,9 +6,24 @@ const prisma = require('../db');
 const { authenticate, requireRole } = require('../middleware/auth');
 
 // =================== GET /api/users/me ===================
-// Redirect to canonical /api/auth/me endpoint
-router.get('/me', authenticate, (req, res) => {
-  res.redirect(301, '/api/auth/me');
+router.get('/me', authenticate, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,
+        batchYear: true, department: true, rollNumber: true,
+        currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
+        skills: true, interests: true, timeline: true, resumeUrl: true,
+        isVerified: true, isActive: true, createdAt: true,
+      },
+    });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ user });
+  } catch (err) {
+    console.error('GET /users/me error:', err);
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
 });
 
 // =================== PATCH /api/users/me ===================

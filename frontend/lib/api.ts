@@ -1,7 +1,16 @@
 import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from "axios";
 import { getToken } from "@/lib/auth";
 
-export const api = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api", headers: { "Content-Type": "application/json" } });
+const getApiBaseUrl = () => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const clean = envUrl.replace(/\/+$/, "");
+  return clean.endsWith("/api") ? clean : `${clean}/api`;
+};
+
+export const api = axios.create({
+  baseURL: getApiBaseUrl(),
+  headers: { "Content-Type": "application/json" },
+});
 
 api.interceptors.request.use((config) => {
   const token = getToken();
