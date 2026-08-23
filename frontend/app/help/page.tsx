@@ -16,7 +16,7 @@ const supportOptions = [
 
 const popularArticles = [
   { title: "How do I generate a new API key?", category: "API Keys", views: 1240 },
-  { title: "Setting up webhook notifications for referrals", category: "Webhooks", views: 980 },
+  { title: "Setting up email notifications for referrals", category: "Notifications", views: 980 },
   { title: "Troubleshooting 403 authentication errors", category: "API Keys", views: 875 },
   { title: "How to configure AI matching parameters", category: "AI Agents", views: 720 },
   { title: "Understanding referral status lifecycle", category: "Referrals", views: 650 },
@@ -26,7 +26,7 @@ const popularArticles = [
 const systemServices = [
   { name: "API Gateway", status: "operational", latency: "24ms" },
   { name: "AI Matching Engine", status: "operational", latency: "142ms" },
-  { name: "Webhook Delivery", status: "operational", latency: "89ms" },
+  { name: "Email Delivery", status: "operational", latency: "89ms" },
   { name: "FindAll Crawler", status: "degraded", latency: "340ms" },
   { name: "Authentication", status: "operational", latency: "18ms" },
   { name: "Database", status: "operational", latency: "12ms" },
@@ -70,7 +70,7 @@ export default function HelpPage() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search articles, webhook issues, billing..."
+              placeholder="Search articles, platform issues, connections..."
               className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
             />
           </div>

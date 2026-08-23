@@ -54,7 +54,7 @@ const personas = [
 ];
 
 const features = [
-  { icon: Users, title: "Network & AI Matching", desc: "Search alumni with live multi-select chips for batch, department, location, and mentors — ranked by vector similarity.", href: "/network" },
+  { icon: Users, title: "Directory & AI Matching", desc: "Search alumni with live multi-select chips for batch, department, location, and mentors — ranked by vector similarity.", href: "/directory" },
   { icon: Briefcase, title: "Job Board & Referral Engine", desc: "Filterable opportunities where Ask Referral opens a Resume + Note modal and tracks Pending → Hired status.", href: "/jobs" },
   { icon: HeartHandshake, title: "Mentorship Hub", desc: "Top mentor matches, availability toggles, and Accept creating a direct 1:1 chat thread.", href: "/mentorship" },
   { icon: CalendarDays, title: "Events & Capacity RSVPs", desc: "Dynamic countdowns, category tabs, and real-time capacity-controlled RSVPs.", href: "/events" },
@@ -81,7 +81,7 @@ export default function LandingPage() {
     event.preventDefault();
     const trimmed = searchQuery.trim();
     if (!trimmed) return;
-    router.push(`/network?q=${encodeURIComponent(trimmed)}`);
+    router.push(`/directory?q=${encodeURIComponent(trimmed)}`);
   }
 
   return (
@@ -154,8 +154,8 @@ export default function LandingPage() {
               <Link href="/register" className="inline-flex items-center gap-2 rounded-xl bg-bronze-600 text-white text-sm font-bold px-6 py-3 shadow-lg shadow-bronze-600/25 hover:bg-bronze-700 hover:shadow-xl transition-all">
                 Create Free Account <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link href="/network" className="inline-flex items-center gap-2 rounded-xl border-2 border-navy-900/10 dark:border-ivory-100/10 text-navy-900 dark:text-ivory-100 text-sm font-bold px-6 py-3 hover:border-bronze-500/50 hover:bg-bronze-100/50 dark:hover:bg-bronze-500/10 transition-all">
-                Explore the Network
+              <Link href="/directory" className="inline-flex items-center gap-2 rounded-xl border-2 border-navy-900/10 dark:border-ivory-100/10 text-navy-900 dark:text-ivory-100 text-sm font-bold px-6 py-3 hover:border-bronze-500/50 hover:bg-bronze-100/50 dark:hover:bg-bronze-500/10 transition-all">
+                Explore the Directory
               </Link>
             </motion.div>
           </div>

@@ -55,7 +55,7 @@ export default function LoginPage() {
           {/* Header */}
           <div className="space-y-2">
             <h1 className="text-2xl font-bold">Welcome Back</h1>
-            <p className="text-xs text-slate-500">Sign in to manage your Webhooks &amp; AI Agents</p>
+            <p className="text-xs text-slate-500">Sign in to manage your alumni connections & referrals</p>
           </div>
 
           <div className="pt-2">
