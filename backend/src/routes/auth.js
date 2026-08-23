@@ -14,7 +14,18 @@ const PUBLIC_VALID_ROLES = ['ALUMNI', 'STUDENT', 'FACULTY'];
 
 router.use(passport.initialize());
 
-const API_BASE_URL = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 4000}`;
+const API_BASE_URL =
+  process.env.API_BASE_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? 'https://pro-alumn-production.up.railway.app'
+    : `http://localhost:${process.env.PORT || 4000}`);
+
+const FRONTEND_URL =
+  process.env.FRONTEND_URL ||
+  process.env.WEB_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? 'https://sihproalumn.vercel.app'
+    : 'http://localhost:3000');
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || 'dummy_id',
@@ -155,15 +166,22 @@ router.get('/me', authenticate, async (req, res) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
 
 // =================== GET /api/auth/google/callback ===================
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login', session: false }), (req, res) => {
-  const token = jwt.sign(
-    { id: req.user.id, email: req.user.email, role: req.user.role },
-    JWT_SECRET,
-    { expiresIn: '7d' },
-  );
-  
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-  res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
-});
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { failureRedirect: `${FRONTEND_URL}/login?error=oauth_failed`, session: false }),
+  (req, res) => {
+    try {
+      const token = jwt.sign(
+        { id: req.user.id, email: req.user.email, role: req.user.role },
+        JWT_SECRET,
+        { expiresIn: '7d' },
+      );
+      res.redirect(`${FRONTEND_URL}/auth/callback?token=${token}`);
+    } catch (err) {
+      console.error('Google callback token sign error:', err);
+      res.redirect(`${FRONTEND_URL}/login?error=token_failed`);
+    }
+  }
+);
 
 module.exports = router;

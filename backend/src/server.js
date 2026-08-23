@@ -43,24 +43,38 @@ const authLimiter = rateLimit({
 
 // --- CORS ---
 const allowedOrigins = new Set([
-  process.env.WEB_URL || 'http://localhost:3000',
+  'https://sihproalumn.vercel.app',
+  process.env.WEB_URL,
+  process.env.FRONTEND_URL,
   'http://localhost:3000',
   'http://localhost:8081',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:8081',
-]);
+].filter(Boolean));
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Only allow requests with a defined, recognized origin (blocks null/undefined)
-    if (origin && allowedOrigins.has(origin)) return callback(null, true);
-    if (!origin && process.env.NODE_ENV !== 'production') {
-      // Allow non-browser tools (Postman, curl) in dev only
+    // Allow non-browser tools or server-to-server requests
+    if (!origin) return callback(null, true);
+    
+    // Check exact matches
+    if (allowedOrigins.has(origin)) return callback(null, true);
+    
+    // Allow any *.vercel.app deployment
+    try {
+      const hostname = new URL(origin).hostname;
+      if (hostname.endsWith('.vercel.app') || hostname === 'localhost' || hostname === '127.0.0.1') {
+        return callback(null, true);
+      }
+    } catch {
+      // Invalid URL format
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
       return callback(null, true);
     }
-    if (process.env.NODE_ENV !== 'production' && origin && /^http:\/\/192\.168\./.test(origin)) {
-      return callback(null, true);
-    }
+    
+    console.warn(`Blocked CORS request from origin: ${origin}`);
     return callback(new Error('Origin not allowed by CORS'));
   },
   credentials: true,
