@@ -108,6 +108,11 @@ const roleMeta: Record<Role, { label: string; icon: typeof Users }> = {
   admin: { label: "Admin", icon: ShieldCheck },
 };
 
+function capitalize(s?: string): string {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
 function NotificationPanel({
   open,
   onClose,
