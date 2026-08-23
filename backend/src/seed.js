@@ -56,6 +56,72 @@ async function main() {
   await embedUser(alumni.id, profileText(alumni));
   await embedUser(student.id, profileText(student));
 
+  // Seed sample jobs
+  const jobCount = await prisma.jobPosting.count();
+  if (jobCount === 0) {
+    console.log('💼 Seeding sample job postings...');
+    await prisma.jobPosting.createMany({
+      data: [
+        {
+          title: 'Full Stack Engineer',
+          company: 'Google',
+          location: 'Bengaluru / Hybrid',
+          jobType: 'FULL_TIME',
+          experienceLevel: 'ENTRY',
+          description: 'Join our Cloud & Developer Infrastructure team building distributed platforms.',
+          requirements: 'B.Tech/BE in CS/IT. Strong problem-solving skills in JS/Python.',
+          skills: 'React, Node.js, TypeScript, PostgreSQL',
+          salaryMin: 1800000,
+          salaryMax: 2800000,
+          referralSlots: 3,
+          postedById: alumni.id,
+        },
+        {
+          title: 'Frontend Intern',
+          company: 'Razorpay',
+          location: 'Bengaluru / Remote',
+          jobType: 'INTERNSHIP',
+          experienceLevel: 'ENTRY',
+          description: 'Work on checkout experiences and merchant dashboards used by millions.',
+          requirements: 'Proficiency with React, Tailwind CSS, and RESTful APIs.',
+          skills: 'React, Tailwind, Next.js',
+          salaryMin: 45000,
+          salaryMax: 60000,
+          referralSlots: 2,
+          postedById: alumni.id,
+        },
+      ],
+    });
+  }
+
+  // Seed sample events
+  const eventCount = await prisma.event.count();
+  if (eventCount === 0) {
+    console.log('📅 Seeding sample events...');
+    await prisma.event.createMany({
+      data: [
+        {
+          title: 'Alumni Tech Talk: Scalable Systems in 2026',
+          description: 'Join our senior alumni from Google and Microsoft sharing insights on distributed architectures.',
+          date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          location: 'Main Auditorium / Online Stream',
+          mode: 'ONLINE',
+          maxCapacity: 250,
+          createdById: admin.id,
+        },
+        {
+          title: 'Annual Alumni & Student Career Mixer',
+          description: 'Face-to-face networking, resume reviews, and coffee chats with alumni in tech and product.',
+          date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+          location: 'University Campus Center',
+          mode: 'OFFLINE',
+          maxCapacity: 100,
+          createdById: admin.id,
+        },
+      ],
+    });
+  }
+
   console.log('\n✅ Seed complete. Login with:');
   console.log(`   Admin   → ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
   console.log('   Alumni  → alumni@college.edu / Alumni@12345');
