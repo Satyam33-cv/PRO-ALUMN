@@ -169,50 +169,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
-    try {
-      const result = await signInWithPopup(auth, googleAuthProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      if (credential?.accessToken) {
-        // Store access token in memory and session storage to survive page reloads
-        setGoogleAccessToken(credential.accessToken);
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem("google_access_token", credential.accessToken);
-        }
-      }
-      const fbUser = result.user;
-      const name = fbUser.displayName || fbUser.email?.split("@")[0] || "User";
-      
-      // Update or create in Firestore
-      const userDocRef = doc(db, "users", fbUser.uid);
-      const snap = await getDoc(userDocRef);
-      const role: UserRole = snap.exists() && snap.data()?.role ? snap.data().role : "student";
-      
-      if (!snap.exists()) {
-        await setDoc(userDocRef, {
-          id: fbUser.uid,
-          email: fbUser.email || "",
-          name,
-          role,
-          department: "Computer Science",
-          classYear: "2025",
-          createdAt: new Date().toISOString(),
-        });
-      }
-
-      setUserState({
-        name,
-        email: fbUser.email || "",
-        role,
-        initials: getInitials(name),
-        classYear: "2025",
-        department: "Computer Science",
-        firebaseUid: fbUser.uid,
-        photoURL: fbUser.photoURL || undefined,
-      });
-    } catch (err) {
-      console.error("Google Sign-In Error:", err);
-      throw err;
-    }
+    // Redirect to the Express backend Google OAuth endpoint
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+    window.location.href = `${backendUrl}/api/auth/google`;
   }, []);
 
   const setUser = useCallback((next: AuthUser) => {
