@@ -34,6 +34,7 @@ import {
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
 import { GlobalSearch } from "@/components/GlobalSearch";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Role = UserRole;
 
@@ -47,7 +48,7 @@ const primaryNav: Record<Role, NavItem[]> = {
   student: [
     { label: "Home", href: "/home", icon: LayoutDashboard },
     { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Network", href: "/network", icon: Users },
+    { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
     { label: "Chat", href: "/chat", icon: MessageCircle },
@@ -55,7 +56,7 @@ const primaryNav: Record<Role, NavItem[]> = {
   alumni: [
     { label: "Home", href: "/home", icon: LayoutDashboard },
     { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Network", href: "/network", icon: Users },
+    { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
     { label: "Chat", href: "/chat", icon: MessageCircle },
@@ -63,7 +64,7 @@ const primaryNav: Record<Role, NavItem[]> = {
   admin: [
     { label: "Command center", href: "/admin", icon: ShieldCheck },
     { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Directory", href: "/network", icon: Users },
+    { label: "Directory", href: "/directory", icon: Users },
     { label: "Analytics", href: "/admin/analytics", icon: LayoutDashboard },
     { label: "Settings", href: "/admin/settings", icon: Settings },
     { label: "Chat", href: "/chat", icon: MessageCircle },
@@ -71,7 +72,7 @@ const primaryNav: Record<Role, NavItem[]> = {
   faculty: [
     { label: "Home", href: "/home", icon: LayoutDashboard },
     { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Network", href: "/network", icon: Users },
+    { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
     { label: "Chat", href: "/chat", icon: MessageCircle },
@@ -118,17 +119,17 @@ function getNavClasses(
 ) {
   if (activeVariant === "primary") {
     return isActive
-      ? "bg-blue-50 text-blue-700 font-medium"
-      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors";
+      ? "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold shadow-2xs"
+      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-100 transition-colors";
   }
   if (activeVariant === "secondary") {
     return isActive
-      ? "bg-emerald-50 text-emerald-700 font-medium"
-      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors";
+      ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold shadow-2xs"
+      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-100 transition-colors";
   }
   return isActive
-    ? "border-b-2 border-blue-600"
-    : "hover:text-slate-900 border-b-2 border-transparent transition-colors";
+    ? "border-b-2 border-blue-600 dark:border-blue-400 text-slate-900 dark:text-slate-100 font-semibold"
+    : "hover:text-slate-900 dark:hover:text-slate-100 border-b-2 border-transparent text-slate-600 dark:text-slate-400 transition-colors";
 }
 
 function NotificationPanel({
@@ -171,7 +172,7 @@ function NotificationPanel({
     const firstButton = panel.querySelector<HTMLElement>("button");
     firstButton?.focus();
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
+  }, [open, onClose, triggerRef]);
 
   if (!open) return null;
   return (
@@ -179,30 +180,32 @@ function NotificationPanel({
       ref={panelRef}
       role="dialog"
       aria-label="Notifications"
-      className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-lg border border-ink-900/10 bg-canvas shadow-card"
+      className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
     >
-      <div className="flex items-center justify-between border-b border-ink-900/10 px-4 py-3">
-        <p className="text-sm font-semibold text-ink">Notifications</p>
+      <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-4 py-3 bg-slate-50/50 dark:bg-slate-800/40">
+        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Notifications</p>
         <button
           type="button"
           onClick={() => {
             onClose();
             triggerRef.current?.focus();
           }}
-          className="rounded p-0.5 text-ink/40 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+          className="rounded-lg p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 transition-colors"
           aria-label="Close notifications"
         >
           <X size={16} />
         </button>
       </div>
-      <ul className="max-h-80 divide-y divide-ink-900/10 overflow-y-auto">
+      <ul className="max-h-80 divide-y divide-slate-100 dark:divide-slate-800/80 overflow-y-auto">
         {mockNotifications.map((n) => (
           <li
             key={n.id}
-            className={`px-4 py-3 transition-colors hover:bg-muted ${n.unread ? "bg-brass/5" : ""}`}
+            className={`px-4 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
+              n.unread ? "bg-blue-50/40 dark:bg-blue-950/20" : ""
+            }`}
           >
-            <p className="text-sm text-ink">{n.text}</p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-ink/40">
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{n.text}</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
               {n.time}
             </p>
           </li>
@@ -250,11 +253,11 @@ function RoleSwitcher({ currentRole }: { currentRole: Role }) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-lg border border-ink-900/10 bg-white px-3 py-1.5 text-xs font-semibold text-ink shadow-sm transition-colors hover:border-brass/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+        className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-xs transition-colors hover:border-blue-500/50 dark:hover:border-blue-400/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
       >
-        <CurrentIcon size={14} className="text-brass" />
+        <CurrentIcon size={14} className="text-blue-600 dark:text-blue-400" />
         {capitalize(currentRole)}
-        <ChevronDown size={13} className="text-ink/40" />
+        <ChevronDown size={13} className="text-slate-400" />
       </button>
       <AnimatePresence>
         {open && (
@@ -265,7 +268,7 @@ function RoleSwitcher({ currentRole }: { currentRole: Role }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-lg border border-ink-900/10 bg-white shadow-card"
+            className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl"
           >
             {(Object.keys(roleMeta) as Role[]).map((r) => {
               const Icon = roleMeta[r].icon;
@@ -278,13 +281,13 @@ function RoleSwitcher({ currentRole }: { currentRole: Role }) {
                     onClick={() => select(r)}
                     className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs font-medium transition-colors ${
                       r === currentRole
-                        ? "bg-brass/10 text-brass"
-                        : "text-ink hover:bg-muted"
+                        ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-semibold"
+                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70"
                     }`}
                   >
                     <Icon size={14} />
                     {roleMeta[r].label}
-                    {r === currentRole && <Check size={13} className="ml-auto" />}
+                    {r === currentRole && <Check size={13} className="ml-auto text-blue-600 dark:text-blue-400" />}
                   </button>
                 </li>
               );
@@ -367,30 +370,30 @@ export function RoleShell({
 
   function sidebarContent(mobile: boolean) {
     const compact = collapsed && !mobile;
-    const itemBase = `flex items-center gap-3 rounded px-3 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass ${
+    const itemBase = `flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
       compact ? "justify-center px-0" : ""
     }`;
     return (
       <>
-      <div className={`flex items-center justify-between ${compact ? "justify-center px-2" : "px-6"} pb-6`}>
-        {compact ? (
-          <Link
-            href="/home"
-            aria-label="PRO ALUMN home"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 font-heading text-lg font-extrabold tracking-tight text-white shadow-sm"
-          >
-            A
-          </Link>
-        ) : (
-          <>
-            <Link href="/home" className="font-heading text-2xl tracking-tight text-slate-900">
-              PRO <span className="text-blue-600">ALUMN</span>
+        <div className={`flex items-center justify-between ${compact ? "justify-center px-2" : "px-6"} pb-6`}>
+          {compact ? (
+            <Link
+              href="/home"
+              aria-label="PRO ALUMN home"
+              className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-heading text-lg font-extrabold tracking-tight text-white shadow-md shadow-blue-600/20"
+            >
+              P
             </Link>
+          ) : (
+            <>
+              <Link href="/home" className="font-heading text-2xl tracking-tight text-slate-900 dark:text-slate-100 font-extrabold">
+                PRO <span className="text-blue-600 dark:text-blue-400">ALUMN</span>
+              </Link>
               {mobile && (
                 <button
                   type="button"
                   onClick={() => setSidebarOpen(false)}
-                  className="rounded p-1 text-canvas/60 hover:text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+                  className="rounded-lg p-1 text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                   aria-label="Close navigation"
                 >
                   <X size={20} />
@@ -400,28 +403,28 @@ export function RoleShell({
           )}
         </div>
 
-      <div className={`flex items-center gap-3 border-b border-slate-100 pb-6 ${compact ? "justify-center border-b-0 px-2" : "px-6"}`}>
-        <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm ${
-            compact ? "mx-auto" : ""
-          }`}
-        >
-          {displayInitials}
-        </div>
-        {!compact && (
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900">
-              {displayName}
-            </p>
-            <p className="text-[11px] font-medium text-slate-500">
-              {displayRole} · {displayYear}
-            </p>
+        <div className={`flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-5 ${compact ? "justify-center border-b-0 px-2" : "px-6"}`}>
+          <div
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm shadow-blue-600/20 ${
+              compact ? "mx-auto" : ""
+            }`}
+          >
+            {displayInitials}
           </div>
-        )}
-      </div>
+          {!compact && (
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-bold text-slate-900 dark:text-slate-100">
+                {displayName}
+              </p>
+              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                {displayRole} · {displayYear}
+              </p>
+            </div>
+          )}
+        </div>
 
         <nav
-          className={`mt-6 flex-1 space-y-0.5 ${compact ? "px-2" : "px-3"}`}
+          className={`mt-5 flex-1 space-y-1 ${compact ? "px-2" : "px-3"}`}
           aria-label="Primary navigation"
         >
           {items.map(({ label, href, icon: Icon }) => (
@@ -437,29 +440,29 @@ export function RoleShell({
                   : getNavClasses(false, "primary")
               }`}
             >
-              <Icon size={18} strokeWidth={1.6} className="shrink-0" />
+              <Icon size={18} strokeWidth={active(href) ? 2 : 1.6} className="shrink-0" />
               {!compact && label}
             </Link>
           ))}
         </nav>
 
-      <div className={`mt-2 border-t border-slate-100 pt-4 ${compact ? "border-t-0 px-2" : "px-3"}`}>
-        <Link
-          href="/profile"
-          onClick={() => mobile && setSidebarOpen(false)}
-          aria-current={active("/profile") ? "page" : undefined}
-          title={compact ? "My Profile" : undefined}
-          className={`${itemBase} ${
-            active("/profile")
-              ? getNavClasses(true, "primary")
-              : getNavClasses(false, "primary")
-          }`}
-        >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600">
-            {displayInitials}
-          </div>
-          {!compact && <span className="truncate">My Profile</span>}
-        </Link>
+        <div className={`mt-2 border-t border-slate-100 dark:border-slate-800 pt-4 ${compact ? "border-t-0 px-2" : "px-3"}`}>
+          <Link
+            href="/profile"
+            onClick={() => mobile && setSidebarOpen(false)}
+            aria-current={active("/profile") ? "page" : undefined}
+            title={compact ? "My Profile" : undefined}
+            className={`${itemBase} ${
+              active("/profile")
+                ? getNavClasses(true, "primary")
+                : getNavClasses(false, "primary")
+            }`}
+          >
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold text-xs">
+              {displayInitials}
+            </div>
+            {!compact && <span className="truncate font-medium">My Profile</span>}
+          </Link>
           {secondaryNav.map(({ label, href, icon: Icon }) => (
             <Link
               key={label}
@@ -473,39 +476,39 @@ export function RoleShell({
                   : getNavClasses(false, "secondary")
               }`}
             >
-              <Icon size={18} strokeWidth={1.6} className="shrink-0" />
+              <Icon size={18} strokeWidth={active(href) ? 2 : 1.6} className="shrink-0" />
               {!compact && label}
             </Link>
           ))}
         </div>
 
-      <div className={`mt-auto space-y-3 border-t border-slate-100 pt-5 ${compact ? "border-t-0 px-2" : "px-6"}`}>
-        <button
-          type="button"
-          onClick={handleSignOut}
-          title="Sign out"
-          aria-label="Sign out"
-          className={`flex items-center gap-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-            compact ? "justify-center px-0" : "px-3"
-          }`}
-        >
-          <LogOut size={16} className="shrink-0" />
-          {!compact && "Sign out"}
-        </button>
-        {!compact && (
-          <p className="px-3 text-[11px] font-medium text-slate-400">
-            PRO ALUMN v1.0
-          </p>
-        )}
-      </div>
+        <div className={`mt-auto space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4 ${compact ? "border-t-0 px-2" : "px-6"}`}>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            title="Sign out"
+            aria-label="Sign out"
+            className={`flex items-center gap-3 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer ${
+              compact ? "justify-center px-0" : "px-3 w-full"
+            }`}
+          >
+            <LogOut size={16} className="shrink-0" />
+            {!compact && "Sign out"}
+          </button>
+          {!compact && (
+            <p className="px-3 text-[10px] font-medium text-slate-400 dark:text-slate-600">
+              PRO ALUMN v2.0 · Google Cloud
+            </p>
+          )}
+        </div>
       </>
     );
   }
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-canvas">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-ink/10 border-t-brass" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 dark:border-slate-700 border-t-blue-600" />
       </div>
     );
   }
@@ -513,11 +516,11 @@ export function RoleShell({
   const sidebarWidth = collapsed ? "w-[72px]" : "w-64";
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
       <aside
-        className={`fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-slate-200 bg-white text-slate-700 md:flex ${sidebarWidth} transition-[width] duration-200`}
+        className={`fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 md:flex ${sidebarWidth} transition-[width] duration-200`}
       >
-        <div className="flex h-full flex-col py-7">
+        <div className="flex h-full flex-col py-6">
           {sidebarContent(false)}
         </div>
       </aside>
@@ -530,7 +533,7 @@ export function RoleShell({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-ink/50 md:hidden"
+              className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs md:hidden"
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />
@@ -539,9 +542,9 @@ export function RoleShell({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-ink text-canvas md:hidden"
+              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 md:hidden"
             >
-              <div className="flex h-full flex-col py-7">
+              <div className="flex h-full flex-col py-6">
                 {sidebarContent(true)}
               </div>
             </motion.aside>
@@ -549,59 +552,63 @@ export function RoleShell({
         )}
       </AnimatePresence>
 
-    <div className={`flex min-h-screen flex-col transition-[padding] duration-200 ${collapsed ? "md:pl-[72px]" : "md:pl-64"}`}>
-      <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-slate-200 bg-white/80 px-4 backdrop-blur-md sm:px-6">
-        <button
-          type="button"
-          onClick={() => setSidebarOpen(true)}
-          className="rounded p-1.5 text-slate-500 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 md:hidden"
-          aria-label="Open navigation"
-        >
-          <Menu size={22} />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setCollapsed((v) => !v)}
-          className="hidden rounded p-1.5 text-slate-500 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 md:inline-flex"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          aria-pressed={collapsed}
-        >
-          {collapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
-        </button>
-
-        <GlobalSearch />
-
-        <div className="flex items-center gap-2">
-          <RoleSwitcher currentRole={role} />
-          <div className="relative">
+      <div className={`flex min-h-screen flex-col transition-[padding] duration-200 ${collapsed ? "md:pl-[72px]" : "md:pl-64"}`}>
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 backdrop-blur-md sm:px-6">
+          <div className="flex items-center gap-3">
             <button
               type="button"
-              ref={notifTriggerRef}
-              onClick={() => setNotificationsOpen((v) => !v)}
-              className="relative rounded p-1.5 text-slate-500 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-              aria-label="Notifications"
-              aria-expanded={notificationsOpen}
+              onClick={() => setSidebarOpen(true)}
+              className="rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 md:hidden"
+              aria-label="Open navigation"
             >
-              <Bell size={20} />
-              {unreadCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
-                  {unreadCount}
-                </span>
-              )}
+              <Menu size={22} />
             </button>
-            <NotificationPanel
-              open={notificationsOpen}
-              onClose={() => setNotificationsOpen(false)}
-              triggerRef={notifTriggerRef}
-            />
+
+            <button
+              type="button"
+              onClick={() => setCollapsed((v) => !v)}
+              className="hidden rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 md:inline-flex"
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-pressed={collapsed}
+            >
+              {collapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
+            </button>
+
+            <GlobalSearch />
           </div>
 
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
-            {displayInitials}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle className="shrink-0" />
+            <RoleSwitcher currentRole={role} />
+            
+            <div className="relative">
+              <button
+                type="button"
+                ref={notifTriggerRef}
+                onClick={() => setNotificationsOpen((v) => !v)}
+                className="relative rounded-xl p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 transition-colors"
+                aria-label="Notifications"
+                aria-expanded={notificationsOpen}
+              >
+                <Bell size={19} />
+                {unreadCount > 0 && (
+                  <span className="absolute 1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              <NotificationPanel
+                open={notificationsOpen}
+                onClose={() => setNotificationsOpen(false)}
+                triggerRef={notifTriggerRef}
+              />
+            </div>
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700">
+              {displayInitials}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
         <main className="flex-1 px-4 py-8 sm:px-6 lg:px-10">
           {children}
@@ -609,7 +616,7 @@ export function RoleShell({
       </div>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-900/10 bg-canvas/80 backdrop-blur-md md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         aria-label="Primary navigation"
       >
@@ -619,16 +626,16 @@ export function RoleShell({
               <Link
                 href={href as `/${string}`}
                 aria-current={active(href) ? "page" : undefined}
-                className={`flex flex-col items-center gap-0.5 px-1 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass ${
+                className={`flex flex-col items-center gap-0.5 px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   active(href)
-                    ? getNavClasses(true, "primary")
-                    : getNavClasses(false, "primary")
+                    ? "text-blue-600 dark:text-blue-400 font-bold"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
                 }`}
               >
-                <Icon size={20} strokeWidth={active(href) ? 2 : 1.5} />
-                <span className="text-[10px] leading-none">{label}</span>
+                <Icon size={19} strokeWidth={active(href) ? 2.2 : 1.6} />
+                <span className="text-[10px] leading-none mt-0.5">{label}</span>
                 {active(href) && (
-                  <span className="mt-0.5 h-0.5 w-4 rounded-full bg-brass" />
+                  <span className="mt-0.5 h-0.5 w-3 rounded-full bg-blue-600 dark:bg-blue-400" />
                 )}
               </Link>
             </li>
@@ -636,7 +643,7 @@ export function RoleShell({
         </ul>
       </nav>
 
-      <div className="h-20 md:hidden" aria-hidden="true" />
+      <div className="h-16 md:hidden" aria-hidden="true" />
     </div>
   );
-}
+}
