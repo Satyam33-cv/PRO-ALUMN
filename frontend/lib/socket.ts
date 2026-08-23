@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
-// Define the API URL (matching the Express backend)
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+// Define the API URL (matching the Express backend root, stripped of any /api suffix)
+const SOCKET_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/+$/, "").replace(/\/api$/, "");
 
 let socket: Socket | null = null;
 

@@ -1,12 +1,11 @@
 "use client";
-
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/context/AuthContext";
 import { Loader2 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 
-export default function AuthCallbackPage() {
+function CallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setSession } = useAuth();
@@ -21,10 +20,9 @@ export default function AuthCallbackPage() {
     // Set token in localStorage and AuthContext
     const fetchSession = async () => {
       try {
-        // Temporarily set the token in localStorage so apiClient can use it
         localStorage.setItem("pro-alumn_token", token);
         const res = await apiClient.auth.me();
-        // The /auth/me endpoint returns { user: {...} } — unwrap it
+        // The endpoint returns { user: {...} } or flat user
         const user = (res as unknown as { user?: typeof res })?.user ?? res;
         
         setSession({ user, token });
@@ -46,5 +44,19 @@ export default function AuthCallbackPage() {
         <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Authenticating...</p>
       </div>
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen w-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+          <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        </div>
+      }
+    >
+      <CallbackHandler />
+    </Suspense>
   );
 }
