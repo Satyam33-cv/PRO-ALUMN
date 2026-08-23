@@ -171,7 +171,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = useCallback(async () => {
     // Redirect to the Express backend Google OAuth endpoint
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-    window.location.href = `${backendUrl}/api/auth/google`;
+    // Ensure no double slashes by stripping trailing slash
+    const cleanBase = backendUrl.replace(/\/+$/, '');
+    window.location.href = `${cleanBase}/api/auth/google`;
   }, []);
 
   const setUser = useCallback((next: AuthUser) => {
