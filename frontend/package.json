@@ -39,16 +39,13 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@types/jest": "^30.0.0",
     "autoprefixer": "^10.4.19",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "^16.3.2",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.15",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "postcss": "^8.4.40",
     "tailwindcss": "^3.4.7",
     "ts-jest": "^29.4.12",
     "typescript": "^5.5.4"
-  },
-  "overrides": {
-    "eslint": "^9.0.0"
   }
 }
