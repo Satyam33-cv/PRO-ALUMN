@@ -12,9 +12,15 @@ function CallbackHandler() {
 
   useEffect(() => {
     const token = searchParams.get("token");
+    const googleToken = searchParams.get("googleToken");
+    
     if (!token) {
       router.push("/login?error=auth_failed");
       return;
+    }
+
+    if (googleToken) {
+      sessionStorage.setItem("google_access_token", googleToken);
     }
 
     // Set token in localStorage and AuthContext
@@ -54,7 +60,8 @@ function CallbackHandler() {
           } else {
             router.push("/home");
           }
-        } catch {
+        } catch (fallbackErr) {
+          console.warn("JWT fallback decode failed:", fallbackErr);
           localStorage.removeItem("pro-alumn_token");
           router.push("/login?error=auth_failed");
         }

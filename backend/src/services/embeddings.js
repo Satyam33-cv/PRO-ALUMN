@@ -85,10 +85,51 @@ async function openAIEmbed(text) {
   }
 }
 
+// ---------------------------------------------------------------
+// Google Gemini embeddings (text-embedding-004, outputDimensionality=384)
+// ---------------------------------------------------------------
+async function geminiEmbed(text) {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${key}`,
+      {
+        method: 'POST',
+        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: { parts: [{ text: String(text || '').slice(0, 8000) }] },
+          outputDimensionality: DIM,
+        }),
+      }
+    );
+    if (!res.ok) throw new Error(`Gemini ${res.status}`);
+    const data = await res.json();
+    const emb = data?.embedding?.values;
+    if (!emb || !Array.isArray(emb)) throw new Error('Empty Gemini embedding response');
+    return emb.slice(0, DIM);
+  } catch (err) {
+    console.warn('Gemini embedding failed, falling back to local:', err.message);
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Public API: returns a 384-dim array, always succeeds
 async function generateEmbedding(text) {
-  const ai = await openAIEmbed(text);
-  return ai || localEmbed(text);
+  if (process.env.OPENAI_API_KEY) {
+    const ai = await openAIEmbed(text);
+    if (ai) return ai;
+  }
+  if (process.env.GEMINI_API_KEY) {
+    const gem = await geminiEmbed(text);
+    if (gem) return gem;
+  }
+  return localEmbed(text);
 }
 
 // Build a rich profile/query text from structured fields

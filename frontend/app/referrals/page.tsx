@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiClient } from "@/lib/api/client";
+import { useAuth } from "@/lib/context/AuthContext";
+import { useApi } from "@/lib/hooks/useApi";
 import {
   ArrowLeft,
   Clock,
@@ -20,26 +23,17 @@ import {
   GripVertical,
   Kanban,
   List as ListIcon,
-  MousePointerClick,
-  Info,
   Lightbulb,
   Mail,
   FileText,
   Copy,
   CheckSquare,
-  Square,
-  MessageSquare,
-  Share2,
   Award,
-  Zap,
-  ArrowUpRight,
-  Sparkle,
   Download,
   Trash2,
   Archive,
   ArchiveRestore,
   RefreshCw,
-  AlertTriangle,
 } from "lucide-react";
 
 type ReferralStatus = "pending" | "accepted" | "referred" | "hired";
@@ -464,16 +458,15 @@ function StepIndicator({
   );
 }
 
-function SuggestedStepModal({
+function SuggestedStepModalContent({
   referral,
   onClose,
   onUpdateStatus,
 }: {
-  referral: Referral | null;
+  referral: Referral;
   onClose: () => void;
   onUpdateStatus: (id: string, newStatus: ReferralStatus) => void;
 }) {
-  if (!referral) return null;
   const config = suggestedNextSteps[referral.status];
   const Icon = config.icon;
   const [activeTab, setActiveTab] = useState<"draft" | "checklist">("draft");
@@ -682,7 +675,34 @@ function SuggestedStepModal({
   );
 }
 
+function SuggestedStepModal({
+  referral,
+  onClose,
+  onUpdateStatus,
+}: {
+  referral: Referral | null;
+  onClose: () => void;
+  onUpdateStatus: (id: string, newStatus: ReferralStatus) => void;
+}) {
+  if (!referral) return null;
+  return (
+    <SuggestedStepModalContent
+      referral={referral}
+      onClose={onClose}
+      onUpdateStatus={onUpdateStatus}
+    />
+  );
+}
+
 export default function ReferralsPage() {
+  const { user } = useAuth();
+  const isAlumni = user?.role?.toLowerCase() === "alumni";
+  const { data: serverReferralsData, reload: reloadReferrals } = useApi(
+    "referrals:data",
+    () => isAlumni ? apiClient.referrals.myReceived() : apiClient.referrals.mySent(),
+    { enabled: Boolean(user) }
+  );
+
   const [referrals, setReferrals] = useState<Referral[]>(initialReferrals);
   const [filter, setFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -694,12 +714,45 @@ export default function ReferralsPage() {
   const [selectedActionReferral, setSelectedActionReferral] = useState<Referral | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
+  // Synchronize live database referrals
+  useEffect(() => {
+    if (serverReferralsData?.referrals && serverReferralsData.referrals.length > 0) {
+      const mapped: Referral[] = serverReferralsData.referrals.map((r: Record<string, unknown>) => {
+        const otherUser = (isAlumni ? r.requestedBy : r.referredBy) as { name?: string } | undefined;
+        const name = otherUser?.name || (isAlumni ? "Student Applicant" : "Alumni Champion");
+        const initials = (name || "AC").split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "AC";
+        const rawStatus = String(r.status || "pending").toLowerCase();
+        const status: ReferralStatus = ["pending", "accepted", "referred", "hired"].includes(rawStatus)
+          ? (rawStatus as ReferralStatus)
+          : "pending";
+
+        const job = r.job as { company?: string; title?: string } | undefined;
+
+        return {
+          id: String(r.id),
+          alumniName: name,
+          alumniInitials: initials,
+          company: job?.company || "Somaiya Corporate Partner",
+          role: job?.title || "Specialist Engineer",
+          status,
+          date: r.createdAt
+            ? new Date(String(r.createdAt)).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+            : "Recently",
+          note: String(r.studentNote || r.coverLetter || "Referral requested via AlumniConnect platform."),
+        };
+      });
+
+      // Merge user's real database referrals with demo items to provide an active, full board experience
+      setReferrals([...mapped, ...initialReferrals.filter(init => !mapped.some(m => m.id === init.id))]);
+    }
+  }, [serverReferralsData, isAlumni]);
+
   // Multi-select & Bulk actions state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [bulkStatusOpen, setBulkStatusOpen] = useState(false);
 
-  const handleUpdateStatus = (id: string, newStatus: ReferralStatus) => {
+  const handleUpdateStatus = async (id: string, newStatus: ReferralStatus) => {
     const target = referrals.find((r) => r.id === id);
     if (target && target.status !== newStatus) {
       setReferrals((prev) =>
@@ -710,6 +763,14 @@ export default function ReferralsPage() {
         message: `Status updated to ${statusConfig[newStatus]?.label || newStatus}`,
       });
       setTimeout(() => setStatusToast(null), 3200);
+
+      // Persist to backend database if this is a live database record
+      try {
+        await apiClient.referrals.updateStatus(id, newStatus.toUpperCase());
+        reloadReferrals();
+      } catch (err) {
+        console.debug("Seed or local referral status update:", err);
+      }
     }
   };
 
@@ -904,7 +965,7 @@ export default function ReferralsPage() {
   };
 
   // Drag handlers
-  const handleDrag = (_: any, info: { point: { x: number; y: number } }) => {
+  const handleDrag = (_event: unknown, info: { point: { x: number; y: number } }) => {
     // Find drop zone element under current cursor
     const element = document.elementFromPoint(info.point.x, info.point.y);
     const dropZone = element?.closest("[data-drop-zone]") as HTMLElement | null;
@@ -922,7 +983,7 @@ export default function ReferralsPage() {
 
   const handleDragEnd = (
     id: string,
-    _: any,
+    _event: unknown,
     info: { point: { x: number; y: number } }
   ) => {
     const element = document.elementFromPoint(info.point.x, info.point.y);

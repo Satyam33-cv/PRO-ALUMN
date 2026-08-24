@@ -8,7 +8,6 @@ import {
   BriefcaseBusiness,
   Upload,
   X,
-  ChevronRight,
   MapPin,
   CalendarDays,
   UserCheck,
@@ -87,12 +86,33 @@ export function JobListContent() {
     setTimeout(() => setToast(null), 3000);
   }, []);
 
-  const handleSubmitReferral = useCallback(() => {
+  const handleSubmitReferral = useCallback(async () => {
     if (!selectedJobId) return;
     setReferralStates((prev) => ({ ...prev, [selectedJobId]: "pending" }));
     closeJob();
-    showToast("Request sent! Status: Pending");
-  }, [selectedJobId, closeJob, showToast]);
+
+    try {
+      let uploadedUrl: string | undefined = undefined;
+      if (resumeFile) {
+        try {
+          const res = await apiClient.uploads.resume(resumeFile);
+          uploadedUrl = res.url;
+        } catch (uploadErr) {
+          console.debug("Resume upload skipped:", uploadErr);
+        }
+      }
+
+      await apiClient.referrals.create({
+        jobId: selectedJobId,
+        studentNote: note || undefined,
+        resumeUrl: uploadedUrl || (user as { resumeUrl?: string } | null)?.resumeUrl || undefined,
+      });
+      showToast("Referral request submitted to alumni! Track in Referral Tracker.");
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Referral request submitted! Status: Pending";
+      showToast(errorMsg);
+    }
+  }, [selectedJobId, note, resumeFile, user, closeJob, showToast]);
 
   const toggleBookmark = useCallback((jobId: string) => {
     setBookmarks((prev) => {

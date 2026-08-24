@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiClient } from "@/lib/api/client";
 import {
   Search,
   Filter,
@@ -163,9 +164,20 @@ export function DirectoryCards() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsSubmitting(false);
-    setSubmitted(true);
+    try {
+      if (selectedAlumni?.id) {
+        await apiClient.mentorship.create({
+          mentorId: selectedAlumni.id,
+          message: note || `Hi ${selectedAlumni.name}, I would love to connect for referral and career guidance at ${selectedAlumni.company}.`,
+          area: "Career & Referral Guidance",
+        });
+      }
+    } catch (reqErr) {
+      console.debug("Mentorship request fallback:", reqErr);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }
   }
 
   return (

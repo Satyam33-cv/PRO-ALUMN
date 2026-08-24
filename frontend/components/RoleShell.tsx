@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Bell,
   BriefcaseBusiness,
-  CalendarDays,
   ChevronDown,
   GraduationCap,
   Heart,
@@ -17,7 +16,6 @@ import {
   MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
-  Search,
   Settings,
   ShieldCheck,
   Users,
@@ -32,9 +30,9 @@ import {
   StickyNote,
   Flame,
   Coins,
-  Award,
   Newspaper,
   Trophy,
+  Target,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
@@ -58,6 +56,7 @@ const primaryNav: Record<Role, NavItem[]> = {
     { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
+    { label: "Referrals", href: "/referrals", icon: Target },
     { label: "Rewards", href: "/rewards", icon: Flame },
     { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
@@ -67,6 +66,7 @@ const primaryNav: Record<Role, NavItem[]> = {
     { label: "Directory", href: "/directory", icon: Users },
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
+    { label: "Referrals", href: "/referrals", icon: Target },
     { label: "Rewards", href: "/rewards", icon: Flame },
     { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
@@ -91,6 +91,7 @@ const primaryNav: Record<Role, NavItem[]> = {
 };
 
 const secondaryNav: NavItem[] = [
+  { label: "Referral Tracker", href: "/referrals", icon: Target },
   { label: "Somaiya Sparsh", href: "/newsletter", icon: Newspaper },
   { label: "Google Docs", href: "/docs", icon: FileText },
   { label: "Google Keep", href: "/keep", icon: StickyNote },

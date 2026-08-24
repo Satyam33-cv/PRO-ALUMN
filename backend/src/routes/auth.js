@@ -70,6 +70,8 @@ passport.use(new GoogleStrategy({
           select: { id: true, email: true, role: true, name: true, avatarUrl: true }
         });
       }
+      
+      user.googleAccessToken = accessToken;
       return cb(null, user);
     } catch (err) {
       console.error('Google strategy verify error:', err);
@@ -199,7 +201,23 @@ router.get('/me', authenticate, async (req, res) => {
 });
 
 // =================== GET /api/auth/google ===================
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+const GOOGLE_SCOPES = [
+  'profile', 
+  'email',
+  'https://www.googleapis.com/auth/gmail.readonly',
+  'https://www.googleapis.com/auth/gmail.send',
+  'https://www.googleapis.com/auth/gmail.compose',
+  'https://www.googleapis.com/auth/forms.body',
+  'https://www.googleapis.com/auth/forms.responses.readonly',
+  'https://www.googleapis.com/auth/documents',
+  'https://www.googleapis.com/auth/drive.readonly',
+  'https://www.googleapis.com/auth/drive.file',
+  'https://www.googleapis.com/auth/calendar',
+  'https://www.googleapis.com/auth/calendar.events',
+  'https://www.googleapis.com/auth/chat.spaces',
+  'https://www.googleapis.com/auth/chat.messages'
+];
+router.get('/google', passport.authenticate('google', { scope: GOOGLE_SCOPES, session: false }));
 
 // =================== GET /api/auth/google/callback ===================
 router.get(
@@ -228,7 +246,14 @@ router.get(
         JWT_SECRET,
         { expiresIn: '7d' },
       );
-      res.redirect(`${FRONTEND_URL}/auth/callback?token=${token}`);
+      
+      const redirectUrl = new URL(`${FRONTEND_URL}/auth/callback`);
+      redirectUrl.searchParams.set('token', token);
+      if (req.user.googleAccessToken) {
+        redirectUrl.searchParams.set('googleToken', req.user.googleAccessToken);
+      }
+      
+      res.redirect(redirectUrl.toString());
     } catch (err) {
       console.error('Google callback token sign error:', err);
       res.redirect(`${FRONTEND_URL}/login?error=token_failed`);

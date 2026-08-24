@@ -134,18 +134,46 @@ export const apiClient = {
       return await apiFetch<{ attending: boolean }>({ method: "POST", url: `/events/${id}/rsvp` });
     },
   },
+  referrals: {
+    mySent: async (): Promise<{ referrals: any[]; pagination: any }> => {
+      return await apiFetch<{ referrals: any[]; pagination: any }>({ method: "GET", url: "/referrals/me/sent" });
+    },
+    myReceived: async (status?: string): Promise<{ referrals: any[]; pagination: any }> => {
+      return await apiFetch<{ referrals: any[]; pagination: any }>({
+        method: "GET",
+        url: "/referrals/me/received",
+        params: status ? { status } : undefined,
+      });
+    },
+    list: async (): Promise<ReferralRequest[]> => {
+      return await apiFetch<{ referrals: ReferralRequest[] }>({
+        method: "GET",
+        url: "/referrals/me/received",
+      }).then((res) => res.referrals || []);
+    },
+    create: async (data: { jobId: string; message?: string; studentNote?: string; resumeUrl?: string; coverLetter?: string } | string, legacyMsg?: string): Promise<any> => {
+      const payload = typeof data === "string" ? { jobId: data, studentNote: legacyMsg } : { ...data, studentNote: data.studentNote || data.message };
+      return await apiFetch<any>({ method: "POST", url: "/referrals", data: payload });
+    },
+    updateStatus: async (id: string, status: string): Promise<any> => {
+      return await apiFetch<any>({ method: "PATCH", url: `/referrals/${id}/status`, data: { status: status.toUpperCase() } });
+    },
+    getById: async (id: string): Promise<any> => {
+      return await apiFetch<any>({ method: "GET", url: `/referrals/${id}` });
+    },
+  },
   requests: {
     list: async (): Promise<ReferralRequest[]> => {
       return await apiFetch<{ referrals: ReferralRequest[] }>({
         method: "GET",
         url: "/referrals/me/received",
-      }).then((res) => res.referrals);
+      }).then((res) => res.referrals || []);
     },
     create: async (jobId: string, message: string): Promise<ReferralRequest> => {
-      return await apiFetch<ReferralRequest>({ method: "POST", url: "/referrals", data: { jobId, message } });
+      return await apiFetch<ReferralRequest>({ method: "POST", url: "/referrals", data: { jobId, studentNote: message } });
     },
     updateStatus: async (id: string, status: ReferralRequest["status"]): Promise<ReferralRequest> => {
-      return await apiFetch<ReferralRequest>({ method: "PATCH", url: `/referrals/${id}/status`, data: { status } });
+      return await apiFetch<ReferralRequest>({ method: "PATCH", url: `/referrals/${id}/status`, data: { status: status.toUpperCase() as any } });
     },
   },
   admin: {
