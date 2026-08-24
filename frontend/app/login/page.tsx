@@ -18,17 +18,7 @@ export default function LoginPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const router = useRouter();
-  const { user, setSession, signInWithGoogle } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      if (user.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/home");
-      }
-    }
-  }, [user, router]);
+  const { setSession, signInWithGoogle } = useAuth();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

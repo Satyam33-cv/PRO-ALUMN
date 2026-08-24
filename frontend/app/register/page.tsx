@@ -45,17 +45,7 @@ export default function RegisterPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const router = useRouter();
-  const { user, setSession, signInWithGoogle } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      if (user.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/home");
-      }
-    }
-  }, [user, router]);
+  const { setSession, signInWithGoogle } = useAuth();
 
   function setField(field: keyof FormValues, value: string) {
     setValues((prev) => ({ ...prev, [field]: value }));
