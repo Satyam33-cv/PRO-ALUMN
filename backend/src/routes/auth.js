@@ -43,7 +43,10 @@ passport.use(new GoogleStrategy({
         return cb(new Error('No email found in Google account profile'), null);
       }
 
-      let user = await prisma.user.findUnique({ where: { email } });
+      let user = await prisma.user.findUnique({ 
+        where: { email },
+        select: { id: true, email: true, role: true, name: true, avatarUrl: true }
+      });
       
       if (!user) {
         const randomPassword = crypto.randomBytes(16).toString('hex');
@@ -63,7 +66,8 @@ passport.use(new GoogleStrategy({
             role: 'STUDENT',
             avatarUrl,
             isVerified: true,
-          }
+          },
+          select: { id: true, email: true, role: true, name: true, avatarUrl: true }
         });
       }
       return cb(null, user);
