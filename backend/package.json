@@ -7,7 +7,7 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "seed": "node src/seed.js",
-    "build": "prisma generate --schema ./prisma/schema.prisma && prisma migrate deploy --schema ./prisma/schema.prisma",
+    "build": "prisma generate --schema ./prisma/schema.prisma && prisma db push --schema ./prisma/schema.prisma",
     "postinstall": "prisma generate --schema ./prisma/schema.prisma",
     "prisma:generate": "prisma generate --schema ./prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema ./prisma/schema.prisma",
