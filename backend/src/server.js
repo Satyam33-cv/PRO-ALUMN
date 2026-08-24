@@ -83,6 +83,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(globalLimiter);
 
+// --- Favicon handler ---
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // --- Health check (before auth-protected routes) ---
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'alumni-api', time: new Date().toISOString() });

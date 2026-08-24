@@ -27,6 +27,10 @@ const FRONTEND_URL =
     ? 'https://sihproalumn.vercel.app'
     : 'http://localhost:3000');
 
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  console.warn('⚠️  GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is missing. Google OAuth will fail until set in environment variables.');
+}
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || 'dummy_id',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy_secret',
@@ -34,25 +38,37 @@ passport.use(new GoogleStrategy({
   },
   async function(accessToken, refreshToken, profile, cb) {
     try {
-      const email = profile.emails[0].value.toLowerCase();
+      const email = profile.emails?.[0]?.value?.toLowerCase();
+      if (!email) {
+        return cb(new Error('No email found in Google account profile'), null);
+      }
+
       let user = await prisma.user.findUnique({ where: { email } });
       
       if (!user) {
         const randomPassword = crypto.randomBytes(16).toString('hex');
         const passwordHash = await bcrypt.hash(randomPassword, 10);
+        const name = profile.displayName || 
+          [profile.name?.givenName, profile.name?.familyName].filter(Boolean).join(' ') || 
+          email.split('@')[0] || 
+          'Google User';
+
+        const avatarUrl = profile.photos?.[0]?.value || null;
+
         user = await prisma.user.create({
           data: {
-            name: profile.displayName,
+            name,
             email,
             passwordHash,
             role: 'STUDENT',
-            avatarUrl: profile.photos?.[0]?.value,
+            avatarUrl,
             isVerified: true,
           }
         });
       }
       return cb(null, user);
     } catch (err) {
+      console.error('Google strategy verify error:', err);
       return cb(err, null);
     }
   }
@@ -168,7 +184,23 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 // =================== GET /api/auth/google/callback ===================
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: `${FRONTEND_URL}/login?error=oauth_failed`, session: false }),
+  (req, res, next) => {
+    passport.authenticate('google', { session: false }, (err, user, info) => {
+      if (err) {
+        console.error('Passport Google Auth Error:', err);
+        return res.status(500).json({ 
+          error: 'Authentication failed', 
+          details: err.message,
+          stack: err.stack 
+        });
+      }
+      if (!user) {
+        return res.redirect(`${FRONTEND_URL}/login?error=oauth_failed`);
+      }
+      req.user = user;
+      next();
+    })(req, res, next);
+  },
   (req, res) => {
     try {
       const token = jwt.sign(
