@@ -1,5 +1,3 @@
-Dockerfile
-api.Dockerfile
 .dockerignore
 node_modules
 **/node_modules
