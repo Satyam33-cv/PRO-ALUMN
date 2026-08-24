@@ -437,7 +437,10 @@ router.get('/stale-profiles', async (req, res) => {
 // =================== POST /api/admin/nudge-user/:id ===================
 router.post('/nudge-user/:id', async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    const user = await prisma.user.findUnique({ 
+      where: { id: req.params.id },
+      select: { id: true, name: true }
+    });
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     await prisma.notification.create({
@@ -519,7 +522,10 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
       if (!name || !emailAddress) { failed.push({ row: index, reason: 'missing name/email' }); continue; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)) { failed.push({ row: index, email: emailAddress, reason: 'invalid email format' }); continue; }
 
-      const existing = await prisma.user.findUnique({ where: { email: emailAddress } });
+      const existing = await prisma.user.findUnique({ 
+        where: { email: emailAddress },
+        select: { id: true }
+      });
       if (existing) { skipped.push({ row: index, email: emailAddress, reason: 'email already registered' }); continue; }
 
       const tempPassword = crypto.randomBytes(12).toString('base64url');
@@ -541,6 +547,7 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
           phone: row.phone || null,
           linkedinUrl: row.linkedinUrl || row.linkedin || null,
         },
+        select: { id: true }
       });
       imported.push({ name: String(name).trim(), email: emailAddress });
       importedForEmail.push({ name: String(name).trim(), email: emailAddress, tempPassword });

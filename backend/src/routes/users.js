@@ -106,7 +106,10 @@ router.patch('/me/password', authenticate, async (req, res) => {
     if (newPassword.length < 6) return res.status(400).json({ error: 'New password too short' });
 
     const bcrypt = require('bcrypt');
-    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    const user = await prisma.user.findUnique({ 
+      where: { id: req.user.id },
+      select: { id: true, passwordHash: true }
+    });
     const ok = await bcrypt.compare(currentPassword, user.passwordHash);
     if (!ok) return res.status(401).json({ error: 'Current password is wrong' });
 
