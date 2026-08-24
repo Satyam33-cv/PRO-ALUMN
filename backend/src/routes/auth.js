@@ -105,7 +105,10 @@ router.post('/register', async (req, res) => {
     }
 
     // Check existing
-    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    const existing = await prisma.user.findUnique({ 
+      where: { email: email.toLowerCase() },
+      select: { id: true }
+    });
     if (existing) return res.status(409).json({ error: 'Email already registered' });
 
     // Hash password
@@ -118,6 +121,12 @@ router.post('/register', async (req, res) => {
         phone, batchYear: batchYear ? parseInt(batchYear) : null,
         department, rollNumber, currentCompany, jobTitle, location, linkedinUrl, bio,
       },
+      select: {
+        id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,
+        batchYear: true, department: true, rollNumber: true,
+        currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
+        isVerified: true, isActive: true, createdAt: true,
+      },
     });
 
     // Auto-login: issue token
@@ -127,8 +136,7 @@ router.post('/register', async (req, res) => {
       { expiresIn: '7d' },
     );
 
-    const { passwordHash: _, ...safeUser } = user;
-    res.status(201).json({ user: safeUser, token });
+    res.status(201).json({ user, token });
   } catch (err) {
     console.error('POST /auth/register error:', err);
     res.status(500).json({ error: 'Failed to register' });
@@ -141,7 +149,15 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'email and password required' });
 
-    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    const user = await prisma.user.findUnique({ 
+      where: { email: email.toLowerCase() },
+      select: {
+        id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,
+        batchYear: true, department: true, rollNumber: true,
+        currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
+        isVerified: true, isActive: true, createdAt: true, passwordHash: true,
+      },
+    });
     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
     if (!user.isActive) return res.status(403).json({ error: 'Account disabled' });
 
