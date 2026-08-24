@@ -1,7 +1,7 @@
-﻿import { forwardRef } from "react";
+import { forwardRef } from "react";
 
 type Tone = "default" | "muted" | "glass" | "dark";
-type Padding = "sm" | "md" | "lg";
+type Padding = "none" | "sm" | "md" | "lg";
 
 const tones: Record<Tone, string> = {
   default: "border bg-card hover:bg-card/80 transition-colors",
@@ -11,6 +11,7 @@ const tones: Record<Tone, string> = {
 };
 
 const padding: Record<Padding, string> = {
+  none: "p-0",
   sm: "p-3",
   md: "p-4",
   lg: "p-5",

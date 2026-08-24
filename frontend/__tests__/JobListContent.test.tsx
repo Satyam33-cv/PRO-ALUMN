@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 
 jest.mock("next/navigation", () => ({
@@ -14,6 +15,31 @@ jest.mock("next/link", () => {
   });
 });
 
+const mockJobs = [
+  {
+    id: "job-apm",
+    title: "Associate Product Manager",
+    company: "Northstar Labs",
+    location: "San Francisco, CA",
+    type: "Full-time",
+    salary: "$120k - $140k",
+    posted: "2d ago",
+    referralAvailable: true,
+    requirements: ["TypeScript", "Next.js"],
+  },
+  {
+    id: "job-2",
+    title: "Research Analyst",
+    company: "Fieldwork",
+    type: "Full-time",
+    location: "Chicago, IL",
+    posted: "3d ago",
+    referralAvailable: false,
+    description: "Analyze market data.",
+    requirements: ["Python", "SQL"],
+  },
+];
+
 jest.mock("@/lib/context/AuthContext", () => ({
   useAuth: () => ({
     user: { name: "Test User", email: "test@test.com", role: "student", initials: "TU", classYear: "2025", department: "CS" },
@@ -24,9 +50,33 @@ jest.mock("@/lib/context/AuthContext", () => ({
   }),
 }));
 
+const mockUseApi = jest.fn();
+jest.mock("@/lib/hooks/useApi", () => ({
+  useApi: (...args: unknown[]) => mockUseApi(...args),
+}));
+
 import { JobListContent } from "@/components/JobListContent";
 
+function setupSuccessMocks() {
+  mockUseApi.mockReturnValue({
+    data: mockJobs,
+    error: undefined,
+    isLoading: false,
+    loading: false,
+    isValidating: false,
+    refresh: jest.fn(),
+    reload: jest.fn(),
+    refetch: jest.fn(),
+    mutate: jest.fn(),
+  });
+}
+
 describe("JobListContent", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    setupSuccessMocks();
+  });
+
   it("renders the career board heading", () => {
     render(<JobListContent />);
     expect(screen.getByText(/open doors/i)).toBeInTheDocument();

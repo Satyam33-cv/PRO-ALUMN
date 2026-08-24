@@ -32,6 +32,7 @@ export type Job = {
   posted: string;
   referralAvailable?: boolean;
   description?: string;
+  requirements?: string[];
   postedBy?: string;
   postedByBatch?: string;
   remote?: boolean;

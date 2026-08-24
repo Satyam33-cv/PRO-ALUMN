@@ -357,7 +357,7 @@ export function JobListContent() {
                 <div className="border-t border-ink/10 pt-6">
                   <p className="font-mono text-xs uppercase tracking-wider text-ink/45">Requirements</p>
                   <ul className="mt-3 space-y-2 text-sm leading-6 text-ink/70">
-                    {selectedJob.requirements.map((req, i) => (
+                    {(selectedJob.requirements || []).map((req: string, i: number) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="flex h-1.5 w-1.5 shrink-0 mt-2.5 rounded-full bg-brass" />
                         {req}

@@ -43,7 +43,7 @@ export function StoriesContent() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: apiStories, mutate: mutateStories } = useApi("stories:list", () => apiClient.stories.list());
+  const { data: apiStories, mutate: mutateStories, refresh: refreshStories } = useApi("stories:list", () => apiClient.stories.list());
   const allStories = (apiStories || []) as any[];
 
   const filtered = allStories.filter((s) => {
@@ -90,7 +90,7 @@ export function StoriesContent() {
       setRole("");
       setImageUrl("");
       showToast("Achievement story shared to community feed!");
-      mutateStories();
+      refreshStories();
     } catch (err: any) {
       setSubmitting(false);
       showToast(err.message || "Error submitting story");
@@ -108,16 +108,15 @@ export function StoriesContent() {
           hasVoted: isUpvoting,
           upvoteCount: (s.upvoteCount || 0) + (isUpvoting ? 1 : -1),
         };
-      }),
-      false
+      })
     );
 
     try {
       const res = await apiClient.stories.vote(storyId);
       if (res.hasVoted) showToast("Upvoted! ⭐");
-      mutateStories();
+      refreshStories();
     } catch (err) {
-      mutateStories();
+      refreshStories();
       showToast("Failed to vote");
     }
   };

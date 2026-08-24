@@ -183,7 +183,8 @@ function RequestModal({
 
 export function MentorshipContent() {
   const [modalOpen, setModalOpen] = useState(false);
-  const { data: mentorshipData, mutate } = useApi("mentorship:list", () => apiClient.mentorship.list());
+  const [calendarWeek, setCalendarWeek] = useState<number>(0);
+  const { data: mentorshipData, refresh: refreshMentorship } = useApi("mentorship:list", () => apiClient.mentorship.list());
   
   const requests = useMemo(() => {
     if (!mentorshipData?.mentorships) return [];
@@ -211,9 +212,9 @@ export function MentorshipContent() {
   const [showChatPreview, setShowChatPreview] = useState(false);
 
   const { data: topAlumniData } = useApi("mentorship:top-alumni", () => apiClient.matching.topAlumni());
-  const topMatch = topAlumniData?.alumni?.[0];
+  const topMatch = (topAlumniData?.alumni?.[0] || null) as any;
 
-  const skillsList = typeof topMatch?.skills === 'string' 
+  const skillsList: string[] = typeof topMatch?.skills === 'string' 
     ? topMatch.skills.split(',').map((s: string) => s.trim())
     : Array.isArray(topMatch?.skills) ? topMatch.skills : [];
 
@@ -230,7 +231,7 @@ export function MentorshipContent() {
   const handleAccept = async (id: string) => {
     try {
       await apiClient.mentorship.updateStatus(id, "ACCEPTED");
-      mutate();
+      refreshMentorship();
     } catch (err) {
       console.error(err);
     }
@@ -239,7 +240,7 @@ export function MentorshipContent() {
   const handleDecline = async (id: string) => {
     try {
       await apiClient.mentorship.updateStatus(id, "DECLINED");
-      mutate();
+      refreshMentorship();
     } catch (err) {
       console.error(err);
     }
@@ -257,7 +258,7 @@ export function MentorshipContent() {
     const dayIndex = WEEKDAYS.indexOf(day);
     const diff = (dayIndex - today.getDay() + 7) % 7;
     const date = new Date(today);
-    date.setDate(today.getDate() + diff);
+    date.setDate(today.getDate() + diff + calendarWeek * 7);
     return date.toLocaleDateString("en-US", { day: "numeric", month: "short" });
   };
 

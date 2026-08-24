@@ -16,12 +16,15 @@ type UseApiOptions = {
   staleTime?: number;
 };
 
-type UseApiResult<T> = {
+export type UseApiResult<T> = {
   data?: T;
   error?: ApiError;
   isLoading: boolean;
+  loading: boolean;
   isValidating: boolean;
   refresh: () => Promise<void>;
+  reload: () => Promise<void>;
+  refetch: () => Promise<void>;
   mutate: (data: T) => void;
 };
 
@@ -86,12 +89,16 @@ export function useApi<T>(key: string, fetcher: () => Promise<T>, options: UseAp
     activeEntry.listeners.forEach((listener) => listener());
   }, [key]);
 
+  const loading = enabled && !entry.data && !entry.error;
   return {
     data: entry.data,
     error: entry.error,
-    isLoading: enabled && !entry.data && !entry.error,
+    isLoading: loading,
+    loading,
     isValidating: Boolean(entry.promise),
     refresh,
+    reload: refresh,
+    refetch: refresh,
     mutate,
   };
 }

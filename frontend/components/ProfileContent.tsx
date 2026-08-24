@@ -179,7 +179,7 @@ function TimelineModal({
 export function ProfileContent() {
   const { user, signOut, setUser, setSession, googleAccessToken } = useAuth();
   const router = useRouter();
-  const { data: fullProfile, mutate: mutateProfile } = useApi("profile:me", () => apiClient.auth.me());
+  const { data: fullProfile, refresh: refreshProfile } = useApi("profile:me", () => apiClient.auth.me());
   const { data: gamificationData, reload: reloadGamification } = useApi("profile:gamification", () => apiClient.gamification.getStatus());
   const [toast, setToast] = useState<string | null>(null);
   const [mentoring, setMentoring] = useState(true);
@@ -203,7 +203,7 @@ export function ProfileContent() {
       const res = await apiClient.gamification.verifyJob();
       showToast(res.message);
       reloadGamification();
-      mutateProfile();
+      refreshProfile();
     } catch (err) {
       console.error(err);
       showToast("Failed to verify job status");
@@ -245,10 +245,10 @@ export function ProfileContent() {
       await createCalendarEvent({
         token: googleAccessToken,
         summary: meetTopic,
-        description: `PRO ALUMN Meeting scheduled by ${user.name}`,
+        description: `PRO ALUMN Meeting scheduled by ${user?.name || "Member"}`,
         startDateTime: startISO,
         endDateTime: endISO,
-        attendees: [user.email],
+        attendees: user?.email ? [user.email] : [],
       });
       setScheduleStatus("success");
       setTimeout(() => {
@@ -304,7 +304,7 @@ export function ProfileContent() {
     try {
       setUploadingAvatar(true);
       const res = await apiClient.uploads.avatar(file);
-      await mutateProfile();
+      await refreshProfile();
       const updatedUser = await apiClient.auth.me();
       const token = localStorage.getItem("auth-token") || "";
       setSession({ user: updatedUser, token });
@@ -331,7 +331,7 @@ export function ProfileContent() {
 
   const handleSaveProfile = async (data: any) => {
     await apiClient.users.updateProfile(data);
-    await mutateProfile();
+    await refreshProfile();
     const updatedUser = await apiClient.auth.me();
     // Rebuild session by grabbing local token if necessary, or just rely on context
     const token = localStorage.getItem("auth-token") || "";
@@ -355,7 +355,7 @@ export function ProfileContent() {
       setResumePreview(file.name);
       const { url } = await apiClient.uploads.resume(file);
       await apiClient.users.updateProfile({ resumeUrl: url });
-      await mutateProfile();
+      await refreshProfile();
       showToast("Resume saved to Supabase storage successfully!");
     } catch (err) {
       console.error(err);
@@ -543,7 +543,7 @@ export function ProfileContent() {
             </div>
 
             {/* Career Status Verification */}
-            {(fullProfile?.role === "ALUMNI" || user.role === "alumni") && (
+            {(fullProfile?.role?.toLowerCase() === "alumni" || user?.role === "alumni") && (
               <button
                 onClick={handleVerifyJobStatus}
                 disabled={verifyingStatus}

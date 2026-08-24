@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, act } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/dom";
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
@@ -81,6 +82,6 @@ describe("DashboardContent", () => {
   it("renders alumni name after load", async () => {
     setupSuccessMocks();
     render(<DashboardContent />);
-    expect(screen.getByText("Marcus Chen")).toBeInTheDocument();
+    expect(screen.getAllByText("Marcus Chen")[0]).toBeInTheDocument();
   });
 });

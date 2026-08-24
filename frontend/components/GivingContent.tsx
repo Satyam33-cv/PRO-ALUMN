@@ -43,7 +43,7 @@ const topDonors = [
   { rank: 5, name: "Raj Patel", batch: "2017", amount: "$10,000" },
 ];
 
-const giftAmounts = ["₹500", "₹1,000", "₹2,500", "Other"];
+const giftAmounts = ["$25", "$50", "$100", "$250", "Other"];
 
 export function GivingContent() {
   const [modalOpen, setModalOpen] = useState(false);

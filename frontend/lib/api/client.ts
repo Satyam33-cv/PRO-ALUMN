@@ -87,6 +87,18 @@ export const apiClient = {
     get: async (id: string): Promise<Job> => {
       return await apiFetch<Job>({ method: "GET", url: `/jobs/${id}` });
     },
+    create: async (data: {
+      title: string;
+      company: string;
+      type: string;
+      location: string;
+      description: string;
+      requirements?: string[];
+      referralAvailable?: boolean;
+      remote?: boolean;
+    }): Promise<{ job: Job }> => {
+      return await apiFetch<{ job: Job }>({ method: "POST", url: "/jobs", data });
+    },
     myPostings: async (): Promise<{ jobs: any[] }> => {
       return await apiFetch<{ jobs: any[] }>({ method: "GET", url: "/jobs/my-postings" });
     },
@@ -104,6 +116,19 @@ export const apiClient = {
     },
     get: async (id: string): Promise<EventItem> => {
       return await apiFetch<EventItem>({ method: "GET", url: `/events/${id}` });
+    },
+    create: async (data: {
+      title: string;
+      detail: string;
+      place: string;
+      date: string;
+      month?: string;
+      day?: string;
+      startsAt?: string;
+      category?: string;
+      capacity?: number;
+    }): Promise<{ event: EventItem }> => {
+      return await apiFetch<{ event: EventItem }>({ method: "POST", url: "/events", data });
     },
     rsvp: async (id: string): Promise<{ attending: boolean }> => {
       return await apiFetch<{ attending: boolean }>({ method: "POST", url: `/events/${id}/rsvp` });
@@ -172,17 +197,12 @@ export const apiClient = {
       return await apiFetch<any>({ method: "POST", url: `/admin/nudge-user/${id}` });
     },
     importCsv: async (formData: FormData): Promise<any> => {
-      const token = typeof window !== "undefined" ? localStorage.getItem("pro_alumn_token") : null;
-      const res = await fetch(`${API_BASE_URL}/admin/import-csv`, {
+      return await apiFetch<any>({
         method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: formData,
+        url: "/admin/import-csv",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: "Failed to import CSV" }));
-        throw new Error(errorData.error || "Failed to import CSV");
-      }
-      return await res.json();
     },
   },
   stories: {
@@ -286,6 +306,26 @@ export const apiClient = {
         method: "GET",
         url: "/newsletters",
         params: Object.keys(params).length ? params : undefined,
+      });
+    },
+  },
+  notifications: {
+    list: async () => {
+      return await apiFetch<{ notifications: any[]; unreadCount: number }>({
+        method: "GET",
+        url: "/notifications",
+      });
+    },
+    readAll: async () => {
+      return await apiFetch<{ message: string }>({
+        method: "PATCH",
+        url: "/notifications/read-all",
+      });
+    },
+    markRead: async (id: string) => {
+      return await apiFetch<{ message: string }>({
+        method: "PATCH",
+        url: `/notifications/${id}/read`,
       });
     },
   },

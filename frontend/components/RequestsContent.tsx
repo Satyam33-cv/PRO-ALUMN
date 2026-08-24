@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Inbox, ArrowRight } from "lucide-react";
 import { ReferralThread } from "@/components/ReferralThread";
@@ -51,8 +51,23 @@ const cardVariants = {
 
 export function RequestsContent() {
   const [activeTab, setActiveTab] = useState<Status | "all">("all");
-  const { data: apiRequests, mutate: mutateRequests } = useApi("requests:list", () => apiClient.requests.list());
-  const requests = (apiRequests || []) as ReferralRequest[];
+  const { data: apiRequests, refresh: refreshRequests } = useApi("requests:list", () => apiClient.requests.list());
+  
+  const requests: ReferralRequest[] = useMemo(() => {
+    if (!apiRequests) return [];
+    return (apiRequests as any[]).map((r: any) => ({
+      id: r.id,
+      requesterName: r.requester?.name || r.requesterName || "Student Member",
+      requesterInitials: r.requester?.name ? r.requester.name.split(" ").map((n: string) => n[0]).join("") : "SM",
+      recipientName: r.recipient?.name || r.recipientName || "Alumni Member",
+      recipientInitials: r.recipient?.name ? r.recipient.name.split(" ").map((n: string) => n[0]).join("") : "AM",
+      jobTitle: r.job?.title || r.jobTitle || "Job Referral",
+      company: r.job?.company || r.company || "Company",
+      message: r.message || r.studentNote || "",
+      status: (r.status?.toLowerCase() || "pending") as Status,
+      createdAt: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : "",
+    }));
+  }, [apiRequests]);
 
   const filtered =
     activeTab === "all" ? requests : requests.filter((r) => r.status === activeTab);
@@ -69,7 +84,7 @@ export function RequestsContent() {
 
   function handleStatusChange(id: string, newStatus: Status) {
     apiClient.requests.updateStatus(id, newStatus).then(() => {
-      mutateRequests(requests.map((r) => (r.id === id ? { ...r, status: newStatus } : r)));
+      refreshRequests();
     });
   }
 

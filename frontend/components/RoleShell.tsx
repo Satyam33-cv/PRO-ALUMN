@@ -113,6 +113,18 @@ function capitalize(s?: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
+function isActive(pathname: string, href: string): boolean {
+  if (href === "/home") return pathname === "/home" || pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
+function getNavClasses(active: boolean, type: "primary" | "secondary" = "primary"): string {
+  if (active) {
+    return "bg-blue-600/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400 font-semibold";
+  }
+  return "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium";
+}
+
 function NotificationPanel({
   open,
   onClose,

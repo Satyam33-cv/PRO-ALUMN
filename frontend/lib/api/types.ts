@@ -21,17 +21,19 @@ export type ApiError = {
 // --- Request/Response types ---
 export type UpdateProfileData = {
   name?: string;
+  phone?: string;
   bio?: string;
   location?: string;
   company?: string;
   role?: string;
   batch?: string;
-  skills?: string[];
+  skills?: string | string[];
   department?: string;
   jobTitle?: string;
   currentCompany?: string;
   batchYear?: number;
   linkedinUrl?: string;
+  interests?: string;
 };
 
 export type SearchParams = {
@@ -66,12 +68,14 @@ export type User = {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role?: "student" | "alumni" | "admin" | "faculty";
   batchYear?: number | string;
   department?: string;
   currentCompany?: string;
   jobTitle?: string;
   location?: string;
+  linkedinUrl?: string;
   avatarUrl?: string;
   bio?: string;
   skills?: string;

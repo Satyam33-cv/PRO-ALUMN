@@ -85,9 +85,9 @@ export default function AnnouncementsPage() {
       }
 
       // 3. Chronological sort (newest date first)
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
-      if (!isNaN(dateA) && !isNaN(dateB)) {
+      const dateA = a.date ? new Date(a.date).getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+      const dateB = b.date ? new Date(b.date).getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+      if (!isNaN(dateA) && !isNaN(dateB) && (dateA > 0 || dateB > 0)) {
         return dateB - dateA;
       }
 
@@ -109,10 +109,12 @@ export default function AnnouncementsPage() {
       const q = searchQuery.toLowerCase().trim();
       if (!q) return true;
 
+      const authorName = typeof ann.author === "string" ? ann.author : (ann.author?.name || "");
+
       return (
         ann.title.toLowerCase().includes(q) ||
         ann.body.toLowerCase().includes(q) ||
-        (ann.author && ann.author.toLowerCase().includes(q)) ||
+        (authorName && authorName.toLowerCase().includes(q)) ||
         (ann.category && ann.category.toLowerCase().includes(q))
       );
     });
@@ -182,7 +184,16 @@ export default function AnnouncementsPage() {
     };
 
     setAnnouncementsList([newAnnouncement, ...announcementsList]);
-    apiClient.announcements.create(newAnnouncement).catch(() => {});
+    apiClient.announcements
+      .create({
+        title: newAnnouncement.title,
+        body: newAnnouncement.body,
+        category: newAnnouncement.category,
+        author: typeof newAnnouncement.author === "string" ? newAnnouncement.author : newAnnouncement.author?.name,
+        role: newAnnouncement.role,
+        pinned: newAnnouncement.pinned,
+      })
+      .catch(() => {});
 
     setNewTitle("");
     setNewCategory("General");
@@ -462,7 +473,7 @@ export default function AnnouncementsPage() {
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                           <span className="inline-flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
                             <User size={14} className="text-indigo-600 dark:text-indigo-400" />
-                            {ann.author}
+                            {typeof ann.author === "string" ? ann.author : (ann.author?.name || "Campus Administrator")}
                           </span>
                           {ann.role && (
                             <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:text-slate-400">
