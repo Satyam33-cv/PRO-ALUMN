@@ -177,7 +177,7 @@ function TimelineModal({
 
 
 export function ProfileContent() {
-  const { user, signOut, setUser, setSession, googleAccessToken } = useAuth();
+  const { user, signOut, setUser, setSession, session, googleAccessToken } = useAuth();
   const router = useRouter();
   const { data: fullProfile, refresh: refreshProfile } = useApi("profile:me", () => apiClient.auth.me());
   const { data: gamificationData, reload: reloadGamification } = useApi("profile:gamification", () => apiClient.gamification.getStatus());
@@ -306,8 +306,9 @@ export function ProfileContent() {
       const res = await apiClient.uploads.avatar(file);
       await refreshProfile();
       const updatedUser = await apiClient.auth.me();
-      const token = localStorage.getItem("auth-token") || "";
-      setSession({ user: updatedUser, token });
+      if (session) {
+        setSession({ ...session, user: updatedUser });
+      }
       showToast("Profile photo updated on Supabase & publicly visible!");
     } catch (err: any) {
       showToast(err.message || "Failed to upload avatar");
@@ -333,9 +334,10 @@ export function ProfileContent() {
     await apiClient.users.updateProfile(data);
     await refreshProfile();
     const updatedUser = await apiClient.auth.me();
-    // Rebuild session by grabbing local token if necessary, or just rely on context
-    const token = localStorage.getItem("auth-token") || "";
-    setSession({ user: updatedUser, token });
+    // Rebuild session by preserving existing token
+    if (session) {
+      setSession({ ...session, user: updatedUser });
+    }
     showToast("Profile updated successfully!");
   };
 
