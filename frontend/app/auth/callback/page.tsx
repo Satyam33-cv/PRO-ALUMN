@@ -22,7 +22,6 @@ function CallbackHandler() {
       try {
         localStorage.setItem("pro-alumn_token", token);
         const res = await apiClient.auth.me();
-        // The endpoint returns { user: {...} } or flat user
         const user = (res as unknown as { user?: typeof res })?.user ?? res;
         
         setSession({ user, token });
@@ -32,9 +31,33 @@ function CallbackHandler() {
           router.push("/home");
         }
       } catch (err) {
-        console.error("Auth callback error:", err);
-        localStorage.removeItem("pro-alumn_token");
-        router.push("/login?error=auth_failed");
+        console.error("Auth callback me() error, attempting token decode fallback:", err);
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join("")
+          );
+          const decoded = JSON.parse(jsonPayload);
+          const fallbackUser = {
+            id: decoded.id,
+            email: decoded.email || "",
+            role: decoded.role || "student",
+            name: decoded.name || decoded.email?.split("@")[0] || "User",
+          };
+          setSession({ user: fallbackUser, token });
+          if (decoded.role?.toLowerCase() === "admin") {
+            router.push("/admin");
+          } else {
+            router.push("/home");
+          }
+        } catch {
+          localStorage.removeItem("pro-alumn_token");
+          router.push("/login?error=auth_failed");
+        }
       }
     };
 

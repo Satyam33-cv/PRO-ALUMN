@@ -175,21 +175,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ? (process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/+$/, "").replace(/\/api$/, "")
       : "https://pro-alumn-production.up.railway.app";
 
-    try {
-      const result = await signInWithPopup(auth, googleAuthProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
-      if (token) {
-        setGoogleAccessToken(token);
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem("google_access_token", token);
-        }
-      }
-    } catch (error) {
-      console.warn("Firebase popup sign-in unavailable, redirecting to backend Google OAuth...", error);
-      if (typeof window !== "undefined") {
-        window.location.href = `${backendUrl}/api/auth/google`;
-      }
+    if (typeof window !== "undefined") {
+      window.location.href = `${backendUrl}/api/auth/google`;
     }
   }, []);
 

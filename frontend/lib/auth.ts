@@ -33,6 +33,7 @@ export function getToken(): string | null {
 export function clearSession() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem("pro-alumn_token");
   localStorage.removeItem(OLD_SESSION_KEY);
   localStorage.removeItem(OLD_TOKEN_KEY);
   localStorage.removeItem(OLD_USER_KEY);
