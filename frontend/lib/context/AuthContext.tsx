@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getSession, saveSession, clearSession } from "@/lib/auth";
+import { getSession, saveSession, clearSession, getToken } from "@/lib/auth";
 import type { AuthSession } from "@/lib/api/types";
 import {
   signInWithPopup,
@@ -16,6 +16,7 @@ import { auth, db, googleAuthProvider } from "@/lib/firebase";
 export type UserRole = "student" | "alumni" | "admin" | "faculty";
 
 export type AuthUser = {
+  id?: string;
   name: string;
   email: string;
   role: UserRole;
@@ -24,12 +25,15 @@ export type AuthUser = {
   department: string;
   firebaseUid?: string;
   photoURL?: string;
+  avatarUrl?: string;
 };
 
 type AuthContextValue = {
   user: AuthUser | null;
   role: UserRole;
   googleAccessToken: string | null;
+  accessToken: string | null;
+  session: AuthSession | null;
   setUser: (user: AuthUser) => void;
   setSession: (session: AuthSession) => void;
   switchRole: (role: UserRole) => void;
@@ -69,12 +73,15 @@ function userFromSession(session: AuthSession): AuthUser {
   const email = u.email ?? "";
   const name = u.name || (email ? email.split("@")[0].replace(/[._]/g, " ") : "User");
   return {
+    id: u.id,
     name,
     email,
     role,
     initials: getInitials(name),
     classYear: u.alumni?.graduationYear?.toString() ?? u.batchYear?.toString() ?? "2025",
     department: u.alumni?.department ?? u.department ?? "Computer Science",
+    avatarUrl: u.avatarUrl,
+    photoURL: u.avatarUrl,
   };
 }
 
@@ -87,17 +94,11 @@ function loadSessionUser(): AuthUser | null {
       // ignore
     }
   }
-  return {
-    name: "Alex Kim",
-    email: "alex.kim@alumni.edu",
-    role: "student",
-    initials: "AK",
-    classYear: "2025",
-    department: "Computer Science",
-  };
+  return null;
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [session, setSessionState] = useState<AuthSession | null>(() => getSession());
   const [user, setUserState] = useState<AuthUser | null>(null);
   const [googleAccessToken, setGoogleAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -169,11 +170,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
-    // Redirect to the Express backend Google OAuth endpoint
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-    // Ensure no double slashes by stripping trailing slash
-    const cleanBase = backendUrl.replace(/\/+$/, '');
-    window.location.href = `${cleanBase}/api/auth/google`;
+    try {
+      const result = await signInWithPopup(auth, googleAuthProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      if (token) {
+        setGoogleAccessToken(token);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("google_access_token", token);
+        }
+      }
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      throw error;
+    }
   }, []);
 
   const setUser = useCallback((next: AuthUser) => {
@@ -184,21 +194,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const setSession = useCallback((session: AuthSession) => {
-    saveSession(session);
-    setUserState(userFromSession(session));
+  const setSession = useCallback((nextSession: AuthSession) => {
+    saveSession(nextSession);
+    setSessionState(nextSession);
+    setUserState(userFromSession(nextSession));
   }, []);
 
   const switchRole = useCallback((next: UserRole) => {
     setUserState((prev) => {
       if (!prev) return prev;
       const nextUser: AuthUser = { ...prev, role: next };
-      const session = getSession();
-      if (session) {
-        saveSession({
-          ...session,
-          user: { ...session.user, role: next.toUpperCase() as AuthSession["user"]["role"] },
-        });
+      const currentSession = getSession();
+      if (currentSession) {
+        const updated = {
+          ...currentSession,
+          user: { ...currentSession.user, role: next.toUpperCase() as AuthSession["user"]["role"] },
+        };
+        saveSession(updated);
+        setSessionState(updated);
       }
       if (prev.firebaseUid) {
         setDoc(doc(db, "users", prev.firebaseUid), { role: next }, { merge: true }).catch(() => {});
@@ -209,11 +222,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     setUserState(null);
+    setSessionState(null);
     setGoogleAccessToken(null);
     if (typeof window !== "undefined") {
       sessionStorage.removeItem("google_access_token");
     }
-    setGoogleAccessToken(null);
     clearSession();
     try {
       await firebaseSignOut(auth);
@@ -231,12 +244,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [signOut]);
 
   const role = user?.role ?? "student";
+  const accessToken = googleAccessToken || session?.token || getToken();
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       role,
       googleAccessToken,
+      accessToken,
+      session,
       setUser,
       setSession,
       switchRole,
@@ -244,7 +260,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut,
       loading,
     }),
-    [user, role, googleAccessToken, setUser, setSession, switchRole, signInWithGoogle, signOut, loading],
+    [user, role, googleAccessToken, accessToken, session, setUser, setSession, switchRole, signInWithGoogle, signOut, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

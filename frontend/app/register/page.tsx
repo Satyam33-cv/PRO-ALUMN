@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Mail, Lock, User, Building, Sparkles } from "lucide-react";
@@ -45,7 +45,17 @@ export default function RegisterPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const router = useRouter();
-  const { setSession } = useAuth();
+  const { user, setSession, signInWithGoogle } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/home");
+      }
+    }
+  }, [user, router]);
 
   function setField(field: keyof FormValues, value: string) {
     setValues((prev) => ({ ...prev, [field]: value }));
@@ -71,6 +81,19 @@ export default function RegisterPage() {
       router.push("/home");
     } catch (error) {
       setServerError(error instanceof ApiError ? error.message : "We could not create your account. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setServerError("");
+    setIsSubmitting(true);
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error("Google sign in error:", error);
+      setServerError("Google sign in failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -113,9 +136,11 @@ export default function RegisterPage() {
           </div>
 
           <div className="pt-2">
-            <a
-              href={`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/+$/, "").replace(/\/api$/, "")}/api/auth/google`}
-              className="w-full flex items-center justify-center gap-2 py-3 border rounded-xl text-sm font-semibold hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900 transition-colors"
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 py-3 border rounded-xl text-sm font-semibold hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -124,7 +149,7 @@ export default function RegisterPage() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
               Continue with Google
-            </a>
+            </button>
           </div>
 
           <div className="relative">
