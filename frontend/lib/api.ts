@@ -2,8 +2,14 @@ import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from "
 import { getToken } from "@/lib/auth";
 
 const getApiBaseUrl = () => {
-  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-  const clean = envUrl.replace(/\/+$/, "");
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
+    if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+      return "https://pro-alumn-production.up.railway.app/api";
+    }
+  }
+  const fallback = envUrl || "http://localhost:4000";
+  const clean = fallback.replace(/\/+$/, "");
   return clean.endsWith("/api") ? clean : `${clean}/api`;
 };
 

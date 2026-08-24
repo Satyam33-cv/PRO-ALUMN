@@ -170,6 +170,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
+    const isLocal = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+    const backendUrl = isLocal
+      ? (process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/+$/, "").replace(/\/api$/, "")
+      : "https://pro-alumn-production.up.railway.app";
+
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -181,8 +186,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
     } catch (error) {
-      console.error("Google sign-in error:", error);
-      throw error;
+      console.warn("Firebase popup sign-in unavailable, redirecting to backend Google OAuth...", error);
+      if (typeof window !== "undefined") {
+        window.location.href = `${backendUrl}/api/auth/google`;
+      }
     }
   }, []);
 

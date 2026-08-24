@@ -26,7 +26,11 @@ function CallbackHandler() {
         const user = (res as unknown as { user?: typeof res })?.user ?? res;
         
         setSession({ user, token });
-        router.push("/home");
+        if (user?.role?.toLowerCase() === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/home");
+        }
       } catch (err) {
         console.error("Auth callback error:", err);
         localStorage.removeItem("pro-alumn_token");
