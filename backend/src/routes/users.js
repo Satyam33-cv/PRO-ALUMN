@@ -105,7 +105,7 @@ router.patch('/me/password', authenticate, async (req, res) => {
     if (!currentPassword || !newPassword) return res.status(400).json({ error: 'Both passwords required' });
     if (newPassword.length < 6) return res.status(400).json({ error: 'New password too short' });
 
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const user = await prisma.user.findUnique({ 
       where: { id: req.user.id },
       select: { id: true, passwordHash: true }

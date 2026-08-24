@@ -2,7 +2,7 @@
 // Full authentication: register, login, me
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const prisma = require('../db');
 const { authenticate, JWT_SECRET } = require('../middleware/auth');
