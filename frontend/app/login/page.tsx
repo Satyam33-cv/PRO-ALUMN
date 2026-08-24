@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Mail, Lock, Sparkles } from "lucide-react";
@@ -90,6 +90,39 @@ export default function LoginPage() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
               Continue with Google
+            </button>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className={`px-2 ${isDark ? "bg-slate-950 text-slate-500" : "bg-slate-50 text-slate-400"}`}>Quick Demo Logins (Bypass OAuth)</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => { setEmail("arjun.sharma@somaiya.edu"); setPassword("Student@12345"); }}
+              className="py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+            >
+              Student
+            </button>
+            <button
+              type="button"
+              onClick={() => { setEmail("alumni@google.com"); setPassword("Alumni@12345"); }}
+              className="py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+            >
+              Alumni
+            </button>
+            <button
+              type="button"
+              onClick={() => { setEmail("admin@college.edu"); setPassword("Admin@12345"); }}
+              className="py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+            >
+              Admin
             </button>
           </div>
 

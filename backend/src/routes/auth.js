@@ -201,22 +201,8 @@ router.get('/me', authenticate, async (req, res) => {
 });
 
 // =================== GET /api/auth/google ===================
-const GOOGLE_SCOPES = [
-  'profile', 
-  'email',
-  'https://www.googleapis.com/auth/gmail.readonly',
-  'https://www.googleapis.com/auth/gmail.send',
-  'https://www.googleapis.com/auth/gmail.compose',
-  'https://www.googleapis.com/auth/forms.body',
-  'https://www.googleapis.com/auth/forms.responses.readonly',
-  'https://www.googleapis.com/auth/documents',
-  'https://www.googleapis.com/auth/drive.readonly',
-  'https://www.googleapis.com/auth/drive.file',
-  'https://www.googleapis.com/auth/calendar',
-  'https://www.googleapis.com/auth/calendar.events',
-  'https://www.googleapis.com/auth/chat.spaces',
-  'https://www.googleapis.com/auth/chat.messages'
-];
+// Standard identity scopes allowed across institutional Google Workspace accounts (@somaiya.edu)
+const GOOGLE_SCOPES = ['openid', 'profile', 'email'];
 router.get('/google', passport.authenticate('google', { scope: GOOGLE_SCOPES, session: false }));
 
 // =================== GET /api/auth/google/callback ===================
