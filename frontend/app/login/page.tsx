@@ -93,38 +93,6 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200 dark:border-slate-800" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className={`px-2 ${isDark ? "bg-slate-950 text-slate-500" : "bg-slate-50 text-slate-400"}`}>Quick Demo Logins (Bypass OAuth)</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => { setEmail("arjun.sharma@somaiya.edu"); setPassword("Student@12345"); }}
-              className="py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-            >
-              Student
-            </button>
-            <button
-              type="button"
-              onClick={() => { setEmail("alumni@google.com"); setPassword("Alumni@12345"); }}
-              className="py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-            >
-              Alumni
-            </button>
-            <button
-              type="button"
-              onClick={() => { setEmail("admin@college.edu"); setPassword("Admin@12345"); }}
-              className="py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-            >
-              Admin
-            </button>
-          </div>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

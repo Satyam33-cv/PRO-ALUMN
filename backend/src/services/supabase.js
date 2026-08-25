@@ -5,7 +5,7 @@ const supabaseUrl = process.env.SUPABASE_URL || 'https://rbcswrdndqylswladdue.su
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
 let supabase = null;
-if (supabaseUrl && supabaseServiceKey) {
+if (supabaseUrl && supabaseServiceKey && !supabaseServiceKey.includes("pqAk2pgac6qHyNzwB1mh7A_dUmwL3az")) {
   try {
     supabase = createClient(supabaseUrl, supabaseServiceKey);
   } catch (err) {

@@ -120,47 +120,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser: FirebaseUser | null) => {
       if (fbUser) {
         try {
-          const userDocRef = doc(db, "users", fbUser.uid);
-          const snap = await getDoc(userDocRef);
-          let assignedRole: UserRole = "student";
-          let dept = "Computer Science";
-          let yr = "2025";
-
-          if (snap.exists()) {
-            const d = snap.data();
-            if (d.role) assignedRole = d.role as UserRole;
-            if (d.department) dept = d.department;
-            if (d.classYear) yr = d.classYear;
-          } else {
-            // Write initial profile to Firestore
-            await setDoc(
-              userDocRef,
-              {
-                id: fbUser.uid,
-                email: fbUser.email || "",
-                name: fbUser.displayName || "Alumni Member",
-                role: "student",
-                department: dept,
-                classYear: yr,
-                createdAt: new Date().toISOString(),
-              },
-              { merge: true }
-            );
-          }
-
           const name = fbUser.displayName || fbUser.email?.split("@")[0] || "User";
+          
+          // Profiles are managed via our Postgres Backend (apiClient.auth.me),
+          // so we bypass Firestore completely here to avoid configuration errors.
+          
           setUserState({
             name,
             email: fbUser.email || "",
-            role: assignedRole,
+            role: "student", // Default until backend syncs
             initials: getInitials(name),
-            classYear: yr,
-            department: dept,
+            classYear: "2025",
+            department: "Computer Science",
             firebaseUid: fbUser.uid,
             photoURL: fbUser.photoURL || undefined,
           });
         } catch (e) {
-          console.warn("Firestore profile fetch error:", e);
+          console.warn("Auth sync error:", e);
         }
       }
       setLoading(false);
