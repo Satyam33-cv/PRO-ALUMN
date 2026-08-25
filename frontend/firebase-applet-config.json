@@ -7,5 +7,6 @@
   "messagingSenderId": "1088908088570",
   "measurementId": "",
   "oAuthClientId": "1088908088570-plgnln3flq77tnad9dmp68tqot6ic8t6.apps.googleusercontent.com",
-  "recaptchaSiteKey": ""
+  "recaptchaSiteKey": "",
+  "scopes": ["https://www.googleapis.com/auth/calendar.events"]
 }

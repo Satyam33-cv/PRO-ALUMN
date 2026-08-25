@@ -184,17 +184,33 @@ async function awardPoints(userId, actionType, points, metadata = {}) {
       data: {
         totalPoints: { increment: points },
       },
-      select: { id: true, totalPoints: true, name: true },
+      select: { id: true, totalPoints: true, name: true, role: true },
     });
 
     // Create activity log
-    await prisma.activityLog.create({
+    const log = await prisma.activityLog.create({
       data: {
         userId,
         actionType,
         pointsEarned: points,
       },
     });
+
+    // Broadcast to admin telemetry
+    try {
+      const { broadcastAdminActivity } = require('../socket');
+      broadcastAdminActivity({
+        id: log.id,
+        userId: user.id,
+        userName: user.name,
+        userRole: user.role,
+        actionType,
+        pointsEarned: points,
+        message: `${user.name} earned ${points} pts for ${actionType}`
+      });
+    } catch (e) {
+      console.error('Failed to broadcast admin activity', e);
+    }
 
     // Check for badge unlocks
     const allBadges = await prisma.badge.findMany();

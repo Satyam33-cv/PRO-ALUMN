@@ -10,7 +10,7 @@ export const apiClient = {
       return await apiFetch<AuthSession>({ method: "POST", url: "/auth/register", data: input });
     },
     me: async (): Promise<User> => {
-      return await apiFetch<User>({ method: "GET", url: "/users/me" });
+      return await apiFetch<{ user: User }>({ method: "GET", url: "/users/me" }).then((res) => res.user);
     },
   },
   users: {
@@ -356,5 +356,13 @@ export const apiClient = {
         url: `/notifications/${id}/read`,
       });
     },
+  },
+  search: {
+    global: async (q: string, type?: string, limit?: number) => {
+      const params: Record<string, string> = { q };
+      if (type) params.type = type;
+      if (limit) params.limit = limit.toString();
+      return await apiFetch<{ results: any }>({ method: "GET", url: "/search", params }).then((res) => res.results);
+    }
   },
 };

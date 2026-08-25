@@ -12,6 +12,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db, googleAuthProvider } from "@/lib/firebase";
+import { apiClient } from "@/lib/api/client";
 
 export type UserRole = "student" | "alumni" | "admin" | "faculty";
 
@@ -36,7 +37,6 @@ type AuthContextValue = {
   session: AuthSession | null;
   setUser: (user: AuthUser) => void;
   setSession: (session: AuthSession) => void;
-  switchRole: (role: UserRole) => void;
   signInWithGoogle: () => Promise<void>;
   signOut: () => void;
   loading: boolean;
@@ -169,6 +169,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const recordLoginStreak = async () => {
+      try {
+        await apiClient.gamification.getStatus();
+      } catch (e) {
+        console.debug('Streak recording failed:', e);
+      }
+    };
+    if (user && !loading) recordLoginStreak();
+  }, [user, loading]);
+
   const signInWithGoogle = useCallback(async () => {
     const isLocal = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
     const backendUrl = isLocal
@@ -192,26 +203,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     saveSession(nextSession);
     setSessionState(nextSession);
     setUserState(userFromSession(nextSession));
-  }, []);
-
-  const switchRole = useCallback((next: UserRole) => {
-    setUserState((prev) => {
-      if (!prev) return prev;
-      const nextUser: AuthUser = { ...prev, role: next };
-      const currentSession = getSession();
-      if (currentSession) {
-        const updated = {
-          ...currentSession,
-          user: { ...currentSession.user, role: next.toUpperCase() as AuthSession["user"]["role"] },
-        };
-        saveSession(updated);
-        setSessionState(updated);
-      }
-      if (prev.firebaseUid) {
-        setDoc(doc(db, "users", prev.firebaseUid), { role: next }, { merge: true }).catch(() => {});
-      }
-      return nextUser;
-    });
   }, []);
 
   const signOut = useCallback(async () => {
@@ -249,12 +240,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       session,
       setUser,
       setSession,
-      switchRole,
       signInWithGoogle,
       signOut,
       loading,
     }),
-    [user, role, googleAccessToken, accessToken, session, setUser, setSession, switchRole, signInWithGoogle, signOut, loading],
+    [user, role, googleAccessToken, accessToken, session, setUser, setSession, signInWithGoogle, signOut, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

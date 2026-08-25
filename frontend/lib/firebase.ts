@@ -28,5 +28,6 @@ googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/gmail.read
 googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/documents");
 googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/drive.file");
 googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/calendar");
+googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/calendar.events");
 
 export default app;

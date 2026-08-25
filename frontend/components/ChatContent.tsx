@@ -262,6 +262,7 @@ export function ChatContent() {
     
     // Connect to server and join the specific chat room
     socket.connect();
+    if (accessToken) socket.emit("authenticate", accessToken);
     socket.emit("join_room", selectedId);
 
     // Listen for incoming messages
@@ -337,7 +338,7 @@ export function ChatContent() {
     // API Call & WebSockets
     try {
       const socket = getSocket();
-      socket.emit("send_message", { ...newMsg, roomId: threadId });
+      socket.emit("send_message", { ...newMsg, threadId, roomId: threadId });
       
       await apiClient.chat.sendMessage(threadId, text);
       refreshThreads();

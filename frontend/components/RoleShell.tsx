@@ -33,6 +33,7 @@ import {
   Newspaper,
   Trophy,
   Target,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
@@ -57,6 +58,7 @@ const primaryNav: Record<Role, NavItem[]> = {
     { label: "Calendar", href: "/calendar", icon: Calendar },
     { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
     { label: "Referrals", href: "/referrals", icon: Target },
+    { label: "AI Match", href: "/matching", icon: Sparkles },
     { label: "Rewards", href: "/rewards", icon: Flame },
     { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
@@ -72,12 +74,6 @@ const primaryNav: Record<Role, NavItem[]> = {
   ],
   admin: [
     { label: "Command center", href: "/admin", icon: ShieldCheck },
-    { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Directory", href: "/directory", icon: Users },
-    { label: "Analytics", href: "/admin/analytics", icon: LayoutDashboard },
-    { label: "Rewards", href: "/rewards", icon: Trophy },
-    { label: "Settings", href: "/admin/settings", icon: Settings },
-    { label: "Chat", href: "/chat", icon: MessageCircle },
   ],
   faculty: [
     { label: "Home", href: "/home", icon: LayoutDashboard },
@@ -232,89 +228,7 @@ function NotificationPanel({
   );
 }
 
-function RoleSwitcher({ currentRole }: { currentRole: Role }) {
-  const { switchRole } = useAuth();
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    function onDocClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    }
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("mousedown", onDocClick);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDocClick);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
-
-  const CurrentIcon = roleMeta[currentRole].icon;
-
-  function select(next: Role) {
-    setOpen(false);
-    if (next === currentRole) return;
-    switchRole(next);
-    router.push(next === "admin" ? "/admin" : "/home");
-  }
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-xs transition-colors hover:border-blue-500/50 dark:hover:border-blue-400/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-      >
-        <CurrentIcon size={14} className="text-blue-600 dark:text-blue-400" />
-        {capitalize(currentRole)}
-        <ChevronDown size={13} className="text-slate-400" />
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.ul
-            role="listbox"
-            aria-label="Switch role"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl"
-          >
-            {(Object.keys(roleMeta) as Role[]).map((r) => {
-              const Icon = roleMeta[r].icon;
-              return (
-                <li key={r}>
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={r === currentRole}
-                    onClick={() => select(r)}
-                    className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs font-medium transition-colors ${
-                      r === currentRole
-                        ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-semibold"
-                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70"
-                    }`}
-                  >
-                    <Icon size={14} />
-                    {roleMeta[r].label}
-                    {r === currentRole && <Check size={13} className="ml-auto text-blue-600 dark:text-blue-400" />}
-                  </button>
-                </li>
-              );
-            })}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 export function RoleShell({
   children,
@@ -635,7 +549,6 @@ export function RoleShell({
             </Link>
 
             <ThemeToggle className="shrink-0" />
-            <RoleSwitcher currentRole={role} />
             
             <div className="relative">
               <button

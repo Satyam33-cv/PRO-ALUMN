@@ -164,9 +164,25 @@ export function GlobalSearch() {
   const [firestoreNotes, setFirestoreNotes] = useState<SearchResultItem[]>([]);
   const [driveDocs, setDriveDocs] = useState<SearchResultItem[]>([]);
 
-  const { data: alumniList } = useApi("search:alumni", () => apiClient.alumni.list());
-  const { data: jobList } = useApi("search:jobs", () => apiClient.jobs.list());
-  const { data: annList } = useApi("search:announcements", () => apiClient.announcements.list());
+  const [backendResults, setBackendResults] = useState<{alumni?: any[], jobs?: any[], events?: any[], stories?: any[], announcements?: any[]}>({});
+
+  // Debounced backend search
+  useEffect(() => {
+    if (queryText.length < 2) {
+      setBackendResults({});
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const type = selectedCategory !== "all" && selectedCategory !== "docs" && selectedCategory !== "keep" ? selectedCategory : undefined;
+        const res = await apiClient.search.global(queryText, type);
+        setBackendResults(res || {});
+      } catch (e) {
+        console.error("Global search failed:", e);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [queryText, selectedCategory]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -306,19 +322,19 @@ export function GlobalSearch() {
       ...FALLBACK_KEEP_NOTES.filter((fn) => !firestoreNotes.some((fd) => fd.title === fn.title)),
     ];
 
-    const alumniResults: SearchResultItem[] = (alumniList || []).map((a: any) => ({
+    const alumniResults: SearchResultItem[] = (backendResults.alumni || []).map((a: any) => ({
       id: `alumni-${a.id}`,
       type: "alumni",
       title: a.name,
       subtitle: `${a.jobTitle ? `${a.jobTitle} at ` : ""}${a.currentCompany || "Alumni Member"}${a.batchYear ? ` · Class of ${a.batchYear}` : ""}`,
-      snippet: `Alumni member · Department: ${a.department || "Engineering"} · ${a.skills ? `Skills: ${a.skills}` : "Open to connect"}`,
+      snippet: `Alumni member · Department: ${a.department || "Engineering"}`,
       tag: a.currentCompany || "Alumni",
       url: `/directory?search=${encodeURIComponent(a.name)}`,
       badge: "Alumni Profile",
       badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
     }));
 
-    const jobResults: SearchResultItem[] = (jobList || []).map((j: any) => ({
+    const jobResults: SearchResultItem[] = (backendResults.jobs || []).map((j: any) => ({
       id: `job-${j.id}`,
       type: "job",
       title: j.title,
@@ -330,11 +346,11 @@ export function GlobalSearch() {
       badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
     }));
 
-    const announcementResults: SearchResultItem[] = (annList || []).map((ann: any) => ({
+    const announcementResults: SearchResultItem[] = (backendResults.announcements || []).map((ann: any) => ({
       id: `ann-${ann.id}`,
       type: "announcement",
       title: ann.title,
-      subtitle: `Official Announcement${ann.priority === "URGENT" ? " · 🚨 Urgent" : ""}`,
+      subtitle: `Official Announcement`,
       snippet: ann.content || ann.body || "Official institutional announcement.",
       tag: "Notice",
       url: `/announcements`,
@@ -343,7 +359,7 @@ export function GlobalSearch() {
     }));
 
     return [...combinedDocs, ...combinedNotes, ...alumniResults, ...jobResults, ...announcementResults];
-  }, [firestoreDocs, driveDocs, firestoreNotes, alumniList, jobList, annList]);
+  }, [firestoreDocs, driveDocs, firestoreNotes, backendResults]);
 
   // Filtered results based on search text and active category
   const filteredResults = useMemo(() => {

@@ -38,7 +38,11 @@ export function LoginForm() {
     try {
       const session = await apiClient.auth.login({ email: values.email.trim(), password: values.password });
       setSession(session);
-      router.push("/dashboard");
+      if (session.user?.role?.toUpperCase() === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error) {
       setServerError(error instanceof ApiError ? error.message : "We could not sign you in. Please try again.");
     } finally {

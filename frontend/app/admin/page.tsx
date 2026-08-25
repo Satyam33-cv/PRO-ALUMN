@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { AdminContent } from "@/components/AdminContent";
-import { RoleShell } from "@/components/RoleShell";
 
 export const metadata: Metadata = {
   title: "Command Center | PRO ALUMN",
@@ -18,5 +17,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminPage() {
-	return <RoleShell role="admin"><AdminContent /></RoleShell>;
+  return <AdminContent />;
 }

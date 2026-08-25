@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users,
@@ -43,9 +43,11 @@ import {
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
+import { getSocket } from "@/lib/socket";
+import { useAuth } from "@/lib/context/AuthContext";
 import { Card, Badge, Skeleton } from "@/components/ui";
 
-type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "broadcasts" | "data_tools";
+type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools";
 
 export function AdminContent() {
   const [activeTab, setActiveTab] = useState<AdminTab>("mission_control");
@@ -76,10 +78,56 @@ export function AdminContent() {
   const [csvResult, setCsvResult] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Live Telemetry state
+  const [liveActivities, setLiveActivities] = useState<any[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
+  
+  const { getToken } = useAuth();
+
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
   };
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) return;
+
+    const socket = getSocket();
+    if (!socket.connected) {
+      socket.connect();
+    }
+    
+    socket.emit("authenticate", token);
+    socket.emit("admin_join");
+
+    const onPresenceSync = (userIds: string[]) => {
+      setOnlineUsers(new Set(userIds));
+    };
+
+    const onPresenceUpdate = (data: { userId: string, status: string }) => {
+      setOnlineUsers(prev => {
+        const next = new Set(prev);
+        if (data.status === 'online') next.add(data.userId);
+        else next.delete(data.userId);
+        return next;
+      });
+    };
+
+    const onActivityStream = (activity: any) => {
+      setLiveActivities(prev => [activity, ...prev].slice(0, 50));
+    };
+
+    socket.on("presence_sync", onPresenceSync);
+    socket.on("presence_update", onPresenceUpdate);
+    socket.on("activity_stream", onActivityStream);
+
+    return () => {
+      socket.off("presence_sync", onPresenceSync);
+      socket.off("presence_update", onPresenceUpdate);
+      socket.off("activity_stream", onActivityStream);
+    };
+  }, [getToken]);
 
   // Queries
   const { data: statsData, reload: reloadStats, isLoading: loadingStats } = useApi("admin:stats", () => apiClient.admin.stats());
@@ -324,7 +372,7 @@ export function AdminContent() {
           { id: "users", label: `Users (${stats.users?.total || 0})`, icon: Users },
           { id: "moderation", label: `Moderation (${pendingStories.length + unverifiedAlumni.length})`, icon: ShieldCheck, badge: pendingStories.length > 0 },
           { id: "stale_profiles", label: `Stale Profiles (${staleUsers.length})`, icon: Clock },
-          { id: "broadcasts", label: "Broadcasts", icon: Megaphone },
+          { id: "cms", label: "Content (CMS)", icon: Megaphone },
           { id: "data_tools", label: "Data & CSV Import", icon: FileUp },
         ].map((tab) => (
           <button
@@ -473,8 +521,46 @@ export function AdminContent() {
                   </div>
                 </button>
               </div>
+
             </Card>
           </div>
+
+          {/* Live Activity Feed */}
+          <Card padding="lg" className="space-y-4">
+            <h3 className="font-display text-lg font-bold flex items-center gap-2">
+              <Activity size={18} className="text-emerald-500" />
+              Live Network Activity
+            </h3>
+            <div className="space-y-2 pt-2 max-h-60 overflow-y-auto scrollbar-thin">
+              {liveActivities.length === 0 ? (
+                <p className="text-xs text-slate-500 text-center py-4">Waiting for incoming activities...</p>
+              ) : (
+                <AnimatePresence>
+                  {liveActivities.map((act, i) => (
+                    <motion.div
+                      key={act.id || i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-ink/5"
+                    >
+                      <div className="p-2 rounded-full bg-blue-500/10 text-blue-600 mt-0.5 shrink-0">
+                        <Activity size={14} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] text-slate-900 dark:text-slate-100 truncate">
+                          <span className="font-bold">{act.userName}</span> <span className="text-slate-400 font-normal">({act.userRole})</span>
+                        </p>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">{act.message}</p>
+                      </div>
+                      <span className="ml-auto text-[10px] text-slate-400 font-mono shrink-0 whitespace-nowrap">
+                        {new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      </span>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              )}
+            </div>
+          </Card>
         </motion.div>
       )}
 
@@ -555,10 +641,18 @@ export function AdminContent() {
                       <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 font-bold text-xs">
-                              {u.name?.split(" ").map((n: string) => n[0]).join("") || "U"}
+                            <div className="relative shrink-0">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 font-bold text-xs">
+                                {u.name?.split(" ").map((n: string) => n[0]).join("") || "U"}
+                              </div>
+                              <span
+                                className={`absolute -bottom-1 -right-1 block h-3 w-3 rounded-full border-2 border-white dark:border-slate-900 shadow-sm ${
+                                  onlineUsers.has(u.id) ? "bg-emerald-500 animate-pulse" : "bg-slate-300 dark:bg-slate-600"
+                                }`}
+                                title={onlineUsers.has(u.id) ? "Online now" : "Offline"}
+                              />
                             </div>
-                            <div>
+                            <div className="min-w-0">
                               <p className="font-bold text-slate-900 dark:text-slate-100">{u.name}</p>
                               <p className="text-[11px] text-slate-500">{u.email}</p>
                             </div>
@@ -857,9 +951,24 @@ export function AdminContent() {
         </motion.div>
       )}
 
-      {/* ================= TAB 5: SYSTEM BROADCASTS ================= */}
-      {activeTab === "broadcasts" && (
+      {/* ================= TAB 5: CONTENT MANAGEMENT (CMS) ================= */}
+      {activeTab === "cms" && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card padding="md" className="hover:border-emerald-500 transition-colors">
+              <h3 className="font-bold text-sm flex items-center gap-2 mb-1"><CalendarDays size={16} className="text-emerald-500" /> Event Manager</h3>
+              <p className="text-xs text-slate-500 mb-3">Create, edit, and delete upcoming networking events or webinars.</p>
+              <a href="/events" className="inline-block px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-bold rounded-xl transition-colors">Manage Events →</a>
+            </Card>
+
+            <Card padding="md" className="hover:border-purple-500 transition-colors">
+              <h3 className="font-bold text-sm flex items-center gap-2 mb-1"><Inbox size={16} className="text-purple-500" /> Newsletter Publisher</h3>
+              <p className="text-xs text-slate-500 mb-3">Upload and publish monthly PDF newsletters to the network.</p>
+              <a href="/newsletters" className="inline-block px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-bold rounded-xl transition-colors">Manage Newsletters →</a>
+            </Card>
+          </div>
+
           <Card padding="lg">
             <h3 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
               <Megaphone size={20} className="text-blue-500" />
