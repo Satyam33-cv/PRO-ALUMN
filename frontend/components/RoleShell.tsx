@@ -8,6 +8,7 @@ import {
   Bell,
   BriefcaseBusiness,
   ChevronDown,
+  ChevronRight,
   GraduationCap,
   Heart,
   LayoutDashboard,
@@ -34,6 +35,8 @@ import {
   Trophy,
   Target,
   Sparkles,
+  MonitorCheck,
+  Wallet
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
@@ -44,66 +47,52 @@ import { useApi } from "@/lib/hooks/useApi";
 
 type Role = UserRole;
 
-type NavItem = {
-  label: string;
-  href: `/${string}` | string;
-  icon: typeof LayoutDashboard;
+type SubItem = {
+  title: string;
+  href: string;
+  icon: React.ElementType;
 };
 
-const primaryNav: Record<Role, NavItem[]> = {
-  student: [
-    { label: "Home", href: "/home", icon: LayoutDashboard },
-    { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Directory", href: "/directory", icon: Users },
-    { label: "Calendar", href: "/calendar", icon: Calendar },
-    { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
-    { label: "Referrals", href: "/referrals", icon: Target },
-    { label: "AI Match", href: "/matching", icon: Sparkles },
-    { label: "Rewards", href: "/rewards", icon: Flame },
-    { label: "Chat", href: "/chat", icon: MessageCircle },
-  ],
-  alumni: [
-    { label: "Home", href: "/home", icon: LayoutDashboard },
-    { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Directory", href: "/directory", icon: Users },
-    { label: "Calendar", href: "/calendar", icon: Calendar },
-    { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
-    { label: "Referrals", href: "/referrals", icon: Target },
-    { label: "Rewards", href: "/rewards", icon: Flame },
-    { label: "Chat", href: "/chat", icon: MessageCircle },
-  ],
-  admin: [
-    { label: "Command center", href: "/admin", icon: ShieldCheck },
-  ],
-  faculty: [
-    { label: "Home", href: "/home", icon: LayoutDashboard },
-    { label: "Announcements", href: "/announcements", icon: Megaphone },
-    { label: "Directory", href: "/directory", icon: Users },
-    { label: "Calendar", href: "/calendar", icon: Calendar },
-    { label: "Jobs", href: "/jobs", icon: BriefcaseBusiness },
-    { label: "Rewards", href: "/rewards", icon: Flame },
-    { label: "Chat", href: "/chat", icon: MessageCircle },
-  ],
+type NavItemConfig = {
+  title: string;
+  href?: string;
+  icon: React.ElementType;
+  subItems?: SubItem[];
 };
 
-const secondaryNav: NavItem[] = [
-  { label: "Referral Tracker", href: "/referrals", icon: Target },
-  { label: "Somaiya Sparsh", href: "/newsletter", icon: Newspaper },
-  { label: "Google Docs", href: "/docs", icon: FileText },
-  { label: "Google Keep", href: "/keep", icon: StickyNote },
-  { label: "Gmail", href: "/communications", icon: Mail },
-  { label: "Forms & Surveys", href: "/forms", icon: FileQuestion },
-  { label: "Mentorship", href: "/mentorship", icon: GraduationCap },
-  { label: "Giving", href: "/giving", icon: Heart },
-  { label: "Stories", href: "/stories", icon: BookOpen },
+const navConfig: NavItemConfig[] = [
+  { 
+    title: 'Dashboard', 
+    href: '/home', 
+    icon: LayoutDashboard 
+  },
+  { 
+    title: 'Network', 
+    href: '/directory', 
+    icon: Users 
+  },
+  { 
+    title: 'Opportunities', 
+    href: '/jobs', 
+    icon: BriefcaseBusiness 
+  },
+  { 
+    title: 'AI Match', 
+    href: '/matching', 
+    icon: Sparkles 
+  },
+  {
+    title: 'Workspace',
+    icon: MonitorCheck,
+    subItems: [
+      { title: 'Gmail', href: '/communications', icon: Mail },
+      { title: 'Google Docs', href: '/docs', icon: FileText },
+      { title: 'Google Keep', href: '/keep', icon: StickyNote },
+      { title: 'Forms & Surveys', href: '/forms', icon: FileQuestion },
+      { title: 'Calendar', href: '/calendar', icon: Calendar },
+    ],
+  },
 ];
-
-const roleMeta: Record<Role, { label: string; icon: typeof Users }> = {
-  student: { label: "Student", icon: GraduationCap },
-  alumni: { label: "Alumni", icon: BriefcaseBusiness },
-  faculty: { label: "Faculty", icon: Users },
-  admin: { label: "Admin", icon: ShieldCheck },
-};
 
 function capitalize(s?: string): string {
   if (!s) return "";
@@ -113,13 +102,6 @@ function capitalize(s?: string): string {
 function isActive(pathname: string, href: string): boolean {
   if (href === "/home") return pathname === "/home" || pathname === "/";
   return pathname === href || pathname.startsWith(href + "/");
-}
-
-function getNavClasses(active: boolean, type: "primary" | "secondary" = "primary"): string {
-  if (active) {
-    return "bg-blue-600/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400 font-semibold";
-  }
-  return "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium";
 }
 
 function NotificationPanel({
@@ -243,10 +225,10 @@ export function RoleShell({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [collapsedHydrated, setCollapsedHydrated] = useState(false);
+  const [openSection, setOpenSection] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const notifTriggerRef = useRef<HTMLButtonElement>(null);
-  const items = primaryNav[role];
 
   const { data: notifData, reload: reloadNotifs } = useApi(
     "shell:notifications",
@@ -314,6 +296,16 @@ export function RoleShell({
     return isActive(pathname, href);
   }
 
+  const handleToggle = (title: string) => {
+    if (collapsed) setCollapsed(false);
+    setOpenSection(openSection === title ? null : title);
+  };
+
+  const isActiveDropdown = (item: NavItemConfig) => {
+    if (!item.subItems) return false;
+    return item.subItems.some((sub) => active(sub.href));
+  };
+
   const displayName = user?.name ?? "Guest";
   const displayInitials = user?.initials ?? "G";
   const displayRole = capitalize(role);
@@ -321,12 +313,10 @@ export function RoleShell({
 
   function sidebarContent(mobile: boolean) {
     const compact = collapsed && !mobile;
-    const itemBase = `flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-      compact ? "justify-center px-0" : ""
-    }`;
+    
     return (
       <>
-        <div className={`flex items-center justify-between ${compact ? "justify-center px-2" : "px-6"} pb-6`}>
+        <div className={`flex items-center justify-between ${compact ? "justify-center px-2" : "px-6"} pb-4`}>
           {compact ? (
             <Link
               href="/home"
@@ -354,103 +344,134 @@ export function RoleShell({
           )}
         </div>
 
-        <div className={`flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-5 ${compact ? "justify-center border-b-0 px-2" : "px-6"}`}>
-          <div
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm shadow-blue-600/20 ${
-              compact ? "mx-auto" : ""
-            }`}
-          >
-            {displayInitials}
-          </div>
-          {!compact && (
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-slate-900 dark:text-slate-100">
-                {displayName}
-              </p>
-              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                {displayRole} · {displayYear}
-              </p>
-            </div>
-          )}
-        </div>
+        <nav className={`flex-1 overflow-y-auto px-3 py-2 space-y-1 ${compact ? "px-2" : ""}`}>
+          {navConfig.map((item) => {
+            const isStandardLink = !item.subItems;
+            const isExactActive = item.href ? active(item.href) : false;
+            const isDropActive = isActiveDropdown(item);
+            
+            const baseItemClasses = `w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+              isExactActive || (isDropActive && !openSection)
+                ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
+            } ${compact ? "justify-center px-0" : ""}`;
 
-        <nav
-          className={`mt-5 flex-1 space-y-1 ${compact ? "px-2" : "px-3"}`}
-          aria-label="Primary navigation"
-        >
-          {items.map(({ label, href, icon: Icon }) => (
-            <Link
-              key={label}
-              href={href as `/${string}`}
-              onClick={() => mobile && setSidebarOpen(false)}
-              aria-current={active(href) ? "page" : undefined}
-              title={compact ? label : undefined}
-              className={`${itemBase} ${
-                active(href)
-                  ? getNavClasses(true, "primary")
-                  : getNavClasses(false, "primary")
-              }`}
-            >
-              <Icon size={18} strokeWidth={active(href) ? 2 : 1.6} className="shrink-0" />
-              {!compact && label}
-            </Link>
-          ))}
+            if (isStandardLink) {
+              return (
+                <Link 
+                  key={item.title} 
+                  href={item.href as `/${string}`} 
+                  onClick={() => mobile && setSidebarOpen(false)}
+                  className={baseItemClasses}
+                  title={compact ? item.title : undefined}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className={`w-5 h-5 shrink-0 ${isExactActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
+                    {!compact && item.title}
+                  </div>
+                </Link>
+              );
+            }
+
+            const isOpen = openSection === item.title;
+
+            return (
+              <div key={item.title} className="space-y-1">
+                <button 
+                  onClick={() => handleToggle(item.title)}
+                  className={baseItemClasses}
+                  title={compact ? item.title : undefined}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className={`w-5 h-5 shrink-0 ${isDropActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
+                    {!compact && item.title}
+                  </div>
+                  {!compact && (
+                    isOpen ? (
+                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4 text-slate-400" />
+                    )
+                  )}
+                </button>
+                
+                {!compact && (
+                  <div 
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      isOpen ? 'max-h-64 opacity-100 mt-1' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <div className="pl-10 pr-2 py-1 space-y-1 border-l-2 border-slate-100 dark:border-slate-800 ml-4">
+                      {item.subItems!.map((subItem) => {
+                        const isSubActive = active(subItem.href);
+                        return (
+                          <Link
+                            key={subItem.title}
+                            href={subItem.href as `/${string}`}
+                            onClick={() => mobile && setSidebarOpen(false)}
+                            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                              isSubActive 
+                                ? 'text-blue-700 bg-blue-50/50 dark:text-blue-400 dark:bg-blue-500/10 font-semibold' 
+                                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/50'
+                            }`}
+                          >
+                            <subItem.icon className="w-4 h-4 opacity-70 shrink-0" />
+                            {subItem.title}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </nav>
 
-        <div className={`mt-2 border-t border-slate-100 dark:border-slate-800 pt-4 ${compact ? "border-t-0 px-2" : "px-3"}`}>
-          <Link
-            href="/profile"
-            onClick={() => mobile && setSidebarOpen(false)}
-            aria-current={active("/profile") ? "page" : undefined}
-            title={compact ? "My Profile" : undefined}
-            className={`${itemBase} ${
-              active("/profile")
-                ? getNavClasses(true, "primary")
-                : getNavClasses(false, "primary")
-            }`}
-          >
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold text-xs">
+        <div className={`mt-auto space-y-4 border-t border-slate-200 dark:border-slate-800 pt-4 bg-slate-50/50 dark:bg-slate-900/50 ${compact ? "px-2 pb-4" : "p-4"}`}>
+          {!compact && (
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/50 rounded-xl p-3 shadow-sm">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-bold tracking-wider text-amber-800 dark:text-amber-500 uppercase">Rewards</span>
+                <Wallet className="w-4 h-4 text-amber-500" />
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-bold text-slate-900 dark:text-slate-100">{gamificationData?.totalPoints || 130}</span>
+                <span className="text-xs font-medium text-amber-700 dark:text-amber-600">pts</span>
+              </div>
+            </div>
+          )}
+
+          <div className={`flex items-center gap-3 ${compact ? "justify-center" : "px-2"}`}>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white shadow-sm border-2 border-white dark:border-slate-800 ring-2 ring-slate-100 dark:ring-slate-700">
               {displayInitials}
             </div>
-            {!compact && <span className="truncate font-medium">My Profile</span>}
-          </Link>
-          {secondaryNav.map(({ label, href, icon: Icon }) => (
-            <Link
-              key={label}
-              href={href as `/${string}`}
-              onClick={() => mobile && setSidebarOpen(false)}
-              aria-current={active(href) ? "page" : undefined}
-              title={compact ? label : undefined}
-              className={`${itemBase} ${
-                active(href)
-                  ? getNavClasses(true, "secondary")
-                  : getNavClasses(false, "secondary")
-              }`}
-            >
-              <Icon size={18} strokeWidth={active(href) ? 2 : 1.6} className="shrink-0" />
-              {!compact && label}
-            </Link>
-          ))}
-        </div>
+            {!compact && (
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  {displayName}
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  {displayRole} • {displayYear}
+                </p>
+              </div>
+            )}
+          </div>
 
-        <div className={`mt-auto space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4 ${compact ? "border-t-0 px-2" : "px-6"}`}>
           <button
             type="button"
             onClick={handleSignOut}
             title="Sign out"
             aria-label="Sign out"
-            className={`flex items-center gap-3 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer ${
-              compact ? "justify-center px-0" : "px-3 w-full"
+            className={`flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 cursor-pointer ${
+              compact 
+                ? "justify-center px-0 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400" 
+                : "px-2 text-slate-600 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/30 dark:hover:text-red-400"
             }`}
           >
-            <LogOut size={16} className="shrink-0" />
+            <LogOut size={18} className="shrink-0 opacity-75" />
             {!compact && "Sign out"}
           </button>
-          {!compact && (
-            <p className="px-3 text-[10px] font-medium text-slate-400 dark:text-slate-600">
-              PRO ALUMN v2.0 · Google Cloud
-            </p>
-          )}
         </div>
       </>
     );
@@ -529,11 +550,10 @@ export function RoleShell({
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Gamification Streak & Points Header Indicators */}
             <Link
               href="/rewards"
               className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-2.5 py-1 text-xs font-bold text-amber-600 dark:text-amber-400 hover:scale-105 hover:border-amber-500/50 transition-all shadow-xs"
-              title="Daily Active Streak — Visit rewards to view achievements"
+              title="Daily Active Streak"
             >
               <Flame size={15} className="text-orange-500 animate-pulse fill-orange-500/20" />
               <span>{gamificationData?.streak?.current || 1}d</span>
@@ -561,7 +581,7 @@ export function RoleShell({
               >
                 <Bell size={19} />
                 {unreadCount > 0 && (
-                  <span className="absolute 1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+                  <span className="absolute top-1.5 right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
                     {unreadCount}
                   </span>
                 )}
@@ -592,29 +612,34 @@ export function RoleShell({
         aria-label="Primary navigation"
       >
         <ul className="flex items-stretch">
-          {items.slice(0, 5).map(({ label, href, icon: Icon }) => (
-            <li key={label} className="flex-1">
-              <Link
-                href={href as `/${string}`}
-                aria-current={active(href) ? "page" : undefined}
-                className={`flex flex-col items-center gap-0.5 px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                  active(href)
-                    ? "text-blue-600 dark:text-blue-400 font-bold"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                }`}
-              >
-                <Icon size={19} strokeWidth={active(href) ? 2.2 : 1.6} />
-                <span className="text-[10px] leading-none mt-0.5">{label}</span>
-                {active(href) && (
-                  <span className="mt-0.5 h-0.5 w-3 rounded-full bg-blue-600 dark:bg-blue-400" />
-                )}
-              </Link>
-            </li>
-          ))}
+          {navConfig.slice(0, 5).map(({ title, href, icon: Icon, subItems }) => {
+            const destHref = href || (subItems ? subItems[0].href : "");
+            const isItemActive = (href && active(href)) || (subItems && subItems.some((s) => active(s.href)));
+            
+            return (
+              <li key={title} className="flex-1">
+                <Link
+                  href={destHref as `/${string}`}
+                  aria-current={isItemActive ? "page" : undefined}
+                  className={`flex flex-col items-center gap-0.5 px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                    isItemActive
+                      ? "text-blue-600 dark:text-blue-400 font-bold"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                  }`}
+                >
+                  <Icon size={19} strokeWidth={isItemActive ? 2.2 : 1.6} />
+                  <span className="text-[10px] leading-none mt-0.5">{title}</span>
+                  {isItemActive && (
+                    <span className="mt-0.5 h-0.5 w-3 rounded-full bg-blue-600 dark:bg-blue-400" />
+                  )}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
       <div className="h-16 md:hidden" aria-hidden="true" />
     </div>
   );
-}
+}
