@@ -442,7 +442,7 @@ export function RoleShell({
             </div>
           )}
 
-          <div className={`flex items-center gap-3 ${compact ? "justify-center" : "px-2"}`}>
+          <Link href="/profile" className={`flex items-center gap-3 rounded-lg py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${compact ? "justify-center" : "px-2 hover:bg-slate-100/80 dark:hover:bg-slate-800/60"}`}>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white shadow-sm border-2 border-white dark:border-slate-800 ring-2 ring-slate-100 dark:ring-slate-700">
               {displayInitials}
             </div>
@@ -456,7 +456,7 @@ export function RoleShell({
                 </p>
               </div>
             )}
-          </div>
+          </Link>
 
           <button
             type="button"
@@ -526,7 +526,7 @@ export function RoleShell({
 
       <div className={`flex min-h-screen flex-col transition-[padding] duration-200 ${collapsed ? "md:pl-[72px]" : "md:pl-64"}`}>
         <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 backdrop-blur-md sm:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-1 items-center gap-3">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}

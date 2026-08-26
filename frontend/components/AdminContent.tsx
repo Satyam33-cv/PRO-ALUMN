@@ -40,12 +40,14 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldAlert,
+  PlaySquare,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { getSocket } from "@/lib/socket";
 import { useAuth } from "@/lib/context/AuthContext";
 import { Card, Badge, Skeleton } from "@/components/ui";
+import { approveProfileAction, approveVideoAction, rejectItemAction } from "@/app/actions/admin";
 
 type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools";
 
@@ -166,8 +168,17 @@ export function AdminContent() {
   // User Actions
   const handleVerifyUser = async (id: string, verified: boolean) => {
     try {
+      if (verified) {
+        // Trigger new Server Action to approve profile and award wallet points
+        const formData = new FormData();
+        formData.append("userId", id);
+        const res = await approveProfileAction(formData);
+        if (res.success) showToast(res.message || "Success");
+        else showToast(res.error || "Approval failed");
+      }
+      
       await apiClient.admin.updateUserVerify(id, verified);
-      showToast(`User ${verified ? "verified" : "unverified"} successfully`);
+      if (!verified) showToast("User unverified successfully");
       reloadUsers();
       reloadStats();
     } catch (err: any) {
@@ -219,6 +230,40 @@ export function AdminContent() {
       reloadStats();
     } catch (err: any) {
       showToast(err.message || "Failed to moderate story");
+    } finally {
+      setModeratingId(null);
+    }
+  };
+
+  // Video Moderation
+  const pendingVideos = [
+    {
+      id: "mock-video-1",
+      title: "Mastering System Design Interviews",
+      uploader: { name: "Rahul Sharma", company: "Google" },
+      price: 150,
+      createdAt: new Date().toISOString()
+    }
+  ];
+
+  const handleModerateVideo = async (id: string, actionType: "APPROVE" | "REJECT") => {
+    setModeratingId(id);
+    try {
+      const formData = new FormData();
+      if (actionType === "APPROVE") {
+        formData.append("videoId", id);
+        const res = await approveVideoAction(formData);
+        if (res.success) showToast(res.message || "Success");
+        else showToast(res.error || "Approval failed");
+      } else {
+        formData.append("itemId", id);
+        formData.append("itemType", "VIDEO");
+        const res = await rejectItemAction(formData);
+        if (res.success) showToast(res.message || "Success");
+        else showToast(res.error || "Rejection failed");
+      }
+    } catch (err: any) {
+      showToast("Action failed");
     } finally {
       setModeratingId(null);
     }
@@ -489,7 +534,7 @@ export function AdminContent() {
 
               <div className="grid grid-cols-1 gap-2 pt-2">
                 <button
-                  onClick={() => setActiveTab("broadcasts")}
+                  onClick={() => setActiveTab("cms")}
                   className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-blue-500 hover:bg-blue-500/5 transition-all text-left"
                 >
                   <Megaphone size={16} className="text-blue-500 shrink-0" />
@@ -819,6 +864,52 @@ export function AdminContent() {
                         className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs"
                       >
                         Approve Story ✓
+                      </button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Section: Pending Videos (Marketplace) */}
+          <div className="space-y-4">
+            <h3 className="font-display text-xl font-bold flex items-center gap-2">
+              <PlaySquare size={20} className="text-rose-500" />
+              Video Market Moderation Queue ({pendingVideos.length} pending)
+            </h3>
+            
+            {pendingVideos.length === 0 ? (
+              <Card padding="lg" className="text-center py-8 text-slate-400 text-xs">
+                <CheckCircle2 size={28} className="mx-auto text-emerald-500 mb-2" />
+                No videos waiting for approval!
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {pendingVideos.map((video) => (
+                  <Card key={video.id} padding="md" className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{video.title}</h4>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Uploaded by: {video.uploader.name} · {video.uploader.company}
+                      </p>
+                      <Badge tone="accent" className="mt-2 text-[10px]">Price: {video.price} pts</Badge>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleModerateVideo(video.id, "REJECT")}
+                        disabled={moderatingId === video.id}
+                        className="px-4 py-2 rounded-xl border border-rose-300 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 transition-colors"
+                      >
+                        Reject
+                      </button>
+                      <button
+                        onClick={() => handleModerateVideo(video.id, "APPROVE")}
+                        disabled={moderatingId === video.id}
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs"
+                      >
+                        Approve Video
                       </button>
                     </div>
                   </Card>

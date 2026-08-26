@@ -19,20 +19,22 @@ import {
   CornerDownLeft,
   Calendar,
   Layers,
+  Settings2,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useAuth } from "@/lib/context/AuthContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 
 import { listUserDocsFromDrive } from "@/lib/google-workspace";
 
-export type SearchCategory = "all" | "docs" | "keep" | "alumni" | "jobs" | "announcements";
+export type SearchCategory = "all" | "docs" | "keep" | "alumni" | "jobs" | "announcements" | "action";
 
 export interface SearchResultItem {
   id: string;
-  type: "doc" | "keep" | "alumni" | "job" | "announcement";
+  type: "doc" | "keep" | "alumni" | "job" | "announcement" | "action";
   title: string;
   subtitle: string;
   snippet?: string;
@@ -153,9 +155,44 @@ const FALLBACK_KEEP_NOTES: SearchResultItem[] = [
   },
 ];
 
+// System Actions for the Command Palette
+const SYSTEM_ACTIONS: SearchResultItem[] = [
+  {
+    id: "action-theme",
+    type: "action",
+    title: "Toggle Dark Mode",
+    subtitle: "Switch between light and dark theme",
+    tag: "System",
+    url: "action:theme",
+    badge: "Action",
+    badgeColor: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+  },
+  {
+    id: "action-profile",
+    type: "action",
+    title: "View My Profile",
+    subtitle: "Manage your account and preferences",
+    tag: "System",
+    url: "/profile",
+    badge: "Action",
+    badgeColor: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+  },
+  {
+    id: "action-signout",
+    type: "action",
+    title: "Sign Out",
+    subtitle: "Log out of your PRO ALUMN account",
+    tag: "System",
+    url: "action:signout",
+    badge: "Action",
+    badgeColor: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/50",
+  },
+];
+
 export function GlobalSearch() {
   const router = useRouter();
-  const { user, accessToken } = useAuth();
+  const { user, accessToken, signOut } = useAuth();
+  const { toggle: toggleTheme } = useTheme();
   const [queryText, setQueryText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<SearchCategory>("all");
@@ -358,7 +395,7 @@ export function GlobalSearch() {
       badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
     }));
 
-    return [...combinedDocs, ...combinedNotes, ...alumniResults, ...jobResults, ...announcementResults];
+    return [...combinedDocs, ...combinedNotes, ...alumniResults, ...jobResults, ...announcementResults, ...SYSTEM_ACTIONS];
   }, [firestoreDocs, driveDocs, firestoreNotes, backendResults]);
 
   // Filtered results based on search text and active category
@@ -443,7 +480,14 @@ export function GlobalSearch() {
 
   const handleSelectItem = (item: SearchResultItem) => {
     setIsOpen(false);
-    router.push(item.url);
+    if (item.url === "action:theme") {
+      toggleTheme();
+    } else if (item.url === "action:signout") {
+      signOut();
+      router.push("/login");
+    } else {
+      router.push(item.url);
+    }
   };
 
   const getIcon = (type: SearchResultItem["type"]) => {
@@ -458,6 +502,8 @@ export function GlobalSearch() {
         return <BriefcaseBusiness className="w-4 h-4 text-emerald-600" />;
       case "announcement":
         return <Megaphone className="w-4 h-4 text-purple-600" />;
+      case "action":
+        return <Settings2 className="w-4 h-4 text-slate-600" />;
     }
   };
 
@@ -692,6 +738,8 @@ export function GlobalSearch() {
                             ? "bg-indigo-50 border-indigo-100 text-indigo-600"
                             : item.type === "job"
                             ? "bg-emerald-50 border-emerald-100 text-emerald-600"
+                            : item.type === "action"
+                            ? "bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
                             : "bg-purple-50 border-purple-100 text-purple-600"
                         }`}
                       >

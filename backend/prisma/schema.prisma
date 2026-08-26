@@ -20,69 +20,87 @@ enum Role {
   FACULTY
 }
 
+enum ItemStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum WalletTransactionType {
+  CREDIT
+  DEBIT
+}
+
 model User {
-  id              String   @id @default(uuid())
-  name            String
-  email           String   @unique
-  passwordHash    String
-  role            Role     @default(STUDENT)
-  phone           String?
-  avatarUrl       String?
-  resumeUrl       String?  // Uploaded resume (S3/Cloudinary)
+  id             String     @id @default(uuid())
+  name           String
+  email          String     @unique
+  passwordHash   String
+  role           Role       @default(STUDENT)
+  profileStatus  ItemStatus @default(PENDING)
+  referredByCode String?
+  referralCode   String?    @unique
+  phone          String?
+  avatarUrl      String?
+  resumeUrl      String? // Uploaded resume (S3/Cloudinary)
 
   // College-specific
-  batchYear       Int?     // Graduation year (e.g., 2020)
-  department      String?  // CSE, ECE, MECH, etc.
-  rollNumber      String?
+  batchYear  Int? // Graduation year (e.g., 2020)
+  department String? // CSE, ECE, MECH, etc.
+  rollNumber String?
 
   // Career info (for alumni)
-  currentCompany  String?
-  jobTitle        String?
-  location        String?
-  linkedinUrl     String?
-  bio             String?  @db.Text
+  currentCompany String?
+  jobTitle       String?
+  location       String?
+  linkedinUrl    String?
+  bio            String? @db.Text
 
-  isVerified      Boolean  @default(false)
-  isActive        Boolean  @default(true)
+  isVerified Boolean @default(false)
+  isActive   Boolean @default(true)
 
   // Smart matching (Phase 5)
-  skills          String?            // comma-separated: e.g. "React, Python, DSA"
-  interests       String?            // comma-separated: e.g. "AI, Product, Startups"
-  embedding       Unsupported("vector(384)")?  // pgvector embedding of profile
-  timeline        Json?              // editable career timeline [{ role, company, range }]
+  skills    String? // comma-separated: e.g. "React, Python, DSA"
+  interests String? // comma-separated: e.g. "AI, Product, Startups"
+  embedding Unsupported("vector(384)")? // pgvector embedding of profile
+  timeline  Json? // editable career timeline [{ role, company, range }]
 
   // Gamification & Streaks
-  currentStreak      Int       @default(0)
-  longestStreak      Int       @default(0)
-  lastActiveDate     DateTime? 
-  totalPoints        Int       @default(0)
-  
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastActiveDate DateTime?
+  totalPoints    Int       @default(0)
+
   // Profile Tracking
-  lastProfileUpdate  DateTime  @default(now())
-  lastJobUpdate      DateTime  @default(now())
+  lastProfileUpdate   DateTime @default(now())
+  lastJobUpdate       DateTime @default(now())
   lastEducationUpdate DateTime @default(now())
-  lastProjectUpdate  DateTime  @default(now())
+  lastProjectUpdate   DateTime @default(now())
   profileCompleteness Int      @default(0)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  jobsPosted      JobPosting[]      @relation("PostedJobs")
-  referralsSent   ReferralRequest[] @relation("ReferralsRequested")
-  referralsRecv   ReferralRequest[] @relation("ReferralsGiven")
-  stories         SuccessStory[]
-  notifications   Notification[]
-  eventsCreated   Event[]           @relation("EventsCreated")
-  rsvps           EventRSVP[]
-  announcements   Announcement[]    @relation("AnnouncementsPosted")
-  mentorshipsAsMentor  Mentorship[]  @relation("MentorSide")
-  mentorshipsAsStudent Mentorship[]  @relation("StudentSide")
-  chatThreads     ChatThreadMember[]
-  chatMessages    ChatMessage[]
-  storyVotes      StoryVote[]
-  activities      ActivityLog[]
-  badges          UserBadge[]
+  jobsPosted           JobPosting[]       @relation("PostedJobs")
+  referralsSent        ReferralRequest[]  @relation("ReferralsRequested")
+  referralsRecv        ReferralRequest[]  @relation("ReferralsGiven")
+  stories              SuccessStory[]
+  notifications        Notification[]
+  eventsCreated        Event[]            @relation("EventsCreated")
+  rsvps                EventRSVP[]
+  announcements        Announcement[]     @relation("AnnouncementsPosted")
+  mentorshipsAsMentor  Mentorship[]       @relation("MentorSide")
+  mentorshipsAsStudent Mentorship[]       @relation("StudentSide")
+  chatThreads          ChatThreadMember[]
+  chatMessages         ChatMessage[]
+  storyVotes           StoryVote[]
+  activities           ActivityLog[]
+  badges               UserBadge[]
+
+  wallet             Wallet?
+  walletTransactions WalletTransaction[]
+  videos             Video[]             @relation("UploadedVideos")
 
   @@index([batchYear])
   @@index([department])
@@ -97,33 +115,33 @@ enum JobStatus {
 }
 
 model JobPosting {
-  id              String    @id @default(uuid())
-  postedById      String
-  postedBy        User      @relation("PostedJobs", fields: [postedById], references: [id], onDelete: Cascade)
+  id         String @id @default(uuid())
+  postedById String
+  postedBy   User   @relation("PostedJobs", fields: [postedById], references: [id], onDelete: Cascade)
 
   // Job details
   title           String
   company         String
   location        String
-  jobType         String    // FULL_TIME, INTERNSHIP, CONTRACT
-  experienceLevel String?   // ENTRY, MID, SENIOR
+  jobType         String // FULL_TIME, INTERNSHIP, CONTRACT
+  experienceLevel String? // ENTRY, MID, SENIOR
   description     String    @db.Text
   requirements    String?   @db.Text
-  skills          String?   // comma-separated or JSON
+  skills          String? // comma-separated or JSON
   salaryMin       Int?
   salaryMax       Int?
   currency        String?   @default("INR")
-  applyLink       String?   // External apply link
+  applyLink       String? // External apply link
   deadline        DateTime?
-  referralSlots   Int       @default(1)  // how many referrals alumni can give
+  referralSlots   Int       @default(1) // how many referrals alumni can give
 
-  status          JobStatus @default(OPEN)
-  viewsCount      Int       @default(0)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  status     JobStatus @default(OPEN)
+  viewsCount Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   // Relations
-  referrals       ReferralRequest[]
+  referrals ReferralRequest[]
 
   @@index([company])
   @@index([status])
@@ -132,43 +150,43 @@ model JobPosting {
 
 // =================== REFERRALS ===================
 enum ReferralStatus {
-  PENDING       // Student submitted, awaiting alumni response
-  ACCEPTED      // Alumni accepted, will refer
-  REJECTED      // Alumni declined
-  REFERRED      // Alumni submitted referral internally
-  HIRED         // Candidate got hired
-  NOT_HIRED     // Candidate was not hired
-  WITHDRAWN     // Student withdrew request
+  PENDING // Student submitted, awaiting alumni response
+  ACCEPTED // Alumni accepted, will refer
+  REJECTED // Alumni declined
+  REFERRED // Alumni submitted referral internally
+  HIRED // Candidate got hired
+  NOT_HIRED // Candidate was not hired
+  WITHDRAWN // Student withdrew request
 }
 
 model ReferralRequest {
-  id              String         @id @default(uuid())
-  jobId           String
-  job             JobPosting     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  id    String     @id @default(uuid())
+  jobId String
+  job   JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
-  requestedById   String         // Student who is asking
-  requestedBy     User           @relation("ReferralsRequested", fields: [requestedById], references: [id], onDelete: Cascade)
+  requestedById String // Student who is asking
+  requestedBy   User   @relation("ReferralsRequested", fields: [requestedById], references: [id], onDelete: Cascade)
 
-  referredById    String         // Alumni who will refer
-  referredBy      User           @relation("ReferralsGiven", fields: [referredById], references: [id], onDelete: Cascade)
+  referredById String // Alumni who will refer
+  referredBy   User   @relation("ReferralsGiven", fields: [referredById], references: [id], onDelete: Cascade)
 
   // Application details
-  resumeUrl       String?        // Uploaded resume (S3/Cloudinary)
-  coverLetter     String?        @db.Text
-  studentNote     String?        @db.Text  // Student's message to alumni
+  resumeUrl   String? // Uploaded resume (S3/Cloudinary)
+  coverLetter String? @db.Text
+  studentNote String? @db.Text // Student's message to alumni
 
   // Alumni-side fields
-  alumniNote      String?        @db.Text  // Alumni can add private note
-  rejectionReason String?        @db.Text
+  alumniNote      String? @db.Text // Alumni can add private note
+  rejectionReason String? @db.Text
 
-  status          ReferralStatus @default(PENDING)
-  referredAt      DateTime?      // When alumni actually referred
-  finalOutcomeAt  DateTime?      // When status became HIRED/NOT_HIRED
+  status         ReferralStatus @default(PENDING)
+  referredAt     DateTime? // When alumni actually referred
+  finalOutcomeAt DateTime? // When status became HIRED/NOT_HIRED
 
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([jobId, requestedById])  // One request per student per job
+  @@unique([jobId, requestedById]) // One request per student per job
   @@index([status])
   @@index([requestedById])
   @@index([referredById])
@@ -176,37 +194,37 @@ model ReferralRequest {
 
 // =================== SUCCESS STORIES ===================
 model SuccessStory {
-  id              String   @id @default(uuid())
-  alumniId        String
-  alumni          User     @relation(fields: [alumniId], references: [id], onDelete: Cascade)
+  id       String @id @default(uuid())
+  alumniId String
+  alumni   User   @relation(fields: [alumniId], references: [id], onDelete: Cascade)
 
-  title           String
-  story           String   @db.Text
-  company         String
-  role            String
-  batchYear       Int
-  imageUrl        String?
-  isFeatured      Boolean  @default(false)
-  isApproved      Boolean  @default(false)
-  approvedBy      String?  // Admin user id
-  upvoteCount     Int      @default(0)
+  title       String
+  story       String  @db.Text
+  company     String
+  role        String
+  batchYear   Int
+  imageUrl    String?
+  isFeatured  Boolean @default(false)
+  isApproved  Boolean @default(false)
+  approvedBy  String? // Admin user id
+  upvoteCount Int     @default(0)
 
-  votes           StoryVote[]
+  votes StoryVote[]
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([isFeatured, isApproved])
 }
 
 model StoryVote {
-  id        String       @id @default(uuid())
-  storyId   String
-  story     SuccessStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id      String       @id @default(uuid())
+  storyId String
+  story   SuccessStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime     @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([storyId, userId])
   @@index([storyId])
@@ -228,17 +246,17 @@ enum NotificationType {
 }
 
 model Notification {
-  id              String           @id @default(uuid())
-  userId          String
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  type            NotificationType
-  title           String
-  message         String           @db.Text
-  link            String?          // Deep link or URL
-  isRead          Boolean          @default(false)
+  type    NotificationType
+  title   String
+  message String           @db.Text
+  link    String? // Deep link or URL
+  isRead  Boolean          @default(false)
 
-  createdAt       DateTime         @default(now())
+  createdAt DateTime @default(now())
 
   @@index([userId, isRead])
   @@index([createdAt])
@@ -246,21 +264,21 @@ model Notification {
 
 // =================== EVENTS ===================
 model Event {
-  id          String     @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
-  description String     @db.Text
+  description String   @db.Text
   date        DateTime
   location    String?
-  mode        String     @default("ONLINE") // ONLINE / OFFLINE
+  mode        String   @default("ONLINE") // ONLINE / OFFLINE
   coverImage  String?
   maxCapacity Int?
   createdById String
-  createdBy   User       @relation("EventsCreated", fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User     @relation("EventsCreated", fields: [createdById], references: [id], onDelete: Cascade)
 
-  rsvps       EventRSVP[]
+  rsvps EventRSVP[]
 
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([date])
 }
@@ -280,14 +298,14 @@ model EventRSVP {
 
 // =================== ANNOUNCEMENTS (Faculty) ===================
 model Announcement {
-  id          String   @id @default(uuid())
+  id          String @id @default(uuid())
   title       String
-  body        String   @db.Text
+  body        String @db.Text
   createdById String
-  createdBy   User     @relation("AnnouncementsPosted", fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User   @relation("AnnouncementsPosted", fields: [createdById], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([createdAt])
 }
@@ -301,18 +319,18 @@ enum MentorshipStatus {
 }
 
 model Mentorship {
-  id              String           @id @default(uuid())
-  studentId       String
-  student         User             @relation("StudentSide", fields: [studentId], references: [id], onDelete: Cascade)
-  mentorId        String
-  mentor          User             @relation("MentorSide", fields: [mentorId], references: [id], onDelete: Cascade)
+  id        String @id @default(uuid())
+  studentId String
+  student   User   @relation("StudentSide", fields: [studentId], references: [id], onDelete: Cascade)
+  mentorId  String
+  mentor    User   @relation("MentorSide", fields: [mentorId], references: [id], onDelete: Cascade)
 
-  area            String           // "Career Advice", "Interview Prep", etc.
-  message         String?          @db.Text
-  status          MentorshipStatus @default(PENDING)
+  area    String // "Career Advice", "Interview Prep", etc.
+  message String?          @db.Text
+  status  MentorshipStatus @default(PENDING)
 
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([studentId, mentorId])
   @@index([mentorId, status])
@@ -321,40 +339,40 @@ model Mentorship {
 
 // =================== CHAT ===================
 model ChatThread {
-  id          String             @id @default(uuid())
-  name        String?            // null for 1:1 threads
-  isGroup     Boolean            @default(false)
+  id      String  @id @default(uuid())
+  name    String? // null for 1:1 threads
+  isGroup Boolean @default(false)
 
-  members     ChatThreadMember[]
-  messages    ChatMessage[]
+  members  ChatThreadMember[]
+  messages ChatMessage[]
 
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ChatThreadMember {
-  id        String     @id @default(uuid())
-  threadId  String
-  thread    ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id       String     @id @default(uuid())
+  threadId String
+  thread   ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  joinedAt  DateTime   @default(now())
+  joinedAt DateTime @default(now())
 
   @@unique([threadId, userId])
   @@index([userId])
 }
 
 model ChatMessage {
-  id        String     @id @default(uuid())
-  threadId  String
-  thread    ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  senderId  String
-  sender    User       @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  id       String     @id @default(uuid())
+  threadId String
+  thread   ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderId String
+  sender   User       @relation(fields: [senderId], references: [id], onDelete: Cascade)
 
-  text      String     @db.Text
+  text String @db.Text
 
-  createdAt DateTime   @default(now())
+  createdAt DateTime @default(now())
 
   @@index([threadId, createdAt])
   @@index([senderId])
@@ -362,51 +380,92 @@ model ChatMessage {
 
 // =================== GAMIFICATION & REWARDS ===================
 model ActivityLog {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  actionType  String   // e.g. "DAILY_LOGIN", "POSTED_JOB", "PROFILE_UPDATED", "REFERRAL_GIVEN"
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  actionType   String // e.g. "DAILY_LOGIN", "POSTED_JOB", "PROFILE_UPDATED", "REFERRAL_GIVEN"
   pointsEarned Int
-  createdAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
 
   @@index([userId])
   @@index([createdAt])
 }
 
 model Badge {
-  id          String   @id @default(uuid())
+  id          String @id @default(uuid())
   name        String
   description String
   imageUrl    String
-  requiredPts Int      // Points required to unlock
+  requiredPts Int // Points required to unlock
 
-  users       UserBadge[]
+  users UserBadge[]
 }
 
 model UserBadge {
-  id        String   @id @default(uuid())
-  userId    String
-  badgeId   String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
-  earnedAt  DateTime @default(now())
+  id       String   @id @default(uuid())
+  userId   String
+  badgeId  String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  earnedAt DateTime @default(now())
 
   @@unique([userId, badgeId])
 }
 
 // =================== NEWSLETTER ===================
 model Newsletter {
-  id          String   @id @default(uuid())
-  title       String
-  issueDate   DateTime
-  year        Int
-  coverImage  String
-  fileUrl     String   // URL to PDF or external link
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id         String   @id @default(uuid())
+  title      String
+  issueDate  DateTime
+  year       Int
+  coverImage String
+  fileUrl    String // URL to PDF or external link
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([year])
   @@index([issueDate])
 }
 
+// =================== MARKETPLACE & LEDGER ===================
+model Video {
+  id          String     @id @default(uuid())
+  title       String
+  description String?    @db.Text
+  url         String
+  price       Int        @default(0)
+  status      ItemStatus @default(PENDING)
+
+  uploaderId String
+  uploader   User   @relation("UploadedVideos", fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([uploaderId])
+}
+
+model Wallet {
+  id      String @id @default(uuid())
+  userId  String @unique
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WalletTransaction {
+  id          String                @id @default(uuid())
+  userId      String
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount      Int
+  type        WalletTransactionType
+  description String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
