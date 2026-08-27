@@ -35,6 +35,7 @@ type AuthContextValue = {
   googleAccessToken: string | null;
   accessToken: string | null;
   session: AuthSession | null;
+  getToken: () => string | null;
   setUser: (user: AuthUser) => void;
   setSession: (session: AuthSession) => void;
   signInWithGoogle: () => Promise<void>;
@@ -214,6 +215,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       googleAccessToken,
       accessToken,
       session,
+      getToken,
       setUser,
       setSession,
       signInWithGoogle,

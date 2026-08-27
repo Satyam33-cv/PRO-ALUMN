@@ -53,6 +53,9 @@ import {
   X,
   Layers,
   Video as VideoIcon,
+  CreditCard,
+  Mail,
+  Phone,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
@@ -66,7 +69,7 @@ import {
   rejectVideoAction,
 } from "@/app/actions/admin";
 
-type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools";
+type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools" | "broadcasts" | "events" | "newsletters" | "analytics";
 type CmsSubTab = "broadcasts" | "events" | "newsletters" | "pages";
 
 interface PageBlock {
@@ -258,8 +261,8 @@ export function AdminContent() {
   const announcements = announcementsData || [];
   const approvals = approvalsData || {};
   const customPages = pagesData?.pages || [];
-  const events = eventsData?.events || [];
-  const newsletters = newslettersData?.newsletters || [];
+  const events = Array.isArray(eventsData) ? eventsData : (eventsData as any)?.events || [];
+  const newsletters = Array.isArray(newslettersData) ? newslettersData : (newslettersData as any)?.newsletters || [];
   const pendingVideos = (videosData?.videos || approvals?.pendingVideos || []).filter((v: any) => v.status === "PENDING");
 
   // Unverified & Pending Profiles queue
@@ -274,7 +277,7 @@ export function AdminContent() {
     try {
       const res = await approveProfileAction(userId);
       if (res.success) {
-        showToast(res.message);
+        showToast(res.message || "Profile approved!");
       } else {
         showToast(res.error || "Approval failed");
       }
@@ -293,7 +296,7 @@ export function AdminContent() {
     try {
       const res = await rejectProfileAction({ userId, reason });
       if (res.success) {
-        showToast(res.message);
+        showToast(res.message || "Profile rejected");
       } else {
         showToast(res.error || "Rejection failed");
       }
@@ -314,7 +317,7 @@ export function AdminContent() {
     try {
       const res = await approveVideoAction(videoId);
       if (res.success) {
-        showToast(res.message);
+        showToast(res.message || "Video approved!");
       } else {
         showToast(res.error || "Failed to approve video");
       }
@@ -333,7 +336,7 @@ export function AdminContent() {
     try {
       const res = await rejectVideoAction(videoId);
       if (res.success) {
-        showToast(res.message);
+        showToast(res.message || "Video rejected");
       } else {
         showToast(res.error || "Failed to reject video");
       }
