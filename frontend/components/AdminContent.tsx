@@ -84,7 +84,7 @@ export function AdminContent() {
   const [liveActivities, setLiveActivities] = useState<any[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   
-  const { getToken } = useAuth();
+  const { accessToken } = useAuth();
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -92,7 +92,7 @@ export function AdminContent() {
   };
 
   useEffect(() => {
-    const token = getToken();
+    const token = accessToken;
     if (!token) return;
 
     const socket = getSocket();
@@ -129,7 +129,7 @@ export function AdminContent() {
       socket.off("presence_update", onPresenceUpdate);
       socket.off("activity_stream", onActivityStream);
     };
-  }, [getToken]);
+  }, [accessToken]);
 
   // Queries
   const { data: statsData, reload: reloadStats, isLoading: loadingStats } = useApi("admin:stats", () => apiClient.admin.stats());

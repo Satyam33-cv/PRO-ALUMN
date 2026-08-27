@@ -12,7 +12,7 @@ export default function MatchingPage() {
   const [synced, setSynced] = useState(false);
 
   useEffect(() => {
-    if (user?.role === "STUDENT" || user?.role === "student") {
+    if (user?.role === "student") {
       loadMatches();
     } else {
       setLoading(false);
@@ -41,7 +41,7 @@ export default function MatchingPage() {
   };
 
   if (!user) return null;
-  if (user?.role !== "STUDENT" && user?.role !== "student") {
+  if (user?.role !== "student") {
     return (
       <RoleShell>
         <div className="container mx-auto py-8">
@@ -66,7 +66,7 @@ export default function MatchingPage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {matches?.alumni?.length ? (
               matches.alumni.map((a) => (
-                <MatchRing key={a.id} alumni={a} matchScore={a.matchScore} />
+                <MatchRing key={a.id} percentage={a.matchScore || 0} />
               ))
             ) : (
               <div>No matches found or please refresh your embedding.</div>
