@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "@/lib/api";
 
 type CacheEntry<T> = {
@@ -44,13 +44,16 @@ function getEntry<T>(key: string): CacheEntry<T> {
 export function useApi<T>(key: string, fetcher: () => Promise<T>, options: UseApiOptions = {}): UseApiResult<T> {
   const { enabled = true, staleTime = 30_000 } = options;
   const [entry, setEntry] = useState(() => getEntry<T>(key));
-  const currentEntry = getEntry<T>(key);
+
+  const fetcherRef = useRef(fetcher);
+  fetcherRef.current = fetcher;
 
   const refresh = useCallback(async () => {
     const activeEntry = getEntry<T>(key);
     if (activeEntry.promise) return activeEntry.promise;
 
-    activeEntry.promise = fetcher()
+    activeEntry.promise = fetcherRef
+      .current()
       .then((data) => {
         activeEntry.data = data;
         activeEntry.error = undefined;
@@ -66,10 +69,14 @@ export function useApi<T>(key: string, fetcher: () => Promise<T>, options: UseAp
 
     activeEntry.listeners.forEach((listener) => listener());
     return activeEntry.promise;
-  }, [fetcher, key]);
+  }, [key]);
 
   useEffect(() => {
-    const notify = () => setEntry({ ...getEntry<T>(key) });
+    const currentEntry = getEntry<T>(key);
+    const notify = () => {
+      const latest = getEntry<T>(key);
+      setEntry({ ...latest });
+    };
     currentEntry.listeners.add(notify);
 
     if (enabled && (currentEntry.updatedAt === 0 || Date.now() - currentEntry.updatedAt > staleTime)) {
@@ -79,7 +86,7 @@ export function useApi<T>(key: string, fetcher: () => Promise<T>, options: UseAp
     return () => {
       currentEntry.listeners.delete(notify);
     };
-  }, [currentEntry, enabled, key, refresh, staleTime]);
+  }, [enabled, key, refresh, staleTime]);
 
   const mutate = useCallback((data: T) => {
     const activeEntry = getEntry<T>(key);
