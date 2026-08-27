@@ -9,6 +9,7 @@ generator client {
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
   extensions = [vector]
 }
 
@@ -21,6 +22,7 @@ enum Role {
 }
 
 enum ItemStatus {
+  INCOMPLETE
   PENDING
   APPROVED
   REJECTED
@@ -37,12 +39,17 @@ model User {
   email          String     @unique
   passwordHash   String
   role           Role       @default(STUDENT)
-  profileStatus  ItemStatus @default(PENDING)
+  profileStatus  ItemStatus @default(INCOMPLETE)
   referredByCode String?
   referralCode   String?    @unique
   phone          String?
   avatarUrl      String?
   resumeUrl      String? // Uploaded resume (S3/Cloudinary)
+
+  // Verification & Moderation audit
+  verificationMethod String? // "paid" | "otp" | "college_email" | "id_upload"
+  idCardUrl          String? // Uploaded institutional ID card image
+  rejectionReason    String? // Admin rejection reason if rejected
 
   // College-specific
   batchYear  Int? // Graduation year (e.g., 2020)
@@ -101,6 +108,7 @@ model User {
   wallet             Wallet?
   walletTransactions WalletTransaction[]
   videos             Video[]             @relation("UploadedVideos")
+  paymentRecords     PaymentRecord[]
 
   @@index([batchYear])
   @@index([department])
@@ -500,4 +508,22 @@ model SitePage {
 
   @@index([slug])
   @@index([status])
+}
+
+// =================== PAYMENTS & VERIFICATION ===================
+model PaymentRecord {
+  id                String   @id @default(uuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount            Int      @default(2900) // in paise (e.g. ₹29.00)
+  currency          String   @default("INR")
+  razorpayOrderId   String   @unique
+  razorpayPaymentId String?  @unique
+  razorpaySignature String?
+  status            String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+  @@index([razorpayOrderId])
 }

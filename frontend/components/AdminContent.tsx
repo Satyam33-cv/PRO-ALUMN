@@ -52,13 +52,19 @@ import {
   HelpCircle,
   X,
   Layers,
+  Video as VideoIcon,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { getSocket } from "@/lib/socket";
 import { getToken } from "@/lib/auth";
 import { Card, Badge, Skeleton } from "@/components/ui";
-import { approveProfileAction, approveVideoAction, rejectItemAction } from "@/app/actions/admin";
+import {
+  approveProfileAction,
+  rejectProfileAction,
+  approveVideoAction,
+  rejectVideoAction,
+} from "@/app/actions/admin";
 
 type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools";
 type CmsSubTab = "broadcasts" | "events" | "newsletters" | "pages";
@@ -97,8 +103,12 @@ export function AdminContent() {
   const [selectedUserForDelete, setSelectedUserForDelete] = useState<any>(null);
 
   // Moderation state
-  const [selectedVerificationRows, setSelectedVerificationRows] = useState<Set<string>>(new Set());
   const [moderatingId, setModeratingId] = useState<string | null>(null);
+  const [rejectProfileModal, setRejectProfileModal] = useState<{
+    userId: string;
+    userName: string;
+    reason: string;
+  } | null>(null);
 
   // Broadcast state
   const [broadcastTitle, setBroadcastTitle] = useState("");
@@ -216,9 +226,9 @@ export function AdminContent() {
   }, [isActivityPaused]);
 
   // Queries
-  const { data: statsData, reload: reloadStats, isLoading: loadingStats } = useApi("admin:stats", () => apiClient.admin.stats());
+  const { data: statsData, reload: reloadStats } = useApi("admin:stats", () => apiClient.admin.stats());
   const { data: healthData, reload: reloadHealth } = useApi("admin:health", () => apiClient.admin.systemHealth());
-  const { data: usersData, reload: reloadUsers, isLoading: loadingUsers } = useApi(
+  const { data: usersData, reload: reloadUsers } = useApi(
     `admin:users:${roleFilter}:${verifiedFilter}:${userSearch}:${userPage}`,
     () => {
       const params: Record<string, string> = { page: String(userPage), limit: "15" };
@@ -234,6 +244,7 @@ export function AdminContent() {
   const { data: staleData, reload: reloadStale } = useApi("admin:stale", () => apiClient.admin.staleProfiles());
   const { data: announcementsData, reload: reloadAnnouncements } = useApi("admin:announcements", () => apiClient.announcements.list());
   const { data: approvalsData, reload: reloadApprovals } = useApi("admin:approvals", () => apiClient.admin.approvals());
+  const { data: videosData, reload: reloadVideos } = useApi("admin:videos", () => apiClient.admin.videos());
   const { data: pagesData, reload: reloadPages } = useApi("admin:pages", () => apiClient.admin.pages.list());
   const { data: eventsData, reload: reloadEvents } = useApi("admin:events", () => apiClient.events.list());
   const { data: newslettersData, reload: reloadNewsletters } = useApi("admin:newsletters", () => apiClient.newsletters.list());
@@ -242,7 +253,6 @@ export function AdminContent() {
   const users = usersData?.users || [];
   const totalUserPages = usersData?.pagination?.pages || 1;
   const pendingStories = (storiesData?.stories || []).filter((s: any) => !s.isApproved);
-  const allStories = storiesData?.stories || [];
   const jobs = jobsData?.jobs || [];
   const staleUsers = staleData?.users || [];
   const announcements = announcementsData || [];
@@ -250,31 +260,90 @@ export function AdminContent() {
   const customPages = pagesData?.pages || [];
   const events = eventsData?.events || [];
   const newsletters = newslettersData?.newsletters || [];
+  const pendingVideos = (videosData?.videos || approvals?.pendingVideos || []).filter((v: any) => v.status === "PENDING");
 
-  // Unverified alumni queue
+  // Unverified & Pending Profiles queue
   const unverifiedAlumni = useMemo(
-    () => users.filter((u: any) => u.role === "ALUMNI" && !u.isVerified),
+    () => users.filter((u: any) => u.profileStatus === "PENDING" || (!u.isVerified && u.role === "ALUMNI")),
     [users]
   );
 
-  // User Actions
-  const handleVerifyUser = async (id: string, verified: boolean) => {
+  // =================== PROFILE APPROVAL & REJECTION (SERVER ACTIONS) ===================
+  const handleApproveProfile = async (userId: string) => {
+    setModeratingId(userId);
     try {
-      if (verified) {
-        const formData = new FormData();
-        formData.append("userId", id);
-        const res = await approveProfileAction(formData);
-        if (res.success) showToast(res.message || "Success");
-        else showToast(res.error || "Approval failed");
+      const res = await approveProfileAction(userId);
+      if (res.success) {
+        showToast(res.message);
+      } else {
+        showToast(res.error || "Approval failed");
       }
-
-      await apiClient.admin.updateUserVerify(id, verified);
-      if (!verified) showToast("User unverified successfully");
       reloadUsers();
-      reloadStats();
       reloadApprovals();
+      reloadStats();
     } catch (err: any) {
-      showToast(err.message || "Failed to update verification");
+      showToast(err.message || "Failed to approve profile");
+    } finally {
+      setModeratingId(null);
+    }
+  };
+
+  const handleRejectProfile = async (userId: string, reason?: string) => {
+    setModeratingId(userId);
+    try {
+      const res = await rejectProfileAction({ userId, reason });
+      if (res.success) {
+        showToast(res.message);
+      } else {
+        showToast(res.error || "Rejection failed");
+      }
+      setRejectProfileModal(null);
+      reloadUsers();
+      reloadApprovals();
+      reloadStats();
+    } catch (err: any) {
+      showToast(err.message || "Failed to reject profile");
+    } finally {
+      setModeratingId(null);
+    }
+  };
+
+  // =================== VIDEO APPROVAL & REJECTION (SERVER ACTIONS) ===================
+  const handleApproveVideo = async (videoId: string) => {
+    setModeratingId(videoId);
+    try {
+      const res = await approveVideoAction(videoId);
+      if (res.success) {
+        showToast(res.message);
+      } else {
+        showToast(res.error || "Failed to approve video");
+      }
+      reloadVideos();
+      reloadApprovals();
+      reloadStats();
+    } catch (err: any) {
+      showToast(err.message || "Failed to approve video");
+    } finally {
+      setModeratingId(null);
+    }
+  };
+
+  const handleRejectVideo = async (videoId: string) => {
+    setModeratingId(videoId);
+    try {
+      const res = await rejectVideoAction(videoId);
+      if (res.success) {
+        showToast(res.message);
+      } else {
+        showToast(res.error || "Failed to reject video");
+      }
+      reloadVideos();
+      reloadApprovals();
+      reloadStats();
+    } catch (err: any) {
+      showToast(err.message || "Failed to reject video");
+    } finally {
+      setModeratingId(null);
     }
   };
 
@@ -349,17 +418,6 @@ export function AdminContent() {
       reloadStats();
     } catch (err: any) {
       showToast(err.message || "Failed to delete job");
-    }
-  };
-
-  // Mentorship Moderation Action
-  const handleModerateMentorship = async (id: string, status: string) => {
-    try {
-      await apiClient.mentorship.updateStatus(id, status);
-      showToast(`Mentorship request ${status.toLowerCase()}`);
-      reloadApprovals();
-    } catch (err: any) {
-      showToast(err.message || "Failed to update mentorship status");
     }
   };
 
@@ -522,12 +580,12 @@ export function AdminContent() {
       title: type === "markdown" ? "Section Heading" : type === "features" ? "Platform Capabilities" : type === "faq" ? "Common Questions" : "Call to Action",
       content: type === "markdown" ? "Write markdown or rich text content here..." : "",
       features: type === "features" ? [
-        { title: "AI-Powered Matching", desc: "Vector similarity ranking using Gemini 384-dim embeddings", tag: "AI" },
+        { title: "AI-Powered Matching", desc: "Vector similarity ranking using Gemini embeddings", tag: "AI" },
         { title: "Direct Referrals", desc: "Structured referral lifecycle with status tracking", tag: "Referrals" },
-        { title: "Google Ecosystem", desc: "Integrated with Google Docs, Keep, Forms and Calendar", tag: "Google" },
+        { title: "Verified Community", desc: "Campus-vetted talent pool and leadership access", tag: "Network" },
       ] : undefined,
       faqs: type === "faq" ? [
-        { question: "How does verification work?", answer: "Alumni submit institutional credentials or graduation year, which are approved by campus admins." }
+        { question: "How does verification work?", answer: "Alumni submit institutional credentials or graduation year, approved by campus admins." }
       ] : undefined,
       ctaText: type === "cta" ? "Explore Community" : undefined,
       ctaLink: type === "cta" ? "/directory" : undefined,
@@ -556,10 +614,10 @@ export function AdminContent() {
   const statCards = [
     { label: "Total Members", value: stats.users?.total || 0, icon: Users, color: "text-blue-500 bg-blue-500/10" },
     { label: "Online Now", value: onlineUsers.size, icon: Activity, color: "text-emerald-500 bg-emerald-500/10" },
-    { label: "Open Jobs", value: stats.jobs?.open || 0, icon: BriefcaseBusiness, color: "text-amber-500 bg-amber-500/10" },
-    { label: "Pending Approvals", value: (pendingStories.length + unverifiedAlumni.length), icon: Clock, color: "text-rose-500 bg-rose-500/10" },
-    { label: "Custom Pages", value: customPages.length, icon: Globe, color: "text-purple-500 bg-purple-500/10" },
-    { label: "Upcoming Events", value: stats.events?.upcoming || 0, icon: CalendarDays, color: "text-indigo-500 bg-indigo-500/10" },
+    { label: "Pending Approvals", value: (pendingStories.length + unverifiedAlumni.length + pendingVideos.length), icon: Clock, color: "text-rose-500 bg-rose-500/10" },
+    { label: "Pending Videos", value: pendingVideos.length, icon: VideoIcon, color: "text-purple-500 bg-purple-500/10" },
+    { label: "Custom Pages", value: customPages.length, icon: Globe, color: "text-indigo-500 bg-indigo-500/10" },
+    { label: "Upcoming Events", value: stats.events?.upcoming || 0, icon: CalendarDays, color: "text-amber-500 bg-amber-500/10" },
   ];
 
   const funnelBars = [
@@ -569,6 +627,8 @@ export function AdminContent() {
     { label: "Hired", count: stats.referrals?.byStatus?.HIRED || stats.referrals?.byStatus?.hired || 0, color: "bg-emerald-500" },
   ];
   const maxFunnel = Math.max(1, ...funnelBars.map((b) => b.count));
+
+  const totalPendingModeration = pendingStories.length + unverifiedAlumni.length + pendingVideos.length;
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-20 font-sans">
@@ -585,7 +645,7 @@ export function AdminContent() {
             Command Center
           </h1>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            Real-time telemetry, user presence, unified CMS site builder & governance
+            Real-time telemetry, user presence, video market &amp; wallet credit ledger
           </p>
         </div>
 
@@ -605,8 +665,9 @@ export function AdminContent() {
               reloadHealth();
               reloadUsers();
               reloadApprovals();
+              reloadVideos();
               reloadPages();
-              showToast("Refreshed platform telemetry");
+              showToast("Refreshed platform telemetry & moderation queues");
             }}
             className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
             title="Refresh telemetry"
@@ -621,7 +682,12 @@ export function AdminContent() {
         {[
           { id: "mission_control", label: "Mission Control", icon: Activity },
           { id: "users", label: `Users (${stats.users?.total || 0})`, icon: Users },
-          { id: "moderation", label: `Moderation & Approvals (${pendingStories.length + unverifiedAlumni.length})`, icon: ShieldCheck, badge: pendingStories.length > 0 || unverifiedAlumni.length > 0 },
+          {
+            id: "moderation",
+            label: `Moderation & Approvals (${totalPendingModeration})`,
+            icon: ShieldCheck,
+            badge: totalPendingModeration > 0,
+          },
           { id: "stale_profiles", label: `Stale Profiles (${staleUsers.length})`, icon: Clock },
           { id: "cms", label: `Unified CMS (${customPages.length} Pages)`, icon: Megaphone },
           { id: "data_tools", label: "Data & CSV Import", icon: FileUp },
@@ -671,7 +737,7 @@ export function AdminContent() {
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-lg font-bold flex items-center gap-2">
                   <Server size={18} className="text-blue-500" />
-                  Telemetry & DB Health
+                  Telemetry &amp; DB Health
                 </h3>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 font-bold">
                   {healthData?.status || "HEALTHY"}
@@ -740,6 +806,17 @@ export function AdminContent() {
 
               <div className="grid grid-cols-1 gap-2 pt-2">
                 <button
+                  onClick={() => setActiveTab("moderation")}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-blue-500 hover:bg-blue-500/5 transition-all text-left cursor-pointer"
+                >
+                  <ShieldCheck size={16} className="text-blue-500 shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Review Moderation Queue</p>
+                    <p className="text-[11px] text-slate-500">{totalPendingModeration} pending verification &amp; video items</p>
+                  </div>
+                </button>
+
+                <button
                   onClick={() => {
                     setActiveTab("cms");
                     setCmsSubTab("pages");
@@ -750,17 +827,6 @@ export function AdminContent() {
                   <div>
                     <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Page &amp; Site Builder</p>
                     <p className="text-[11px] text-slate-500">Create new live custom pages with no deploy</p>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("moderation")}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-blue-500 hover:bg-blue-500/5 transition-all text-left cursor-pointer"
-                >
-                  <ShieldCheck size={16} className="text-blue-500 shrink-0" />
-                  <div>
-                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Unified Approvals Queue</p>
-                    <p className="text-[11px] text-slate-500">{pendingStories.length + unverifiedAlumni.length} pending moderation items</p>
                   </div>
                 </button>
 
@@ -986,15 +1052,19 @@ export function AdminContent() {
 
                           <td className="py-3 px-4">
                             <button
-                              onClick={() => handleVerifyUser(u.id, !u.isVerified)}
+                              onClick={() => {
+                                if (!u.isVerified) handleApproveProfile(u.id);
+                                else handleRejectProfile(u.id);
+                              }}
+                              disabled={moderatingId === u.id}
                               className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all ${
                                 u.isVerified
                                   ? "bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25"
                                   : "bg-amber-500/15 text-amber-600 hover:bg-amber-500/25"
-                              }`}
+                              } disabled:opacity-50`}
                             >
                               {u.isVerified ? <CheckCircle2 size={12} /> : <AlertTriangle size={12} />}
-                              {u.isVerified ? "Verified" : "Unverified"}
+                              {u.isVerified ? "Verified (+50 pts)" : "Unverified"}
                             </button>
                           </td>
 
@@ -1069,23 +1139,216 @@ export function AdminContent() {
             <div>
               <h3 className="font-display text-lg font-bold flex items-center gap-2">
                 <ShieldCheck size={20} className="text-blue-600" />
-                Centralized Platform Approvals Dashboard
+                Centralized Platform Approvals &amp; Credit Ledger
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
-                Single unified queue for spotlight stories, alumni verifications, job moderation, and 1:1 mentorship requests.
+                Atomic transactions with audit-logged point movements for Video Market items, alumni verifications, and spotlight stories.
               </p>
             </div>
-            <div className="flex items-center gap-3 text-xs font-mono">
-              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-ink/10 font-bold">
-                {pendingStories.length} Stories Pending
+            <div className="flex items-center gap-2 text-xs font-mono flex-wrap">
+              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-ink/10 font-bold text-purple-600">
+                {pendingVideos.length} Videos
               </span>
-              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-ink/10 font-bold">
-                {unverifiedAlumni.length} Unverified Alumni
+              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-ink/10 font-bold text-emerald-600">
+                {unverifiedAlumni.length} Profiles
+              </span>
+              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-ink/10 font-bold text-blue-600">
+                {pendingStories.length} Stories
               </span>
             </div>
           </div>
 
-          {/* Section: Pending Success Stories */}
+          {/* Section 1: Video Market Moderation Queue (NEW) */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-display text-xl font-bold flex items-center gap-2">
+                <VideoIcon size={20} className="text-purple-600" />
+                Video Marketplace Moderation Queue ({pendingVideos.length} pending)
+              </h3>
+              <span className="text-xs text-slate-500 font-medium">Auto-publishes to video catalog upon approval</span>
+            </div>
+
+            {pendingVideos.length === 0 ? (
+              <Card padding="md" className="text-center py-8 text-slate-400 text-xs">
+                No videos pending moderation. All uploaded course &amp; lecture content is live.
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {pendingVideos.map((v: any) => (
+                  <Card key={v.id} padding="md" className="space-y-3 border-purple-500/20">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                          <span>{v.title}</span>
+                          <span className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 text-[10px] font-mono font-bold">
+                            {v.price > 0 ? `${v.price} pts` : "Free"}
+                          </span>
+                        </h4>
+                        <p className="text-xs text-slate-500">
+                          Uploaded by {v.uploader?.name || "Member"} ({v.uploader?.email})
+                        </p>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600">
+                        Pending Review
+                      </span>
+                    </div>
+
+                    {v.description && (
+                      <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
+                        {v.description}
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between pt-2 border-t border-ink/5">
+                      <a
+                        href={v.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        <PlaySquare size={13} />
+                        <span>Preview Video</span>
+                      </a>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleRejectVideo(v.id)}
+                          disabled={moderatingId === v.id}
+                          className="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors disabled:opacity-50"
+                        >
+                          {moderatingId === v.id ? "Processing..." : "Reject"}
+                        </button>
+                        <button
+                          onClick={() => handleApproveVideo(v.id)}
+                          disabled={moderatingId === v.id}
+                          className="px-4 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                        >
+                          {moderatingId === v.id ? "Approving..." : "Approve & Publish"}
+                        </button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Section 2: Alumni Verification Queue (Server Action Driven) */}
+          <div className="space-y-4">
+            <h3 className="font-display text-xl font-bold flex items-center gap-2">
+              <UserCheck size={20} className="text-emerald-500" />
+              Alumni Credential Verification Queue ({unverifiedAlumni.length} pending)
+            </h3>
+
+            {unverifiedAlumni.length === 0 ? (
+              <Card padding="md" className="text-center py-8 text-slate-400 text-xs">
+                All registered alumni profiles have been verified!
+              </Card>
+            ) : (
+              <Card padding="none" className="overflow-hidden">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-ink/10 bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold">
+                      <th className="py-3 px-4">Member</th>
+                      <th className="py-3 px-4">Graduation &amp; Dept</th>
+                      <th className="py-3 px-4">Verification Evidence</th>
+                      <th className="py-3 px-4">Current Company &amp; Role</th>
+                      <th className="py-3 px-4 text-right">Ledger Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ink/5">
+                    {unverifiedAlumni.map((u: any) => (
+                      <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                        <td className="py-3 px-4">
+                          <p className="font-bold text-slate-900 dark:text-slate-100">{u.name}</p>
+                          <p className="text-[11px] text-slate-500">{u.email}</p>
+                          {u.referredByCode && (
+                            <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono text-[10px] font-bold">
+                              🎁 Ref: {u.referredByCode} (+100 pts)
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className="font-mono font-bold">Batch of {u.batchYear || "—"}</span>
+                          <span className="text-slate-400 ml-1">({u.department || "—"})</span>
+                        </td>
+                        <td className="py-3 px-4">
+                          {u.verificationMethod === "paid" && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">
+                              <CreditCard size={12} />
+                              <span>Paid (₹29 Fee)</span>
+                            </span>
+                          )}
+                          {u.verificationMethod === "college_email" && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold text-[11px]">
+                              <Mail size={12} />
+                              <span>College Email Verified</span>
+                            </span>
+                          )}
+                          {u.verificationMethod === "id_upload" && (
+                            <div className="flex items-center gap-1.5">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 font-bold text-[11px]">
+                                <FileText size={12} />
+                                <span>ID Uploaded</span>
+                              </span>
+                              {u.idCardUrl && (
+                                <a
+                                  href={u.idCardUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[11px] text-blue-600 hover:underline font-bold"
+                                >
+                                  View Doc
+                                </a>
+                              )}
+                            </div>
+                          )}
+                          {u.verificationMethod === "otp" && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-bold text-[11px]">
+                              <Phone size={12} />
+                              <span>OTP Verified</span>
+                            </span>
+                          )}
+                          {!u.verificationMethod && (
+                            <span className="text-slate-400 font-mono text-[11px]">Pending Submission</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          <p className="font-medium">{u.currentCompany || "—"}</p>
+                          <p className="text-[10px] text-slate-400">{u.jobTitle || "—"}</p>
+                        </td>
+                        <td className="py-3 px-4 text-right space-x-2">
+                          <button
+                            onClick={() =>
+                              setRejectProfileModal({
+                                userId: u.id,
+                                userName: u.name,
+                                reason: "Credentials could not be verified with institutional records. Please verify graduation batch year and department.",
+                              })
+                            }
+                            disabled={moderatingId === u.id}
+                            className="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors disabled:opacity-50 cursor-pointer"
+                          >
+                            Reject
+                          </button>
+                          <button
+                            onClick={() => handleApproveProfile(u.id)}
+                            disabled={moderatingId === u.id}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                          >
+                            <Check size={12} />
+                            {moderatingId === u.id ? "Crediting..." : "Approve (+50 pts)"}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            )}
+          </div>
+
+          {/* Section 3: Pending Success Stories */}
           <div className="space-y-4">
             <h3 className="font-display text-xl font-bold flex items-center gap-2">
               <Megaphone size={20} className="text-rose-500" />
@@ -1118,14 +1381,14 @@ export function AdminContent() {
                       <button
                         onClick={() => handleModerateStory(s.id, false)}
                         disabled={moderatingId === s.id}
-                        className="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 transition-colors"
+                        className="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 transition-colors disabled:opacity-50"
                       >
                         Reject
                       </button>
                       <button
                         onClick={() => handleModerateStory(s.id, true)}
                         disabled={moderatingId === s.id}
-                        className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs"
+                        className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
                       >
                         Approve Story
                       </button>
@@ -1136,61 +1399,7 @@ export function AdminContent() {
             )}
           </div>
 
-          {/* Section: Alumni Verification Queue */}
-          <div className="space-y-4">
-            <h3 className="font-display text-xl font-bold flex items-center gap-2">
-              <UserCheck size={20} className="text-emerald-500" />
-              Alumni Credential Verification Queue ({unverifiedAlumni.length} pending)
-            </h3>
-
-            {unverifiedAlumni.length === 0 ? (
-              <Card padding="md" className="text-center py-8 text-slate-400 text-xs">
-                All registered alumni are verified!
-              </Card>
-            ) : (
-              <Card padding="none" className="overflow-hidden">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-ink/10 bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold">
-                      <th className="py-3 px-4">Alumnus</th>
-                      <th className="py-3 px-4">Graduation Year / Dept</th>
-                      <th className="py-3 px-4">Current Company &amp; Role</th>
-                      <th className="py-3 px-4 text-right">Quick Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-ink/5">
-                    {unverifiedAlumni.map((u: any) => (
-                      <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
-                        <td className="py-3 px-4">
-                          <p className="font-bold text-slate-900 dark:text-slate-100">{u.name}</p>
-                          <p className="text-[11px] text-slate-500">{u.email}</p>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="font-mono font-bold">Batch of {u.batchYear || "—"}</span>
-                          <span className="text-slate-400 ml-1">({u.department || "—"})</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <p className="font-medium">{u.currentCompany || "—"}</p>
-                          <p className="text-[10px] text-slate-400">{u.jobTitle || "—"}</p>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <button
-                            onClick={() => handleVerifyUser(u.id, true)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
-                          >
-                            <Check size={12} />
-                            Verify (+50 pts)
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </Card>
-            )}
-          </div>
-
-          {/* Section: Job Postings Moderation */}
+          {/* Section 4: Job Postings Moderation */}
           <div className="space-y-4">
             <h3 className="font-display text-xl font-bold flex items-center gap-2">
               <BriefcaseBusiness size={20} className="text-blue-500" />
@@ -1626,7 +1835,7 @@ export function AdminContent() {
             </div>
           )}
 
-          {/* SUB-SECTION 4: CUSTOM PAGE BUILDER (EXPANDED SCOPE) */}
+          {/* SUB-SECTION 4: CUSTOM PAGE BUILDER */}
           {cmsSubTab === "pages" && (
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20">
@@ -2429,6 +2638,96 @@ export function AdminContent() {
                   </div>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Reject Profile Reason Modal */}
+      <AnimatePresence>
+        {rejectProfileModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-4"
+            >
+              <div className="flex items-center gap-3 text-rose-600">
+                <AlertTriangle size={24} />
+                <div>
+                  <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100">
+                    Reject Profile Verification
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Provide clear feedback to {rejectProfileModal.userName} so they can fix their details.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Quick Preset Reasons:
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      "Graduation batch year mismatch with college registry.",
+                      "Please upload a clearer institutional student / alumni ID card.",
+                      "Company email or designation could not be authenticated.",
+                      "Department / Branch details are incomplete or ambiguous.",
+                    ].map((preset, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() =>
+                          setRejectProfileModal((prev) => (prev ? { ...prev, reason: preset } : null))
+                        }
+                        className="px-2.5 py-1 rounded-lg border border-ink/10 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] text-slate-600 dark:text-slate-300 transition-colors"
+                      >
+                        {preset.slice(0, 32)}...
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Detailed Rejection Feedback (Sent to Member):
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={rejectProfileModal.reason}
+                    onChange={(e) =>
+                      setRejectProfileModal((prev) => (prev ? { ...prev, reason: e.target.value } : null))
+                    }
+                    placeholder="Enter specific instructions or discrepancies for the user to resolve..."
+                    className="w-full px-3.5 py-2 rounded-xl border border-ink/15 bg-transparent text-xs leading-relaxed outline-none focus:border-rose-500"
+                  />
+                </div>
+
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[11px]">
+                  💡 The member will receive this feedback on their next login and can resubmit corrections without being charged again.
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setRejectProfileModal(null)}
+                  className="px-4 py-2 rounded-xl border border-ink/15 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={moderatingId === rejectProfileModal.userId}
+                  onClick={() => handleRejectProfile(rejectProfileModal.userId, rejectProfileModal.reason)}
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer disabled:opacity-50"
+                >
+                  {moderatingId === rejectProfileModal.userId ? "Submitting..." : "Confirm Rejection"}
+                </button>
+              </div>
             </motion.div>
           </div>
         )}

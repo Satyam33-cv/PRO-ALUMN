@@ -127,13 +127,14 @@ router.post('/register', async (req, res) => {
         id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,
         batchYear: true, department: true, rollNumber: true,
         currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
-        isVerified: true, isActive: true, createdAt: true,
+        isVerified: true, isActive: true, createdAt: true, profileStatus: true,
+        verificationMethod: true, referralCode: true, referredByCode: true,
       },
     });
 
     // Auto-login: issue token
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, profileStatus: user.profileStatus },
       JWT_SECRET,
       { expiresIn: '7d' },
     );
@@ -158,6 +159,8 @@ router.post('/login', async (req, res) => {
         batchYear: true, department: true, rollNumber: true,
         currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
         isVerified: true, isActive: true, createdAt: true, passwordHash: true,
+        profileStatus: true, verificationMethod: true, referralCode: true, referredByCode: true,
+        rejectionReason: true,
       },
     });
     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
@@ -167,7 +170,7 @@ router.post('/login', async (req, res) => {
     if (!ok) return res.status(401).json({ error: 'Invalid email or password' });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, profileStatus: user.profileStatus },
       JWT_SECRET,
       { expiresIn: '7d' },
     );
@@ -190,6 +193,8 @@ router.get('/me', authenticate, async (req, res) => {
         batchYear: true, department: true, rollNumber: true,
         currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
         isVerified: true, isActive: true, createdAt: true,
+        profileStatus: true, verificationMethod: true, referralCode: true, referredByCode: true,
+        rejectionReason: true, idCardUrl: true,
       },
     });
     if (!user) return res.status(404).json({ error: 'User not found' });
