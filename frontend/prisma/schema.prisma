@@ -453,19 +453,51 @@ model Wallet {
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   balance Int    @default(0)
 
+  transactions WalletTransaction[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model WalletTransaction {
   id          String                @id @default(uuid())
+  walletId    String?
+  wallet      Wallet?               @relation(fields: [walletId], references: [id], onDelete: Cascade)
   userId      String
   user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount      Int
-  type        WalletTransactionType
+  reason      String?
+  type        WalletTransactionType @default(CREDIT)
   description String?
 
   createdAt DateTime @default(now())
 
   @@index([userId])
+  @@index([walletId])
+}
+
+// =================== CMS CUSTOM PAGES ===================
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model SitePage {
+  id           String     @id @default(uuid())
+  title        String
+  slug         String     @unique
+  description  String?    @db.Text
+  heroTitle    String?
+  heroSubtitle String?    @db.Text
+  blocks       Json       @default("[]") // [{ id, type, title, content, settings, ... }]
+  status       PageStatus @default(DRAFT)
+  authorId     String?
+  publishedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status])
 }

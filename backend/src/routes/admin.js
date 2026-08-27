@@ -573,4 +573,451 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
   }
 });
 
+// =================== CENTRALIZED APPROVALS DASHBOARD ===================
+// GET /api/admin/approvals - Single unified queue for Stories, Jobs, Mentorships, Unverified Alumni, and Videos
+router.get('/approvals', async (req, res) => {
+  try {
+    const [pendingStories, pendingJobs, pendingMentorships, unverifiedAlumni, pendingVideos] = await Promise.all([
+      prisma.successStory.findMany({
+        where: { isApproved: false },
+        orderBy: { createdAt: 'desc' },
+        include: {
+          alumni: {
+            select: { id: true, name: true, email: true, currentCompany: true, jobTitle: true, batchYear: true, avatarUrl: true },
+          },
+        },
+      }),
+      prisma.jobPosting.findMany({
+        where: { status: 'OPEN' },
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+        include: {
+          postedBy: { select: { id: true, name: true, email: true, currentCompany: true, avatarUrl: true } },
+        },
+      }),
+      prisma.mentorship.findMany({
+        where: { status: 'PENDING' },
+        orderBy: { createdAt: 'desc' },
+        include: {
+          student: { select: { id: true, name: true, email: true, department: true, avatarUrl: true } },
+          mentor: { select: { id: true, name: true, email: true, currentCompany: true, jobTitle: true, avatarUrl: true } },
+        },
+      }),
+      prisma.user.findMany({
+        where: { role: 'ALUMNI', isVerified: false },
+        orderBy: { createdAt: 'desc' },
+        take: 30,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          isVerified: true,
+          profileStatus: true,
+          batchYear: true,
+          department: true,
+          currentCompany: true,
+          jobTitle: true,
+          avatarUrl: true,
+          createdAt: true,
+        },
+      }),
+      prisma.video.findMany({
+        where: { status: 'PENDING' },
+        orderBy: { createdAt: 'desc' },
+        include: {
+          uploader: {
+            select: { id: true, name: true, email: true, role: true, avatarUrl: true, currentCompany: true },
+          },
+        },
+      }),
+    ]);
+
+    const totalPending =
+      pendingStories.length +
+      pendingMentorships.length +
+      unverifiedAlumni.length +
+      pendingVideos.length;
+
+    res.json({
+      summary: {
+        totalPending,
+        storiesCount: pendingStories.length,
+        jobsCount: pendingJobs.length,
+        mentorshipsCount: pendingMentorships.length,
+        unverifiedCount: unverifiedAlumni.length,
+        videosCount: pendingVideos.length,
+      },
+      pendingStories,
+      pendingJobs,
+      pendingMentorships,
+      unverifiedAlumni,
+      pendingVideos,
+    });
+  } catch (err) {
+    console.error('GET /admin/approvals error:', err);
+    res.status(500).json({ error: 'Failed to fetch centralized approvals queue' });
+  }
+});
+
+// =================== VIDEO MARKETPLACE MODERATION ===================
+// GET /api/admin/videos - List videos for moderation
+router.get('/videos', async (req, res) => {
+  try {
+    const { status } = req.query;
+    const where = {};
+    if (status) where.status = status;
+
+    const videos = await prisma.video.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        uploader: {
+          select: { id: true, name: true, email: true, role: true, avatarUrl: true, currentCompany: true },
+        },
+      },
+    });
+
+    res.json({ videos });
+  } catch (err) {
+    console.error('GET /admin/videos error:', err);
+    res.status(500).json({ error: 'Failed to fetch videos' });
+  }
+});
+
+// PATCH /api/admin/videos/:id/status
+router.patch('/videos/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['PENDING', 'APPROVED', 'REJECTED'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const video = await prisma.video.update({
+      where: { id: req.params.id },
+      data: { status },
+      include: {
+        uploader: { select: { id: true, name: true, email: true } },
+      },
+    });
+
+    res.json({ video, message: `Video status updated to ${status}` });
+  } catch (err) {
+    console.error('PATCH /admin/videos/:id/status error:', err);
+    res.status(500).json({ error: 'Failed to update video status' });
+  }
+});
+
+// =================== CMS: EVENTS MANAGEMENT ===================
+// POST /api/admin/events
+router.post('/events', async (req, res) => {
+  try {
+    const { title, description, date, location, mode, coverImage, maxCapacity } = req.body;
+    if (!title || !description || !date) {
+      return res.status(400).json({ error: 'title, description, and date are required' });
+    }
+
+    const event = await prisma.event.create({
+      data: {
+        title,
+        description,
+        date: new Date(date),
+        location,
+        mode: mode || 'ONLINE',
+        coverImage,
+        maxCapacity: maxCapacity ? parseInt(maxCapacity) : null,
+        createdById: req.user.id,
+      },
+      include: {
+        createdBy: { select: { id: true, name: true, avatarUrl: true } },
+        _count: { select: { rsvps: true } },
+      },
+    });
+
+    res.status(201).json({ event, message: 'Event published successfully' });
+  } catch (err) {
+    console.error('POST /admin/events error:', err);
+    res.status(500).json({ error: 'Failed to create event' });
+  }
+});
+
+// PUT /api/admin/events/:id
+router.put('/events/:id', async (req, res) => {
+  try {
+    const { title, description, date, location, mode, coverImage, maxCapacity } = req.body;
+    const data = {};
+    if (title !== undefined) data.title = title;
+    if (description !== undefined) data.description = description;
+    if (date !== undefined) data.date = new Date(date);
+    if (location !== undefined) data.location = location;
+    if (mode !== undefined) data.mode = mode;
+    if (coverImage !== undefined) data.coverImage = coverImage;
+    if (maxCapacity !== undefined) data.maxCapacity = maxCapacity ? parseInt(maxCapacity) : null;
+
+    const event = await prisma.event.update({
+      where: { id: req.params.id },
+      data,
+      include: {
+        createdBy: { select: { id: true, name: true, avatarUrl: true } },
+        _count: { select: { rsvps: true } },
+      },
+    });
+
+    res.json({ event, message: 'Event updated successfully' });
+  } catch (err) {
+    console.error('PUT /admin/events/:id error:', err);
+    res.status(500).json({ error: 'Failed to update event' });
+  }
+});
+
+// DELETE /api/admin/events/:id
+router.delete('/events/:id', async (req, res) => {
+  try {
+    await prisma.event.delete({ where: { id: req.params.id } });
+    res.json({ message: 'Event deleted successfully' });
+  } catch (err) {
+    console.error('DELETE /admin/events/:id error:', err);
+    res.status(500).json({ error: 'Failed to delete event' });
+  }
+});
+
+// =================== CMS: NEWSLETTERS MANAGEMENT ===================
+// POST /api/admin/newsletters
+router.post('/newsletters', async (req, res) => {
+  try {
+    const { title, issueDate, year, coverImage, fileUrl } = req.body;
+    if (!title || !fileUrl) {
+      return res.status(400).json({ error: 'title and fileUrl are required' });
+    }
+
+    const d = issueDate ? new Date(issueDate) : new Date();
+    const yr = year ? parseInt(year) : d.getFullYear();
+
+    const newsletter = await prisma.newsletter.create({
+      data: {
+        title,
+        issueDate: d,
+        year: yr,
+        coverImage: coverImage || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80',
+        fileUrl,
+      },
+    });
+
+    res.status(201).json({ newsletter, message: 'Newsletter published successfully' });
+  } catch (err) {
+    console.error('POST /admin/newsletters error:', err);
+    res.status(500).json({ error: 'Failed to publish newsletter' });
+  }
+});
+
+// PUT /api/admin/newsletters/:id
+router.put('/newsletters/:id', async (req, res) => {
+  try {
+    const { title, issueDate, year, coverImage, fileUrl } = req.body;
+    const data = {};
+    if (title !== undefined) data.title = title;
+    if (issueDate !== undefined) data.issueDate = new Date(issueDate);
+    if (year !== undefined) data.year = parseInt(year);
+    if (coverImage !== undefined) data.coverImage = coverImage;
+    if (fileUrl !== undefined) data.fileUrl = fileUrl;
+
+    const newsletter = await prisma.newsletter.update({
+      where: { id: req.params.id },
+      data,
+    });
+
+    res.json({ newsletter, message: 'Newsletter updated successfully' });
+  } catch (err) {
+    console.error('PUT /admin/newsletters/:id error:', err);
+    res.status(500).json({ error: 'Failed to update newsletter' });
+  }
+});
+
+// DELETE /api/admin/newsletters/:id
+router.delete('/newsletters/:id', async (req, res) => {
+  try {
+    await prisma.newsletter.delete({ where: { id: req.params.id } });
+    res.json({ message: 'Newsletter deleted successfully' });
+  } catch (err) {
+    console.error('DELETE /admin/newsletters/:id error:', err);
+    res.status(500).json({ error: 'Failed to delete newsletter' });
+  }
+});
+
+// =================== CMS: SITE PAGES / PAGE BUILDER ===================
+const RESERVED_SLUGS = new Set([
+  'admin',
+  'api',
+  'login',
+  'register',
+  'home',
+  'directory',
+  'jobs',
+  'referrals',
+  'stories',
+  'announcements',
+  'chat',
+  'events',
+  'mentorship',
+  'giving',
+  'education',
+  'docs',
+  'keep',
+  'communications',
+  'forms',
+  'calendar',
+  'profile',
+  'rewards',
+  'settings',
+  'newsletter',
+  'newsletters',
+  'matching',
+  'help',
+  'dashboard',
+  'requests',
+]);
+
+function formatSlug(str) {
+  return String(str || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9-_]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+// GET /api/admin/pages - List all custom pages (all statuses)
+router.get('/pages', async (req, res) => {
+  try {
+    const pages = await prisma.sitePage.findMany({
+      orderBy: { updatedAt: 'desc' },
+    });
+    res.json({ pages });
+  } catch (err) {
+    console.error('GET /admin/pages error:', err);
+    res.status(500).json({ error: 'Failed to fetch custom pages' });
+  }
+});
+
+// POST /api/admin/pages - Create new custom page
+router.post('/pages', async (req, res) => {
+  try {
+    const { title, slug, description, heroTitle, heroSubtitle, blocks = [], status = 'DRAFT' } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ error: 'Page title is required' });
+    }
+
+    const cleanSlug = formatSlug(slug || title);
+    if (!cleanSlug) {
+      return res.status(400).json({ error: 'Valid URL slug is required' });
+    }
+
+    if (RESERVED_SLUGS.has(cleanSlug)) {
+      return res.status(400).json({
+        error: `The slug "${cleanSlug}" is a reserved system path and cannot be overwritten. Please choose a different slug (e.g. "${cleanSlug}-page").`,
+      });
+    }
+
+    const existing = await prisma.sitePage.findUnique({ where: { slug: cleanSlug } });
+    if (existing) {
+      return res.status(400).json({ error: `A page with slug "${cleanSlug}" already exists.` });
+    }
+
+    const pageStatus = ['DRAFT', 'PUBLISHED', 'ARCHIVED'].includes(status.toUpperCase())
+      ? status.toUpperCase()
+      : 'DRAFT';
+
+    const newPage = await prisma.sitePage.create({
+      data: {
+        title: title.trim(),
+        slug: cleanSlug,
+        description: description ? description.trim() : null,
+        heroTitle: heroTitle ? heroTitle.trim() : null,
+        heroSubtitle: heroSubtitle ? heroSubtitle.trim() : null,
+        blocks: Array.isArray(blocks) ? blocks : [],
+        status: pageStatus,
+        authorId: req.user.id,
+        publishedAt: pageStatus === 'PUBLISHED' ? new Date() : null,
+      },
+    });
+
+    res.status(201).json({ page: newPage, message: `Page "${newPage.title}" created successfully!` });
+  } catch (err) {
+    console.error('POST /admin/pages error:', err);
+    res.status(500).json({ error: 'Failed to create custom page' });
+  }
+});
+
+// PUT /api/admin/pages/:id - Update existing custom page
+router.put('/pages/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, slug, description, heroTitle, heroSubtitle, blocks, status } = req.body;
+
+    const page = await prisma.sitePage.findUnique({ where: { id } });
+    if (!page) {
+      return res.status(404).json({ error: 'Page not found' });
+    }
+
+    const data = {};
+    if (title !== undefined) data.title = title.trim();
+    if (description !== undefined) data.description = description ? description.trim() : null;
+    if (heroTitle !== undefined) data.heroTitle = heroTitle ? heroTitle.trim() : null;
+    if (heroSubtitle !== undefined) data.heroSubtitle = heroSubtitle ? heroSubtitle.trim() : null;
+    if (blocks !== undefined) data.blocks = Array.isArray(blocks) ? blocks : [];
+
+    if (slug !== undefined) {
+      const cleanSlug = formatSlug(slug);
+      if (!cleanSlug) {
+        return res.status(400).json({ error: 'Slug cannot be empty' });
+      }
+      if (RESERVED_SLUGS.has(cleanSlug)) {
+        return res.status(400).json({
+          error: `The slug "${cleanSlug}" is reserved and cannot be used.`,
+        });
+      }
+      if (cleanSlug !== page.slug) {
+        const existing = await prisma.sitePage.findUnique({ where: { slug: cleanSlug } });
+        if (existing) {
+          return res.status(400).json({ error: `A page with slug "${cleanSlug}" already exists.` });
+        }
+        data.slug = cleanSlug;
+      }
+    }
+
+    if (status !== undefined) {
+      const pageStatus = ['DRAFT', 'PUBLISHED', 'ARCHIVED'].includes(status.toUpperCase())
+        ? status.toUpperCase()
+        : 'DRAFT';
+      data.status = pageStatus;
+      if (pageStatus === 'PUBLISHED' && !page.publishedAt) {
+        data.publishedAt = new Date();
+      }
+    }
+
+    const updated = await prisma.sitePage.update({
+      where: { id },
+      data,
+    });
+
+    res.json({ page: updated, message: 'Page updated successfully' });
+  } catch (err) {
+    console.error('PUT /admin/pages/:id error:', err);
+    res.status(500).json({ error: 'Failed to update custom page' });
+  }
+});
+
+// DELETE /api/admin/pages/:id - Delete custom page
+router.delete('/pages/:id', async (req, res) => {
+  try {
+    await prisma.sitePage.delete({ where: { id: req.params.id } });
+    res.json({ message: 'Page deleted successfully' });
+  } catch (err) {
+    console.error('DELETE /admin/pages/:id error:', err);
+    res.status(500).json({ error: 'Failed to delete page' });
+  }
+});
+
 module.exports = router;
+

@@ -232,6 +232,60 @@ export const apiClient = {
         headers: { "Content-Type": "multipart/form-data" },
       });
     },
+    approvals: async (): Promise<any> => {
+      return await apiFetch<any>({ method: "GET", url: "/admin/approvals" });
+    },
+    videos: async (status?: string): Promise<{ videos: any[] }> => {
+      const params = status ? { status } : undefined;
+      return await apiFetch<{ videos: any[] }>({ method: "GET", url: "/admin/videos", params });
+    },
+    updateVideoStatus: async (id: string, status: string): Promise<any> => {
+      return await apiFetch<any>({ method: "PATCH", url: `/admin/videos/${id}/status`, data: { status } });
+    },
+    events: {
+      create: async (data: { title: string; description: string; date: string; location?: string; mode?: string; coverImage?: string; maxCapacity?: number }) => {
+        return await apiFetch<any>({ method: "POST", url: "/admin/events", data });
+      },
+      update: async (id: string, data: Partial<{ title: string; description: string; date: string; location?: string; mode?: string; coverImage?: string; maxCapacity?: number }>) => {
+        return await apiFetch<any>({ method: "PUT", url: `/admin/events/${id}`, data });
+      },
+      delete: async (id: string) => {
+        return await apiFetch<any>({ method: "DELETE", url: `/admin/events/${id}` });
+      },
+    },
+    newsletters: {
+      create: async (data: { title: string; issueDate?: string; year?: number; coverImage?: string; fileUrl: string }) => {
+        return await apiFetch<any>({ method: "POST", url: "/admin/newsletters", data });
+      },
+      update: async (id: string, data: Partial<{ title: string; issueDate?: string; year?: number; coverImage?: string; fileUrl?: string }>) => {
+        return await apiFetch<any>({ method: "PUT", url: `/admin/newsletters/${id}`, data });
+      },
+      delete: async (id: string) => {
+        return await apiFetch<any>({ method: "DELETE", url: `/admin/newsletters/${id}` });
+      },
+    },
+    pages: {
+      list: async (): Promise<{ pages: any[] }> => {
+        return await apiFetch<{ pages: any[] }>({ method: "GET", url: "/admin/pages" });
+      },
+      create: async (data: { title: string; slug?: string; description?: string; heroTitle?: string; heroSubtitle?: string; blocks?: any[]; status?: string }): Promise<any> => {
+        return await apiFetch<any>({ method: "POST", url: "/admin/pages", data });
+      },
+      update: async (id: string, data: Partial<{ title: string; slug?: string; description?: string; heroTitle?: string; heroSubtitle?: string; blocks?: any[]; status?: string }>): Promise<any> => {
+        return await apiFetch<any>({ method: "PUT", url: `/admin/pages/${id}`, data });
+      },
+      delete: async (id: string): Promise<any> => {
+        return await apiFetch<any>({ method: "DELETE", url: `/admin/pages/${id}` });
+      },
+    },
+  },
+  pages: {
+    getBySlug: async (slug: string): Promise<{ page: any }> => {
+      return await apiFetch<{ page: any }>({ method: "GET", url: `/pages/${slug}` });
+    },
+    listPublished: async (): Promise<{ pages: any[] }> => {
+      return await apiFetch<{ pages: any[] }>({ method: "GET", url: "/pages" });
+    },
   },
   stories: {
     list: async (): Promise<unknown[]> => {

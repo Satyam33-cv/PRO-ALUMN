@@ -2,6 +2,7 @@
 
 import { useState, useRef, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   Users,
   Activity,
@@ -41,18 +42,51 @@ import {
   ChevronRight,
   ShieldAlert,
   PlaySquare,
+  Pause,
+  Play,
+  FileText,
+  Edit3,
+  PlusCircle,
+  Layout,
+  Globe,
+  HelpCircle,
+  X,
+  Layers,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { getSocket } from "@/lib/socket";
-import { useAuth } from "@/lib/context/AuthContext";
+import { getToken } from "@/lib/auth";
 import { Card, Badge, Skeleton } from "@/components/ui";
 import { approveProfileAction, approveVideoAction, rejectItemAction } from "@/app/actions/admin";
 
 type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools";
+type CmsSubTab = "broadcasts" | "events" | "newsletters" | "pages";
+
+interface PageBlock {
+  id: string;
+  type: "hero" | "markdown" | "features" | "image" | "cta" | "faq";
+  title?: string;
+  subtitle?: string;
+  content?: string;
+  imageUrl?: string;
+  imageCaption?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  features?: Array<{ title: string; desc: string; tag?: string }>;
+  faqs?: Array<{ question: string; answer: string }>;
+}
+
+const RESERVED_SLUGS = new Set([
+  "admin", "api", "login", "register", "home", "directory", "jobs", "referrals",
+  "stories", "announcements", "chat", "events", "mentorship", "giving", "education",
+  "docs", "keep", "communications", "forms", "calendar", "profile", "rewards",
+  "settings", "newsletter", "newsletters", "matching", "help", "dashboard", "requests"
+]);
 
 export function AdminContent() {
   const [activeTab, setActiveTab] = useState<AdminTab>("mission_control");
+  const [cmsSubTab, setCmsSubTab] = useState<CmsSubTab>("broadcasts");
   const [toast, setToast] = useState<string | null>(null);
 
   // User management state
@@ -82,15 +116,52 @@ export function AdminContent() {
 
   // Live Telemetry state
   const [liveActivities, setLiveActivities] = useState<any[]>([]);
+  const [isActivityPaused, setIsActivityPaused] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
-  
-  const { getToken } = useAuth();
+
+  // CMS Events Modal State
+  const [eventModalOpen, setEventModalOpen] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [eventForm, setEventForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    mode: "ONLINE",
+    coverImage: "",
+    maxCapacity: 100,
+  });
+
+  // CMS Newsletter Modal State
+  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
+  const [editingNewsletterId, setEditingNewsletterId] = useState<string | null>(null);
+  const [newsletterForm, setNewsletterForm] = useState({
+    title: "",
+    year: new Date().getFullYear(),
+    issueDate: new Date().toISOString().split("T")[0],
+    coverImage: "",
+    fileUrl: "",
+  });
+
+  // CMS Page Builder State
+  const [pageModalOpen, setPageModalOpen] = useState(false);
+  const [editingPageId, setEditingPageId] = useState<string | null>(null);
+  const [pageForm, setPageForm] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    heroTitle: "",
+    heroSubtitle: "",
+    status: "DRAFT",
+    blocks: [] as PageBlock[],
+  });
 
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
   };
 
+  // Socket setup & real-time telemetry
   useEffect(() => {
     const token = getToken();
     if (!token) return;
@@ -99,37 +170,50 @@ export function AdminContent() {
     if (!socket.connected) {
       socket.connect();
     }
-    
-    socket.emit("authenticate", token);
-    socket.emit("admin_join");
 
-    const onPresenceSync = (userIds: string[]) => {
-      setOnlineUsers(new Set(userIds));
+    socket.emit("authenticate", token);
+    socket.emit("admin_join", token);
+
+    const onPresenceSnapshot = (snapshot: any[]) => {
+      if (Array.isArray(snapshot)) {
+        const ids = snapshot.map((item) => (typeof item === "string" ? item : item.userId));
+        setOnlineUsers(new Set(ids));
+      }
     };
 
-    const onPresenceUpdate = (data: { userId: string, status: string }) => {
-      setOnlineUsers(prev => {
+    const onPresenceSync = (userIds: string[]) => {
+      if (Array.isArray(userIds)) {
+        setOnlineUsers(new Set(userIds));
+      }
+    };
+
+    const onPresenceUpdate = (data: { userId: string; status: string; name?: string; role?: string }) => {
+      setOnlineUsers((prev) => {
         const next = new Set(prev);
-        if (data.status === 'online') next.add(data.userId);
+        if (data.status === "online") next.add(data.userId);
         else next.delete(data.userId);
         return next;
       });
     };
 
     const onActivityStream = (activity: any) => {
-      setLiveActivities(prev => [activity, ...prev].slice(0, 50));
+      if (!isActivityPaused) {
+        setLiveActivities((prev) => [activity, ...prev].slice(0, 200));
+      }
     };
 
+    socket.on("presence_snapshot", onPresenceSnapshot);
     socket.on("presence_sync", onPresenceSync);
     socket.on("presence_update", onPresenceUpdate);
     socket.on("activity_stream", onActivityStream);
 
     return () => {
+      socket.off("presence_snapshot", onPresenceSnapshot);
       socket.off("presence_sync", onPresenceSync);
       socket.off("presence_update", onPresenceUpdate);
       socket.off("activity_stream", onActivityStream);
     };
-  }, [getToken]);
+  }, [isActivityPaused]);
 
   // Queries
   const { data: statsData, reload: reloadStats, isLoading: loadingStats } = useApi("admin:stats", () => apiClient.admin.stats());
@@ -149,6 +233,10 @@ export function AdminContent() {
   const { data: jobsData, reload: reloadJobs } = useApi("admin:jobs", () => apiClient.admin.jobs());
   const { data: staleData, reload: reloadStale } = useApi("admin:stale", () => apiClient.admin.staleProfiles());
   const { data: announcementsData, reload: reloadAnnouncements } = useApi("admin:announcements", () => apiClient.announcements.list());
+  const { data: approvalsData, reload: reloadApprovals } = useApi("admin:approvals", () => apiClient.admin.approvals());
+  const { data: pagesData, reload: reloadPages } = useApi("admin:pages", () => apiClient.admin.pages.list());
+  const { data: eventsData, reload: reloadEvents } = useApi("admin:events", () => apiClient.events.list());
+  const { data: newslettersData, reload: reloadNewsletters } = useApi("admin:newsletters", () => apiClient.newsletters.list());
 
   const stats = statsData?.stats || {};
   const users = usersData?.users || [];
@@ -158,6 +246,10 @@ export function AdminContent() {
   const jobs = jobsData?.jobs || [];
   const staleUsers = staleData?.users || [];
   const announcements = announcementsData || [];
+  const approvals = approvalsData || {};
+  const customPages = pagesData?.pages || [];
+  const events = eventsData?.events || [];
+  const newsletters = newslettersData?.newsletters || [];
 
   // Unverified alumni queue
   const unverifiedAlumni = useMemo(
@@ -169,18 +261,18 @@ export function AdminContent() {
   const handleVerifyUser = async (id: string, verified: boolean) => {
     try {
       if (verified) {
-        // Trigger new Server Action to approve profile and award wallet points
         const formData = new FormData();
         formData.append("userId", id);
         const res = await approveProfileAction(formData);
         if (res.success) showToast(res.message || "Success");
         else showToast(res.error || "Approval failed");
       }
-      
+
       await apiClient.admin.updateUserVerify(id, verified);
       if (!verified) showToast("User unverified successfully");
       reloadUsers();
       reloadStats();
+      reloadApprovals();
     } catch (err: any) {
       showToast(err.message || "Failed to update verification");
     }
@@ -228,42 +320,9 @@ export function AdminContent() {
       showToast(`Story ${isApproved ? "approved" : "rejected"}`);
       reloadStories();
       reloadStats();
+      reloadApprovals();
     } catch (err: any) {
       showToast(err.message || "Failed to moderate story");
-    } finally {
-      setModeratingId(null);
-    }
-  };
-
-  // Video Moderation
-  const pendingVideos = [
-    {
-      id: "mock-video-1",
-      title: "Mastering System Design Interviews",
-      uploader: { name: "Rahul Sharma", company: "Google" },
-      price: 150,
-      createdAt: new Date().toISOString()
-    }
-  ];
-
-  const handleModerateVideo = async (id: string, actionType: "APPROVE" | "REJECT") => {
-    setModeratingId(id);
-    try {
-      const formData = new FormData();
-      if (actionType === "APPROVE") {
-        formData.append("videoId", id);
-        const res = await approveVideoAction(formData);
-        if (res.success) showToast(res.message || "Success");
-        else showToast(res.error || "Approval failed");
-      } else {
-        formData.append("itemId", id);
-        formData.append("itemType", "VIDEO");
-        const res = await rejectItemAction(formData);
-        if (res.success) showToast(res.message || "Success");
-        else showToast(res.error || "Rejection failed");
-      }
-    } catch (err: any) {
-      showToast("Action failed");
     } finally {
       setModeratingId(null);
     }
@@ -283,7 +342,6 @@ export function AdminContent() {
   };
 
   const handleDeleteJob = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this job posting?")) return;
     try {
       await apiClient.admin.deleteJob(id);
       showToast("Job posting deleted");
@@ -294,7 +352,18 @@ export function AdminContent() {
     }
   };
 
-  // Broadcast
+  // Mentorship Moderation Action
+  const handleModerateMentorship = async (id: string, status: string) => {
+    try {
+      await apiClient.mentorship.updateStatus(id, status);
+      showToast(`Mentorship request ${status.toLowerCase()}`);
+      reloadApprovals();
+    } catch (err: any) {
+      showToast(err.message || "Failed to update mentorship status");
+    }
+  };
+
+  // Broadcasts
   const handleSendBroadcast = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!broadcastTitle.trim() || !broadcastContent.trim()) return;
@@ -350,12 +419,146 @@ export function AdminContent() {
     }
   };
 
+  // =================== CMS: EVENT ACTIONS ===================
+  const handleSaveEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editingEventId) {
+        await apiClient.admin.events.update(editingEventId, eventForm);
+        showToast("Event updated successfully!");
+      } else {
+        await apiClient.admin.events.create(eventForm);
+        showToast("Event created and published!");
+      }
+      setEventModalOpen(false);
+      setEditingEventId(null);
+      reloadEvents();
+      reloadStats();
+    } catch (err: any) {
+      showToast(err.message || "Failed to save event");
+    }
+  };
+
+  const handleDeleteEvent = async (id: string) => {
+    try {
+      await apiClient.admin.events.delete(id);
+      showToast("Event removed");
+      reloadEvents();
+      reloadStats();
+    } catch (err: any) {
+      showToast(err.message || "Failed to delete event");
+    }
+  };
+
+  // =================== CMS: NEWSLETTER ACTIONS ===================
+  const handleSaveNewsletter = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editingNewsletterId) {
+        await apiClient.admin.newsletters.update(editingNewsletterId, newsletterForm);
+        showToast("Newsletter edition updated!");
+      } else {
+        await apiClient.admin.newsletters.create(newsletterForm);
+        showToast("Newsletter published!");
+      }
+      setNewsletterModalOpen(false);
+      setEditingNewsletterId(null);
+      reloadNewsletters();
+    } catch (err: any) {
+      showToast(err.message || "Failed to save newsletter");
+    }
+  };
+
+  const handleDeleteNewsletter = async (id: string) => {
+    try {
+      await apiClient.admin.newsletters.delete(id);
+      showToast("Newsletter deleted");
+      reloadNewsletters();
+    } catch (err: any) {
+      showToast(err.message || "Failed to delete newsletter");
+    }
+  };
+
+  // =================== CMS: PAGE BUILDER ACTIONS ===================
+  const handleSavePage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanSlug = pageForm.slug.toLowerCase().trim().replace(/[^a-z0-9-_]/g, "-");
+
+    if (RESERVED_SLUGS.has(cleanSlug)) {
+      showToast(`The slug "/${cleanSlug}" is reserved. Please pick another name.`);
+      return;
+    }
+
+    try {
+      if (editingPageId) {
+        await apiClient.admin.pages.update(editingPageId, { ...pageForm, slug: cleanSlug });
+        showToast("Custom page updated!");
+      } else {
+        await apiClient.admin.pages.create({ ...pageForm, slug: cleanSlug });
+        showToast("Custom page created!");
+      }
+      setPageModalOpen(false);
+      setEditingPageId(null);
+      reloadPages();
+    } catch (err: any) {
+      showToast(err.message || "Failed to save page");
+    }
+  };
+
+  const handleDeletePage = async (id: string) => {
+    try {
+      await apiClient.admin.pages.delete(id);
+      showToast("Page deleted");
+      reloadPages();
+    } catch (err: any) {
+      showToast(err.message || "Failed to delete page");
+    }
+  };
+
+  const addBlockToPage = (type: PageBlock["type"]) => {
+    const newBlock: PageBlock = {
+      id: Math.random().toString(36).substring(2, 9),
+      type,
+      title: type === "markdown" ? "Section Heading" : type === "features" ? "Platform Capabilities" : type === "faq" ? "Common Questions" : "Call to Action",
+      content: type === "markdown" ? "Write markdown or rich text content here..." : "",
+      features: type === "features" ? [
+        { title: "AI-Powered Matching", desc: "Vector similarity ranking using Gemini 384-dim embeddings", tag: "AI" },
+        { title: "Direct Referrals", desc: "Structured referral lifecycle with status tracking", tag: "Referrals" },
+        { title: "Google Ecosystem", desc: "Integrated with Google Docs, Keep, Forms and Calendar", tag: "Google" },
+      ] : undefined,
+      faqs: type === "faq" ? [
+        { question: "How does verification work?", answer: "Alumni submit institutional credentials or graduation year, which are approved by campus admins." }
+      ] : undefined,
+      ctaText: type === "cta" ? "Explore Community" : undefined,
+      ctaLink: type === "cta" ? "/directory" : undefined,
+    };
+
+    setPageForm((prev) => ({
+      ...prev,
+      blocks: [...prev.blocks, newBlock],
+    }));
+  };
+
+  const removeBlockFromPage = (id: string) => {
+    setPageForm((prev) => ({
+      ...prev,
+      blocks: prev.blocks.filter((b) => b.id !== id),
+    }));
+  };
+
+  const updateBlockInPage = (id: string, updates: Partial<PageBlock>) => {
+    setPageForm((prev) => ({
+      ...prev,
+      blocks: prev.blocks.map((b) => (b.id === id ? { ...b, ...updates } : b)),
+    }));
+  };
+
   const statCards = [
     { label: "Total Members", value: stats.users?.total || 0, icon: Users, color: "text-blue-500 bg-blue-500/10" },
-    { label: "Verified Alumni", value: stats.users?.verified || 0, icon: ShieldCheck, color: "text-emerald-500 bg-emerald-500/10" },
+    { label: "Online Now", value: onlineUsers.size, icon: Activity, color: "text-emerald-500 bg-emerald-500/10" },
     { label: "Open Jobs", value: stats.jobs?.open || 0, icon: BriefcaseBusiness, color: "text-amber-500 bg-amber-500/10" },
-    { label: "Referral Requests", value: stats.referrals?.total || 0, icon: Target, color: "text-purple-500 bg-purple-500/10" },
-    { label: "Pending Stories", value: stats.stories?.pending || 0, icon: Clock, color: "text-rose-500 bg-rose-500/10" },
+    { label: "Pending Approvals", value: (pendingStories.length + unverifiedAlumni.length), icon: Clock, color: "text-rose-500 bg-rose-500/10" },
+    { label: "Custom Pages", value: customPages.length, icon: Globe, color: "text-purple-500 bg-purple-500/10" },
     { label: "Upcoming Events", value: stats.events?.upcoming || 0, icon: CalendarDays, color: "text-indigo-500 bg-indigo-500/10" },
   ];
 
@@ -368,7 +571,7 @@ export function AdminContent() {
   const maxFunnel = Math.max(1, ...funnelBars.map((b) => b.count));
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-20">
+    <div className="space-y-8 max-w-7xl mx-auto pb-20 font-sans">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-ink/10 pb-6">
         <div>
@@ -382,17 +585,18 @@ export function AdminContent() {
             Command Center
           </h1>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            Platform governance, user role management, moderation & telemetry
+            Real-time telemetry, user presence, unified CMS site builder & governance
           </p>
         </div>
 
-        {/* Live Health Indicator Pill */}
+        {/* Live Health Indicator Pill & Online Users Count */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 text-xs font-mono">
-            <Server size={14} className={healthData?.status === "HEALTHY" ? "text-emerald-500" : "text-amber-500"} />
-            <span>DB: {healthData?.latencyMs ? `${healthData.latencyMs}ms` : "Live"}</span>
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="font-bold text-emerald-600 dark:text-emerald-400">{onlineUsers.size} Online</span>
             <span className="text-slate-400">|</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-bold">Supabase Online</span>
+            <Server size={13} className={healthData?.status === "HEALTHY" ? "text-emerald-500" : "text-amber-500"} />
+            <span>DB: {healthData?.latencyMs ? `${healthData.latencyMs}ms` : "Live"}</span>
           </div>
 
           <button
@@ -400,9 +604,11 @@ export function AdminContent() {
               reloadStats();
               reloadHealth();
               reloadUsers();
+              reloadApprovals();
+              reloadPages();
               showToast("Refreshed platform telemetry");
             }}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
             title="Refresh telemetry"
           >
             <RefreshCw size={16} />
@@ -415,9 +621,9 @@ export function AdminContent() {
         {[
           { id: "mission_control", label: "Mission Control", icon: Activity },
           { id: "users", label: `Users (${stats.users?.total || 0})`, icon: Users },
-          { id: "moderation", label: `Moderation (${pendingStories.length + unverifiedAlumni.length})`, icon: ShieldCheck, badge: pendingStories.length > 0 },
+          { id: "moderation", label: `Moderation & Approvals (${pendingStories.length + unverifiedAlumni.length})`, icon: ShieldCheck, badge: pendingStories.length > 0 || unverifiedAlumni.length > 0 },
           { id: "stale_profiles", label: `Stale Profiles (${staleUsers.length})`, icon: Clock },
-          { id: "cms", label: "Content (CMS)", icon: Megaphone },
+          { id: "cms", label: `Unified CMS (${customPages.length} Pages)`, icon: Megaphone },
           { id: "data_tools", label: "Data & CSV Import", icon: FileUp },
         ].map((tab) => (
           <button
@@ -474,8 +680,8 @@ export function AdminContent() {
 
               <div className="space-y-3 pt-2 text-xs">
                 <div className="flex items-center justify-between py-2 border-b border-ink/5">
-                  <span className="text-slate-500">Database Engine</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">Supabase PostgreSQL (5432)</span>
+                  <span className="text-slate-500">Active Presence</span>
+                  <span className="font-mono font-bold text-emerald-600">{onlineUsers.size} Users Online</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-ink/5">
                   <span className="text-slate-500">Query Latency</span>
@@ -493,7 +699,7 @@ export function AdminContent() {
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <span className="text-slate-500">Node Runtime</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{healthData?.nodeVersion || process.version || "v20"}</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{healthData?.nodeVersion || "v20"}</span>
                 </div>
               </div>
             </Card>
@@ -534,19 +740,33 @@ export function AdminContent() {
 
               <div className="grid grid-cols-1 gap-2 pt-2">
                 <button
-                  onClick={() => setActiveTab("cms")}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-blue-500 hover:bg-blue-500/5 transition-all text-left"
+                  onClick={() => {
+                    setActiveTab("cms");
+                    setCmsSubTab("pages");
+                  }}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-purple-500 hover:bg-purple-500/5 transition-all text-left cursor-pointer"
                 >
-                  <Megaphone size={16} className="text-blue-500 shrink-0" />
+                  <Globe size={16} className="text-purple-500 shrink-0" />
                   <div>
-                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Send System Broadcast</p>
-                    <p className="text-[11px] text-slate-500">Dispatch announcement to all or targeted roles</p>
+                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Page &amp; Site Builder</p>
+                    <p className="text-[11px] text-slate-500">Create new live custom pages with no deploy</p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("moderation")}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-blue-500 hover:bg-blue-500/5 transition-all text-left cursor-pointer"
+                >
+                  <ShieldCheck size={16} className="text-blue-500 shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Unified Approvals Queue</p>
+                    <p className="text-[11px] text-slate-500">{pendingStories.length + unverifiedAlumni.length} pending moderation items</p>
                   </div>
                 </button>
 
                 <button
                   onClick={() => setActiveTab("data_tools")}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-left"
+                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-emerald-500 hover:bg-emerald-500/5 transition-all text-left cursor-pointer"
                 >
                   <FileUp size={16} className="text-emerald-500 shrink-0" />
                   <div>
@@ -554,51 +774,82 @@ export function AdminContent() {
                     <p className="text-[11px] text-slate-500">Upload batch of alumni with instant email invite</p>
                   </div>
                 </button>
-
-                <button
-                  onClick={() => setActiveTab("moderation")}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-ink/10 hover:border-purple-500 hover:bg-purple-500/5 transition-all text-left"
-                >
-                  <ShieldCheck size={16} className="text-purple-500 shrink-0" />
-                  <div>
-                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Review Stories & Profiles</p>
-                    <p className="text-[11px] text-slate-500">{pendingStories.length} stories pending approval</p>
-                  </div>
-                </button>
               </div>
-
             </Card>
           </div>
 
-          {/* Live Activity Feed */}
+          {/* Real-Time Activity Feed with Pause / Resume Toggle */}
           <Card padding="lg" className="space-y-4">
-            <h3 className="font-display text-lg font-bold flex items-center gap-2">
-              <Activity size={18} className="text-emerald-500" />
-              Live Network Activity
-            </h3>
-            <div className="space-y-2 pt-2 max-h-60 overflow-y-auto scrollbar-thin">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Activity size={18} className="text-emerald-500" />
+                <h3 className="font-display text-lg font-bold">Real-Time WebSocket Activity Feed</h3>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600">
+                  {liveActivities.length} Events
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsActivityPaused((p) => !p)}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isActivityPaused
+                      ? "bg-amber-500 text-slate-950 shadow-sm"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
+                  }`}
+                >
+                  {isActivityPaused ? <Play size={12} /> : <Pause size={12} />}
+                  <span>{isActivityPaused ? "Resume Feed" : "Pause Feed"}</span>
+                </button>
+
+                <button
+                  onClick={() => setLiveActivities([])}
+                  className="px-2.5 py-1 rounded-xl border border-ink/10 text-xs text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
+                  title="Clear Feed"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-2 max-h-72 overflow-y-auto scrollbar-thin">
               {liveActivities.length === 0 ? (
-                <p className="text-xs text-slate-500 text-center py-4">Waiting for incoming activities...</p>
+                <div className="py-8 text-center space-y-1">
+                  <p className="text-xs font-medium text-slate-500">Connected to <code className="font-mono text-[11px] text-blue-600">admin_telemetry</code> room.</p>
+                  <p className="text-[11px] text-slate-400">Waiting for live user actions (login, profile updates, referrals, points)...</p>
+                </div>
               ) : (
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {liveActivities.map((act, i) => (
                     <motion.div
-                      key={act.id || i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-ink/5"
+                      key={act.id || `${act.userId}-${i}`}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-start gap-3 p-3 rounded-2xl bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700/50 transition-all"
                     >
-                      <div className="p-2 rounded-full bg-blue-500/10 text-blue-600 mt-0.5 shrink-0">
+                      <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 mt-0.5 shrink-0 font-bold text-xs">
                         <Activity size={14} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] text-slate-900 dark:text-slate-100 truncate">
-                          <span className="font-bold">{act.userName}</span> <span className="text-slate-400 font-normal">({act.userRole})</span>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
+                            {act.userName || "Alumni Member"}
+                          </p>
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase">
+                            {act.userRole || "STUDENT"}
+                          </span>
+                          {act.pointsEarned > 0 && (
+                            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
+                              <Coins size={10} /> +{act.pointsEarned} pts
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
+                          {act.summary || act.message}
                         </p>
-                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">{act.message}</p>
                       </div>
-                      <span className="ml-auto text-[10px] text-slate-400 font-mono shrink-0 whitespace-nowrap">
-                        {new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      <span className="ml-auto text-[10px] text-slate-400 font-mono shrink-0">
+                        {act.timestamp ? new Date(act.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "Just now"}
                       </span>
                     </motion.div>
                   ))}
@@ -618,13 +869,13 @@ export function AdminContent() {
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
+                placeholder="Search member name, email, company, or department..."
                 value={userSearch}
                 onChange={(e) => {
                   setUserSearch(e.target.value);
                   setUserPage(1);
                 }}
-                placeholder="Search by name, email, company, department..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-ink/15 bg-transparent text-xs outline-none focus:border-blue-500"
+                className="w-full pl-9 pr-4 py-2 rounded-xl border border-ink/15 bg-transparent text-xs font-medium outline-none focus:border-blue-500"
               />
             </div>
 
@@ -659,18 +910,18 @@ export function AdminContent() {
             </div>
           </div>
 
-          {/* User Table */}
+          {/* User Table with Real-time Presence Dots */}
           <Card padding="none" className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-ink/10 bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold">
-                    <th className="py-3 px-4">Member</th>
+                    <th className="py-3 px-4">Member (Presence)</th>
                     <th className="py-3 px-4">Role</th>
                     <th className="py-3 px-4">Company / Dept</th>
                     <th className="py-3 px-4">Verification</th>
                     <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4">Points & Streak</th>
+                    <th className="py-3 px-4">Points &amp; Streak</th>
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -682,99 +933,101 @@ export function AdminContent() {
                       </td>
                     </tr>
                   ) : (
-                    users.map((u: any) => (
-                      <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-3">
-                            <div className="relative shrink-0">
-                              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 font-bold text-xs">
-                                {u.name?.split(" ").map((n: string) => n[0]).join("") || "U"}
+                    users.map((u: any) => {
+                      const isOnline = onlineUsers.has(u.id);
+                      return (
+                        <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-3">
+                              <div className="relative shrink-0">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 font-bold text-xs">
+                                  {u.name?.split(" ").map((n: string) => n[0]).join("") || "U"}
+                                </div>
+                                <span
+                                  className={`absolute -bottom-1 -right-1 block h-3 w-3 rounded-full border-2 border-white dark:border-slate-900 shadow-sm ${
+                                    isOnline ? "bg-emerald-500 animate-pulse" : "bg-slate-300 dark:bg-slate-600"
+                                  }`}
+                                  title={isOnline ? "Online now (WebSocket verified)" : "Offline"}
+                                />
                               </div>
-                              <span
-                                className={`absolute -bottom-1 -right-1 block h-3 w-3 rounded-full border-2 border-white dark:border-slate-900 shadow-sm ${
-                                  onlineUsers.has(u.id) ? "bg-emerald-500 animate-pulse" : "bg-slate-300 dark:bg-slate-600"
-                                }`}
-                                title={onlineUsers.has(u.id) ? "Online now" : "Offline"}
-                              />
+                              <div className="min-w-0">
+                                <p className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                                  <span>{u.name}</span>
+                                  {isOnline && (
+                                    <span className="text-[10px] text-emerald-600 font-normal font-mono">• Online</span>
+                                  )}
+                                </p>
+                                <p className="text-[11px] text-slate-500">{u.email}</p>
+                              </div>
                             </div>
-                            <div className="min-w-0">
-                              <p className="font-bold text-slate-900 dark:text-slate-100">{u.name}</p>
-                              <p className="text-[11px] text-slate-500">{u.email}</p>
-                            </div>
-                          </div>
-                        </td>
+                          </td>
 
-                        <td className="py-3 px-4">
-                          <select
-                            value={u.role}
-                            onChange={(e) => handleChangeRole(u.id, e.target.value)}
-                            className="px-2 py-1 rounded-lg border border-ink/15 bg-transparent text-[11px] font-bold outline-none"
-                          >
-                            <option value="ALUMNI">ALUMNI</option>
-                            <option value="STUDENT">STUDENT</option>
-                            <option value="FACULTY">FACULTY</option>
-                            <option value="ADMIN">ADMIN</option>
-                          </select>
-                        </td>
+                          <td className="py-3 px-4">
+                            <select
+                              value={u.role}
+                              onChange={(e) => handleChangeRole(u.id, e.target.value)}
+                              className="px-2 py-1 rounded-lg border border-ink/15 bg-transparent text-[11px] font-bold outline-none cursor-pointer"
+                            >
+                              <option value="ALUMNI">ALUMNI</option>
+                              <option value="STUDENT">STUDENT</option>
+                              <option value="FACULTY">FACULTY</option>
+                              <option value="ADMIN">ADMIN</option>
+                            </select>
+                          </td>
 
-                        <td className="py-3 px-4">
-                          <p className="font-medium text-slate-800 dark:text-slate-200">
-                            {u.currentCompany || u.department || "—"}
-                          </p>
-                          <p className="text-[10px] text-slate-400">
-                            {u.jobTitle || (u.batchYear ? `Batch of ${u.batchYear}` : "")}
-                          </p>
-                        </td>
+                          <td className="py-3 px-4">
+                            <p className="font-medium text-slate-800 dark:text-slate-200">
+                              {u.currentCompany || u.department || "—"}
+                            </p>
+                            <p className="text-[10px] text-slate-400">
+                              {u.jobTitle || (u.batchYear ? `Batch of ${u.batchYear}` : "")}
+                            </p>
+                          </td>
 
-                        <td className="py-3 px-4">
-                          <button
-                            onClick={() => handleVerifyUser(u.id, !u.isVerified)}
-                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all ${
-                              u.isVerified
-                                ? "bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25"
-                                : "bg-amber-500/15 text-amber-600 hover:bg-amber-500/25"
-                            }`}
-                          >
-                            {u.isVerified ? <CheckCircle2 size={12} /> : <AlertTriangle size={12} />}
-                            {u.isVerified ? "Verified" : "Unverified"}
-                          </button>
-                        </td>
+                          <td className="py-3 px-4">
+                            <button
+                              onClick={() => handleVerifyUser(u.id, !u.isVerified)}
+                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all ${
+                                u.isVerified
+                                  ? "bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25"
+                                  : "bg-amber-500/15 text-amber-600 hover:bg-amber-500/25"
+                              }`}
+                            >
+                              {u.isVerified ? <CheckCircle2 size={12} /> : <AlertTriangle size={12} />}
+                              {u.isVerified ? "Verified" : "Unverified"}
+                            </button>
+                          </td>
 
-                        <td className="py-3 px-4">
-                          <button
-                            onClick={() => handleToggleUserStatus(u.id, u.isActive ?? true)}
-                            className={`px-2 py-0.5 rounded-md text-[11px] font-bold cursor-pointer ${
-                              u.isActive !== false
-                                ? "bg-emerald-500/10 text-emerald-600"
-                                : "bg-rose-500/10 text-rose-600"
-                            }`}
-                          >
-                            {u.isActive !== false ? "Active" : "Suspended"}
-                          </button>
-                        </td>
+                          <td className="py-3 px-4">
+                            <button
+                              onClick={() => handleToggleUserStatus(u.id, u.isActive ?? true)}
+                              className={`px-2 py-0.5 rounded-md text-[11px] font-bold cursor-pointer ${
+                                u.isActive !== false
+                                  ? "bg-emerald-500/10 text-emerald-600"
+                                  : "bg-rose-500/10 text-rose-600"
+                              }`}
+                            >
+                              {u.isActive !== false ? "Active" : "Suspended"}
+                            </button>
+                          </td>
 
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2 font-mono text-[11px]">
-                            <span className="flex items-center gap-0.5 text-blue-600">
-                              <Coins size={12} /> {u.totalPoints || 0}
-                            </span>
-                            <span className="flex items-center gap-0.5 text-amber-600">
-                              <Flame size={12} /> {u.currentStreak || 1}d
-                            </span>
-                          </div>
-                        </td>
+                          <td className="py-3 px-4 font-mono">
+                            <span className="font-bold text-slate-900 dark:text-slate-100">{u.totalPoints || 0} pts</span>
+                            <span className="text-slate-400 ml-1">🔥 {u.currentStreak || 0}d</span>
+                          </td>
 
-                        <td className="py-3 px-4 text-right">
-                          <button
-                            onClick={() => setSelectedUserForDelete(u)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                            title="Delete user"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                          <td className="py-3 px-4 text-right">
+                            <button
+                              onClick={() => setSelectedUserForDelete(u)}
+                              className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                              title="Delete user"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -782,22 +1035,22 @@ export function AdminContent() {
 
             {/* Pagination */}
             {totalUserPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-ink/10 text-xs">
+              <div className="flex items-center justify-between p-4 border-t border-ink/10 text-xs">
                 <span className="text-slate-500">
                   Page {userPage} of {totalUserPages}
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <button
                     disabled={userPage <= 1}
-                    onClick={() => setUserPage((p) => p - 1)}
-                    className="p-1.5 rounded-lg border border-ink/15 disabled:opacity-40"
+                    onClick={() => setUserPage((p) => Math.max(1, p - 1))}
+                    className="p-1.5 rounded-lg border border-ink/15 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <ChevronLeft size={14} />
                   </button>
                   <button
                     disabled={userPage >= totalUserPages}
                     onClick={() => setUserPage((p) => p + 1)}
-                    className="p-1.5 rounded-lg border border-ink/15 disabled:opacity-40"
+                    className="p-1.5 rounded-lg border border-ink/15 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <ChevronRight size={14} />
                   </button>
@@ -808,62 +1061,73 @@ export function AdminContent() {
         </motion.div>
       )}
 
-      {/* ================= TAB 3: MODERATION QUEUES ================= */}
+      {/* ================= TAB 3: CENTRALIZED MODERATION & APPROVALS ================= */}
       {activeTab === "moderation" && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          {/* Centralized Approvals Queue Summary Banner */}
+          <div className="p-5 rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border border-blue-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="font-display text-lg font-bold flex items-center gap-2">
+                <ShieldCheck size={20} className="text-blue-600" />
+                Centralized Platform Approvals Dashboard
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+                Single unified queue for spotlight stories, alumni verifications, job moderation, and 1:1 mentorship requests.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 text-xs font-mono">
+              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-ink/10 font-bold">
+                {pendingStories.length} Stories Pending
+              </span>
+              <span className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-ink/10 font-bold">
+                {unverifiedAlumni.length} Unverified Alumni
+              </span>
+            </div>
+          </div>
+
           {/* Section: Pending Success Stories */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display text-xl font-bold flex items-center gap-2">
-                <Sparkles size={20} className="text-amber-500" />
-                Success Stories Moderation Queue ({pendingStories.length} pending)
-              </h3>
-            </div>
+            <h3 className="font-display text-xl font-bold flex items-center gap-2">
+              <Megaphone size={20} className="text-rose-500" />
+              Success Stories Queue ({pendingStories.length} pending)
+            </h3>
 
             {pendingStories.length === 0 ? (
-              <Card padding="lg" className="text-center py-8 text-slate-400 text-xs">
-                <CheckCircle2 size={28} className="mx-auto text-emerald-500 mb-2" />
-                All alumni success stories have been moderated!
+              <Card padding="md" className="text-center py-8 text-slate-400 text-xs">
+                No success stories pending moderation. All published stories are active.
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {pendingStories.map((story: any) => (
-                  <Card key={story.id} padding="lg" className="space-y-3 relative">
-                    <div className="flex items-start justify-between gap-3">
+                {pendingStories.map((s: any) => (
+                  <Card key={s.id} padding="md" className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{story.title}</h4>
-                        <p className="text-xs text-slate-500 mt-0.5">
-                          By {story.alumni?.name || story.author || "Alumnus"} · {story.alumni?.currentCompany || story.company || "Company"}
-                        </p>
+                        <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{s.title}</h4>
+                        <p className="text-xs text-slate-500">By {s.alumni?.name} ({s.company} • {s.role})</p>
                       </div>
-                      <Badge tone="accent">Pending Review</Badge>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600">
+                        Pending
+                      </span>
                     </div>
 
                     <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
-                      {story.body || story.content || story.excerpt}
+                      {s.story}
                     </p>
 
-                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-ink/10">
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-ink/5">
                       <button
-                        onClick={() => handleModerateStory(story.id, false)}
-                        disabled={moderatingId === story.id}
-                        className="px-3 py-1.5 rounded-xl border border-rose-300 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 transition-colors"
+                        onClick={() => handleModerateStory(s.id, false)}
+                        disabled={moderatingId === s.id}
+                        className="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 transition-colors"
                       >
                         Reject
                       </button>
                       <button
-                        onClick={() => handleModerateStory(story.id, true, true)}
-                        disabled={moderatingId === story.id}
-                        className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-xs"
+                        onClick={() => handleModerateStory(s.id, true)}
+                        disabled={moderatingId === s.id}
+                        className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs"
                       >
-                        Approve & Feature ⭐
-                      </button>
-                      <button
-                        onClick={() => handleModerateStory(story.id, true, false)}
-                        disabled={moderatingId === story.id}
-                        className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs"
-                      >
-                        Approve Story ✓
+                        Approve Story
                       </button>
                     </div>
                   </Card>
@@ -872,49 +1136,57 @@ export function AdminContent() {
             )}
           </div>
 
-          {/* Section: Pending Videos (Marketplace) */}
+          {/* Section: Alumni Verification Queue */}
           <div className="space-y-4">
             <h3 className="font-display text-xl font-bold flex items-center gap-2">
-              <PlaySquare size={20} className="text-rose-500" />
-              Video Market Moderation Queue ({pendingVideos.length} pending)
+              <UserCheck size={20} className="text-emerald-500" />
+              Alumni Credential Verification Queue ({unverifiedAlumni.length} pending)
             </h3>
-            
-            {pendingVideos.length === 0 ? (
-              <Card padding="lg" className="text-center py-8 text-slate-400 text-xs">
-                <CheckCircle2 size={28} className="mx-auto text-emerald-500 mb-2" />
-                No videos waiting for approval!
+
+            {unverifiedAlumni.length === 0 ? (
+              <Card padding="md" className="text-center py-8 text-slate-400 text-xs">
+                All registered alumni are verified!
               </Card>
             ) : (
-              <div className="grid gap-4">
-                {pendingVideos.map((video) => (
-                  <Card key={video.id} padding="md" className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div>
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{video.title}</h4>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Uploaded by: {video.uploader.name} · {video.uploader.company}
-                      </p>
-                      <Badge tone="accent" className="mt-2 text-[10px]">Price: {video.price} pts</Badge>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleModerateVideo(video.id, "REJECT")}
-                        disabled={moderatingId === video.id}
-                        className="px-4 py-2 rounded-xl border border-rose-300 dark:border-rose-800 text-rose-600 text-xs font-bold hover:bg-rose-50 transition-colors"
-                      >
-                        Reject
-                      </button>
-                      <button
-                        onClick={() => handleModerateVideo(video.id, "APPROVE")}
-                        disabled={moderatingId === video.id}
-                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs"
-                      >
-                        Approve Video
-                      </button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+              <Card padding="none" className="overflow-hidden">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-ink/10 bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold">
+                      <th className="py-3 px-4">Alumnus</th>
+                      <th className="py-3 px-4">Graduation Year / Dept</th>
+                      <th className="py-3 px-4">Current Company &amp; Role</th>
+                      <th className="py-3 px-4 text-right">Quick Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ink/5">
+                    {unverifiedAlumni.map((u: any) => (
+                      <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                        <td className="py-3 px-4">
+                          <p className="font-bold text-slate-900 dark:text-slate-100">{u.name}</p>
+                          <p className="text-[11px] text-slate-500">{u.email}</p>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className="font-mono font-bold">Batch of {u.batchYear || "—"}</span>
+                          <span className="text-slate-400 ml-1">({u.department || "—"})</span>
+                        </td>
+                        <td className="py-3 px-4">
+                          <p className="font-medium">{u.currentCompany || "—"}</p>
+                          <p className="text-[10px] text-slate-400">{u.jobTitle || "—"}</p>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <button
+                            onClick={() => handleVerifyUser(u.id, true)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+                          >
+                            <Check size={12} />
+                            Verify (+50 pts)
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
             )}
           </div>
 
@@ -952,13 +1224,13 @@ export function AdminContent() {
                       <td className="py-3 px-4 text-right space-x-2">
                         <button
                           onClick={() => handleToggleJobStatus(j.id, j.status)}
-                          className="text-xs text-blue-600 hover:underline font-medium"
+                          className="text-xs text-blue-600 hover:underline font-medium cursor-pointer"
                         >
                           {j.status === "OPEN" ? "Close" : "Reopen"}
                         </button>
                         <button
                           onClick={() => handleDeleteJob(j.id)}
-                          className="text-xs text-rose-600 hover:underline font-medium"
+                          className="text-xs text-rose-600 hover:underline font-medium cursor-pointer"
                         >
                           Delete
                         </button>
@@ -1042,113 +1314,471 @@ export function AdminContent() {
         </motion.div>
       )}
 
-      {/* ================= TAB 5: CONTENT MANAGEMENT (CMS) ================= */}
+      {/* ================= TAB 5: UNIFIED CMS & PAGE BUILDER ================= */}
       {activeTab === "cms" && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card padding="md" className="hover:border-emerald-500 transition-colors">
-              <h3 className="font-bold text-sm flex items-center gap-2 mb-1"><CalendarDays size={16} className="text-emerald-500" /> Event Manager</h3>
-              <p className="text-xs text-slate-500 mb-3">Create, edit, and delete upcoming networking events or webinars.</p>
-              <a href="/events" className="inline-block px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-bold rounded-xl transition-colors">Manage Events →</a>
-            </Card>
-
-            <Card padding="md" className="hover:border-purple-500 transition-colors">
-              <h3 className="font-bold text-sm flex items-center gap-2 mb-1"><Inbox size={16} className="text-purple-500" /> Newsletter Publisher</h3>
-              <p className="text-xs text-slate-500 mb-3">Upload and publish monthly PDF newsletters to the network.</p>
-              <a href="/newsletters" className="inline-block px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-bold rounded-xl transition-colors">Manage Newsletters →</a>
-            </Card>
+          {/* CMS Sub-Tabs Navigation */}
+          <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 w-fit">
+            {[
+              { id: "broadcasts", label: "Broadcasts & Alerts", icon: Megaphone },
+              { id: "events", label: `Events Manager (${events.length})`, icon: CalendarDays },
+              { id: "newsletters", label: `Newsletters (${newsletters.length})`, icon: Inbox },
+              { id: "pages", label: `Page Builder (${customPages.length} Custom Pages)`, icon: Globe },
+            ].map((sub) => (
+              <button
+                key={sub.id}
+                onClick={() => setCmsSubTab(sub.id as CmsSubTab)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  cmsSubTab === sub.id
+                    ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                }`}
+              >
+                <sub.icon size={14} />
+                <span>{sub.label}</span>
+              </button>
+            ))}
           </div>
 
-          <Card padding="lg">
-            <h3 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
-              <Megaphone size={20} className="text-blue-500" />
-              Publish System Broadcast
-            </h3>
+          {/* SUB-SECTION 1: BROADCASTS */}
+          {cmsSubTab === "broadcasts" && (
+            <div className="space-y-6">
+              <Card padding="lg">
+                <h3 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
+                  <Megaphone size={20} className="text-blue-500" />
+                  Publish Official Broadcast
+                </h3>
 
-            <form onSubmit={handleSendBroadcast} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Broadcast Title
-                </label>
-                <input
-                  type="text"
-                  value={broadcastTitle}
-                  onChange={(e) => setBroadcastTitle(e.target.value)}
-                  placeholder="e.g. Annual Alumni Meet 2026 Registration Open"
-                  className="w-full px-4 py-2.5 rounded-xl border border-ink/15 bg-transparent text-sm outline-none focus:border-blue-500 font-semibold"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Announcement Message
-                </label>
-                <textarea
-                  value={broadcastContent}
-                  onChange={(e) => setBroadcastContent(e.target.value)}
-                  rows={4}
-                  placeholder="Write the broadcast message that will appear in all user notification bells..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-ink/15 bg-transparent text-sm outline-none focus:border-blue-500 leading-relaxed"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Target Audience
-                  </label>
-                  <select
-                    value={broadcastTarget}
-                    onChange={(e) => setBroadcastTarget(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent text-xs font-bold"
-                  >
-                    <option value="ALL">All Network Members</option>
-                    <option value="ALUMNI">Alumni Only</option>
-                    <option value="STUDENT">Students Only</option>
-                    <option value="FACULTY">Faculty Only</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Priority Level
-                  </label>
-                  <select
-                    value={broadcastPriority}
-                    onChange={(e) => setBroadcastPriority(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent text-xs font-bold"
-                  >
-                    <option value="NORMAL">Normal Priority</option>
-                    <option value="URGENT">Urgent (High Alert)</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center pt-6">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300">
+                <form onSubmit={handleSendBroadcast} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Broadcast Title
+                    </label>
                     <input
-                      type="checkbox"
-                      checked={broadcastPinned}
-                      onChange={(e) => setBroadcastPinned(e.target.checked)}
-                      className="h-4 w-4 rounded border-ink/20 text-blue-600"
+                      type="text"
+                      value={broadcastTitle}
+                      onChange={(e) => setBroadcastTitle(e.target.value)}
+                      placeholder="e.g. Annual Alumni Meet 2026 Registration Open"
+                      className="w-full px-4 py-2.5 rounded-xl border border-ink/15 bg-transparent text-sm outline-none focus:border-blue-500 font-semibold"
+                      required
                     />
-                    Pin to top of feed
-                  </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Announcement Message
+                    </label>
+                    <textarea
+                      value={broadcastContent}
+                      onChange={(e) => setBroadcastContent(e.target.value)}
+                      rows={4}
+                      placeholder="Write the broadcast message that will appear in all user notification bells..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-ink/15 bg-transparent text-sm outline-none focus:border-blue-500 leading-relaxed"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Target Audience
+                      </label>
+                      <select
+                        value={broadcastTarget}
+                        onChange={(e) => setBroadcastTarget(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent text-xs font-bold"
+                      >
+                        <option value="ALL">All Network Members</option>
+                        <option value="ALUMNI">Alumni Only</option>
+                        <option value="STUDENT">Students Only</option>
+                        <option value="FACULTY">Faculty Only</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Priority Level
+                      </label>
+                      <select
+                        value={broadcastPriority}
+                        onChange={(e) => setBroadcastPriority(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent text-xs font-bold"
+                      >
+                        <option value="NORMAL">Normal Priority</option>
+                        <option value="URGENT">Urgent (High Alert)</option>
+                      </select>
+                    </div>
+
+                    <div className="flex items-center pt-6">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300">
+                        <input
+                          type="checkbox"
+                          checked={broadcastPinned}
+                          onChange={(e) => setBroadcastPinned(e.target.checked)}
+                          className="h-4 w-4 rounded border-ink/20 text-blue-600"
+                        />
+                        Pin to top of feed
+                      </label>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={sendingBroadcast}
+                    className="mt-4 flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all disabled:opacity-50 cursor-pointer"
+                  >
+                    <Send size={14} />
+                    {sendingBroadcast ? "Dispatching..." : "Dispatch Broadcast"}
+                  </button>
+                </form>
+              </Card>
+
+              {/* Existing Announcements Feed */}
+              <div className="space-y-3">
+                <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <Megaphone size={16} className="text-blue-500" />
+                  Existing Broadcast Feed ({announcements.length})
+                </h4>
+                <div className="grid grid-cols-1 gap-3">
+                  {announcements.map((a: any) => (
+                    <Card key={a.id} padding="md" className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h5 className="font-bold text-sm text-slate-900 dark:text-slate-100">{a.title}</h5>
+                          {a.pinned && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+                              Pinned
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">{a.body || a.content}</p>
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400 shrink-0">
+                        {a.createdAt ? new Date(a.createdAt).toLocaleDateString() : ""}
+                      </span>
+                    </Card>
+                  ))}
                 </div>
               </div>
+            </div>
+          )}
 
-              <button
-                type="submit"
-                disabled={sendingBroadcast}
-                className="mt-4 flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all disabled:opacity-50 cursor-pointer"
-              >
-                <Send size={14} />
-                {sendingBroadcast ? "Dispatching..." : "Dispatch Broadcast"}
-              </button>
-            </form>
-          </Card>
+          {/* SUB-SECTION 2: EVENTS MANAGER */}
+          {cmsSubTab === "events" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-display text-xl font-bold">Alumni Events &amp; Webinars</h3>
+                  <p className="text-xs text-slate-500">Create and oversee campus reunions, workshops, and RSVP capacities.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setEditingEventId(null);
+                    setEventForm({
+                      title: "",
+                      description: "",
+                      date: new Date(Date.now() + 86400000 * 7).toISOString().slice(0, 16),
+                      location: "",
+                      mode: "ONLINE",
+                      coverImage: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80",
+                      maxCapacity: 100,
+                    });
+                    setEventModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+                >
+                  <Plus size={14} />
+                  <span>Create New Event</span>
+                </button>
+              </div>
+
+              <Card padding="none" className="overflow-hidden">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-ink/10 bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold">
+                      <th className="py-3 px-4">Event</th>
+                      <th className="py-3 px-4">Date &amp; Time</th>
+                      <th className="py-3 px-4">Mode / Location</th>
+                      <th className="py-3 px-4">Capacity / RSVPs</th>
+                      <th className="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ink/5">
+                    {events.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="py-8 text-center text-slate-400">
+                          No events found. Click &quot;Create New Event&quot; to publish one.
+                        </td>
+                      </tr>
+                    ) : (
+                      events.map((ev: any) => (
+                        <tr key={ev.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                          <td className="py-3 px-4">
+                            <p className="font-bold text-slate-900 dark:text-slate-100">{ev.title}</p>
+                            <p className="text-[11px] text-slate-500 truncate max-w-xs">{ev.description}</p>
+                          </td>
+                          <td className="py-3 px-4 font-mono">
+                            {ev.date ? new Date(ev.date).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—"}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              ev.mode === "ONLINE" ? "bg-blue-500/10 text-blue-600" : "bg-emerald-500/10 text-emerald-600"
+                            }`}>
+                              {ev.mode}
+                            </span>
+                            <p className="text-[10px] text-slate-400 mt-0.5 truncate max-w-xs">{ev.location || "Online Link"}</p>
+                          </td>
+                          <td className="py-3 px-4 font-mono font-bold">
+                            {ev._count?.rsvps || 0} / {ev.maxCapacity || "∞"} RSVPs
+                          </td>
+                          <td className="py-3 px-4 text-right space-x-2">
+                            <button
+                              onClick={() => {
+                                setEditingEventId(ev.id);
+                                setEventForm({
+                                  title: ev.title || "",
+                                  description: ev.description || "",
+                                  date: ev.date ? new Date(ev.date).toISOString().slice(0, 16) : "",
+                                  location: ev.location || "",
+                                  mode: ev.mode || "ONLINE",
+                                  coverImage: ev.coverImage || "",
+                                  maxCapacity: ev.maxCapacity || 100,
+                                });
+                                setEventModalOpen(true);
+                              }}
+                              className="text-blue-600 hover:underline font-bold"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteEvent(ev.id)}
+                              className="text-rose-600 hover:underline font-bold"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          )}
+
+          {/* SUB-SECTION 3: NEWSLETTERS */}
+          {cmsSubTab === "newsletters" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-display text-xl font-bold">Newsletter Edition Publisher</h3>
+                  <p className="text-xs text-slate-500">Upload and catalog official quarterly PDF newsletter magazines.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setEditingNewsletterId(null);
+                    setNewsletterForm({
+                      title: "Somaiya Sparsh - Edition 2026",
+                      year: new Date().getFullYear(),
+                      issueDate: new Date().toISOString().split("T")[0],
+                      coverImage: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80",
+                      fileUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+                    });
+                    setNewsletterModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md shadow-purple-600/20 transition-all cursor-pointer"
+                >
+                  <Plus size={14} />
+                  <span>Publish Newsletter</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {newsletters.map((nl: any) => (
+                  <Card key={nl.id} padding="md" className="space-y-3">
+                    <div className="h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+                      <img src={nl.coverImage} alt={nl.title} className="w-full h-full object-cover" />
+                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-xs text-white text-[10px] font-mono font-bold">
+                        {nl.year}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{nl.title}</h4>
+                      <p className="text-[11px] text-slate-500">
+                        {nl.issueDate ? new Date(nl.issueDate).toLocaleDateString([], { month: "long", year: "numeric" }) : ""}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-ink/5 text-xs">
+                      <a href={nl.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-bold hover:underline flex items-center gap-1">
+                        <span>View PDF</span>
+                        <ExternalLink size={12} />
+                      </a>
+                      <button
+                        onClick={() => handleDeleteNewsletter(nl.id)}
+                        className="text-rose-600 hover:underline font-bold"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SUB-SECTION 4: CUSTOM PAGE BUILDER (EXPANDED SCOPE) */}
+          {cmsSubTab === "pages" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20">
+                <div>
+                  <h3 className="font-display text-lg font-bold flex items-center gap-2">
+                    <Globe size={18} className="text-purple-600" />
+                    No-Deploy Custom Page &amp; Site Builder
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+                    Create standalone landing pages, partnership portals, or custom static routes live on the platform without deploying code.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setEditingPageId(null);
+                    setPageForm({
+                      title: "Industry Partnerships",
+                      slug: "partnerships",
+                      description: "Discover our hiring and research collaboration opportunities for partner organizations.",
+                      heroTitle: "Accelerate With Alumni Talent",
+                      heroSubtitle: "Connect directly with 1,200+ vetted engineers, product managers, and faculty leaders.",
+                      status: "DRAFT",
+                      blocks: [
+                        {
+                          id: "b1",
+                          type: "features",
+                          title: "Why Partner With Us",
+                          subtitle: "Direct talent pipeline and sponsored campus sprints",
+                          features: [
+                            { title: "Direct Referral Pipeline", desc: "Access top candidates with vector verified skill portfolios", tag: "Hiring" },
+                            { title: "Campus Hackathons", desc: "Co-sponsor campus build sprints with student teams", tag: "Events" },
+                            { title: "Executive Mentorship", desc: "1:1 coaching loops with senior engineers and leads", tag: "Mentorship" },
+                          ],
+                        },
+                        {
+                          id: "b2",
+                          type: "cta",
+                          title: "Become an Official Network Partner",
+                          subtitle: "Reach out to campus placement coordinators today to schedule your corporate spotlight.",
+                          ctaText: "Contact Admin Office",
+                          ctaLink: "/help",
+                        },
+                      ],
+                    });
+                    setPageModalOpen(true);
+                  }}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md shadow-purple-600/20 transition-all cursor-pointer shrink-0"
+                >
+                  <Plus size={15} />
+                  <span>Build New Page</span>
+                </button>
+              </div>
+
+              {/* Custom Pages Table */}
+              <Card padding="none" className="overflow-hidden">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-ink/10 bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold">
+                      <th className="py-3 px-4">Page Title &amp; Slug</th>
+                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4">Content Blocks</th>
+                      <th className="py-3 px-4">Last Updated</th>
+                      <th className="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-ink/5">
+                    {customPages.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="py-12 text-center text-slate-400 space-y-2">
+                          <Globe size={28} className="mx-auto text-slate-300 dark:text-slate-700" />
+                          <p className="font-bold">No custom pages created yet.</p>
+                          <p className="text-[11px]">Click &quot;Build New Page&quot; to generate your first live page!</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      customPages.map((pg: any) => (
+                        <tr key={pg.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2">
+                              <p className="font-bold text-slate-900 dark:text-slate-100">{pg.title}</p>
+                              <a
+                                href={`/${pg.slug}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-700 flex items-center gap-0.5 font-mono text-[11px]"
+                              >
+                                <span>/{pg.slug}</span>
+                                <ExternalLink size={11} />
+                              </a>
+                            </div>
+                            {pg.description && (
+                              <p className="text-[11px] text-slate-500 truncate max-w-sm">{pg.description}</p>
+                            )}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                              pg.status === "PUBLISHED"
+                                ? "bg-emerald-500/15 text-emerald-600"
+                                : pg.status === "DRAFT"
+                                ? "bg-amber-500/15 text-amber-600"
+                                : "bg-slate-500/15 text-slate-600"
+                            }`}>
+                              {pg.status}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 font-mono font-bold">
+                            {Array.isArray(pg.blocks) ? pg.blocks.length : 0} Blocks
+                          </td>
+                          <td className="py-3 px-4 font-mono text-[11px] text-slate-400">
+                            {pg.updatedAt ? new Date(pg.updatedAt).toLocaleDateString() : "Recently"}
+                          </td>
+                          <td className="py-3 px-4 text-right space-x-2">
+                            <Link
+                              href={`/${pg.slug}`}
+                              target="_blank"
+                              className="text-xs text-slate-600 dark:text-slate-400 hover:underline font-bold"
+                            >
+                              Preview
+                            </Link>
+                            <button
+                              onClick={() => {
+                                setEditingPageId(pg.id);
+                                setPageForm({
+                                  title: pg.title || "",
+                                  slug: pg.slug || "",
+                                  description: pg.description || "",
+                                  heroTitle: pg.heroTitle || "",
+                                  heroSubtitle: pg.heroSubtitle || "",
+                                  status: pg.status || "DRAFT",
+                                  blocks: Array.isArray(pg.blocks) ? pg.blocks : [],
+                                });
+                                setPageModalOpen(true);
+                              }}
+                              className="text-xs text-blue-600 hover:underline font-bold"
+                            >
+                              Edit Blocks
+                            </button>
+                            <button
+                              onClick={() => handleDeletePage(pg.id)}
+                              className="text-xs text-rose-600 hover:underline font-bold"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          )}
         </motion.div>
       )}
 
@@ -1245,6 +1875,564 @@ export function AdminContent() {
           </div>
         </motion.div>
       )}
+
+      {/* ================= MODAL: EVENT CREATOR / EDITOR ================= */}
+      <AnimatePresence>
+        {eventModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between border-b border-ink/10 pb-3">
+                <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <CalendarDays size={18} className="text-blue-600" />
+                  <span>{editingEventId ? "Edit Alumni Event" : "Create New Event"}</span>
+                </h3>
+                <button onClick={() => setEventModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-700">
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveEvent} className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-bold mb-1">Event Title *</label>
+                  <input
+                    type="text"
+                    required
+                    value={eventForm.title}
+                    onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-medium"
+                    placeholder="e.g. AI In Healthcare Alumni Panel"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold mb-1">Description *</label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={eventForm.description}
+                    onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent"
+                    placeholder="Provide event details, keynote speakers, and agenda..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold mb-1">Date &amp; Time *</label>
+                    <input
+                      type="datetime-local"
+                      required
+                      value={eventForm.date}
+                      onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Event Mode</label>
+                    <select
+                      value={eventForm.mode}
+                      onChange={(e) => setEventForm({ ...eventForm, mode: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-bold"
+                    >
+                      <option value="ONLINE">ONLINE (Webinar/Meet)</option>
+                      <option value="OFFLINE">OFFLINE (Campus/Venue)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold mb-1">Location or Meeting Link</label>
+                    <input
+                      type="text"
+                      value={eventForm.location}
+                      onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent"
+                      placeholder="e.g. Google Meet URL or Auditorium 1"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Max Capacity</label>
+                    <input
+                      type="number"
+                      value={eventForm.maxCapacity}
+                      onChange={(e) => setEventForm({ ...eventForm, maxCapacity: parseInt(e.target.value) || 100 })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold mb-1">Cover Image URL</label>
+                  <input
+                    type="url"
+                    value={eventForm.coverImage}
+                    onChange={(e) => setEventForm({ ...eventForm, coverImage: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-mono text-[11px]"
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4 border-t border-ink/10">
+                  <button
+                    type="button"
+                    onClick={() => setEventModalOpen(false)}
+                    className="px-4 py-2 rounded-xl border border-ink/15 font-bold hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md shadow-blue-600/20"
+                  >
+                    {editingEventId ? "Save Changes" : "Publish Event"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ================= MODAL: NEWSLETTER PUBLISHER ================= */}
+      <AnimatePresence>
+        {newsletterModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-4"
+            >
+              <div className="flex items-center justify-between border-b border-ink/10 pb-3">
+                <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <Inbox size={18} className="text-purple-600" />
+                  <span>{editingNewsletterId ? "Edit Newsletter Edition" : "Publish Newsletter Edition"}</span>
+                </h3>
+                <button onClick={() => setNewsletterModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-700">
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveNewsletter} className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-bold mb-1">Edition Title *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newsletterForm.title}
+                    onChange={(e) => setNewsletterForm({ ...newsletterForm, title: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-medium"
+                    placeholder="e.g. Somaiya Sparsh - Spring 2026 Edition"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold mb-1">Year *</label>
+                    <input
+                      type="number"
+                      required
+                      value={newsletterForm.year}
+                      onChange={(e) => setNewsletterForm({ ...newsletterForm, year: parseInt(e.target.value) || 2026 })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Issue Date</label>
+                    <input
+                      type="date"
+                      value={newsletterForm.issueDate}
+                      onChange={(e) => setNewsletterForm({ ...newsletterForm, issueDate: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold mb-1">PDF File URL *</label>
+                  <input
+                    type="url"
+                    required
+                    value={newsletterForm.fileUrl}
+                    onChange={(e) => setNewsletterForm({ ...newsletterForm, fileUrl: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-mono text-[11px]"
+                    placeholder="https://.../magazine.pdf"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold mb-1">Cover Image URL</label>
+                  <input
+                    type="url"
+                    value={newsletterForm.coverImage}
+                    onChange={(e) => setNewsletterForm({ ...newsletterForm, coverImage: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-mono text-[11px]"
+                    placeholder="https://.../cover.jpg"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4 border-t border-ink/10">
+                  <button
+                    type="button"
+                    onClick={() => setNewsletterModalOpen(false)}
+                    className="px-4 py-2 rounded-xl border border-ink/15 font-bold hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-md shadow-purple-600/20"
+                  >
+                    Publish Edition
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ================= MODAL: VISUAL PAGE BUILDER ================= */}
+      <AnimatePresence>
+        {pageModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-3xl rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between border-b border-ink/10 pb-4">
+                <div>
+                  <h3 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <Globe size={20} className="text-purple-600" />
+                    <span>{editingPageId ? "Edit Custom Page" : "Visual Page & Site Builder"}</span>
+                  </h3>
+                  <p className="text-xs text-slate-500">Configure page meta, hero banners, and structured content blocks.</p>
+                </div>
+                <button onClick={() => setPageModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-700">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSavePage} className="space-y-6 text-xs">
+                {/* Page Meta Settings */}
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700 space-y-4">
+                  <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                    <Layers size={14} className="text-blue-500" />
+                    Page Meta Settings
+                  </h4>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-bold mb-1">Page Title *</label>
+                      <input
+                        type="text"
+                        required
+                        value={pageForm.title}
+                        onChange={(e) => {
+                          const title = e.target.value;
+                          setPageForm((prev) => ({
+                            ...prev,
+                            title,
+                            slug: prev.slug || title.toLowerCase().replace(/[^a-z0-9-_]/g, "-"),
+                          }));
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-bold text-sm"
+                        placeholder="e.g. Industry Innovation Hub"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold mb-1">
+                        URL Slug (Live Path) *
+                      </label>
+                      <div className="flex items-center">
+                        <span className="px-2.5 py-2 rounded-l-xl bg-slate-200 dark:bg-slate-800 font-mono text-xs font-bold text-slate-500">
+                          /
+                        </span>
+                        <input
+                          type="text"
+                          required
+                          value={pageForm.slug}
+                          onChange={(e) => setPageForm({ ...pageForm, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, "-") })}
+                          className={`w-full px-3 py-2 rounded-r-xl border border-ink/15 bg-transparent font-mono text-xs font-bold ${
+                            RESERVED_SLUGS.has(pageForm.slug) ? "border-rose-500 text-rose-600" : ""
+                          }`}
+                          placeholder="innovation-hub"
+                        />
+                      </div>
+                      {RESERVED_SLUGS.has(pageForm.slug) && (
+                        <p className="text-[10px] text-rose-600 font-bold mt-1">
+                          ⚠ &quot;{pageForm.slug}&quot; is a reserved system path. Pick another slug.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Meta Description (SEO &amp; Cards)</label>
+                    <input
+                      type="text"
+                      value={pageForm.description}
+                      onChange={(e) => setPageForm({ ...pageForm, description: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent text-xs"
+                      placeholder="Brief summary of this page for directory and search preview..."
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-bold mb-1">Hero Main Heading</label>
+                      <input
+                        type="text"
+                        value={pageForm.heroTitle}
+                        onChange={(e) => setPageForm({ ...pageForm, heroTitle: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-medium"
+                        placeholder="Hero Title (defaults to Page Title if empty)"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold mb-1">Publication Status</label>
+                      <select
+                        value={pageForm.status}
+                        onChange={(e) => setPageForm({ ...pageForm, status: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent font-bold"
+                      >
+                        <option value="DRAFT">DRAFT (Admin Preview Only)</option>
+                        <option value="PUBLISHED">PUBLISHED (Live to Public)</option>
+                        <option value="ARCHIVED">ARCHIVED (Hidden)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Hero Subtitle</label>
+                    <textarea
+                      rows={2}
+                      value={pageForm.heroSubtitle}
+                      onChange={(e) => setPageForm({ ...pageForm, heroSubtitle: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-ink/15 bg-transparent"
+                      placeholder="Supporting text under the main hero title..."
+                    />
+                  </div>
+                </div>
+
+                {/* Structured Content Blocks Builder */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                        <Layout size={14} className="text-purple-500" />
+                        Content Blocks ({pageForm.blocks.length})
+                      </h4>
+                      <p className="text-[11px] text-slate-500">Add rich text, 3-card feature grids, call to actions, or FAQ accordions.</p>
+                    </div>
+
+                    {/* Add Block Dropdown */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => addBlockToPage("markdown")}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-ink/15 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] font-bold cursor-pointer"
+                      >
+                        <FileText size={12} /> + Text
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => addBlockToPage("features")}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-ink/15 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] font-bold cursor-pointer"
+                      >
+                        <Zap size={12} /> + Features
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => addBlockToPage("cta")}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-ink/15 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] font-bold cursor-pointer"
+                      >
+                        <Send size={12} /> + CTA Banner
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => addBlockToPage("faq")}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-ink/15 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] font-bold cursor-pointer"
+                      >
+                        <HelpCircle size={12} /> + FAQ
+                      </button>
+                    </div>
+                  </div>
+
+                  {pageForm.blocks.length === 0 ? (
+                    <div className="p-8 border-2 border-dashed border-ink/15 rounded-2xl text-center text-slate-400 text-xs">
+                      No content blocks yet. Click any button above (+ Text, + Features, + CTA, + FAQ) to add structured blocks.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {pageForm.blocks.map((block, idx) => (
+                        <div
+                          key={block.id || idx}
+                          className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3"
+                        >
+                          <div className="flex items-center justify-between border-b border-ink/5 pb-2">
+                            <span className="font-mono text-xs font-bold text-purple-600 uppercase flex items-center gap-1.5">
+                              <span>Block {idx + 1}:</span>
+                              <span className="px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-sans text-[11px]">
+                                {block.type.toUpperCase()}
+                              </span>
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => removeBlockFromPage(block.id)}
+                              className="text-rose-500 hover:text-rose-700 p-1"
+                              title="Remove Block"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+
+                          {/* Block: Markdown / Rich Text */}
+                          {block.type === "markdown" && (
+                            <div className="space-y-2">
+                              <input
+                                type="text"
+                                value={block.title || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { title: e.target.value })}
+                                placeholder="Section Heading (optional)"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent font-bold text-xs"
+                              />
+                              <textarea
+                                rows={4}
+                                value={block.content || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { content: e.target.value })}
+                                placeholder="Markdown or HTML content..."
+                                className="w-full px-3 py-2 rounded-lg border border-ink/15 bg-transparent font-mono text-xs leading-relaxed"
+                              />
+                            </div>
+                          )}
+
+                          {/* Block: Features Grid */}
+                          {block.type === "features" && (
+                            <div className="space-y-2">
+                              <input
+                                type="text"
+                                value={block.title || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { title: e.target.value })}
+                                placeholder="Features Section Title"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent font-bold text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={block.subtitle || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { subtitle: e.target.value })}
+                                placeholder="Features Subtitle"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent text-xs"
+                              />
+                            </div>
+                          )}
+
+                          {/* Block: CTA Banner */}
+                          {block.type === "cta" && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <input
+                                type="text"
+                                value={block.title || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { title: e.target.value })}
+                                placeholder="Banner Headline"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent font-bold text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={block.subtitle || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { subtitle: e.target.value })}
+                                placeholder="Banner Subtext"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={block.ctaText || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { ctaText: e.target.value })}
+                                placeholder="Button Label (e.g. Join Directory)"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent font-bold text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={block.ctaLink || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { ctaLink: e.target.value })}
+                                placeholder="Button Link (e.g. /register)"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent font-mono text-xs"
+                              />
+                            </div>
+                          )}
+
+                          {/* Block: FAQ Accordion */}
+                          {block.type === "faq" && (
+                            <div className="space-y-2">
+                              <input
+                                type="text"
+                                value={block.title || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { title: e.target.value })}
+                                placeholder="FAQ Section Heading"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent font-bold text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={block.subtitle || ""}
+                                onChange={(e) => updateBlockInPage(block.id, { subtitle: e.target.value })}
+                                placeholder="FAQ Subtitle"
+                                className="w-full px-3 py-1.5 rounded-lg border border-ink/15 bg-transparent text-xs"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-ink/10">
+                  {pageForm.slug && (
+                    <a
+                      href={`/${pageForm.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+                    >
+                      <Eye size={14} /> Preview Live Route (/{pageForm.slug})
+                    </a>
+                  )}
+
+                  <div className="flex items-center gap-2 ml-auto">
+                    <button
+                      type="button"
+                      onClick={() => setPageModalOpen(false)}
+                      className="px-4 py-2 rounded-xl border border-ink/15 font-bold hover:bg-slate-100 dark:hover:bg-slate-800"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={RESERVED_SLUGS.has(pageForm.slug)}
+                      className="px-6 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-md shadow-purple-600/20 disabled:opacity-50 cursor-pointer"
+                    >
+                      {editingPageId ? "Save Page" : "Create & Save Page"}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Delete User Confirmation Modal */}
       <AnimatePresence>

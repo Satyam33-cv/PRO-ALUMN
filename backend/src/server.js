@@ -107,6 +107,7 @@ app.use('/api/chat', require('./routes/chat'));
 app.use('/api/mentorship', require('./routes/mentorship'));
 app.use('/api/gamification', require('./routes/gamification'));
 app.use('/api/newsletters', require('./routes/newsletters'));
+app.use('/api/pages', require('./routes/pages'));
 app.use('/api/search', require('./routes/search'));
 // --- Local file uploads (auth-protected) ---
 const { authenticate } = require('./middleware/auth');

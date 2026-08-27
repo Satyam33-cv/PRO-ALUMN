@@ -36,7 +36,8 @@ import {
   Target,
   Sparkles,
   MonitorCheck,
-  Wallet
+  Wallet,
+  Compass,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
@@ -73,13 +74,24 @@ const navConfig: NavItemConfig[] = [
   },
   { 
     title: 'Opportunities', 
-    href: '/jobs', 
-    icon: BriefcaseBusiness 
+    icon: BriefcaseBusiness,
+    subItems: [
+      { title: 'Job Board', href: '/jobs', icon: BriefcaseBusiness },
+      { title: 'Referral Tracker', href: '/referrals', icon: Target },
+      { title: 'AI Match', href: '/matching', icon: Sparkles },
+    ],
   },
-  { 
-    title: 'AI Match', 
-    href: '/matching', 
-    icon: Sparkles 
+  {
+    title: 'Engage',
+    icon: Compass,
+    subItems: [
+      { title: 'Announcements', href: '/announcements', icon: Megaphone },
+      { title: 'Messages & Chat', href: '/chat', icon: MessageCircle },
+      { title: 'Mentorship Hub', href: '/mentorship', icon: GraduationCap },
+      { title: 'Spotlight Stories', href: '/stories', icon: BookOpen },
+      { title: 'Events & RSVPs', href: '/events', icon: Calendar },
+      { title: 'Rewards & Streaks', href: '/rewards', icon: Trophy },
+    ],
   },
   {
     title: 'Workspace',
@@ -276,6 +288,14 @@ export function RoleShell({
   useEffect(() => {
     setSidebarOpen(false);
     setNotificationsOpen(false);
+
+    // Auto-open parent dropdown if child route is active
+    const activeSection = navConfig.find((item) =>
+      item.subItems?.some((sub) => isActive(pathname, sub.href))
+    );
+    if (activeSection) {
+      setOpenSection(activeSection.title);
+    }
   }, [pathname]);
 
   useEffect(() => {
@@ -429,17 +449,41 @@ export function RoleShell({
         </nav>
 
         <div className={`mt-auto space-y-4 border-t border-slate-200 dark:border-slate-800 pt-4 bg-slate-50/50 dark:bg-slate-900/50 ${compact ? "px-2 pb-4" : "p-4"}`}>
-          {!compact && (
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/50 rounded-xl p-3 shadow-sm">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-bold tracking-wider text-amber-800 dark:text-amber-500 uppercase">Rewards</span>
-                <Wallet className="w-4 h-4 text-amber-500" />
+          {compact ? (
+            <Link
+              href="/rewards"
+              title={`Rewards: ${gamificationData?.totalPoints ?? 0} pts • 🔥 ${gamificationData?.streak?.current ?? 0}d streak`}
+              className="flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 text-amber-700 dark:text-amber-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shadow-xs group"
+            >
+              <Flame className="w-5 h-5 text-orange-500 fill-orange-500/20 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-bold mt-1 text-slate-900 dark:text-slate-100">
+                {gamificationData?.totalPoints ?? 0}
+              </span>
+            </Link>
+          ) : (
+            <Link
+              href="/rewards"
+              className="group block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 rounded-xl p-3 shadow-xs hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-bold tracking-wider text-amber-800 dark:text-amber-400 uppercase">Rewards</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-100/80 dark:bg-orange-950/60 px-1.5 py-0.5 rounded-md border border-orange-200/60 dark:border-orange-800/40">
+                  <Flame className="w-3 h-3 fill-orange-500 text-orange-500" />
+                  {gamificationData?.streak?.current ?? 0}d streak
+                </span>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-xl font-bold text-slate-900 dark:text-slate-100">{gamificationData?.totalPoints || 130}</span>
-                <span className="text-xs font-medium text-amber-700 dark:text-amber-600">pts</span>
+              <div className="flex items-baseline justify-between">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
+                    {gamificationData?.totalPoints ?? 0}
+                  </span>
+                  <span className="text-xs font-medium text-amber-700 dark:text-amber-500">pts</span>
+                </div>
+                <span className="text-[11px] font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                  View <ChevronRight className="w-3 h-3" />
+                </span>
               </div>
-            </div>
+            </Link>
           )}
 
           <Link href="/profile" className={`flex items-center gap-3 rounded-lg py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${compact ? "justify-center" : "px-2 hover:bg-slate-100/80 dark:hover:bg-slate-800/60"}`}>
@@ -556,7 +600,7 @@ export function RoleShell({
               title="Daily Active Streak"
             >
               <Flame size={15} className="text-orange-500 animate-pulse fill-orange-500/20" />
-              <span>{gamificationData?.streak?.current || 1}d</span>
+              <span>{gamificationData?.streak?.current ?? 0}d</span>
             </Link>
 
             <Link
@@ -565,7 +609,7 @@ export function RoleShell({
               title="Alumni Contribution Points"
             >
               <Coins size={14} className="text-blue-500" />
-              <span>{gamificationData?.totalPoints || 50} pts</span>
+              <span>{gamificationData?.totalPoints ?? 0} pts</span>
             </Link>
 
             <ThemeToggle className="shrink-0" />
