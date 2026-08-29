@@ -25,6 +25,7 @@ googleAuthProvider.addScope("email");
 // Optional Workspace Auth Provider (for users whose organization policy permits sensitive scopes)
 export const googleWorkspaceAuthProvider = new GoogleAuthProvider();
 googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/gmail.readonly");
+googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/gmail.send");
 googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/documents");
 googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/drive.file");
 googleWorkspaceAuthProvider.addScope("https://www.googleapis.com/auth/calendar");

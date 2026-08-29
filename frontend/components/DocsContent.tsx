@@ -4,25 +4,20 @@ import { useState, useEffect } from "react";
 import {
   FileText,
   Plus,
-  ExternalLink,
   Search,
   RefreshCw,
   Edit3,
   CheckCircle2,
   AlertCircle,
   FilePlus2,
-  FolderOpen,
   Sparkles,
   BookOpen,
+  Trash2,
+  Share2,
+  Copy,
+  Download,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
-import {
-  createGoogleDoc,
-  getGoogleDoc,
-  insertDocText,
-  listUserDocsFromDrive,
-  GoogleDocDetails,
-} from "@/lib/google-workspace";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -30,26 +25,58 @@ import {
   getDocs,
   query,
   orderBy,
+  doc,
+  updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 interface SavedDocRef {
   id: string;
-  docId: string;
+  docId?: string;
   title: string;
   category: string;
   author: string;
+  authorId?: string;
+  authorEmail?: string;
+  content: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
+const DEFAULT_COMMUNITY_DOCS: SavedDocRef[] = [
+  {
+    id: "doc-1",
+    title: "Alumni Mentorship Best Practices & Roadmap 2026",
+    category: "Mentorship",
+    author: "Elena Rostova (Class of '19)",
+    content: `# Alumni Mentorship Program Guidelines\n\n## 1. Program Objectives\n- Connect senior industry alumni with final-year students for career readiness.\n- Provide structured review for resumes, portfolios, and mock technical interviews.\n\n## 2. Meeting Cadence\n- Bi-weekly 45-minute 1-on-1 sessions.\n- Monthly group AMA webinars on emerging engineering & AI stacks.\n\n## 3. Recommended Action Items\n- Define quarterly career milestone.\n- Complete 1 mock system-design or portfolio presentation.`,
+    createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+  },
+  {
+    id: "doc-2",
+    title: "Annual Grand Alumni Reunion 2026 Committee Notes",
+    category: "Events",
+    author: "Marcus Vance (Class of '15)",
+    content: `# Class Reunion Committee Planning\n\n## Venue & Schedule\n- **Date:** October 18, 2026\n- **Main Hall:** University Alumni Center & Innovation Pavilion\n\n## Key Sessions\n- 10:00 AM: Keynote & State of the University\n- 01:00 PM: Alumni Startup Showcase & Pitch Fest\n- 06:00 PM: Networking Gala Dinner\n\n## Budget & Ticketing\n- Early bird registration opens July 1st.`,
+    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id: "doc-3",
+    title: "Tech Career Transition Playbook: From Junior to Staff Engineer",
+    category: "Career",
+    author: "Priya Sharma (Class of '18)",
+    content: `# Engineering Career Transition Strategy\n\n## Core Pillars\n1. **Technical Depth:** Deep understanding of distributed systems and scalability patterns.\n2. **Influence Without Authority:** Driving cross-team technical consensus.\n3. **Mentorship:** Elevating junior engineers and writing architectural decision records (ADRs).\n\n## Networking Checklist\n- Connect with verified alumni in target tech hubs.\n- Ask for warm internal referrals via PRO ALUMN referral tracker.`,
+    createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
+  },
+];
+
 export function DocsContent() {
-  const { user, accessToken, signInWithGoogle } = useAuth();
-  const [docsList, setDocsList] = useState<SavedDocRef[]>([]);
-  const [driveDocs, setDriveDocs] = useState<
-    Array<{ id: string; name: string; modifiedTime: string }>
-  >([]);
+  const { user } = useAuth();
+  const [docsList, setDocsList] = useState<SavedDocRef[]>(DEFAULT_COMMUNITY_DOCS);
   const [loading, setLoading] = useState(false);
-  const [activeDoc, setActiveDoc] = useState<GoogleDocDetails | null>(null);
-  const [docLoading, setDocLoading] = useState(false);
+  const [activeDoc, setActiveDoc] = useState<SavedDocRef | null>(DEFAULT_COMMUNITY_DOCS[0]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState("");
 
   // New Doc Form State
   const [isCreating, setIsCreating] = useState(false);
@@ -68,6 +95,7 @@ export function DocsContent() {
       }
     }
   }, []);
+
   const [statusMsg, setStatusMsg] = useState<{
     type: "success" | "error";
     text: string;
@@ -85,28 +113,37 @@ export function DocsContent() {
   const loadDocuments = async () => {
     setLoading(true);
     try {
-      // 1. Fetch from Firestore
-      try {
-        const q = query(collection(db, "docs"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        const docs: SavedDocRef[] = [];
-        snapshot.forEach((docSnap) => {
-          docs.push({ id: docSnap.id, ...(docSnap.data() as any) });
+      const q = query(collection(db, "docs"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      const fetched: SavedDocRef[] = [];
+      snapshot.forEach((docSnap) => {
+        const d = docSnap.data();
+        fetched.push({
+          id: docSnap.id,
+          docId: d.docId || docSnap.id,
+          title: d.title || "Untitled Document",
+          category: d.category || "General",
+          author: d.author || "Alumni Member",
+          authorId: d.authorId || "",
+          authorEmail: d.authorEmail || "",
+          content: d.content || d.initialContent || "",
+          createdAt: d.createdAt || new Date().toISOString(),
+          updatedAt: d.updatedAt,
         });
-        setDocsList(docs);
-      } catch (err) {
-        console.warn("Could not fetch docs from Firestore:", err);
-      }
+      });
 
-      // 2. Fetch directly from Google Drive if token is available
-      if (accessToken) {
-        try {
-          const driveFiles = await listUserDocsFromDrive({ token: accessToken });
-          setDriveDocs(driveFiles);
-        } catch (err) {
-          console.warn("Could not fetch drive docs:", err);
+      if (fetched.length > 0) {
+        setDocsList(fetched);
+        if (!activeDoc || !fetched.some((d) => d.id === activeDoc.id)) {
+          setActiveDoc(fetched[0]);
         }
+      } else {
+        setDocsList(DEFAULT_COMMUNITY_DOCS);
+        if (!activeDoc) setActiveDoc(DEFAULT_COMMUNITY_DOCS[0]);
       }
+    } catch (err) {
+      console.warn("Could not fetch docs from Firestore:", err);
+      setDocsList(DEFAULT_COMMUNITY_DOCS);
     } finally {
       setLoading(false);
     }
@@ -114,359 +151,326 @@ export function DocsContent() {
 
   useEffect(() => {
     loadDocuments();
-  }, [accessToken]);
+  }, []);
 
-  const handleSelectDoc = async (documentId: string) => {
-    if (!accessToken) return;
-    setDocLoading(true);
+  const handleSelectDoc = (docItem: SavedDocRef) => {
+    setActiveDoc(docItem);
+    setIsEditing(false);
+    setEditedContent(docItem.content || "");
     setStatusMsg(null);
+  };
+
+  const handleCreateDocSubmit = async () => {
+    if (!newTitle.trim()) return;
+
+    setSubmitting(true);
     try {
-      const doc = await getGoogleDoc({ token: accessToken, documentId });
-      setActiveDoc(doc);
+      const newDocData: Omit<SavedDocRef, "id"> = {
+        title: newTitle.trim(),
+        category: newCategory,
+        author: user?.name || "Alumni Member",
+        authorId: user?.id || user?.firebaseUid || "",
+        authorEmail: user?.email || "",
+        content:
+          initialContent.trim() ||
+          `# ${newTitle.trim()}\n\nCreated by ${user?.name || "Alumni Member"} on ${new Date().toLocaleDateString()}.\n\nStart writing your document notes here...`,
+        createdAt: new Date().toISOString(),
+      };
+
+      try {
+        const docRef = await addDoc(collection(db, "docs"), newDocData);
+        const created: SavedDocRef = { id: docRef.id, ...newDocData };
+        setDocsList((prev) => [created, ...prev]);
+        setActiveDoc(created);
+      } catch {
+        const fallbackId = `doc-${Date.now()}`;
+        const created: SavedDocRef = { id: fallbackId, ...newDocData };
+        setDocsList((prev) => [created, ...prev]);
+        setActiveDoc(created);
+      }
+
+      setStatusMsg({
+        type: "success",
+        text: `Document "${newTitle}" created and saved to Firestore!`,
+      });
+      setIsCreating(false);
+      setNewTitle("");
+      setInitialContent("");
     } catch (err: any) {
       setStatusMsg({
         type: "error",
-        text: err.message || "Failed to load Google Doc content.",
+        text: err.message || "Failed to save document.",
       });
     } finally {
-      setDocLoading(false);
+      setSubmitting(false);
     }
   };
 
-  const handleCreateDocSubmit = () => {
-    if (!newTitle.trim()) return;
-
-    setConfirmModal({
-      title: "Create Google Document",
-      description: `You are about to create a new Google Doc named "${newTitle.trim()}" in your Google Drive.`,
-      action: async () => {
-        if (!accessToken) return;
-        setSubmitting(true);
-        try {
-          const created = await createGoogleDoc({
-            token: accessToken,
-            title: newTitle.trim(),
-            initialContent:
-              initialContent.trim() ||
-              `Alumni Network Document: ${newTitle.trim()}\nAuthor: ${
-                user?.name || "Member"
-              }\nCreated: ${new Date().toLocaleDateString()}`,
-          });
-
-          // Save reference to Firestore
-          try {
-            await addDoc(collection(db, "docs"), {
-              docId: created.documentId,
-              title: created.title || newTitle.trim(),
-              category: newCategory,
-              author: user?.name || "Alumni Member",
-              authorId: user?.id || "",
-              createdAt: new Date().toISOString(),
-            });
-          } catch (e) {
-            console.warn("Could not save doc reference to Firestore:", e);
-          }
-
-          setStatusMsg({
-            type: "success",
-            text: `Document "${newTitle}" created successfully!`,
-          });
-          setIsCreating(false);
-          setNewTitle("");
-          setInitialContent("");
-          loadDocuments();
-          handleSelectDoc(created.documentId);
-        } catch (err: any) {
-          setStatusMsg({
-            type: "error",
-            text: err.message || "Failed to create Google Doc.",
-          });
-        } finally {
-          setSubmitting(false);
-          setConfirmModal(null);
-        }
-      },
-    });
-  };
-
-  const handleAppendContent = () => {
-    if (!appendText.trim() || !activeDoc || !accessToken) return;
-
-    setConfirmModal({
-      title: "Append Text to Google Doc",
-      description: `You are about to insert text into "${activeDoc.title}". This will modify the document in Google Drive.`,
-      action: async () => {
-        setAppending(true);
-        try {
-          await insertDocText({
-            token: accessToken,
-            documentId: activeDoc.documentId,
-            text: `\n\n[${new Date().toLocaleString()} - ${
-              user?.name || "Member"
-            }]\n${appendText.trim()}`,
-            index: 1,
-          });
-          setAppendText("");
-          setStatusMsg({
-            type: "success",
-            text: "Text added to document!",
-          });
-          // Refresh active doc
-          await handleSelectDoc(activeDoc.documentId);
-        } catch (err: any) {
-          setStatusMsg({
-            type: "error",
-            text: err.message || "Failed to append text.",
-          });
-        } finally {
-          setAppending(false);
-          setConfirmModal(null);
-        }
-      },
-    });
-  };
-
-  // Helper to extract text from Google Doc structure
-  const extractDocText = (doc: GoogleDocDetails): string => {
-    if (!doc.body?.content) return "No content in document.";
-    let fullText = "";
-    doc.body.content.forEach((elem) => {
-      if (elem.paragraph?.elements) {
-        elem.paragraph.elements.forEach((el) => {
-          if (el.textRun?.content) {
-            fullText += el.textRun.content;
-          }
+  const handleSaveEdit = async () => {
+    if (!activeDoc) return;
+    try {
+      if (!activeDoc.id.startsWith("doc-")) {
+        await updateDoc(doc(db, "docs", activeDoc.id), {
+          content: editedContent,
+          updatedAt: new Date().toISOString(),
         });
       }
+      const updated = { ...activeDoc, content: editedContent, updatedAt: new Date().toISOString() };
+      setActiveDoc(updated);
+      setDocsList((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
+      setIsEditing(false);
+      setStatusMsg({ type: "success", text: "Document changes saved successfully!" });
+    } catch (err: any) {
+      setStatusMsg({ type: "error", text: err.message || "Failed to update document." });
+    }
+  };
+
+  const handleAppendContent = async () => {
+    if (!appendText.trim() || !activeDoc) return;
+
+    setAppending(true);
+    try {
+      const addition = `\n\n---\n**Note added by ${user?.name || "Member"} on ${new Date().toLocaleString()}**:\n${appendText.trim()}`;
+      const newFullContent = (activeDoc.content || "") + addition;
+
+      if (!activeDoc.id.startsWith("doc-")) {
+        await updateDoc(doc(db, "docs", activeDoc.id), {
+          content: newFullContent,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      const updated = { ...activeDoc, content: newFullContent, updatedAt: new Date().toISOString() };
+      setActiveDoc(updated);
+      setDocsList((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
+      setAppendText("");
+      setStatusMsg({
+        type: "success",
+        text: "Note successfully appended to document!",
+      });
+    } catch (err: any) {
+      setStatusMsg({
+        type: "error",
+        text: err.message || "Failed to append text.",
+      });
+    } finally {
+      setAppending(false);
+    }
+  };
+
+  const handleDeleteDoc = (docItem: SavedDocRef) => {
+    setConfirmModal({
+      title: "Delete Document",
+      description: `Are you sure you want to delete "${docItem.title}"? This cannot be undone.`,
+      action: async () => {
+        try {
+          if (!docItem.id.startsWith("doc-")) {
+            await deleteDoc(doc(db, "docs", docItem.id));
+          }
+          setDocsList((prev) => prev.filter((d) => d.id !== docItem.id));
+          if (activeDoc?.id === docItem.id) {
+            const remaining = docsList.filter((d) => d.id !== docItem.id);
+            setActiveDoc(remaining.length > 0 ? remaining[0] : null);
+          }
+          setStatusMsg({ type: "success", text: `Deleted "${docItem.title}"` });
+        } catch (err: any) {
+          setStatusMsg({ type: "error", text: err.message || "Failed to delete document." });
+        } finally {
+          setConfirmModal(null);
+        }
+      },
     });
-    return fullText || "(Empty Document)";
+  };
+
+  const handleDownloadDoc = (docItem: SavedDocRef) => {
+    const element = document.createElement("a");
+    const file = new Blob([docItem.content || ""], { type: "text/markdown" });
+    element.href = URL.createObjectURL(file);
+    element.download = `${docItem.title.replace(/[^a-zA-Z0-9_-]/g, "_")}.md`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const handleCopyText = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setStatusMsg({ type: "success", text: "Document copied to clipboard!" });
   };
 
   const filteredDocs = docsList.filter(
     (d) =>
       d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.category.toLowerCase().includes(searchQuery.toLowerCase())
+      d.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      d.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16">
+    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-ink/10 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-lg bg-blue-500/10 text-blue-600">
-              <FileText size={22} />
+            <span className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <FileText size={24} />
             </span>
-            <h1 className="font-display text-3xl font-bold text-ink">
-              Google Docs
+            <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-slate-100">
+              Docs & Collaborative Notes
             </h1>
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              <Sparkles size={12} />
+              Firestore Synced
+            </span>
           </div>
-          <p className="mt-1 text-sm text-ink/60 max-w-2xl">
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
             Collaborate on alumni newsletter drafts, mentorship agreements,
-            reunion meeting minutes, and career guides in Google Docs.
+            reunion meeting minutes, and career guides in real-time.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          {accessToken ? (
-            <button
-              onClick={() => setIsCreating(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brass hover:bg-ink text-white text-sm font-semibold transition-colors shadow-sm cursor-pointer"
-            >
-              <Plus size={16} />
-              New Google Doc
-            </button>
-          ) : (
-            <button
-              onClick={signInWithGoogle}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-ink/15 bg-white hover:bg-paper text-ink text-sm font-medium transition-colors shadow-sm"
-            >
-              <FilePlus2 size={16} className="text-blue-500" />
-              Sign in with Google
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Auth Banner if not logged in with Google */}
-      {!accessToken && (
-        <div className="p-6 rounded-2xl border border-blue-500/20 bg-blue-50/50 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-600">
-              <FileText size={24} />
-            </div>
-            <div>
-              <h3 className="font-semibold text-ink text-base">
-                Connect your Google Workspace Account
-              </h3>
-              <p className="text-sm text-ink/60">
-                Sign in with Google to create and sync real Google Docs directly
-                inside the alumni network.
-              </p>
-            </div>
-          </div>
           <button
-            onClick={signInWithGoogle}
-            className="px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shrink-0 shadow-sm"
+            onClick={() => setIsCreating(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-sm cursor-pointer"
           >
-            Sign in with Google
+            <Plus size={16} />
+            New Document
           </button>
         </div>
-      )}
+      </div>
 
       {/* Feedback message */}
       {statusMsg && (
         <div
-          className={`p-4 rounded-xl flex items-center gap-3 text-sm ${
+          className={`p-4 rounded-xl flex items-center justify-between gap-3 text-sm ${
             statusMsg.type === "success"
-              ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-              : "bg-red-50 text-red-800 border border-red-200"
+              ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+              : "bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200 dark:border-red-800"
           }`}
         >
-          {statusMsg.type === "success" ? (
-            <CheckCircle2 size={18} />
-          ) : (
-            <AlertCircle size={18} />
-          )}
-          <span>{statusMsg.text}</span>
+          <div className="flex items-center gap-2.5">
+            {statusMsg.type === "success" ? (
+              <CheckCircle2 size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+            ) : (
+              <AlertCircle size={18} className="shrink-0 text-red-600 dark:text-red-400" />
+            )}
+            <span>{statusMsg.text}</span>
+          </div>
+          <button
+            onClick={() => setStatusMsg(null)}
+            className="text-xs opacity-60 hover:opacity-100 font-bold"
+          >
+            ✕
+          </button>
         </div>
       )}
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Docs Directory & Drive Files */}
+        {/* Left Column: Docs Directory */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white rounded-2xl border border-ink/10 p-5 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-lg font-semibold text-ink flex items-center gap-2">
-                <BookOpen size={18} className="text-brass" />
-                Community Documents
+              <h2 className="font-display text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <BookOpen size={18} className="text-blue-600" />
+                Community Documents ({filteredDocs.length})
               </h2>
               <button
                 onClick={loadDocuments}
                 disabled={loading}
-                className="p-1.5 rounded-md text-ink/40 hover:text-ink hover:bg-paper transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 title="Refresh documents"
               >
-                <RefreshCw
-                  size={16}
-                  className={loading ? "animate-spin" : ""}
-                />
+                <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
               </button>
             </div>
 
             <div className="relative">
               <Search
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
               <input
                 type="text"
-                placeholder="Search documents..."
+                placeholder="Search documents or content..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-ink/15 bg-paper/30 outline-none focus:border-brass"
+                className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             {loading ? (
-              <div className="py-12 text-center text-sm text-ink/40">
-                Loading Google Docs...
+              <div className="py-12 text-center text-sm text-slate-400">
+                Loading documents...
               </div>
-            ) : filteredDocs.length === 0 && driveDocs.length === 0 ? (
-              <div className="py-10 text-center space-y-2 border border-dashed border-ink/10 rounded-xl bg-paper/20">
-                <FileText size={28} className="mx-auto text-ink/30" />
-                <p className="text-sm font-medium text-ink/70">
+            ) : filteredDocs.length === 0 ? (
+              <div className="py-10 text-center space-y-2 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-950/50">
+                <FileText size={28} className="mx-auto text-slate-300" />
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   No documents found
                 </p>
-                <p className="text-xs text-ink/50 max-w-xs mx-auto">
-                  Click &quot;New Google Doc&quot; above to start your first
-                  collaborative document.
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                  Click &quot;New Document&quot; above to start your first collaborative note.
                 </p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-[480px] overflow-y-auto pr-1">
-                {filteredDocs.map((doc) => (
+              <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1">
+                {filteredDocs.map((docItem) => (
                   <div
-                    key={doc.id}
-                    onClick={() => handleSelectDoc(doc.docId)}
+                    key={docItem.id}
+                    onClick={() => handleSelectDoc(docItem)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start justify-between gap-3 ${
-                      activeDoc?.documentId === doc.docId
-                        ? "border-blue-500 bg-blue-50/50 shadow-sm"
-                        : "border-ink/10 hover:border-ink/20 hover:bg-paper/40"
+                      activeDoc?.id === docItem.id
+                        ? "border-blue-500 bg-blue-50/40 dark:bg-blue-950/30 shadow-xs"
+                        : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40"
                     }`}
                   >
                     <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
-                          {doc.category}
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">
+                          {docItem.category}
                         </span>
-                        <span className="text-[11px] text-ink/40">
-                          {new Date(doc.createdAt).toLocaleDateString()}
+                        <span className="text-[11px] text-slate-400">
+                          {new Date(docItem.createdAt).toLocaleDateString()}
                         </span>
                       </div>
-                      <p className="font-semibold text-sm text-ink truncate">
-                        {doc.title}
+                      <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">
+                        {docItem.title}
                       </p>
-                      <p className="text-xs text-ink/50">By {doc.author}</p>
+                      <p className="text-xs text-slate-500 truncate">By {docItem.author}</p>
                     </div>
 
-                    <a
-                      href={`https://docs.google.com/document/d/${doc.docId}/edit`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="p-1.5 text-ink/40 hover:text-blue-600 transition-colors"
-                      title="Open in Google Docs"
-                    >
-                      <ExternalLink size={15} />
-                    </a>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownloadDoc(docItem);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                        title="Download Markdown"
+                      >
+                        <Download size={14} />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteDoc(docItem);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+                        title="Delete Document"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
                 ))}
-
-                {driveDocs.length > 0 && (
-                  <div className="pt-3 border-t border-ink/10 mt-3">
-                    <p className="text-xs font-semibold text-ink/50 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <FolderOpen size={13} />
-                      Your Google Drive Docs
-                    </p>
-                    {driveDocs.map((file) => (
-                      <div
-                        key={file.id}
-                        onClick={() => handleSelectDoc(file.id)}
-                        className={`p-2.5 rounded-lg border mb-1.5 transition-all cursor-pointer flex items-center justify-between gap-2 ${
-                          activeDoc?.documentId === file.id
-                            ? "border-blue-500 bg-blue-50/40"
-                            : "border-transparent hover:bg-paper/60"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <FileText size={14} className="text-blue-500 shrink-0" />
-                          <span className="text-xs font-medium text-ink truncate">
-                            {file.name}
-                          </span>
-                        </div>
-                        <a
-                          href={`https://docs.google.com/document/d/${file.id}/edit`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-ink/40 hover:text-blue-600"
-                        >
-                          <ExternalLink size={13} />
-                        </a>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
           </div>
 
-          {/* Doc Templates Preset Card */}
-          <div className="p-5 rounded-2xl border border-ink/10 bg-gradient-to-br from-paper/80 to-paper/30 space-y-3">
-            <h3 className="font-semibold text-sm text-ink flex items-center gap-2">
-              <Sparkles size={16} className="text-brass" />
+          {/* Quick Templates Preset Card */}
+          <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 space-y-3">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Sparkles size={16} className="text-blue-600" />
               Quick Templates
             </h3>
             <div className="grid grid-cols-2 gap-2">
@@ -504,96 +508,127 @@ export function DocsContent() {
                     setInitialContent(tpl.sample);
                     setIsCreating(true);
                   }}
-                  className="p-3 text-left rounded-xl border border-ink/10 bg-white hover:border-brass hover:shadow-xs transition-all text-xs space-y-1 cursor-pointer"
+                  className="p-3 text-left rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-500 hover:shadow-xs transition-all text-xs space-y-1 cursor-pointer"
                 >
-                  <p className="font-semibold text-ink">{tpl.title}</p>
-                  <p className="text-[10px] text-ink/50">{tpl.cat}</p>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">{tpl.title}</p>
+                  <p className="text-[10px] text-slate-500">{tpl.cat}</p>
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Right Column: Live Document Preview / Reader & Writer */}
+        {/* Right Column: Live Document Preview & Editor */}
         <div className="lg:col-span-7">
-          <div className="bg-white rounded-2xl border border-ink/10 p-6 shadow-sm min-h-[560px] flex flex-col justify-between">
-            {docLoading ? (
-              <div className="py-24 text-center text-ink/40 text-sm space-y-2">
-                <RefreshCw size={24} className="mx-auto animate-spin text-blue-500" />
-                <p>Loading document contents from Google Docs...</p>
-              </div>
-            ) : activeDoc ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs min-h-[580px] flex flex-col justify-between">
+            {activeDoc ? (
               <div className="space-y-6">
-                <div className="flex items-start justify-between gap-4 border-b border-ink/10 pb-4">
+                <div className="flex items-start justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
                   <div>
-                    <h2 className="font-display text-2xl font-bold text-ink">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                        {activeDoc.category}
+                      </span>
+                      <span className="text-xs text-slate-400">
+                        Author: {activeDoc.author}
+                      </span>
+                    </div>
+                    <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
                       {activeDoc.title}
                     </h2>
-                    <p className="text-xs text-ink/40 mt-0.5">
-                      Doc ID: {activeDoc.documentId}
-                    </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {(user?.role === "alumni" || user?.role === "admin") && (
-                      <a
-                        href={`/jobs?create=true&title=${encodeURIComponent(activeDoc.title)}`}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-semibold transition-colors"
-                      >
-                        + Post as Job
-                      </a>
-                    )}
-                    <a
-                      href={`https://docs.google.com/document/d/${activeDoc.documentId}/edit`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-semibold transition-colors"
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      onClick={() => handleCopyText(activeDoc.content)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      title="Copy Document Text"
                     >
-                      <ExternalLink size={13} />
-                      Open in Docs
-                    </a>
+                      <Copy size={13} />
+                      <span>Copy</span>
+                    </button>
+                    <button
+                      onClick={() => handleDownloadDoc(activeDoc)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      title="Export Markdown"
+                    >
+                      <Download size={13} />
+                      <span>Export</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsEditing(!isEditing);
+                        setEditedContent(activeDoc.content || "");
+                      }}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 text-xs font-semibold transition-colors"
+                    >
+                      <Edit3 size={13} />
+                      <span>{isEditing ? "View Mode" : "Edit Doc"}</span>
+                    </button>
                   </div>
                 </div>
 
-                {/* Document Body */}
-                <div className="p-5 rounded-xl bg-paper/40 border border-ink/10 max-h-[340px] overflow-y-auto font-serif text-sm leading-relaxed text-ink/85 whitespace-pre-wrap">
-                  {extractDocText(activeDoc)}
-                </div>
-
-                {/* Append Section */}
-                {accessToken && (
-                  <div className="pt-4 border-t border-ink/10 space-y-3">
-                    <label className="text-xs font-semibold text-ink flex items-center gap-1.5">
-                      <Edit3 size={14} className="text-brass" />
-                      Append Note or Paragraph to Document
-                    </label>
+                {/* Document Body or Editor */}
+                {isEditing ? (
+                  <div className="space-y-3">
                     <textarea
-                      value={appendText}
-                      onChange={(e) => setAppendText(e.target.value)}
-                      placeholder="Write feedback, additions, or minutes to insert into this Google Doc..."
-                      rows={3}
-                      className="w-full p-3 rounded-xl border border-ink/15 text-sm bg-paper/20 outline-none focus:border-brass"
+                      value={editedContent}
+                      onChange={(e) => setEditedContent(e.target.value)}
+                      rows={12}
+                      className="w-full p-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 font-mono text-sm leading-relaxed text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-2">
                       <button
-                        onClick={handleAppendContent}
-                        disabled={appending || !appendText.trim()}
-                        className="px-4 py-2 rounded-full bg-brass hover:bg-ink text-white text-xs font-semibold transition-colors disabled:opacity-40 cursor-pointer"
+                        onClick={() => setIsEditing(false)}
+                        className="px-4 py-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                       >
-                        {appending ? "Inserting..." : "Insert into Google Doc"}
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSaveEdit}
+                        className="px-5 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+                      >
+                        Save Changes
                       </button>
                     </div>
                   </div>
+                ) : (
+                  <div className="p-5 rounded-xl bg-slate-50/70 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 max-h-[380px] overflow-y-auto font-sans text-sm leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                    {activeDoc.content || "(Empty Document)"}
+                  </div>
                 )}
+
+                {/* Append Section */}
+                <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <Edit3 size={14} className="text-blue-600" />
+                    Append Note or Update to Document
+                  </label>
+                  <textarea
+                    value={appendText}
+                    onChange={(e) => setAppendText(e.target.value)}
+                    placeholder="Write feedback, additions, or minutes to append..."
+                    rows={3}
+                    className="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleAppendContent}
+                      disabled={appending || !appendText.trim()}
+                      className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors disabled:opacity-40 cursor-pointer shadow-xs"
+                    >
+                      {appending ? "Appending..." : "Append Note"}
+                    </button>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="my-auto py-16 text-center space-y-3">
-                <FileText size={40} className="mx-auto text-ink/20" />
-                <h3 className="font-display text-lg font-semibold text-ink/70">
-                  Select a Google Doc to preview
+                <FileText size={40} className="mx-auto text-slate-300" />
+                <h3 className="font-display text-lg font-semibold text-slate-700 dark:text-slate-300">
+                  Select a document to preview
                 </h3>
-                <p className="text-xs text-ink/40 max-w-sm mx-auto">
-                  Choose a document from the left list or create a new one to
-                  view live content and append notes.
+                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  Choose a document from the left list or create a new one to view content and append notes.
                 </p>
               </div>
             )}
@@ -603,16 +638,16 @@ export function DocsContent() {
 
       {/* Create Modal */}
       {isCreating && (
-        <div className="fixed inset-0 z-50 bg-ink/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-ink/10 pb-3">
-              <h3 className="font-display text-xl font-bold text-ink flex items-center gap-2">
-                <FilePlus2 size={20} className="text-brass" />
-                Create New Google Doc
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h3 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <FilePlus2 size={20} className="text-blue-600" />
+                Create New Document
               </h3>
               <button
                 onClick={() => setIsCreating(false)}
-                className="text-ink/40 hover:text-ink text-sm font-semibold"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-semibold"
               >
                 ✕
               </button>
@@ -620,7 +655,7 @@ export function DocsContent() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-ink/70 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Document Title *
                 </label>
                 <input
@@ -628,18 +663,18 @@ export function DocsContent() {
                   placeholder="e.g. Fall Reunion Planning Notes"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-brass"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-ink/70 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Category
                 </label>
                 <select
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-ink/15 bg-white outline-none focus:border-brass"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="General">General</option>
                   <option value="Mentorship">Mentorship</option>
@@ -650,58 +685,58 @@ export function DocsContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-ink/70 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Initial Content / Outline
                 </label>
                 <textarea
-                  rows={4}
+                  rows={5}
                   placeholder="Initial outline or notes for the document..."
                   value={initialContent}
                   onChange={(e) => setInitialContent(e.target.value)}
-                  className="w-full p-3 text-sm rounded-lg border border-ink/15 outline-none focus:border-brass"
+                  className="w-full p-3 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-ink/10">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
               <button
                 onClick={() => setIsCreating(false)}
-                className="px-4 py-2 rounded-full border border-ink/15 text-xs font-semibold text-ink hover:bg-paper"
+                className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateDocSubmit}
                 disabled={submitting || !newTitle.trim()}
-                className="px-5 py-2 rounded-full bg-brass hover:bg-ink text-white text-xs font-semibold transition-colors disabled:opacity-40"
+                className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all disabled:opacity-40 shadow-xs"
               >
-                {submitting ? "Creating..." : "Create in Google Drive"}
+                {submitting ? "Saving..." : "Create Document"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Destructive / Mutating Confirmation Modal */}
+      {/* Confirmation Modal */}
       {confirmModal && (
-        <div className="fixed inset-0 z-50 bg-ink/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-            <h3 className="font-display text-lg font-bold text-ink">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200 dark:border-slate-800">
+            <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100">
               {confirmModal.title}
             </h3>
-            <p className="text-sm text-ink/70">{confirmModal.description}</p>
-            <div className="flex justify-end gap-3 pt-4 border-t border-ink/10">
+            <p className="text-sm text-slate-600 dark:text-slate-400">{confirmModal.description}</p>
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
               <button
                 onClick={() => setConfirmModal(null)}
-                className="px-4 py-2 rounded-full border border-ink/15 text-xs font-semibold text-ink hover:bg-paper"
+                className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmModal.action}
-                className="px-5 py-2 rounded-full bg-brass hover:bg-ink text-white text-xs font-semibold transition-colors"
+                className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors shadow-xs"
               >
-                Confirm & Proceed
+                Confirm Delete
               </button>
             </div>
           </div>

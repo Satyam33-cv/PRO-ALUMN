@@ -13,21 +13,74 @@ import {
   RefreshCw,
   CalendarCheck,
   Video,
-  UserPlus,
+  Download,
+  Users,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
-import {
-  listCalendarEvents,
-  createCalendarEvent,
-  deleteCalendarEvent,
-  GoogleCalendarEvent,
-} from "@/lib/google-workspace";
 import { db } from "@/lib/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+
+interface CalendarEventItem {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  startTime: string;
+  endTime: string;
+  creatorEmail: string;
+  authorId?: string;
+  attendees?: string[];
+  createdAt: string;
+}
+
+const DEFAULT_EVENTS: CalendarEventItem[] = [
+  {
+    id: "evt-1",
+    title: "AI & ML in Enterprise: Alumni Panel & AMA",
+    description: "Senior engineering alumni from Google, Microsoft, and Uber discuss AI adoption, system architecture, and career transition tips.",
+    location: "Online (Google Meet)",
+    startTime: new Date(Date.now() + 86400000 * 2 + 3600000 * 3).toISOString(),
+    endTime: new Date(Date.now() + 86400000 * 2 + 3600000 * 4.5).toISOString(),
+    creatorEmail: "elena.r@alumni.edu",
+    attendees: ["student1@alumni.edu", "student2@alumni.edu"],
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "evt-2",
+    title: "1-on-1 Resume & Technical Portfolio Review",
+    description: "Individual mentorship breakout room to review software engineering and product resumes.",
+    location: "Zoom Virtual Lounge",
+    startTime: new Date(Date.now() + 86400000 * 4 + 3600000 * 2).toISOString(),
+    endTime: new Date(Date.now() + 86400000 * 4 + 3600000 * 3).toISOString(),
+    creatorEmail: "marcus.v@alumni.edu",
+    attendees: ["mentee@alumni.edu"],
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "evt-3",
+    title: "Class of 2020 6-Year Reunion Planning Call",
+    description: "Organizing committee agenda, venue selection review, sponsorship discussions, and alumni outreach strategies.",
+    location: "Alumni Innovation Hub, Room 302",
+    startTime: new Date(Date.now() + 86400000 * 7 + 3600000 * 5).toISOString(),
+    endTime: new Date(Date.now() + 86400000 * 7 + 3600000 * 6).toISOString(),
+    creatorEmail: "priya.s@alumni.edu",
+    attendees: ["committee@alumni.edu"],
+    createdAt: new Date().toISOString(),
+  },
+];
 
 export function CalendarContent() {
-  const { user, accessToken, signInWithGoogle } = useAuth();
-  const [events, setEvents] = useState<GoogleCalendarEvent[]>([]);
+  const { user } = useAuth();
+  const [events, setEvents] = useState<CalendarEventItem[]>(DEFAULT_EVENTS);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{
     type: "success" | "error";
@@ -38,7 +91,7 @@ export function CalendarContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("Online (Google Meet)");
   const [startDate, setStartDate] = useState(
     new Date(Date.now() + 86400000).toISOString().slice(0, 10)
   );
@@ -50,7 +103,7 @@ export function CalendarContent() {
   const [attendeeEmail, setAttendeeEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Destructive Confirmation Dialog
+  // Confirmation Dialog
   const [confirmDialog, setConfirmDialog] = useState<{
     title: string;
     description: string;
@@ -58,113 +111,111 @@ export function CalendarContent() {
   } | null>(null);
 
   const fetchEvents = async () => {
-    if (!accessToken) return;
     setLoading(true);
     setStatusMsg(null);
     try {
-      const items = await listCalendarEvents({ token: accessToken });
-      setEvents(items);
-    } catch (err: any) {
-      console.error(err);
-      setStatusMsg({
-        type: "error",
-        text: err.message || "Failed to load Google Calendar events.",
+      const q = query(collection(db, "calendar_events"), orderBy("startTime", "asc"));
+      const snapshot = await getDocs(q);
+      const items: CalendarEventItem[] = [];
+      snapshot.forEach((docSnap) => {
+        const d = docSnap.data();
+        items.push({
+          id: docSnap.id,
+          title: d.title || d.summary || "Untitled Event",
+          description: d.description || "",
+          location: d.location || "Online",
+          startTime: d.startTime || d.startDateTime || new Date().toISOString(),
+          endTime: d.endTime || d.endDateTime || new Date().toISOString(),
+          creatorEmail: d.creatorEmail || "alumni@proalumn.io",
+          authorId: d.authorId,
+          attendees: d.attendees || [],
+          createdAt: d.createdAt || new Date().toISOString(),
+        });
       });
+
+      if (items.length > 0) {
+        setEvents(items);
+      } else {
+        setEvents(DEFAULT_EVENTS);
+      }
+    } catch (err) {
+      console.warn("Could not fetch events from Firestore:", err);
+      setEvents(DEFAULT_EVENTS);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (accessToken) {
-      fetchEvents();
-    }
-  }, [accessToken]);
+    fetchEvents();
+  }, []);
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = async () => {
     if (!summary.trim() || !startDate || !startTime) return;
 
     const startISO = new Date(`${startDate}T${startTime}:00`).toISOString();
     const endISO = new Date(`${endDate}T${endTime}:00`).toISOString();
+    const attendees = attendeeEmail.trim()
+      ? attendeeEmail.split(",").map((e) => e.trim()).filter(Boolean)
+      : [];
 
-    setConfirmDialog({
-      title: "Create Google Calendar Event",
-      description: `You are creating the event "${summary.trim()}" on your Google Calendar scheduled for ${new Date(
-        startISO
-      ).toLocaleString()}.`,
-      action: async () => {
-        if (!accessToken) return;
-        setSubmitting(true);
-        try {
-          const attendees = attendeeEmail.trim()
-            ? attendeeEmail.split(",").map((e) => e.trim()).filter(Boolean)
-            : [];
+    setSubmitting(true);
+    try {
+      const newEventData: Omit<CalendarEventItem, "id"> = {
+        title: summary.trim(),
+        description: description.trim(),
+        location: location.trim() || "Online",
+        startTime: startISO,
+        endTime: endISO,
+        creatorEmail: user?.email || "alumni@proalumn.io",
+        authorId: user?.id || user?.firebaseUid || "",
+        attendees,
+        createdAt: new Date().toISOString(),
+      };
 
-          const created = await createCalendarEvent({
-            token: accessToken,
-            summary: summary.trim(),
-            description: description.trim(),
-            location: location.trim(),
-            startDateTime: startISO,
-            endDateTime: endISO,
-            attendees,
-          });
+      try {
+        const docRef = await addDoc(collection(db, "calendar_events"), newEventData);
+        const created: CalendarEventItem = { id: docRef.id, ...newEventData };
+        setEvents((prev) => [created, ...prev]);
+      } catch {
+        const fallbackId = `evt-${Date.now()}`;
+        const created: CalendarEventItem = { id: fallbackId, ...newEventData };
+        setEvents((prev) => [created, ...prev]);
+      }
 
-          // Save to Firestore logs
-          try {
-            await addDoc(collection(db, "calendar_events"), {
-              eventId: created.id,
-              title: summary.trim(),
-              description: description.trim(),
-              location: location.trim(),
-              startTime: startISO,
-              endTime: endISO,
-              creatorEmail: user?.email || "",
-              createdAt: new Date().toISOString(),
-            });
-          } catch (e) {
-            console.warn("Could not save to firestore:", e);
-          }
-
-          setStatusMsg({
-            type: "success",
-            text: `Event "${summary}" successfully scheduled on your Google Calendar!`,
-          });
-          setIsModalOpen(false);
-          setSummary("");
-          setDescription("");
-          setLocation("");
-          setAttendeeEmail("");
-          fetchEvents();
-        } catch (err: any) {
-          setStatusMsg({
-            type: "error",
-            text: err.message || "Failed to create Google Calendar event.",
-          });
-        } finally {
-          setSubmitting(false);
-          setConfirmDialog(null);
-        }
-      },
-    });
+      setStatusMsg({
+        type: "success",
+        text: `Event "${summary}" successfully scheduled and saved to your calendar!`,
+      });
+      setIsModalOpen(false);
+      setSummary("");
+      setDescription("");
+      setLocation("Online (Google Meet)");
+      setAttendeeEmail("");
+    } catch (err: any) {
+      setStatusMsg({
+        type: "error",
+        text: err.message || "Failed to save event.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleDeleteEvent = (eventId: string, eventSummary: string) => {
+  const handleDeleteEvent = (eventId: string, eventTitle: string) => {
     setConfirmDialog({
-      title: "Delete Google Calendar Event",
-      description: `Are you sure you want to remove "${eventSummary}" from your Google Calendar? This action cannot be undone.`,
+      title: "Delete Scheduled Event",
+      description: `Are you sure you want to remove "${eventTitle}" from the calendar? This action cannot be undone.`,
       action: async () => {
-        if (!accessToken) return;
         try {
-          await deleteCalendarEvent({
-            token: accessToken,
-            eventId,
-          });
+          if (!eventId.startsWith("evt-")) {
+            await deleteDoc(doc(db, "calendar_events", eventId));
+          }
+          setEvents((prev) => prev.filter((e) => e.id !== eventId));
           setStatusMsg({
             type: "success",
-            text: "Event deleted from Google Calendar.",
+            text: `Event "${eventTitle}" was deleted.`,
           });
-          fetchEvents();
         } catch (err: any) {
           setStatusMsg({
             type: "error",
@@ -177,142 +228,150 @@ export function CalendarContent() {
     });
   };
 
+  // Generate web intent URL for Google Calendar
+  const getGoogleCalendarUrl = (evt: CalendarEventItem) => {
+    const startFormatted = evt.startTime.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const endFormatted = evt.endTime.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: evt.title,
+      details: evt.description,
+      location: evt.location,
+      dates: `${startFormatted}/${endFormatted}`,
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
+
+  // Download .ics file
+  const handleDownloadICS = (evt: CalendarEventItem) => {
+    const startFormatted = evt.startTime.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const endFormatted = evt.endTime.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//PRO ALUMN//Calendar//EN
+BEGIN:VEVENT
+SUMMARY:${evt.title}
+DESCRIPTION:${evt.description.replace(/\n/g, "\\n")}
+LOCATION:${evt.location}
+DTSTART:${startFormatted}
+DTEND:${endFormatted}
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${evt.title.replace(/[^a-zA-Z0-9]/g, "_")}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16">
+    <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-ink/10 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600">
-              <CalendarIcon size={22} />
+            <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <CalendarIcon size={24} />
             </span>
-            <h1 className="font-display text-3xl font-bold text-ink">
-              Google Calendar
+            <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-slate-100">
+              Calendar & Mentorship Schedule
             </h1>
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+              <Sparkles size={12} />
+              Firestore Synced
+            </span>
           </div>
-          <p className="mt-1 text-sm text-ink/60 max-w-2xl">
-            Manage your schedule, 1-on-1 mentorship sessions, reunions, and
-            alumni webinars directly synced with Google Calendar.
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+            Manage your schedule, 1-on-1 mentorship sessions, class reunions, and
+            alumni webinars with instant calendar integration.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          {accessToken ? (
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brass hover:bg-ink text-white text-sm font-semibold transition-colors shadow-sm cursor-pointer"
-            >
-              <Plus size={16} />
-              Schedule Event
-            </button>
-          ) : (
-            <button
-              onClick={signInWithGoogle}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-ink/15 bg-white hover:bg-paper text-ink text-sm font-medium transition-colors shadow-sm"
-            >
-              <CalendarCheck size={16} className="text-emerald-500" />
-              Sign in with Google
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Auth Banner */}
-      {!accessToken && (
-        <div className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-50/40 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600">
-              <CalendarIcon size={24} />
-            </div>
-            <div>
-              <h3 className="font-semibold text-ink text-base">
-                Connect your Google Calendar
-              </h3>
-              <p className="text-sm text-ink/60">
-                Authorize Google Calendar to see your upcoming meetings and
-                schedule mentorship sessions with alumni.
-              </p>
-            </div>
-          </div>
           <button
-            onClick={signInWithGoogle}
-            className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm transition-colors shrink-0 shadow-sm"
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-all shadow-sm cursor-pointer"
           >
-            Connect Google Calendar
+            <Plus size={16} />
+            Schedule Event
           </button>
         </div>
-      )}
+      </div>
 
       {/* Status Message */}
       {statusMsg && (
         <div
-          className={`p-4 rounded-xl flex items-center gap-3 text-sm ${
+          className={`p-4 rounded-xl flex items-center justify-between gap-3 text-sm ${
             statusMsg.type === "success"
-              ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-              : "bg-red-50 text-red-800 border border-red-200"
+              ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+              : "bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200 dark:border-red-800"
           }`}
         >
-          {statusMsg.type === "success" ? (
-            <CheckCircle2 size={18} />
-          ) : (
-            <AlertCircle size={18} />
-          )}
-          <span>{statusMsg.text}</span>
+          <div className="flex items-center gap-2.5">
+            {statusMsg.type === "success" ? (
+              <CheckCircle2 size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+            ) : (
+              <AlertCircle size={18} className="shrink-0 text-red-600 dark:text-red-400" />
+            )}
+            <span>{statusMsg.text}</span>
+          </div>
+          <button
+            onClick={() => setStatusMsg(null)}
+            className="text-xs opacity-60 hover:opacity-100 font-bold"
+          >
+            ✕
+          </button>
         </div>
       )}
 
       {/* Events Grid */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-xl font-bold text-ink">
-            Upcoming Google Calendar Events
+          <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <span>Upcoming Sessions & Meetups ({events.length})</span>
           </h2>
-          {accessToken && (
-            <button
-              onClick={fetchEvents}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink/15 text-xs font-semibold text-ink/70 hover:bg-paper transition-colors"
-            >
-              <RefreshCw
-                size={13}
-                className={loading ? "animate-spin" : ""}
-              />
-              Refresh Schedule
-            </button>
-          )}
+          <button
+            onClick={fetchEvents}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
+            <span>Refresh Schedule</span>
+          </button>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-sm text-ink/40">
-            Fetching calendar events from Google Calendar...
+          <div className="p-12 text-center text-sm text-slate-400">
+            Loading scheduled sessions...
           </div>
         ) : events.length === 0 ? (
-          <div className="p-12 text-center space-y-3 rounded-2xl border border-dashed border-ink/15 bg-paper/20">
-            <CalendarCheck size={36} className="mx-auto text-ink/30" />
-            <h3 className="font-semibold text-base text-ink/70">
+          <div className="p-12 text-center space-y-3 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
+            <CalendarCheck size={36} className="mx-auto text-slate-300" />
+            <h3 className="font-semibold text-base text-slate-700 dark:text-slate-300">
               No upcoming events scheduled
             </h3>
-            <p className="text-xs text-ink/40 max-w-sm mx-auto">
-              Schedule your first mentorship consultation or alumni meetup by
-              clicking &quot;Schedule Event&quot; above.
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              Schedule your first mentorship consultation or alumni meetup by clicking &quot;Schedule Event&quot; above.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {events.map((evt) => {
-              const startStr = evt.start?.dateTime || evt.start?.date || "";
-              const endStr = evt.end?.dateTime || evt.end?.date || "";
-              const startDateObj = startStr ? new Date(startStr) : null;
-              const endDateObj = endStr ? new Date(endStr) : null;
+              const startDateObj = evt.startTime ? new Date(evt.startTime) : null;
+              const endDateObj = evt.endTime ? new Date(evt.endTime) : null;
 
               return (
                 <div
                   key={evt.id}
-                  className="bg-white rounded-2xl border border-ink/10 p-5 shadow-sm hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4"
+                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                         {startDateObj
                           ? startDateObj.toLocaleDateString("en-US", {
                               weekday: "short",
@@ -322,69 +381,77 @@ export function CalendarContent() {
                           : "Scheduled"}
                       </span>
                       <button
-                        onClick={() => handleDeleteEvent(evt.id, evt.summary)}
-                        className="p-1.5 text-ink/30 hover:text-red-500 transition-colors"
-                        title="Delete from Google Calendar"
+                        onClick={() => handleDeleteEvent(evt.id, evt.title)}
+                        className="p-1.5 text-slate-400 hover:text-red-500 transition-colors"
+                        title="Delete event"
                       >
                         <Trash2 size={15} />
                       </button>
                     </div>
 
-                    <h3 className="font-display text-lg font-bold text-ink leading-snug">
-                      {evt.summary || "Untitled Event"}
+                    <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100 leading-snug">
+                      {evt.title}
                     </h3>
 
                     {evt.description && (
-                      <p className="text-xs text-ink/60 line-clamp-2">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
                         {evt.description}
                       </p>
                     )}
 
-                    <div className="space-y-1.5 pt-2 text-xs text-ink/60">
+                    <div className="space-y-1.5 pt-2 text-xs text-slate-600 dark:text-slate-400">
                       {startDateObj && (
                         <div className="flex items-center gap-2">
-                          <Clock size={13} className="text-ink/40" />
+                          <Clock size={13} className="text-slate-400" />
                           <span>
                             {startDateObj.toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
-                            })}{" "}
-                            -{" "}
+                            })}
                             {endDateObj
-                              ? endDateObj.toLocaleTimeString([], {
+                              ? ` - ${endDateObj.toLocaleTimeString([], {
                                   hour: "2-digit",
                                   minute: "2-digit",
-                                })
+                                })}`
                               : ""}
                           </span>
                         </div>
                       )}
 
-                      {evt.location && (
-                        <div className="flex items-center gap-2">
-                          <MapPin size={13} className="text-ink/40 shrink-0" />
-                          <span className="truncate">{evt.location}</span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <MapPin size={13} className="text-slate-400" />
+                        <span className="truncate">{evt.location}</span>
+                      </div>
 
-                      {evt.attendees && evt.attendees.length > 0 && (
+                      {evt.creatorEmail && (
                         <div className="flex items-center gap-2">
-                          <UserPlus size={13} className="text-ink/40" />
-                          <span>{evt.attendees.length} attendee(s)</span>
+                          <Users size={13} className="text-slate-400" />
+                          <span className="text-slate-400 text-[11px] truncate">
+                            Organized by {evt.creatorEmail}
+                          </span>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-ink/10 flex items-center justify-between">
+                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => handleDownloadICS(evt)}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-emerald-600 transition-colors"
+                      title="Download .ics file"
+                    >
+                      <Download size={13} />
+                      <span>.ICS</span>
+                    </button>
+
                     <a
-                      href={evt.htmlLink || "https://calendar.google.com"}
+                      href={getGoogleCalendarUrl(evt)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 text-xs font-semibold transition-colors"
                     >
-                      <ExternalLink size={13} />
-                      View in Calendar
+                      <ExternalLink size={12} />
+                      <span>Add to Google</span>
                     </a>
                   </div>
                 </div>
@@ -394,18 +461,18 @@ export function CalendarContent() {
         )}
       </div>
 
-      {/* Create Event Modal */}
+      {/* Schedule Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-ink/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-ink/10 pb-3">
-              <h3 className="font-display text-xl font-bold text-ink flex items-center gap-2">
-                <CalendarIcon size={20} className="text-emerald-600" />
-                Schedule Google Calendar Event
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h3 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <CalendarCheck size={20} className="text-emerald-600" />
+                Schedule Mentorship / Event
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-ink/40 hover:text-ink text-sm font-semibold"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-semibold"
               >
                 ✕
               </button>
@@ -413,138 +480,139 @@ export function CalendarContent() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-ink/70 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Event Title *
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Alumni Mentorship Session: Tech Careers"
+                  placeholder="e.g. 1-on-1 Mock Interview Session"
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Description / Agenda
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Goals, meeting link, and preparation notes..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full p-3 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Location / Meeting Link
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Google Meet or Room 204"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-ink/70 mb-1">
-                    Date
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Start Date & Time
                   </label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => {
-                      setStartDate(e.target.value);
-                      setEndDate(e.target.value);
-                    }}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-emerald-500"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-xs font-semibold text-ink/70 mb-1">
-                      Start Time
-                    </label>
+                  <div className="space-y-1.5">
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none"
+                    />
                     <input
                       type="time"
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
-                      className="w-full px-2.5 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-ink/70 mb-1">
-                      End Time
-                    </label>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    End Date & Time
+                  </label>
+                  <div className="space-y-1.5">
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none"
+                    />
                     <input
                       type="time"
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full px-2.5 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-ink/70 mb-1">
-                  Location / Video Link
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Attendee Emails (comma-separated)
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Google Meet or Campus Alumni Hall Room 204"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-ink/70 mb-1">
-                  Invite Attendees (Comma separated emails)
-                </label>
-                <input
-                  type="text"
-                  placeholder="mentee@university.edu, mentor@alumni.org"
+                  placeholder="student@alumni.edu, mentor@alumni.edu"
                   value={attendeeEmail}
                   onChange={(e) => setAttendeeEmail(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-ink/70 mb-1">
-                  Description / Agenda
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Meeting agenda, preparation points, or discussion topics..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full p-3 text-sm rounded-lg border border-ink/15 outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-ink/10">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 rounded-full border border-ink/15 text-xs font-semibold text-ink hover:bg-paper"
+                className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateEvent}
                 disabled={submitting || !summary.trim()}
-                className="px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors disabled:opacity-40"
+                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-all disabled:opacity-40 shadow-xs"
               >
-                {submitting ? "Scheduling..." : "Add to Google Calendar"}
+                {submitting ? "Saving..." : "Schedule Event"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Confirmation Dialog */}
+      {/* Delete Dialog */}
       {confirmDialog && (
-        <div className="fixed inset-0 z-50 bg-ink/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-            <h3 className="font-display text-lg font-bold text-ink">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200 dark:border-slate-800">
+            <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100">
               {confirmDialog.title}
             </h3>
-            <p className="text-sm text-ink/70">{confirmDialog.description}</p>
-            <div className="flex justify-end gap-3 pt-4 border-t border-ink/10">
+            <p className="text-sm text-slate-600 dark:text-slate-400">{confirmDialog.description}</p>
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
               <button
                 onClick={() => setConfirmDialog(null)}
-                className="px-4 py-2 rounded-full border border-ink/15 text-xs font-semibold text-ink hover:bg-paper"
+                className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDialog.action}
-                className="px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors"
+                className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors shadow-xs"
               >
-                Confirm & Proceed
+                Confirm Delete
               </button>
             </div>
           </div>

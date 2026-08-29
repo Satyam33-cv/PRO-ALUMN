@@ -7,49 +7,71 @@ service cloud.firestore {
     }
     
     function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+      return isAuthenticated() && (request.auth.uid == userId || (request.auth.token.email != null && request.auth.token.email == userId));
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && (
+        (resource.data.authorId != null && (resource.data.authorId == request.auth.uid || isOwner(resource.data.authorId))) ||
+        (resource.data.creatorId != null && (resource.data.creatorId == request.auth.uid || isOwner(resource.data.creatorId))) ||
+        (resource.data.creatorEmail != null && request.auth.token.email != null && resource.data.creatorEmail == request.auth.token.email) ||
+        (resource.data.authorEmail != null && request.auth.token.email != null && resource.data.authorEmail == request.auth.token.email)
+      );
     }
 
     // User profiles
     match /users/{userId} {
       allow read: if true;
-      allow write: if isOwner(userId) || (isAuthenticated() && request.resource.data.id == userId);
+      allow create: if isAuthenticated();
+      allow update, delete: if isOwner(userId) || (isAuthenticated() && request.resource.data.id == userId);
     }
 
     // Announcements
     match /announcements/{announcementId} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isDocOwner();
     }
 
     // Forms / Surveys
     match /forms/{formId} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isDocOwner();
     }
 
     // Email logs
     match /emails/{emailId} {
-      allow read: if isAuthenticated() && (resource.data.senderId == request.auth.uid || resource.data.senderEmail == request.auth.token.email);
-      allow write: if isAuthenticated();
+      allow read: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid || 
+        (resource.data.senderEmail != null && request.auth.token.email != null && resource.data.senderEmail == request.auth.token.email)
+      );
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid || 
+        (resource.data.senderEmail != null && request.auth.token.email != null && resource.data.senderEmail == request.auth.token.email)
+      );
     }
 
     // Docs
     match /docs/{docId} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isDocOwner();
     }
 
     // Calendar events
     match /calendar_events/{eventId} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isDocOwner();
     }
 
     // Keep Notes
     match /notes/{noteId} {
       allow read: if isAuthenticated();
-      allow write: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isDocOwner();
     }
   }
 }

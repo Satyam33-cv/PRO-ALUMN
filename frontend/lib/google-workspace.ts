@@ -125,6 +125,17 @@ function encodeBase64Url(str: string): string {
     .replace(/=+$/, "");
 }
 
+// Central fetch helper with 401/403 token expiry detection
+async function workspaceFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const res = await fetch(input, init);
+  if (res.status === 401 || res.status === 403) {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("workspace-token-expired", { detail: { status: res.status } }));
+    }
+  }
+  return res;
+}
+
 // ==========================================
 // 1. Gmail API
 // ==========================================
@@ -152,7 +163,7 @@ export async function sendGmailMessage({
   const rawEmail = emailLines.join("\r\n");
   const rawBase64Url = encodeBase64Url(rawEmail);
 
-  const res = await fetch(
+  const res = await workspaceFetch(
     "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
     {
       method: "POST",
@@ -187,7 +198,7 @@ export async function listGmailMessages({
   url.searchParams.set("maxResults", maxResults.toString());
   if (q) url.searchParams.set("q", q);
 
-  const res = await fetch(url.toString(), {
+  const res = await workspaceFetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -204,7 +215,7 @@ export async function listGmailMessages({
   const summaries = await Promise.all(
     messages.slice(0, 10).map(async (msg) => {
       try {
-        const detailRes = await fetch(
+        const detailRes = await workspaceFetch(
           `https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=To&metadataHeaders=Date`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -271,7 +282,7 @@ export async function createGoogleForm({
   title: string;
   description?: string;
 }): Promise<GoogleFormDetails> {
-  const res = await fetch("https://forms.googleapis.com/v1/forms", {
+  const res = await workspaceFetch("https://forms.googleapis.com/v1/forms", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -296,7 +307,7 @@ export async function createGoogleForm({
   const createdForm = await res.json();
 
   try {
-    const updateRes = await fetch(
+    const updateRes = await workspaceFetch(
       `https://forms.googleapis.com/v1/forms/${createdForm.formId}:batchUpdate`,
       {
         method: "POST",
@@ -369,7 +380,7 @@ export async function getGoogleForm({
   token: string;
   formId: string;
 }): Promise<GoogleFormDetails> {
-  const res = await fetch(`https://forms.googleapis.com/v1/forms/${formId}`, {
+  const res = await workspaceFetch(`https://forms.googleapis.com/v1/forms/${formId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -390,7 +401,7 @@ export async function getGoogleFormResponses({
   token: string;
   formId: string;
 }): Promise<GoogleFormResponse[]> {
-  const res = await fetch(
+  const res = await workspaceFetch(
     `https://forms.googleapis.com/v1/forms/${formId}/responses`,
     {
       headers: { Authorization: `Bearer ${token}` },
@@ -421,7 +432,7 @@ export async function createGoogleDoc({
   title: string;
   initialContent?: string;
 }): Promise<GoogleDocDetails> {
-  const res = await fetch("https://docs.googleapis.com/v1/documents", {
+  const res = await workspaceFetch("https://docs.googleapis.com/v1/documents", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -462,7 +473,7 @@ export async function getGoogleDoc({
   token: string;
   documentId: string;
 }): Promise<GoogleDocDetails> {
-  const res = await fetch(`https://docs.googleapis.com/v1/documents/${documentId}`, {
+  const res = await workspaceFetch(`https://docs.googleapis.com/v1/documents/${documentId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -487,7 +498,7 @@ export async function insertDocText({
   text: string;
   index?: number;
 }) {
-  const res = await fetch(
+  const res = await workspaceFetch(
     `https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`,
     {
       method: "POST",
@@ -526,7 +537,7 @@ export async function listUserDocsFromDrive({
   const query = encodeURIComponent(
     "mimeType = 'application/vnd.google-apps.document' and trashed = false"
   );
-  const res = await fetch(
+  const res = await workspaceFetch(
     `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name,modifiedTime)&pageSize=25`,
     {
       headers: { Authorization: `Bearer ${token}` },
@@ -567,7 +578,7 @@ export async function listCalendarEvents({
     url.searchParams.set("timeMin", new Date().toISOString());
   }
 
-  const res = await fetch(url.toString(), {
+  const res = await workspaceFetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -601,7 +612,7 @@ export async function createCalendarEvent({
   endDateTime: string;
   attendees?: string[];
 }): Promise<GoogleCalendarEvent> {
-  const res = await fetch(
+  const res = await workspaceFetch(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(
       calendarId
     )}/events`,
@@ -641,7 +652,7 @@ export async function deleteCalendarEvent({
   calendarId?: string;
   eventId: string;
 }) {
-  const res = await fetch(
+  const res = await workspaceFetch(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(
       calendarId
     )}/events/${eventId}`,
@@ -670,7 +681,7 @@ export async function listChatSpaces({
 }: {
   token: string;
 }): Promise<GoogleChatSpace[]> {
-  const res = await fetch("https://chat.googleapis.com/v1/spaces", {
+  const res = await workspaceFetch("https://chat.googleapis.com/v1/spaces", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -697,7 +708,7 @@ export async function listChatMessages({
   const url = new URL(`https://chat.googleapis.com/v1/${spaceName}/messages`);
   url.searchParams.set("pageSize", pageSize.toString());
 
-  const res = await fetch(url.toString(), {
+  const res = await workspaceFetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -721,7 +732,7 @@ export async function sendChatMessage({
   spaceName: string;
   text: string;
 }): Promise<GoogleChatMessage> {
-  const res = await fetch(`https://chat.googleapis.com/v1/${spaceName}/messages`, {
+  const res = await workspaceFetch(`https://chat.googleapis.com/v1/${spaceName}/messages`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -747,7 +758,7 @@ export async function createChatSpace({
   token: string;
   displayName: string;
 }): Promise<GoogleChatSpace> {
-  const res = await fetch("https://chat.googleapis.com/v1/spaces", {
+  const res = await workspaceFetch("https://chat.googleapis.com/v1/spaces", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

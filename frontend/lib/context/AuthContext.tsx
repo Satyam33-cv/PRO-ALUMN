@@ -11,7 +11,7 @@ import {
   type User as FirebaseUser,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db, googleAuthProvider } from "@/lib/firebase";
+import { auth, db, googleAuthProvider, googleWorkspaceAuthProvider } from "@/lib/firebase";
 import { apiClient } from "@/lib/api/client";
 
 export type UserRole = "student" | "alumni" | "admin" | "faculty";
@@ -39,6 +39,7 @@ type AuthContextValue = {
   setUser: (user: AuthUser) => void;
   setSession: (session: AuthSession) => void;
   signInWithGoogle: () => Promise<void>;
+  connectGoogleWorkspace: () => Promise<string | null>;
   signOut: () => void;
   loading: boolean;
 };
@@ -168,6 +169,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const connectGoogleWorkspace = useCallback(async () => {
+    try {
+      const result = await signInWithPopup(auth, googleWorkspaceAuthProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken || null;
+      if (token) {
+        setGoogleAccessToken(token);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("google_access_token", token);
+        }
+      }
+      return token;
+    } catch (error) {
+      console.error("Failed to connect Google Workspace:", error);
+      throw error;
+    }
+  }, []);
+
   const setUser = useCallback((next: AuthUser) => {
     setUserState(next);
     const session = getSession();
@@ -201,8 +220,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     function handleAuthExpired() {
       signOut();
     }
+    function handleWorkspaceTokenExpired() {
+      setGoogleAccessToken(null);
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("google_access_token");
+      }
+    }
     window.addEventListener("auth-expired", handleAuthExpired);
-    return () => window.removeEventListener("auth-expired", handleAuthExpired);
+    window.addEventListener("workspace-token-expired", handleWorkspaceTokenExpired);
+    return () => {
+      window.removeEventListener("auth-expired", handleAuthExpired);
+      window.removeEventListener("workspace-token-expired", handleWorkspaceTokenExpired);
+    };
   }, [signOut]);
 
   const role = user?.role ?? "student";
@@ -219,10 +248,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser,
       setSession,
       signInWithGoogle,
+      connectGoogleWorkspace,
       signOut,
       loading,
     }),
-    [user, role, googleAccessToken, accessToken, session, setUser, setSession, signInWithGoogle, signOut, loading],
+    [user, role, googleAccessToken, accessToken, session, setUser, setSession, signInWithGoogle, connectGoogleWorkspace, signOut, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

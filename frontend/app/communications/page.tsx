@@ -58,7 +58,7 @@ const EMAIL_TEMPLATES = [
 ];
 
 export default function CommunicationsPage() {
-  const { user, googleAccessToken, signInWithGoogle } = useAuth();
+  const { user, googleAccessToken, connectGoogleWorkspace } = useAuth();
   const [activeTab, setActiveTab] = useState<"inbox" | "sent" | "templates">("inbox");
   const [messages, setMessages] = useState<GmailMessageSummary[]>([]);
   const [sentLogs, setSentLogs] = useState<EmailLogItem[]>([]);
@@ -222,7 +222,7 @@ export default function CommunicationsPage() {
             {!googleAccessToken ? (
               <button
                 type="button"
-                onClick={() => signInWithGoogle()}
+                onClick={() => connectGoogleWorkspace()}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 shadow-xs hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 <img
@@ -327,7 +327,7 @@ export default function CommunicationsPage() {
                   Connect your Google Account to view real Gmail messages and securely send emails directly to alumni and students.
                 </p>
                 <button
-                  onClick={() => signInWithGoogle()}
+                  onClick={() => connectGoogleWorkspace()}
                   className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-700 transition-colors cursor-pointer"
                 >
                   <span>Connect with Google</span>
