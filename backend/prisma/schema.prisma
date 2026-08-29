@@ -108,6 +108,7 @@ model User {
   wallet             Wallet?
   walletTransactions WalletTransaction[]
   videos             Video[]             @relation("UploadedVideos")
+  unlockedVideos     UnlockedVideo[]
   paymentRecords     PaymentRecord[]
 
   @@index([batchYear])
@@ -448,11 +449,26 @@ model Video {
   uploaderId String
   uploader   User   @relation("UploadedVideos", fields: [uploaderId], references: [id], onDelete: Cascade)
 
+  unlockedBy UnlockedVideo[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([status])
   @@index([uploaderId])
+}
+
+model UnlockedVideo {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, videoId])
+  @@index([userId])
+  @@index([videoId])
 }
 
 model Wallet {

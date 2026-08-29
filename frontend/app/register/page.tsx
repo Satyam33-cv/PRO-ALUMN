@@ -68,7 +68,7 @@ export default function RegisterPage() {
         currentCompany: role === "alumni" ? values.company.trim() : undefined,
       });
       setSession(session);
-      router.push("/home");
+      router.push("/complete-profile");
     } catch (error) {
       setServerError(error instanceof ApiError ? error.message : "We could not create your account. Please try again.");
     } finally {

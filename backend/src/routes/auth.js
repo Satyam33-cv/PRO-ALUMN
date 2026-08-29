@@ -66,6 +66,7 @@ passport.use(new GoogleStrategy({
             role: 'STUDENT',
             avatarUrl,
             isVerified: true,
+            referralCode: `PRO-${crypto.randomBytes(3).toString('hex').toUpperCase()}`,
           },
           select: { id: true, email: true, role: true, name: true, avatarUrl: true }
         });
@@ -117,11 +118,13 @@ router.post('/register', async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
 
     // Create user
+    const referralCode = `PRO-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
     const user = await prisma.user.create({
       data: {
         name, email: email.toLowerCase(), passwordHash, role,
         phone, batchYear: batchYear ? parseInt(batchYear) : null,
         department, rollNumber, currentCompany, jobTitle, location, linkedinUrl, bio,
+        referralCode,
       },
       select: {
         id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,

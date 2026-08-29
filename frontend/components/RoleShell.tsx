@@ -45,6 +45,7 @@ import { GlobalSearch } from "@/components/GlobalSearch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
+import { getSocket } from "@/lib/socket";
 
 type Role = UserRole;
 
@@ -301,6 +302,15 @@ export function RoleShell({
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
+    } else if (user) {
+      const socket = getSocket();
+      if (!socket.connected) {
+        socket.connect();
+        const token = localStorage.getItem("pro-alumn_token") || localStorage.getItem("token") || localStorage.getItem("alumni_connect_token");
+        if (token) {
+          socket.emit("authenticate", token);
+        }
+      }
     }
   }, [loading, user, router]);
 

@@ -176,7 +176,7 @@ export const HomeContent = memo(function HomeContent() {
               </Link>
 
               <Link
-                href="/rewards"
+                href="/wallet"
                 className="flex items-center gap-3 px-4 py-2 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 hover:scale-105 transition-all shadow-xs"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white font-bold text-base shadow-xs">
