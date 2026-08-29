@@ -5,6 +5,7 @@ import { Card, Badge } from "@/components/ui";
 import { Video, Plus, CheckCircle2, Lock, Play, Flame, User as UserIcon, Coins } from "lucide-react";
 import { useState, useTransition } from "react";
 import { submitVideoAction, unlockVideoAction } from "../actions/market";
+import Image from "next/image";
 
 export function MarketContent({ 
   initialVideos, 
@@ -180,7 +181,7 @@ export function MarketContent({
                     
                     {/* OVERLAYS */}
                     {isUnlocked ? (
-                      <a href={video.videoUrl} target="_blank" rel="noreferrer" className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm cursor-pointer">
+                      <a href={video.url} target="_blank" rel="noreferrer" className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm cursor-pointer">
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl scale-90 group-hover:scale-100 transition-transform">
                           <Play size={32} className="text-white ml-1.5 fill-white" />
                         </div>
@@ -224,15 +225,15 @@ export function MarketContent({
                     
                     <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
                       <div className="flex items-center gap-2 min-w-0">
-                        {video.author?.avatarUrl ? (
-                          <img src={video.author.avatarUrl} alt={video.author.name} className="w-7 h-7 rounded-full object-cover shrink-0 bg-slate-200" />
+                        {video.uploader?.avatarUrl ? (
+                          <Image src={video.uploader.avatarUrl} alt={video.uploader.name || "Expert"} width={28} height={28} className="w-7 h-7 rounded-full object-cover shrink-0 bg-slate-200" />
                         ) : (
                           <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 shrink-0 border border-slate-200 dark:border-slate-700">
                             <UserIcon size={14} />
                           </div>
                         )}
                         <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">
-                          {video.author?.name || "Expert"}
+                          {video.uploader?.name || "Expert"}
                         </span>
                       </div>
                       <span className="text-[10px] text-slate-400 font-mono">

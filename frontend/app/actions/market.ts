@@ -33,9 +33,9 @@ export async function submitVideoAction(formData: FormData) {
     data: {
       title,
       description,
-      videoUrl,
+      url: videoUrl,
       status: "PENDING",
-      authorId: session.id,
+      uploaderId: session.id,
     },
   });
 

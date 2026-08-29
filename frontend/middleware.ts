@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Public route prefixes that never require authentication or profile completion
+// ── Public paths: these never require authentication ──
 const PUBLIC_PATHS = [
   "/login",
   "/register",
@@ -12,6 +12,9 @@ const PUBLIC_PATHS = [
   "/og-image",
   "/manifest",
 ];
+
+// Unauthenticated landing pages (no token required, but no app access)
+const LANDING_PATHS = ["/", "/help"];
 
 // Helper to decode JWT payload without Node crypto dependencies in Edge Runtime
 function decodeJwtPayload(token: string): { id?: string; role?: string; profileStatus?: string; isVerified?: boolean } | null {
@@ -35,7 +38,7 @@ function decodeJwtPayload(token: string): { id?: string; role?: string; profileS
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Bypass static files and public assets
+  // ── 1. Allow static files, public assets, API routes ──
   if (
     PUBLIC_PATHS.some((p) => pathname.startsWith(p)) ||
     pathname.includes(".") // file extensions like .png, .jpg, .svg, .css
@@ -43,58 +46,61 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Extract auth token from cookies
+  // ── 2. Extract auth token from cookies ──
   const token =
     request.cookies.get("pro-alumn_token")?.value ||
     request.cookies.get("token")?.value ||
     request.cookies.get("alumni_connect_token")?.value;
 
-  // Unauthenticated user attempting to access protected application routes
+  // ── 3. No token: DEFAULT-DENY ──
   if (!token) {
-    // Allow public root/landing page
-    if (pathname === "/" || pathname === "/help" || pathname.startsWith("/newsletters/")) {
+    // Allow public landing pages
+    if (LANDING_PATHS.includes(pathname) || pathname.startsWith("/newsletters/")) {
       return NextResponse.next();
     }
-    // If not authenticated and trying to access complete-profile or verify-profile, send to login
-    if (pathname === "/complete-profile" || pathname === "/verify-profile") {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-    return NextResponse.next();
+    // Everything else → redirect to login
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // 3. Authenticated: Decode claims to inspect role and profileStatus
+  // ── 4. Token exists but can't be decoded → invalid/malformed ──
   const payload = decodeJwtPayload(token);
-  if (!payload) {
-    return NextResponse.next();
+  if (!payload || !payload.id) {
+    // Clear the bad cookie and redirect to login
+    const loginUrl = new URL("/login", request.url);
+    const response = NextResponse.redirect(loginUrl);
+    response.cookies.delete("pro-alumn_token");
+    response.cookies.delete("token");
+    response.cookies.delete("alumni_connect_token");
+    return response;
   }
 
-  // Super Admins bypass profile gate
+  // ── 5. Admins bypass profile gates ──
   if (payload.role === "ADMIN") {
     return NextResponse.next();
   }
 
   const profileStatus = payload.profileStatus?.toUpperCase();
 
-  // 4. Route Gate Rules
-  // State: INCOMPLETE or REJECTED -> Must complete/fix profile
+  // ── 6. Profile status gates ──
+  // INCOMPLETE or REJECTED → must complete/fix profile
   if (profileStatus === "INCOMPLETE" || profileStatus === "REJECTED") {
     if (pathname !== "/complete-profile" && pathname !== "/login" && pathname !== "/register") {
-      const url = new URL("/complete-profile", request.url);
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(new URL("/complete-profile", request.url));
     }
     return NextResponse.next();
   }
 
-  // State: PENDING -> Under review holding screen
+  // PENDING → under-review holding screen
   if (profileStatus === "PENDING") {
     if (pathname !== "/verify-profile" && pathname !== "/login" && pathname !== "/register") {
-      const url = new URL("/verify-profile", request.url);
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(new URL("/verify-profile", request.url));
     }
     return NextResponse.next();
   }
 
-  // State: APPROVED -> Active full access (prevent looping back to holding screens)
+  // APPROVED → full access; prevent looping back to holding screens
   if (profileStatus === "APPROVED") {
     if (pathname === "/complete-profile" || pathname === "/verify-profile") {
       return NextResponse.redirect(new URL("/home", request.url));
