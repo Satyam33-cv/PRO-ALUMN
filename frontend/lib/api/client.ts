@@ -339,17 +339,17 @@ export const apiClient = {
     },
   },
   chat: {
-    list: async (): Promise<{ threads: unknown[] }> => {
-      return await apiFetch<{ threads: unknown[] }>({ method: "GET", url: "/chat" });
+    list: async (): Promise<{ threads: any[] }> => {
+      return await apiFetch<{ threads: any[] }>({ method: "GET", url: "/chat" });
     },
-    getThread: async (id: string): Promise<{ messages: unknown[] }> => {
-      return await apiFetch<{ messages: unknown[] }>({ method: "GET", url: `/chat/${id}` });
+    getThread: async (id: string): Promise<{ messages: any[] }> => {
+      return await apiFetch<{ messages: any[] }>({ method: "GET", url: `/chat/${id}` });
     },
-    sendMessage: async (id: string, text: string): Promise<{ message: unknown }> => {
-      return await apiFetch<{ message: unknown }>({ method: "POST", url: `/chat/${id}`, data: { text } });
+    sendMessage: async (id: string, text: string): Promise<{ message: any }> => {
+      return await apiFetch<{ message: any }>({ method: "POST", url: `/chat/${id}`, data: { text } });
     },
-    createThread: async (targetUserId: string): Promise<{ thread: unknown }> => {
-      return await apiFetch<{ thread: unknown }>({ method: "POST", url: "/chat", data: { targetUserId } });
+    createThread: async (targetUserId: string): Promise<{ thread: any }> => {
+      return await apiFetch<{ thread: any }>({ method: "POST", url: "/chat", data: { targetUserId } });
     },
   },
   gamification: {

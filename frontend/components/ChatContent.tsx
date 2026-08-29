@@ -138,6 +138,17 @@ export function ChatContent() {
     }));
   }, [chatData]);
 
+  // Read URL query parameter ?thread={id} or ?threadId={id}
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const threadParam = params.get("thread") || params.get("threadId");
+      if (threadParam) {
+        setSelectedId(threadParam);
+      }
+    }
+  }, []);
+
   // Fetch Google Chat Spaces
   const fetchGoogleSpaces = async () => {
     if (!accessToken) return;

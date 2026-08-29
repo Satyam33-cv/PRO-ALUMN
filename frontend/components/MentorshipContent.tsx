@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, ChevronDown, ArrowRight, Send, Star, AlertCircle } from "lucide-react";
+import { Check, X, ChevronDown, ArrowRight, Send, Star, AlertCircle, Loader2 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
@@ -199,7 +200,9 @@ function RequestModal({
 }
 
 export function MentorshipContent() {
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
+  const [startingChat, setStartingChat] = useState(false);
   const [calendarWeek, setCalendarWeek] = useState<number>(0);
   const { data: mentorshipData, refresh: refreshMentorship } = useApi("mentorship:list", () => apiClient.mentorship.list());
   
@@ -323,12 +326,37 @@ export function MentorshipContent() {
               ))}
             </div>
 
-            <button
-              onClick={() => setModalOpen(true)}
-              className="mt-6 rounded-full bg-brass px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-secondaryContainer"
-            >
-              Request Mentorship
-            </button>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => setModalOpen(true)}
+                className="rounded-full bg-brass px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-secondaryContainer"
+              >
+                Request Mentorship
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    setStartingChat(true);
+                    const res = await apiClient.chat.createThread(topMatch.id);
+                    if (res?.thread?.id) {
+                      router.push(`/chat?thread=${res.thread.id}`);
+                    } else {
+                      router.push("/chat");
+                    }
+                  } catch (err) {
+                    console.error("Failed to start chat:", err);
+                    router.push("/chat");
+                  } finally {
+                    setStartingChat(false);
+                  }
+                }}
+                disabled={startingChat}
+                className="inline-flex items-center gap-1.5 rounded-full border border-paper/20 px-5 py-2.5 text-sm font-semibold text-paper hover:bg-paper/10 transition-colors disabled:opacity-50"
+              >
+                {startingChat ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                Message
+              </button>
+            </div>
           </Card>
         ) : (
           <Card tone="dark" padding="lg" className="max-w-2xl">

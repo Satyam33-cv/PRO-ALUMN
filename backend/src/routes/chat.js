@@ -130,26 +130,26 @@ router.post('/', authenticate, async (req, res) => {
       return res.status(400).json({ error: 'Cannot start a chat with yourself' });
     }
 
-    // Check if 1:1 thread already exists
-    const existingThreads = await prisma.chatThread.findMany({
+    // Check if 1:1 thread already exists between these two users
+    const existingThread = await prisma.chatThread.findFirst({
       where: {
         isGroup: false,
-        members: {
-          every: {
-            userId: { in: [req.user.id, targetUserId] }
-          }
-        }
+        AND: [
+          { members: { some: { userId: req.user.id } } },
+          { members: { some: { userId: targetUserId } } }
+        ]
       },
       include: {
-        members: true
+        members: {
+          include: {
+            user: { select: { id: true, name: true, role: true, avatarUrl: true } }
+          }
+        }
       }
     });
 
-    // Filter strictly for 2-member threads matching these two users
-    const existing = existingThreads.find(t => t.members.length === 2);
-
-    if (existing) {
-      return res.json({ thread: existing });
+    if (existingThread) {
+      return res.json({ thread: existingThread });
     }
 
     // Create new thread

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -13,6 +14,7 @@ import {
   MapPin,
   LayoutGrid,
   List,
+  Loader2,
 } from "lucide-react";
 import { useDeferredValue, useMemo, useState } from "react";
 import { Card, EmptyState, ErrorState, Skeleton } from "@/components/ui";
@@ -38,7 +40,15 @@ type DirectoryAlumni = {
 
 type ViewMode = "grid" | "list";
 
-function DirectoryGridCard({ alumni }: { alumni: DirectoryAlumni }) {
+function DirectoryGridCard({
+  alumni,
+  onStartChat,
+  isStartingChat,
+}: {
+  alumni: DirectoryAlumni;
+  onStartChat: (id: string) => void;
+  isStartingChat: boolean;
+}) {
   const [bookmarked, setBookmarked] = useState(false);
 
   return (
@@ -90,12 +100,14 @@ function DirectoryGridCard({ alumni }: { alumni: DirectoryAlumni }) {
       </div>
 
       <div className="mt-4 flex items-center gap-2">
-        <Link
-          href="/chat"
-          className="inline-flex items-center gap-1.5 rounded-full border border-ink-900/15 px-3 py-1.5 text-[11px] font-semibold text-ink-900/70 transition-colors hover:border-brass-500 hover:text-brass-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass-500"
+        <button
+          onClick={() => onStartChat(alumni.id)}
+          disabled={isStartingChat}
+          className="inline-flex items-center gap-1.5 rounded-full border border-ink-900/15 px-3 py-1.5 text-[11px] font-semibold text-ink-900/70 transition-colors hover:border-brass-500 hover:text-brass-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass-500 disabled:opacity-50"
         >
-          <Send size={12} /> Message
-        </Link>
+          {isStartingChat ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
+          Message
+        </button>
         <Link
           href={`/mentorship?mentor=${alumni.id}`}
           className="inline-flex items-center gap-1.5 rounded-full bg-brass px-3 py-1.5 text-[11px] font-semibold text-canvas transition-colors hover:bg-brass-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
@@ -114,7 +126,15 @@ function DirectoryGridCard({ alumni }: { alumni: DirectoryAlumni }) {
   );
 }
 
-function DirectoryListCard({ alumni }: { alumni: DirectoryAlumni }) {
+function DirectoryListCard({
+  alumni,
+  onStartChat,
+  isStartingChat,
+}: {
+  alumni: DirectoryAlumni;
+  onStartChat: (id: string) => void;
+  isStartingChat: boolean;
+}) {
   const [bookmarked, setBookmarked] = useState(false);
 
   return (
@@ -160,12 +180,14 @@ function DirectoryListCard({ alumni }: { alumni: DirectoryAlumni }) {
               }
             />
           </button>
-          <Link
-            href="/chat"
-            className="inline-flex items-center gap-1.5 rounded-full border border-ink-900/15 px-3 py-1.5 text-[11px] font-semibold text-ink-900/70 transition-colors hover:border-brass-500 hover:text-brass-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass-500"
+          <button
+            onClick={() => onStartChat(alumni.id)}
+            disabled={isStartingChat}
+            className="inline-flex items-center gap-1.5 rounded-full border border-ink-900/15 px-3 py-1.5 text-[11px] font-semibold text-ink-900/70 transition-colors hover:border-brass-500 hover:text-brass-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass-500 disabled:opacity-50"
           >
-            <Send size={11} /> Message
-          </Link>
+            {isStartingChat ? <Loader2 size={11} className="animate-spin" /> : <Send size={11} />}
+            Message
+          </button>
           <Link
             href={`/mentorship?mentor=${alumni.id}`}
             className="inline-flex items-center gap-1.5 rounded-full bg-brass px-3 py-1.5 text-[11px] font-semibold text-canvas transition-colors hover:bg-brass-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
@@ -179,11 +201,30 @@ function DirectoryListCard({ alumni }: { alumni: DirectoryAlumni }) {
 }
 
 export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string }) {
+  const router = useRouter();
+  const [startingChatId, setStartingChatId] = useState<string | null>(null);
   const [query, setQuery] = useState(initialQuery);
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const [filterValue, setFilterValue] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const deferredQuery = useDeferredValue(query);
+
+  const handleStartChat = async (targetUserId: string) => {
+    try {
+      setStartingChatId(targetUserId);
+      const res = await apiClient.chat.createThread(targetUserId);
+      if (res?.thread?.id) {
+        router.push(`/chat?thread=${res.thread.id}`);
+      } else {
+        router.push("/chat");
+      }
+    } catch (err) {
+      console.error("Failed to start chat thread:", err);
+      router.push("/chat");
+    } finally {
+      setStartingChatId(null);
+    }
+  };
 
   const { data: allAlumni, error, isLoading, refresh } = useApi(
     "alumni:all",
@@ -492,7 +533,12 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
             }
           >
             {filteredData.map((alumni) => (
-              <CardComponent key={alumni.id} alumni={alumni} />
+              <CardComponent
+                key={alumni.id}
+                alumni={alumni}
+                onStartChat={handleStartChat}
+                isStartingChat={startingChatId === alumni.id}
+              />
             ))}
           </motion.div>
         ) : null}
