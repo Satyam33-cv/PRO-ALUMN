@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// ── Public paths: these never require authentication ──
 const PUBLIC_PATHS = [
   "/login",
   "/register",
+  "/auth/callback",
   "/api",
   "/_next",
   "/favicon.ico",
