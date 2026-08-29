@@ -96,6 +96,8 @@ export async function getCurrentUserVerificationStatusAction() {
       currentCompany: user.currentCompany,
       jobTitle: user.jobTitle,
       skills: user.skills,
+      skillsOffered: user.skillsOffered,
+      skillsWanted: user.skillsWanted,
       linkedinUrl: user.linkedinUrl,
       bio: user.bio,
       referredByCode: user.referredByCode,
@@ -120,6 +122,8 @@ export async function submitProfileDetailsAction(data: {
   department: string;
   batchYear: number;
   skills?: string;
+  skillsOffered?: string;
+  skillsWanted?: string;
   linkedinUrl?: string;
   bio?: string;
   currentCompany?: string;
@@ -177,13 +181,16 @@ export async function submitProfileDetailsAction(data: {
   }
 
   try {
+    const combinedSkills = data.skillsOffered?.trim() || data.skills?.trim() || null;
     const updated = await prisma.user.update({
       where: { id: user.id },
       data: {
         name: data.name.trim(),
         department: data.department.trim(),
         batchYear: Number(data.batchYear),
-        skills: data.skills?.trim() || null,
+        skills: combinedSkills,
+        skillsOffered: data.skillsOffered?.trim() || combinedSkills,
+        skillsWanted: data.skillsWanted?.trim() || null,
         linkedinUrl: data.linkedinUrl?.trim() || null,
         bio: data.bio?.trim() || null,
         currentCompany: data.currentCompany?.trim() || null,

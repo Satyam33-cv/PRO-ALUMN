@@ -35,7 +35,8 @@ export default function SettingsPage() {
   const [jobTitle, setJobTitle] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [bio, setBio] = useState("");
-  const [skills, setSkills] = useState("");
+  const [skillsOffered, setSkillsOffered] = useState("");
+  const [skillsWanted, setSkillsWanted] = useState("");
   const [interests, setInterests] = useState("");
   const [openToMentoring, setOpenToMentoring] = useState(true);
   const [notifyReferrals, setNotifyReferrals] = useState(true);
@@ -57,7 +58,8 @@ export default function SettingsPage() {
           setJobTitle(profile.jobTitle || "");
           setLinkedinUrl(profile.linkedinUrl || "");
           setBio(profile.bio || "");
-          setSkills(profile.skills || "");
+          setSkillsOffered(profile.skillsOffered || profile.skills || "");
+          setSkillsWanted(profile.skillsWanted || "");
           setInterests(profile.interests || "");
         }
       } catch (err) {
@@ -82,7 +84,9 @@ export default function SettingsPage() {
         jobTitle,
         linkedinUrl,
         bio,
-        skills,
+        skills: skillsOffered,
+        skillsOffered,
+        skillsWanted,
         interests,
       });
 
@@ -207,8 +211,12 @@ export default function SettingsPage() {
                   <input value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} className={inputClass} placeholder="https://linkedin.com/in/username" />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Technical Skills (comma separated for AI matching)</label>
-                  <input value={skills} onChange={(e) => setSkills(e.target.value)} className={inputClass} placeholder="React, Node.js, TypeScript, Distributed Systems" />
+                  <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Skills You Can Teach / Offer (Skill Swap)</label>
+                  <input value={skillsOffered} onChange={(e) => setSkillsOffered(e.target.value)} className={inputClass} placeholder="React, Node.js, TypeScript, Distributed Systems" />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Skills You Want to Learn (Skill Swap)</label>
+                  <input value={skillsWanted} onChange={(e) => setSkillsWanted(e.target.value)} className={inputClass} placeholder="AI Agents, Kubernetes, Product Strategy, PyTorch" />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Interests &amp; Focus Areas</label>

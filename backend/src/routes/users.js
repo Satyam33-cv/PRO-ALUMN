@@ -17,7 +17,7 @@ router.get('/me', authenticate, async (req, res) => {
         id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,
         batchYear: true, department: true, rollNumber: true,
         currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
-        skills: true, interests: true, timeline: true, resumeUrl: true,
+        skills: true, skillsOffered: true, skillsWanted: true, interests: true, timeline: true, resumeUrl: true,
         isVerified: true, isActive: true, createdAt: true,
         currentStreak: true, longestStreak: true, totalPoints: true, lastActiveDate: true,
         lastProfileUpdate: true, lastJobUpdate: true, lastEducationUpdate: true, lastProjectUpdate: true,
@@ -41,7 +41,7 @@ router.patch('/me', authenticate, async (req, res) => {
     const allowed = [
       'name', 'phone', 'avatarUrl', 'batchYear', 'department', 'rollNumber',
       'currentCompany', 'jobTitle', 'location', 'linkedinUrl', 'bio', 'resumeUrl',
-      'skills', 'interests', 'timeline',
+      'skills', 'skillsOffered', 'skillsWanted', 'interests', 'timeline',
     ];
     const data = {};
     for (const key of allowed) {
@@ -59,7 +59,7 @@ router.patch('/me', authenticate, async (req, res) => {
     if (data.department !== undefined || data.batchYear !== undefined) {
       data.lastEducationUpdate = now;
     }
-    if (data.skills !== undefined || data.interests !== undefined || data.timeline !== undefined) {
+    if (data.skills !== undefined || data.skillsOffered !== undefined || data.skillsWanted !== undefined || data.interests !== undefined || data.timeline !== undefined) {
       data.lastProjectUpdate = now;
     }
 
@@ -70,8 +70,8 @@ router.patch('/me', authenticate, async (req, res) => {
         id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,
         batchYear: true, department: true, currentCompany: true, jobTitle: true,
         location: true, linkedinUrl: true, bio: true, resumeUrl: true,
-        skills: true, interests: true, timeline: true,
-        currentStreak: true, longestStreak: true, totalPoints: true,
+        skills: true, skillsOffered: true, skillsWanted: true, interests: true, timeline: true, isVerified: true,
+        createdAt: true, currentStreak: true, longestStreak: true, totalPoints: true,
         lastProfileUpdate: true, lastJobUpdate: true, lastEducationUpdate: true, lastProjectUpdate: true,
         profileCompleteness: true,
       },

@@ -45,12 +45,16 @@ const mockChatPreview = [
 
 function RequestModal({
   name,
+  mentorId,
   mentorEmail,
   onClose,
+  onSuccess,
 }: {
   name: string;
+  mentorId: string;
   mentorEmail: string;
   onClose: () => void;
+  onSuccess?: () => void;
 }) {
   const { user, googleAccessToken } = useAuth();
   const [area, setArea] = useState("");
@@ -64,24 +68,37 @@ function RequestModal({
     setSending(true);
     setError(null);
 
-    // If we have a Google access token AND the mentor has a real email, send via Gmail API
-    if (googleAccessToken && mentorEmail) {
-      try {
-        await sendGmailMessage({
-          token: googleAccessToken,
-          to: mentorEmail,
-          subject: `PRO ALUMN Mentorship Request: ${area}`,
-          body: `Hi ${name},\n\nI'm ${user?.name || "a student"} from the PRO ALUMN platform. I'm reaching out to request mentorship in the area of "${area}".\n\n${message}\n\nLooking forward to hearing from you!\n\nBest regards,\n${user?.name || "Student"}\n${user?.email || ""}\nPRO ALUMN Platform`,
-        });
-      } catch (err: any) {
-        console.error("Gmail send failed:", err);
-        setError("Could not send email via Gmail. The request was still saved.");
-      }
-    }
+    try {
+      // 1. Persist mentorship request to database
+      await apiClient.mentorship.create({
+        mentorId,
+        area,
+        message: message.trim(),
+      });
 
-    setSent(true);
-    setSending(false);
-    setTimeout(() => onClose(), 2000);
+      // 2. Best-effort Gmail notification if connected
+      if (googleAccessToken && mentorEmail) {
+        try {
+          await sendGmailMessage({
+            token: googleAccessToken,
+            to: mentorEmail,
+            subject: `PRO ALUMN Mentorship Request: ${area}`,
+            body: `Hi ${name},\n\nI'm ${user?.name || "a student"} from the PRO ALUMN platform. I'm reaching out to request mentorship in the area of "${area}".\n\n${message}\n\nLooking forward to hearing from you!\n\nBest regards,\n${user?.name || "Student"}\n${user?.email || ""}\nPRO ALUMN Platform`,
+          });
+        } catch (err: any) {
+          console.warn("Gmail notification failed (request still recorded):", err);
+        }
+      }
+
+      setSent(true);
+      if (onSuccess) onSuccess();
+      setTimeout(() => onClose(), 2000);
+    } catch (err: any) {
+      console.error("Failed to create mentorship request:", err);
+      setError(err?.error || err?.message || "Failed to submit mentorship request. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -324,8 +341,10 @@ export function MentorshipContent() {
         {modalOpen && topMatch && (
           <RequestModal
             name={topMatch.name}
+            mentorId={topMatch.id}
             mentorEmail={topMatch.email || ""}
             onClose={() => setModalOpen(false)}
+            onSuccess={refreshMentorship}
           />
         )}
       </AnimatePresence>

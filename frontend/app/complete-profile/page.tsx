@@ -49,7 +49,8 @@ export default function CompleteProfilePage() {
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("Computer Engineering");
   const [batchYear, setBatchYear] = useState<number>(new Date().getFullYear());
-  const [skills, setSkills] = useState("");
+  const [skillsOffered, setSkillsOffered] = useState("");
+  const [skillsWanted, setSkillsWanted] = useState("");
   const [currentCompany, setCurrentCompany] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
@@ -81,7 +82,8 @@ export default function CompleteProfilePage() {
           setName(u.name || "");
           setDepartment(u.department || "Computer Engineering");
           setBatchYear(u.batchYear || new Date().getFullYear());
-          setSkills(u.skills || "");
+          setSkillsOffered(u.skillsOffered || u.skills || "");
+          setSkillsWanted(u.skillsWanted || "");
           setCurrentCompany(u.currentCompany || "");
           setJobTitle(u.jobTitle || "");
           setLinkedinUrl(u.linkedinUrl || "");
@@ -116,7 +118,9 @@ export default function CompleteProfilePage() {
         name,
         department,
         batchYear,
-        skills,
+        skillsOffered,
+        skillsWanted,
+        skills: skillsOffered,
         linkedinUrl,
         bio,
         currentCompany,
@@ -421,18 +425,34 @@ export default function CompleteProfilePage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block font-bold text-slate-300 mb-1 flex items-center gap-1.5">
-                    <Sparkles size={13} className="text-amber-400" />
-                    Key Skills (Used for AI Vector Matchmaking)
-                  </label>
-                  <input
-                    type="text"
-                    value={skills}
-                    onChange={(e) => setSkills(e.target.value)}
-                    placeholder="e.g. React, Next.js, Node.js, System Design, Python, PyTorch"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white font-medium outline-none focus:border-blue-500"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-bold text-slate-300 mb-1 flex items-center gap-1.5 text-xs">
+                      <Sparkles size={13} className="text-emerald-400" />
+                      Skills You Can Offer / Teach (Skill Swap)
+                    </label>
+                    <input
+                      type="text"
+                      value={skillsOffered}
+                      onChange={(e) => setSkillsOffered(e.target.value)}
+                      placeholder="e.g. React, Next.js, System Design, Python"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white font-medium outline-none focus:border-emerald-500 text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-300 mb-1 flex items-center gap-1.5 text-xs">
+                      <Sparkles size={13} className="text-blue-400" />
+                      Skills You Want to Learn / Swap
+                    </label>
+                    <input
+                      type="text"
+                      value={skillsWanted}
+                      onChange={(e) => setSkillsWanted(e.target.value)}
+                      placeholder="e.g. AI Agents, Kubernetes, Product Strategy"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white font-medium outline-none focus:border-blue-500 text-xs"
+                    />
+                  </div>
                 </div>
 
                 <div>

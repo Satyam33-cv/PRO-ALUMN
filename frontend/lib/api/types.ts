@@ -28,6 +28,8 @@ export type UpdateProfileData = {
   role?: string;
   batch?: string;
   skills?: string | string[];
+  skillsOffered?: string | string[];
+  skillsWanted?: string | string[];
   department?: string;
   jobTitle?: string;
   currentCompany?: string;
@@ -79,6 +81,8 @@ export type User = {
   avatarUrl?: string;
   bio?: string;
   skills?: string;
+  skillsOffered?: string;
+  skillsWanted?: string;
   interests?: string;
   timeline?: any;
   resumeUrl?: string;
