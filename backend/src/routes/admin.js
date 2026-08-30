@@ -34,17 +34,14 @@ router.get('/system-health', async (req, res) => {
     await prisma.$queryRaw`SELECT 1`;
     const latency = Date.now() - startTime;
 
-    const [userCount, jobCount, storyCount, referralCount, mentorshipCount, eventCount, newsletterCount, logCount] =
-      await Promise.all([
-        prisma.user.count(),
-        prisma.jobPosting.count(),
-        prisma.successStory.count(),
-        prisma.referralRequest.count(),
-        prisma.mentorship.count(),
-        prisma.event.count(),
-        prisma.newsletter.count().catch(() => 0),
-        prisma.activityLog.count().catch(() => 0),
-      ]);
+    const userCount = await prisma.user.count();
+    const jobCount = await prisma.jobPosting.count();
+    const storyCount = await prisma.successStory.count();
+    const referralCount = await prisma.referralRequest.count();
+    const mentorshipCount = await prisma.mentorship.count();
+    const eventCount = await prisma.event.count();
+    const newsletterCount = await prisma.newsletter.count().catch(() => 0);
+    const logCount = await prisma.activityLog.count().catch(() => 0);
 
     const memory = process.memoryUsage();
 
@@ -86,35 +83,31 @@ router.get('/system-health', async (req, res) => {
 // Platform analytics & KPIs
 router.get('/stats', async (req, res) => {
   try {
-    const [users, byRole, jobs, openJobs, referrals, referralsByStatus, storiesApproved, storiesPending, events, upcomingEvents, announcements] =
-      await Promise.all([
-        prisma.user.count(),
-        prisma.user.groupBy({ by: ['role'], _count: { _all: true } }),
-        prisma.jobPosting.count(),
-        prisma.jobPosting.count({ where: { status: 'OPEN' } }),
-        prisma.referralRequest.count(),
-        prisma.referralRequest.groupBy({ by: ['status'], _count: { _all: true } }),
-        prisma.successStory.count({ where: { isApproved: true } }),
-        prisma.successStory.count({ where: { isApproved: false } }),
-        prisma.event.count(),
-        prisma.event.count({ where: { date: { gte: new Date() } } }),
-        prisma.announcement.count(),
-      ]);
+    const users = await prisma.user.count();
+    const byRole = await prisma.user.groupBy({ by: ['role'], _count: { _all: true } });
+    const jobs = await prisma.jobPosting.count();
+    const openJobs = await prisma.jobPosting.count({ where: { status: 'OPEN' } });
+    const referrals = await prisma.referralRequest.count();
+    const referralsByStatus = await prisma.referralRequest.groupBy({ by: ['status'], _count: { _all: true } });
+    const storiesApproved = await prisma.successStory.count({ where: { isApproved: true } });
+    const storiesPending = await prisma.successStory.count({ where: { isApproved: false } });
+    const events = await prisma.event.count();
+    const upcomingEvents = await prisma.event.count({ where: { date: { gte: new Date() } } });
+    const announcements = await prisma.announcement.count();
 
-    const [recentUsers, recentReferrals] = await Promise.all([
-      prisma.user.findMany({
-        orderBy: { createdAt: 'desc' }, take: 6,
-        select: { id: true, name: true, email: true, role: true, isVerified: true, createdAt: true, currentCompany: true, jobTitle: true },
-      }),
-      prisma.referralRequest.findMany({
-        orderBy: { createdAt: 'desc' }, take: 6,
-        select: {
-          id: true, status: true, createdAt: true,
-          job: { select: { title: true, company: true } },
-          requestedBy: { select: { name: true } },
-        },
-      }),
-    ]);
+    const recentUsers = await prisma.user.findMany({
+      orderBy: { createdAt: 'desc' }, take: 6,
+      select: { id: true, name: true, email: true, role: true, isVerified: true, createdAt: true, currentCompany: true, jobTitle: true },
+    });
+    
+    const recentReferrals = await prisma.referralRequest.findMany({
+      orderBy: { createdAt: 'desc' }, take: 6,
+      select: {
+        id: true, status: true, createdAt: true,
+        job: { select: { title: true, company: true } },
+        requestedBy: { select: { name: true } },
+      },
+    });
 
     const verified = await prisma.user.count({ where: { isVerified: true } });
 
@@ -160,18 +153,16 @@ router.get('/users', async (req, res) => {
     const pageNum = Math.min(Math.max(parseInt(page) || 1, 1), 1000);
     const skip = (pageNum - 1) * take;
 
-    const [users, total] = await Promise.all([
-      prisma.user.findMany({
-        where, orderBy: { createdAt: 'desc' }, skip, take,
-        select: {
-          id: true, name: true, email: true, role: true, isVerified: true, isActive: true,
-          batchYear: true, department: true, currentCompany: true, jobTitle: true,
-          totalPoints: true, currentStreak: true, lastActiveDate: true, profileCompleteness: true,
-          createdAt: true,
-        },
-      }),
-      prisma.user.count({ where }),
-    ]);
+    const users = await prisma.user.findMany({
+      where, orderBy: { createdAt: 'desc' }, skip, take,
+      select: {
+        id: true, name: true, email: true, role: true, isVerified: true, isActive: true,
+        batchYear: true, department: true, currentCompany: true, jobTitle: true,
+        totalPoints: true, currentStreak: true, lastActiveDate: true, profileCompleteness: true,
+        createdAt: true,
+      },
+    });
+    const total = await prisma.user.count({ where });
 
     res.json({ users, pagination: { total, page: pageNum, limit: take, pages: Math.ceil(total / take) } });
   } catch (err) {
@@ -589,61 +580,63 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
 // GET /api/admin/approvals - Single unified queue for Stories, Jobs, Mentorships, Unverified Alumni, and Videos
 router.get('/approvals', async (req, res) => {
   try {
-    const [pendingStories, pendingJobs, pendingMentorships, unverifiedAlumni, pendingVideos] = await Promise.all([
-      prisma.successStory.findMany({
-        where: { isApproved: false },
-        orderBy: { createdAt: 'desc' },
-        include: {
-          alumni: {
-            select: { id: true, name: true, email: true, currentCompany: true, jobTitle: true, batchYear: true, avatarUrl: true },
-          },
+    const pendingStories = await prisma.successStory.findMany({
+      where: { isApproved: false },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        alumni: {
+          select: { id: true, name: true, email: true, currentCompany: true, jobTitle: true, batchYear: true, avatarUrl: true },
         },
-      }),
-      prisma.jobPosting.findMany({
-        where: { status: 'OPEN' },
-        orderBy: { createdAt: 'desc' },
-        take: 20,
-        include: {
-          postedBy: { select: { id: true, name: true, email: true, currentCompany: true, avatarUrl: true } },
+      },
+    });
+
+    const pendingJobs = await prisma.jobPosting.findMany({
+      where: { status: 'OPEN' },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+      include: {
+        postedBy: { select: { id: true, name: true, email: true, currentCompany: true, avatarUrl: true } },
+      },
+    });
+
+    const pendingMentorships = await prisma.mentorship.findMany({
+      where: { status: 'PENDING' },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        student: { select: { id: true, name: true, email: true, department: true, avatarUrl: true } },
+        mentor: { select: { id: true, name: true, email: true, currentCompany: true, jobTitle: true, avatarUrl: true } },
+      },
+    });
+
+    const unverifiedAlumni = await prisma.user.findMany({
+      where: { role: 'ALUMNI', isVerified: false },
+      orderBy: { createdAt: 'desc' },
+      take: 30,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        isVerified: true,
+        profileStatus: true,
+        batchYear: true,
+        department: true,
+        currentCompany: true,
+        jobTitle: true,
+        avatarUrl: true,
+        createdAt: true,
+      },
+    });
+
+    const pendingVideos = await prisma.video.findMany({
+      where: { status: 'PENDING' },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        uploader: {
+          select: { id: true, name: true, email: true, role: true, avatarUrl: true, currentCompany: true },
         },
-      }),
-      prisma.mentorship.findMany({
-        where: { status: 'PENDING' },
-        orderBy: { createdAt: 'desc' },
-        include: {
-          student: { select: { id: true, name: true, email: true, department: true, avatarUrl: true } },
-          mentor: { select: { id: true, name: true, email: true, currentCompany: true, jobTitle: true, avatarUrl: true } },
-        },
-      }),
-      prisma.user.findMany({
-        where: { role: 'ALUMNI', isVerified: false },
-        orderBy: { createdAt: 'desc' },
-        take: 30,
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-          isVerified: true,
-          profileStatus: true,
-          batchYear: true,
-          department: true,
-          currentCompany: true,
-          jobTitle: true,
-          avatarUrl: true,
-          createdAt: true,
-        },
-      }),
-      prisma.video.findMany({
-        where: { status: 'PENDING' },
-        orderBy: { createdAt: 'desc' },
-        include: {
-          uploader: {
-            select: { id: true, name: true, email: true, role: true, avatarUrl: true, currentCompany: true },
-          },
-        },
-      }),
-    ]);
+      },
+    });
 
     const totalPending =
       pendingStories.length +
