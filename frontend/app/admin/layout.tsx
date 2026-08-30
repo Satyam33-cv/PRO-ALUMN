@@ -3,23 +3,9 @@ import { redirect } from "next/navigation";
 import { RoleShell } from "@/components/RoleShell";
 import { AdminAuthGuard } from "./AdminAuthGuard";
 
-function decodeJwt(token: string): { id?: string; role?: string } | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-    const base64Url = parts[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-    return JSON.parse(jsonPayload);
-  } catch {
-    return null;
-  }
-}
+import { verifyJwt } from "@/lib/jwt";
+
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -32,7 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/login?redirect=/admin");
   }
 
-  const payload = decodeJwt(token);
+  const payload = verifyJwt(token, JWT_SECRET);
   if (!payload || payload.role?.toUpperCase() !== "ADMIN") {
     redirect("/dashboard");
   }

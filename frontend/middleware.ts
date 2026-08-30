@@ -16,26 +16,11 @@ const PUBLIC_PATHS = [
 // Unauthenticated landing pages (no token required, but no app access)
 const LANDING_PATHS = ["/", "/help"];
 
-// Helper to decode JWT payload without Node crypto dependencies in Edge Runtime
-function decodeJwtPayload(token: string): { id?: string; role?: string; profileStatus?: string; isVerified?: boolean } | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-    const base64Url = parts[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-    return JSON.parse(jsonPayload);
-  } catch {
-    return null;
-  }
-}
+import { verifyJwtEdge } from "@/lib/jwtEdge";
 
-export function middleware(request: NextRequest) {
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ── 1. Allow static files, public assets, API routes ──
@@ -64,8 +49,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // ── 4. Token exists but can't be decoded → invalid/malformed ──
-  const payload = decodeJwtPayload(token);
+  // ── 4. Token exists but can't be decoded or signature is invalid ──
+  const payload = await verifyJwtEdge(token, JWT_SECRET);
   if (!payload || !payload.id) {
     // Clear the bad cookie and redirect to login
     const loginUrl = new URL("/login", request.url);

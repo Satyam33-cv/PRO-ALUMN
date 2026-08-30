@@ -40,7 +40,7 @@ router.get('/system-health', async (req, res) => {
         prisma.jobPosting.count(),
         prisma.successStory.count(),
         prisma.referralRequest.count(),
-        prisma.mentorshipRequest.count(),
+        prisma.mentorship.count(),
         prisma.event.count(),
         prisma.newsletter.count().catch(() => 0),
         prisma.activityLog.count().catch(() => 0),
