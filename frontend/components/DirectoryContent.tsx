@@ -16,11 +16,13 @@ import {
   List,
   Loader2,
 } from "lucide-react";
-import { useDeferredValue, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, EmptyState, ErrorState, Skeleton } from "@/components/ui";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
+import { useSearchFilter } from "@/lib/hooks/useSearchFilter";
 import { staggerContainer, slideUp } from "@/lib/motion";
+import type { Alumni } from "@/lib/api/types";
 
 type FilterType = "batch" | "department" | "location" | "mentors";
 
@@ -203,11 +205,9 @@ function DirectoryListCard({
 export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string }) {
   const router = useRouter();
   const [startingChatId, setStartingChatId] = useState<string | null>(null);
-  const [query, setQuery] = useState(initialQuery);
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const [filterValue, setFilterValue] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const deferredQuery = useDeferredValue(query);
 
   const handleStartChat = async (targetUserId: string) => {
     try {
@@ -231,34 +231,43 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
     () => apiClient.alumni.list()
   );
 
-  const filteredData = useMemo(() => {
-    if (!allAlumni) return undefined;
+  const alumniList = (allAlumni || []) as Alumni[];
 
-    let result = allAlumni;
-
-    if (deferredQuery.trim()) {
-      const q = deferredQuery.toLowerCase();
-      result = result.filter(
-        (a) =>
-          a.name.toLowerCase().includes(q) ||
-          a.role.toLowerCase().includes(q) ||
-          a.company.toLowerCase().includes(q) ||
-          a.location.toLowerCase().includes(q)
-      );
-    }
-
-    if (activeFilter === "batch" && filterValue) {
-      result = result.filter((a) => a.batch === filterValue);
-    } else if (activeFilter === "department" && filterValue) {
-      result = result.filter((a) => a.department === filterValue);
-    } else if (activeFilter === "location" && filterValue) {
-      result = result.filter((a) => a.location === filterValue);
-    } else if (activeFilter === "mentors") {
-      result = result.filter((a) => a.isMentor === true);
-    }
-
-    return result;
-  }, [allAlumni, deferredQuery, activeFilter, filterValue]);
+  const {
+    query,
+    setQuery,
+    debouncedQuery,
+    isDebouncing,
+    filteredItems: filteredData,
+    totalCount,
+    shownCount,
+    clearQuery,
+  } = useSearchFilter<Alumni>({
+    items: alumniList,
+    searchKeys: [
+      "name",
+      "role",
+      "company",
+      "location",
+      "department",
+    ],
+    initialQuery,
+    customFilter: (a) => {
+      if (activeFilter === "batch" && filterValue) {
+        return a.batch === filterValue;
+      }
+      if (activeFilter === "department" && filterValue) {
+        return a.department === filterValue;
+      }
+      if (activeFilter === "location" && filterValue) {
+        return a.location === filterValue;
+      }
+      if (activeFilter === "mentors") {
+        return a.isMentor === true;
+      }
+      return true;
+    },
+  });
 
   const batches = useMemo(
     () =>
@@ -308,9 +317,6 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
     setFilterValue(null);
   };
 
-  const totalCount = allAlumni?.length ?? 0;
-  const shownCount = filteredData?.length ?? 0;
-
   const CardComponent = viewMode === "grid" ? DirectoryGridCard : DirectoryListCard;
 
   return (
@@ -335,29 +341,63 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
           htmlFor="directory-search"
           className="flex items-center gap-3 border-b border-ink-900/20 py-3"
         >
-          <Search size={18} className="text-ink-900/45" />
+          <Search size={18} className="text-ink-900/45 shrink-0" />
           <span className="sr-only">Search alumni</span>
           <input
             id="directory-search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             className="w-full bg-transparent text-sm outline-none placeholder:text-ink-900/35 focus:ring-0"
-            placeholder="Search name, role, company, or city"
+            placeholder="Search name, role, company, department, or city..."
           />
+          {isDebouncing && (
+            <Loader2 size={16} className="animate-spin text-brass-500 shrink-0" />
+          )}
+          {query && !isDebouncing && (
+            <button
+              onClick={clearQuery}
+              className="text-ink-900/40 hover:text-ink-900 p-0.5 shrink-0"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
         </label>
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-ink-900/55">
             <SlidersHorizontal size={14} /> Filter by:
           </div>
-          {activeFilter && (
+          {(activeFilter || query) && (
             <button
-              onClick={clearFilter}
+              onClick={() => {
+                clearFilter();
+                clearQuery();
+              }}
               className="flex items-center gap-1 text-xs font-medium text-brass-500 transition-colors hover:text-brass-600"
             >
-              <X size={14} /> Clear
+              <X size={14} /> Reset all
             </button>
           )}
         </div>
+
+        {/* Active Filter Chips */}
+        {(query.trim() || activeFilter) && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 pt-2 border-t border-ink-900/10">
+            <span className="text-[10px] font-mono uppercase text-ink-900/45">Active:</span>
+            {query.trim() && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-white/10 px-2.5 py-0.5 text-xs text-ink-900/80">
+                &ldquo;{debouncedQuery || query}&rdquo;
+                <button onClick={clearQuery} className="hover:text-rose-500"><X size={12} /></button>
+              </span>
+            )}
+            {activeFilter && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brass/15 px-2.5 py-0.5 text-xs text-brass font-medium">
+                {activeFilter}: {filterValue || "Active"}
+                <button onClick={clearFilter} className="hover:text-rose-500"><X size={12} /></button>
+              </span>
+            )}
+          </div>
+        )}
       </Card>
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
@@ -494,7 +534,7 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
         </button>
       </div>
 
-      {!isLoading && filteredData && (
+      {!isLoading && (
         <p className="mt-8 text-xs text-ink-900/45">
           Showing {shownCount} of {totalCount} alumni
         </p>
@@ -515,13 +555,30 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
             retry={() => void refresh()}
           />
         ) : null}
-        {!isLoading && !error && filteredData?.length === 0 ? (
+        {!isLoading && !error && filteredData.length === 0 ? (
           <EmptyState
             title="No alumni match that search"
-            body="Try a broader role, company, or city."
+            body={
+              query.trim()
+                ? `No results found for "${query}". Try adjusting your keywords or clearing active filters.`
+                : "Try a broader role, company, or city."
+            }
+            action={
+              (query.trim() || activeFilter) ? (
+                <button
+                  onClick={() => {
+                    clearQuery();
+                    clearFilter();
+                  }}
+                  className="font-semibold text-sage-500 hover:underline"
+                >
+                  Clear search and filters
+                </button>
+              ) : undefined
+            }
           />
         ) : null}
-        {!isLoading && !error && filteredData && filteredData.length > 0 ? (
+        {!isLoading && !error && filteredData.length > 0 ? (
           <motion.div
             variants={staggerContainer}
             initial="initial"

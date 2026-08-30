@@ -13,10 +13,12 @@ import {
   CalendarDays,
   UserCheck,
   Share2,
+  Loader2,
 } from "lucide-react";
 import { Card, Badge } from "@/components/ui";
 import { useAuth } from "@/lib/context/AuthContext";
 import { useApi } from "@/lib/hooks/useApi";
+import { useSearchFilter } from "@/lib/hooks/useSearchFilter";
 import { apiClient } from "@/lib/api/client";
 import type { Job } from "@/lib/api/types";
 import {
@@ -34,7 +36,6 @@ type ReferralStatus = "none" | "pending" | "accepted" | "rejected";
 
 export function JobListContent() {
   const { user } = useAuth();
-  const [query, setQuery] = useState("");
   const [activeChip, setActiveChip] = useState<FilterChip>("All");
   const { data: apiJobs } = useApi("jobs:list", () => apiClient.jobs.list());
   const jobsList = useMemo(() => (apiJobs || []) as Job[], [apiJobs]);
@@ -48,24 +49,25 @@ export function JobListContent() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const filteredJobs = useMemo(() => {
-    return jobsList.filter((job) => {
-      const matchesQuery =
-        query === "" ||
-        [job.title, job.company, job.type, job.location]
-          .join(" ")
-          .toLowerCase()
-          .includes(query.toLowerCase());
-
-      let matchesChip = true;
-      if (activeChip === "Full-time") matchesChip = job.type === "Full-time";
-      else if (activeChip === "Internship") matchesChip = job.type === "Internship";
-      else if (activeChip === "Remote") matchesChip = job.remote === true;
-      else if (activeChip === "Referral Available") matchesChip = job.referralAvailable === true;
-
-      return matchesQuery && matchesChip;
-    });
-  }, [query, activeChip, jobsList]);
+  const {
+    query,
+    setQuery,
+    isDebouncing,
+    filteredItems: filteredJobs,
+    totalCount,
+    shownCount,
+    clearQuery,
+  } = useSearchFilter<Job>({
+    items: jobsList,
+    searchKeys: ["title", "company", "type", "location", "description"],
+    customFilter: (job) => {
+      if (activeChip === "Full-time") return job.type === "Full-time";
+      if (activeChip === "Internship") return job.type === "Internship";
+      if (activeChip === "Remote") return job.remote === true;
+      if (activeChip === "Referral Available") return job.referralAvailable === true;
+      return true;
+    },
+  });
 
   const openJob = useCallback((jobId: string) => {
     setSelectedJobId(jobId);
@@ -159,9 +161,21 @@ export function JobListContent() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-transparent text-sm outline-none placeholder:text-ink/35"
-            placeholder="Search job titles, companies, or locations"
+            className="w-full bg-transparent text-sm outline-none placeholder:text-ink/35 focus:ring-0"
+            placeholder="Search job titles, companies, locations, or descriptions..."
           />
+          {isDebouncing && (
+            <Loader2 size={16} className="animate-spin text-brass shrink-0" />
+          )}
+          {query && !isDebouncing && (
+            <button
+              onClick={clearQuery}
+              className="text-ink/40 hover:text-ink p-0.5 shrink-0"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
       </motion.div>
 
@@ -169,7 +183,7 @@ export function JobListContent() {
         initial={slideUp.initial}
         animate={slideUp.animate}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="mt-6 flex flex-wrap gap-2 max-w-3xl"
+        className="mt-6 flex flex-wrap gap-2 max-w-3xl items-center"
       >
         {chips.map((chip) => (
           <button
@@ -184,7 +198,25 @@ export function JobListContent() {
             {chip}
           </button>
         ))}
+
+        {(query.trim() || activeChip !== "All") && (
+          <button
+            onClick={() => {
+              clearQuery();
+              setActiveChip("All");
+            }}
+            className="text-xs font-semibold text-brass hover:underline ml-2 flex items-center gap-1"
+          >
+            <X size={13} /> Reset
+          </button>
+        )}
       </motion.div>
+
+      {totalCount > 0 && (
+        <p className="mt-6 text-xs text-ink/45">
+          Showing {shownCount} of {totalCount} opportunities
+        </p>
+      )}
 
       <div className="mt-8 flex gap-6 lg:grid lg:grid-cols-[1.2fr_1fr]">
         <div className="flex-1 min-w-0" ref={listRef}>
@@ -296,8 +328,21 @@ export function JobListContent() {
                   <div>
                     <h3 className="font-display text-2xl">No roles match</h3>
                     <p className="mt-2 max-w-prose text-sm leading-6 text-ink/60">
-                      Try a different search or filter to find what you&apos;re looking for.
+                      {query.trim()
+                        ? `No opportunities found matching "${query}". Try adjusting keywords or resetting filters.`
+                        : "Try a different search or filter to find what you're looking for."}
                     </p>
+                    {(query.trim() || activeChip !== "All") && (
+                      <button
+                        onClick={() => {
+                          clearQuery();
+                          setActiveChip("All");
+                        }}
+                        className="mt-4 text-xs font-semibold text-brass hover:underline"
+                      >
+                        Reset search &amp; filters
+                      </button>
+                    )}
                   </div>
                 </div>
               </Card>

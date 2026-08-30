@@ -16,31 +16,39 @@ import {
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
+import { useSearchFilter } from "@/lib/hooks/useSearchFilter";
 import type { Newsletter } from "@/lib/api/types";
+import { Loader2 } from "lucide-react";
 
 export const NewsletterContent = memo(function NewsletterContent() {
   const [selectedYear, setSelectedYear] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [activePdf, setActivePdf] = useState<{ title: string; url: string } | null>(null);
 
   const { data, isLoading: loading } = useApi(
     `newsletters:${selectedYear}`,
-    () => apiClient.newsletters.list(selectedYear, searchQuery)
+    () => apiClient.newsletters.list(selectedYear)
   );
 
-  const availableYears = data?.years || [2024, 2023, 2022, 2021];
+  const rawNewsletters = useMemo(() => data?.newsletters || [], [data?.newsletters]);
 
-  const filteredNewsletters = useMemo(() => {
-    const list = data?.newsletters || [];
-    return list.filter((n) => {
-      const matchSearch =
-        !searchQuery ||
-        n.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchYear =
-        selectedYear === "all" || n.year.toString() === selectedYear;
-      return matchSearch && matchYear;
-    });
-  }, [data?.newsletters, searchQuery, selectedYear]);
+  const {
+    query: searchQuery,
+    setQuery: setSearchQuery,
+    isDebouncing,
+    filteredItems: filteredNewsletters,
+    clearQuery,
+  } = useSearchFilter<Newsletter>({
+    items: rawNewsletters,
+    searchKeys: ["title"],
+    customFilter: (n) => {
+      if (selectedYear !== "all" && n.year.toString() !== selectedYear) {
+        return false;
+      }
+      return true;
+    },
+  });
+
+  const availableYears = data?.years || [2024, 2023, 2022, 2021];
 
   // Group newsletters by year for clean sections
   const groupedByYear = useMemo(() => {
@@ -83,8 +91,20 @@ export const NewsletterContent = memo(function NewsletterContent() {
             placeholder="Search newsletters by title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+            className="w-full pl-10 pr-9 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all"
           />
+          {isDebouncing && (
+            <Loader2 size={16} className="animate-spin text-blue-600 absolute right-3 top-1/2 -translate-y-1/2" />
+          )}
+          {searchQuery && !isDebouncing && (
+            <button
+              onClick={clearQuery}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
 
         {/* Year Filter Dropdown & Pills */}
@@ -127,8 +147,21 @@ export const NewsletterContent = memo(function NewsletterContent() {
           <FileText size={40} className="mx-auto text-slate-400 mb-3" />
           <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">No newsletters found</h3>
           <p className="text-sm text-slate-500 mt-1">
-            Try adjusting your search terms or year filter.
+            {searchQuery.trim()
+              ? `No newsletters match "${searchQuery}". Try adjusting your keywords or year filter.`
+              : "Try adjusting your search terms or year filter."}
           </p>
+          {(searchQuery.trim() || selectedYear !== "all") && (
+            <button
+              onClick={() => {
+                clearQuery();
+                setSelectedYear("all");
+              }}
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl hover:bg-blue-700 transition-colors"
+            >
+              Reset filters
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-10">

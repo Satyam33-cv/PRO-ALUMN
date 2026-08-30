@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
@@ -258,14 +259,17 @@ export default function DynamicCustomPage() {
                     </div>
                   );
 
-                case "image":
+                 case "image":
                   return (
                     <div key={block.id || idx} className="space-y-2 text-center">
                       {block.imageUrl && (
-                        <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg max-h-[480px]">
-                          <img
+                        <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg max-h-[480px] relative">
+                          <Image
                             src={block.imageUrl}
                             alt={block.title || "Showcase image"}
+                            width={1200}
+                            height={700}
+                            unoptimized
                             className="w-full h-full object-cover"
                           />
                         </div>

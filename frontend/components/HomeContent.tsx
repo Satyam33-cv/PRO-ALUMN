@@ -39,6 +39,55 @@ import { staggerContainer } from "@/lib/motion";
 import { Card, Badge as UiBadge } from "@/components/ui";
 import { AnnouncementBody } from "@/components/AnnouncementBody";
 
+interface HomeJob {
+  id: string;
+  title: string;
+  company: string;
+  location?: string;
+  status?: string;
+  referrals?: Array<{
+    id: string;
+    requestedBy?: { name?: string; email?: string; department?: string; rollNumber?: string; resumeUrl?: string };
+    resumeUrl?: string;
+    note?: string;
+    studentNote?: string;
+    status?: string;
+  }>;
+}
+
+interface HomeMentorship {
+  id: string;
+  student?: { name?: string; department?: string; rollNumber?: string };
+  area?: string;
+  message?: string;
+  status?: string;
+}
+
+interface HomeAlumni {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  initials?: string;
+  batchYear?: string | number;
+  batch?: string | number;
+  department?: string;
+  jobTitle?: string;
+  role?: string;
+  currentCompany?: string;
+  company?: string;
+  location?: string;
+}
+
+interface HomeAnnouncement {
+  id: string;
+  title: string;
+  body?: string;
+  content?: string;
+  isPinned?: boolean;
+  pinned?: boolean;
+  createdAt?: string;
+}
+
 export const HomeContent = memo(function HomeContent() {
   const { user } = useAuth();
   const [verifyingJob, setVerifyingJob] = useState(false);
@@ -54,18 +103,18 @@ export const HomeContent = memo(function HomeContent() {
   const { data: myJobsData, reload: reloadMyJobs } = useApi("home:my-jobs", () => apiClient.jobs.myPostings(), { enabled: user?.role === "alumni" || user?.role === "admin" });
   const { data: mentorshipData, reload: reloadMentorship } = useApi("home:mentorship", () => apiClient.mentorship.list(), { enabled: user?.role === "faculty" || user?.role === "alumni" });
 
-  const announcements = announcementsData || [];
-  const myJobs = myJobsData?.jobs || [];
-  const mentorships = mentorshipData?.mentorships || [];
+  const announcements = (announcementsData as unknown as HomeAnnouncement[]) || [];
+  const myJobs = (myJobsData?.jobs as unknown as HomeJob[]) || [];
+  const mentorships = (mentorshipData?.mentorships as unknown as HomeMentorship[]) || [];
 
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3500);
   };
 
-  const recommendedAlumni = user?.role === "student" && topAlumniData?.alumni 
-    ? topAlumniData.alumni 
-    : (alumniData || []);
+  const recommendedAlumni = (user?.role === "student" && topAlumniData?.alumni 
+    ? (topAlumniData.alumni as unknown as HomeAlumni[]) 
+    : ((alumniData || []) as unknown as HomeAlumni[]));
 
   if (!user) return null;
   const firstName = user.name.split(" ")[0];
@@ -569,7 +618,7 @@ export const HomeContent = memo(function HomeContent() {
                 </Card>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {mentorships.map((m: any) => (
+                  {mentorships.map((m) => (
                     <Card key={m.id} padding="lg" className="space-y-3">
                       <div className="flex items-start justify-between">
                         <div>
@@ -700,7 +749,7 @@ export const HomeContent = memo(function HomeContent() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {recommendedAlumni.slice(0, 6).map((alumni: any) => (
+                {recommendedAlumni.slice(0, 6).map((alumni) => (
                   <Card
                     key={alumni.id}
                     padding="md"
@@ -763,9 +812,9 @@ export const HomeContent = memo(function HomeContent() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               {[...announcements]
-                .sort((a: any, b: any) => (Boolean(a.isPinned || a.pinned) !== Boolean(b.isPinned || b.pinned) ? (a.isPinned || a.pinned ? -1 : 1) : 0))
+                .sort((a, b) => (Boolean(a.isPinned || a.pinned) !== Boolean(b.isPinned || b.pinned) ? (a.isPinned || a.pinned ? -1 : 1) : 0))
                 .slice(0, 2)
-                .map((ann: any) => (
+                .map((ann) => (
                   <Card
                     key={ann.id}
                     padding="md"

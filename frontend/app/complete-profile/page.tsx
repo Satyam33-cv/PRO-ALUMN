@@ -31,12 +31,28 @@ import {
   verifyFreeMethodAction,
 } from "@/app/actions/verification";
 
+interface CompleteProfileUser {
+  name?: string | null;
+  department?: string | null;
+  batchYear?: number | null;
+  skillsOffered?: string | null;
+  skills?: string | null;
+  skillsWanted?: string | null;
+  currentCompany?: string | null;
+  jobTitle?: string | null;
+  linkedinUrl?: string | null;
+  bio?: string | null;
+  referredByCode?: string | null;
+  email?: string | null;
+  rejectionReason?: string | null;
+}
+
 export default function CompleteProfilePage() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
+  const [userData, setUserData] = useState<CompleteProfileUser | null>(null);
   const [config, setConfig] = useState<{ mode: "paid" | "free"; feeAmount?: number }>({ mode: "free" });
   const [hasPaid, setHasPaid] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);

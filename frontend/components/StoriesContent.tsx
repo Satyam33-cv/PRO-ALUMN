@@ -24,19 +24,26 @@ type CategoryFilter = "all" | "achievements" | "career" | "featured";
 export interface StoryItem {
   id: string;
   title: string;
-  story: string;
+  story?: string;
+  excerpt?: string;
   company?: string;
   role?: string;
   imageUrl?: string;
+  avatarUrl?: string;
   isFeatured?: boolean;
   hasVoted?: boolean;
   upvoteCount?: number;
-  author?: {
+  author?: string;
+  alumni?: {
     name?: string;
     avatarUrl?: string;
+    jobTitle?: string;
+    currentCompany?: string;
   };
+  batchYear?: string | number;
   createdAt?: string;
-  [key: string]: unknown;
+  likes?: number;
+  userLiked?: boolean;
 }
 
 export function StoriesContent() {
@@ -201,7 +208,7 @@ export function StoriesContent() {
                   <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 font-bold overflow-hidden">
                     {s.alumni?.avatarUrl || s.avatarUrl ? (
                       <Image
-                        src={s.alumni?.avatarUrl || s.avatarUrl}
+                        src={(s.alumni?.avatarUrl || s.avatarUrl) as string}
                         alt={s.alumni?.name || s.author || "Author"}
                         width={44}
                         height={44}

@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs');
 const prisma = require('../db');
 const { authenticate, requireRole } = require('../middleware/auth');
 const email = require('../services/email');
+const { deleteFromStorage } = require('../services/supabase');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
@@ -242,15 +243,26 @@ router.patch('/users/:id/status', async (req, res) => {
 });
 
 // =================== DELETE /api/admin/users/:id ===================
-// Super Admin: Delete user account
+// Super Admin: Delete user account & purge storage files
 router.delete('/users/:id', async (req, res) => {
   try {
     if (req.params.id === req.user.id) {
       return res.status(400).json({ error: 'Cannot delete your own super admin account' });
     }
 
+    const userToDelete = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: { resumeUrl: true, avatarUrl: true, idCardUrl: true },
+    });
+
+    if (userToDelete) {
+      if (userToDelete.resumeUrl) await deleteFromStorage('resumes', userToDelete.resumeUrl).catch(() => {});
+      if (userToDelete.avatarUrl) await deleteFromStorage('avatars', userToDelete.avatarUrl).catch(() => {});
+      if (userToDelete.idCardUrl) await deleteFromStorage('certificates', userToDelete.idCardUrl).catch(() => {});
+    }
+
     await prisma.user.delete({ where: { id: req.params.id } });
-    res.json({ message: 'User account deleted successfully' });
+    res.json({ message: 'User account and associated storage purged successfully' });
   } catch (err) {
     console.error('DELETE /admin/users/:id error:', err);
     res.status(500).json({ error: 'Failed to delete user account' });

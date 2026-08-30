@@ -21,7 +21,7 @@ export interface MarketVideo {
     batchYear?: number | null;
     avatarUrl?: string | null;
   } | null;
-  [key: string]: unknown;
+  createdAt?: string | Date;
 }
 
 export function MarketContent({ 
@@ -256,7 +256,7 @@ export function MarketContent({
                         </span>
                       </div>
                       <span className="text-[10px] text-slate-400 font-mono">
-                        {new Date(video.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
+                        {video.createdAt ? new Date(video.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "Recently"}
                       </span>
                     </div>
                   </div>

@@ -26,6 +26,7 @@ export type AuthUser = {
   firebaseUid?: string;
   photoURL?: string;
   avatarUrl?: string;
+  profileCompleteness?: number;
 };
 
 type AuthContextValue = {

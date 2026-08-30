@@ -37,6 +37,23 @@ const mockAvailability: Record<string, boolean> = {
   "Fri-10:00": true,
 };
 
+interface TopMatchAlumni {
+  id?: string;
+  name?: string;
+  avatarUrl?: string;
+  initials?: string;
+  jobTitle?: string;
+  role?: string;
+  currentCompany?: string;
+  company?: string;
+  batchYear?: string | number;
+  batch?: string | number;
+  email?: string;
+  matchScore?: number;
+  match?: number;
+  skills?: string | string[];
+}
+
 const mockChatPreview = [
   { id: "c1", text: "Hi! I'd love some guidance on breaking into fintech.", time: "10:00 AM", sent: true },
   { id: "c2", text: "Great choice! What's your current background?", time: "10:05 AM", sent: false },
@@ -216,7 +233,6 @@ interface TopMatchAlumni {
 
 export function MentorshipContent() {
   const router = useRouter();
-  const { user } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [startingChat, setStartingChat] = useState(false);
   const [calendarWeek, setCalendarWeek] = useState<number>(0);
@@ -224,7 +240,15 @@ export function MentorshipContent() {
   
   const requests = useMemo(() => {
     if (!mentorshipData?.mentorships) return [];
-    return mentorshipData.mentorships.map((m: any) => {
+    return (mentorshipData.mentorships as {
+      id: string;
+      student?: { name?: string; department?: string; batchYear?: string | number; avatarUrl?: string };
+      mentor?: { name?: string; jobTitle?: string; batchYear?: string | number; avatarUrl?: string };
+      area?: string;
+      message?: string;
+      status?: string;
+      createdAt?: string;
+    }[]).map((m) => {
       const studentName = m.student?.name || m.mentor?.name || "Unknown";
       const studentInitials = studentName.split(" ").map((n: string) => n[0]).join("");
       return {
@@ -351,6 +375,7 @@ export function MentorshipContent() {
               </button>
               <button
                 onClick={async () => {
+                  if (!topMatch.id) return;
                   try {
                     setStartingChat(true);
                     const res = await apiClient.chat.createThread(topMatch.id);
@@ -366,7 +391,7 @@ export function MentorshipContent() {
                     setStartingChat(false);
                   }
                 }}
-                disabled={startingChat}
+                disabled={startingChat || !topMatch.id}
                 className="inline-flex items-center gap-1.5 rounded-full border border-paper/20 px-5 py-2.5 text-sm font-semibold text-paper hover:bg-paper/10 transition-colors disabled:opacity-50"
               >
                 {startingChat ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
@@ -382,9 +407,9 @@ export function MentorshipContent() {
       </motion.div>
 
       <AnimatePresence>
-        {modalOpen && topMatch && (
+        {modalOpen && topMatch && topMatch.id && (
           <RequestModal
-            name={topMatch.name}
+            name={topMatch.name || "Mentor"}
             mentorId={topMatch.id}
             mentorEmail={topMatch.email || ""}
             onClose={() => setModalOpen(false)}

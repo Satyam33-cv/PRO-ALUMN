@@ -28,6 +28,7 @@ import {
   Camera,
   Download,
   Award,
+  Heart,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { Card, Badge, ProfileEditModal } from "@/components/ui";
@@ -966,7 +967,7 @@ export function ProfileContent() {
             {currentTimeline.length === 0 ? (
               <p className="text-sm text-ink/50 text-center py-4">No timeline events added yet.</p>
             ) : (
-              currentTimeline.map((entry: any, i: number) => (
+              currentTimeline.map((entry: { role?: string; company?: string; range?: string }, i: number) => (
                 <div key={i} className="flex gap-4 group">
                   <div className="flex flex-col items-center">
                     <div className="h-3 w-3 rounded-full bg-brass mt-1" />

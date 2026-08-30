@@ -114,7 +114,7 @@ export function ChatContent() {
   );
   const recommendedAlumni = recommendedAlumniData || [];
 
-  const { data: chatData } = useApi(
+  const { data: chatData, reload: reloadChatData } = useApi(
     "chat:list",
     () => apiClient.chat.list()
   );
@@ -352,7 +352,7 @@ export function ChatContent() {
       socket.emit("send_message", { ...newMsg, threadId, roomId: threadId });
       
       await apiClient.chat.sendMessage(threadId, text);
-      refreshThreads();
+      reloadChatData();
     } catch (err) {
       console.error(err);
     }

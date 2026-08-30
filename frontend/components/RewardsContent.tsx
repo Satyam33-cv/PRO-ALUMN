@@ -146,17 +146,6 @@ export const RewardsContent = memo(function RewardsContent() {
         </div>
       </div>
 
-      {claimSuccess && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-sm font-semibold flex items-center gap-3"
-        >
-          <Sparkles size={18} className="text-emerald-500" />
-          {claimSuccess}
-        </motion.div>
-      )}
-
       {/* ================= NAVIGATION TABS ================= */}
       <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
         <button

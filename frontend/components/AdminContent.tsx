@@ -3,6 +3,7 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Users,
   Activity,
@@ -75,6 +76,88 @@ interface PageBlock {
   faqs?: Array<{ question: string; answer: string }>;
 }
 
+interface AdminVideo {
+  id: string;
+  title: string;
+  price: number;
+  description?: string;
+  url: string;
+  uploader?: { name?: string; email?: string };
+  status?: string;
+}
+
+interface AdminStory {
+  id: string;
+  title: string;
+  story?: string;
+  company?: string;
+  role?: string;
+  alumni?: { name?: string };
+  isApproved?: boolean;
+}
+
+interface AdminJob {
+  id: string;
+  title: string;
+  company: string;
+  status?: string;
+  postedBy?: { name?: string };
+}
+
+interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  isVerified?: boolean;
+  isActive?: boolean;
+  profileStatus?: string;
+  batchYear?: number | string;
+  department?: string;
+  verificationMethod?: string;
+  idCardUrl?: string;
+  referredByCode?: string;
+  currentCompany?: string;
+  jobTitle?: string;
+  lastJobUpdate?: string;
+  profileCompleteness?: number;
+  points?: number;
+  totalPoints?: number;
+  currentStreak?: number;
+}
+
+interface AdminAnnouncement {
+  id: string;
+  title: string;
+  body?: string;
+  content?: string;
+  pinned?: boolean;
+  createdAt?: string;
+}
+
+interface AdminEvent {
+  id: string;
+  title: string;
+  description?: string;
+  date?: string;
+  mode?: string;
+  location?: string;
+  coverImage?: string;
+  maxCapacity?: number;
+  _count?: { rsvps?: number };
+}
+
+interface LiveActivity {
+  id?: string;
+  userId?: string;
+  userName?: string;
+  userRole?: string;
+  summary?: string;
+  message?: string;
+  pointsEarned?: number;
+  timestamp?: string | number | Date;
+}
+
 const RESERVED_SLUGS = new Set([
   "admin", "api", "login", "register", "home", "directory", "jobs", "referrals",
   "stories", "announcements", "chat", "events", "mentorship", "giving", "education",
@@ -92,7 +175,7 @@ export function AdminContent() {
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [verifiedFilter, setVerifiedFilter] = useState("ALL");
   const [userPage, setUserPage] = useState(1);
-  const [selectedUserForDelete, setSelectedUserForDelete] = useState<any>(null);
+  const [selectedUserForDelete, setSelectedUserForDelete] = useState<{ id: string; name?: string; email?: string } | null>(null);
 
   // Moderation state
   const [moderatingId, setModeratingId] = useState<string | null>(null);
@@ -113,11 +196,21 @@ export function AdminContent() {
   // CSV Import state
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [importingCsv, setImportingCsv] = useState(false);
-  const [csvResult, setCsvResult] = useState<any>(null);
+  const [csvResult, setCsvResult] = useState<{
+    count?: number;
+    errors?: string[];
+    imported?: number;
+    summary?: {
+      imported?: number;
+      skipped?: number;
+      failed?: number;
+      total?: number;
+    };
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Live Telemetry state
-  const [liveActivities, setLiveActivities] = useState<any[]>([]);
+  const [liveActivities, setLiveActivities] = useState<LiveActivity[]>([]);
   const [isActivityPaused, setIsActivityPaused] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
 
@@ -176,7 +269,7 @@ export function AdminContent() {
     socket.emit("authenticate", token);
     socket.emit("admin_join", token);
 
-    const onPresenceSnapshot = (snapshot: any[]) => {
+    const onPresenceSnapshot = (snapshot: (string | { userId: string })[]) => {
       if (Array.isArray(snapshot)) {
         const ids = snapshot.map((item) => (typeof item === "string" ? item : item.userId));
         setOnlineUsers(new Set(ids));
@@ -198,7 +291,7 @@ export function AdminContent() {
       });
     };
 
-    const onActivityStream = (activity: any) => {
+    const onActivityStream = (activity: Record<string, unknown>) => {
       if (!isActivityPaused) {
         setLiveActivities((prev) => [activity, ...prev].slice(0, 200));
       }
@@ -219,7 +312,7 @@ export function AdminContent() {
 
   // Queries
   const { data: statsData, reload: reloadStats } = useApi("admin:stats", () => apiClient.admin.stats());
-  const { data: healthData, reload: reloadHealth } = useApi("admin:health", () => apiClient.admin.systemHealth());
+  const { data: healthDataResult, reload: reloadHealth } = useApi("admin:health", () => apiClient.admin.systemHealth());
   const { data: usersData, reload: reloadUsers } = useApi(
     `admin:users:${roleFilter}:${verifiedFilter}:${userSearch}:${userPage}`,
     () => {
@@ -241,23 +334,55 @@ export function AdminContent() {
   const { data: eventsData, reload: reloadEvents } = useApi("admin:events", () => apiClient.events.list());
   const { data: newslettersData, reload: reloadNewsletters } = useApi("admin:newsletters", () => apiClient.newsletters.list());
 
-  const stats = statsData?.stats || {};
-  const users = usersData?.users || [];
-  const totalUserPages = usersData?.pagination?.pages || 1;
-  const pendingStories = (storiesData?.stories || []).filter((s) => !s.isApproved);
-  const jobs = jobsData?.jobs || [];
-  const staleUsers = staleData?.users || [];
-  const announcements = announcementsData || [];
+  const stats = (statsData?.stats || {}) as {
+    users?: { total?: number };
+    events?: { upcoming?: number };
+    referrals?: {
+      byStatus?: {
+        PENDING?: number;
+        pending?: number;
+        ACCEPTED?: number;
+        accepted?: number;
+        REFERRED?: number;
+        referred?: number;
+        HIRED?: number;
+        hired?: number;
+      };
+    };
+  };
+  const healthData = (healthDataResult || {}) as {
+    status?: string;
+    latencyMs?: number;
+    uptimeSeconds?: number;
+    memory?: { rssMb?: number };
+    nodeVersion?: string;
+  };
+  const users = (usersData?.users as unknown as AdminUser[]) || [];
+  const totalUserPages = Number(usersData?.pagination?.pages) || 1;
+  const pendingStories = ((storiesData?.stories || []) as unknown as AdminStory[]).filter((s) => !s.isApproved);
+  const jobs = (jobsData?.jobs as unknown as AdminJob[]) || [];
+  const staleUsers = (staleData?.users as unknown as AdminUser[]) || [];
+  const announcements = (announcementsData as unknown as AdminAnnouncement[]) || [];
   const approvals = approvalsData || {};
-  const customPages = pagesData?.pages || [];
-  const events = Array.isArray(eventsData) ? eventsData : (eventsData as any)?.events || [];
-  const newsletters = Array.isArray(newslettersData) ? newslettersData : (newslettersData as any)?.newsletters || [];
-  const pendingVideos = (videosData?.videos || approvals?.pendingVideos || []).filter((v: any) => v.status === "PENDING");
+  const customPages = ((pagesData?.pages || []) as Array<{
+    id: string;
+    title: string;
+    slug: string;
+    description?: string;
+    heroTitle?: string;
+    heroSubtitle?: string;
+    status?: string;
+    blocks?: PageBlock[];
+    updatedAt?: string;
+  }>);
+  const events = (Array.isArray(eventsData) ? eventsData : ((eventsData as unknown) as { events?: unknown[] })?.events || []) as unknown as AdminEvent[];
+  const newsletters = Array.isArray(newslettersData) ? newslettersData : (newslettersData as { newsletters?: unknown[] })?.newsletters || [];
+  const pendingVideos = (((videosData?.videos || (approvals as { pendingVideos?: AdminVideo[] })?.pendingVideos || []) as unknown as AdminVideo[])).filter((v) => v.status === "PENDING");
 
   // Unverified & Pending Profiles queue
   const unverifiedAlumni = useMemo(
-    () => users.filter((u: any) => u.profileStatus === "PENDING" || (!u.isVerified && u.role === "ALUMNI")),
-    [users]
+    () => ((usersData?.users || []) as unknown as AdminUser[]).filter((u) => u.profileStatus === "PENDING" || (!u.isVerified && u.role === "ALUMNI")),
+    [usersData?.users]
   );
 
   // =================== PROFILE APPROVAL & REJECTION (SERVER ACTIONS) ===================
@@ -273,8 +398,9 @@ export function AdminContent() {
       reloadUsers();
       reloadApprovals();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to approve profile");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to approve profile";
+      showToast(message);
     } finally {
       setModeratingId(null);
     }
@@ -293,8 +419,9 @@ export function AdminContent() {
       reloadUsers();
       reloadApprovals();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to reject profile");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to reject profile";
+      showToast(message);
     } finally {
       setModeratingId(null);
     }
@@ -313,8 +440,9 @@ export function AdminContent() {
       reloadVideos();
       reloadApprovals();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to approve video");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to approve video";
+      showToast(message);
     } finally {
       setModeratingId(null);
     }
@@ -332,8 +460,9 @@ export function AdminContent() {
       reloadVideos();
       reloadApprovals();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to reject video");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to reject video";
+      showToast(message);
     } finally {
       setModeratingId(null);
     }
@@ -345,8 +474,9 @@ export function AdminContent() {
       showToast(`User role updated to ${newRole}`);
       reloadUsers();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to change role");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to change role";
+      showToast(message);
     }
   };
 
@@ -355,8 +485,9 @@ export function AdminContent() {
       await apiClient.admin.updateUserStatus(id, !currentStatus);
       showToast(`User account ${!currentStatus ? "activated" : "suspended"}`);
       reloadUsers();
-    } catch (err: any) {
-      showToast(err.message || "Failed to update status");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to update status";
+      showToast(message);
     }
   };
 
@@ -368,8 +499,9 @@ export function AdminContent() {
       setSelectedUserForDelete(null);
       reloadUsers();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to delete user");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to delete user";
+      showToast(message);
     }
   };
 
@@ -382,8 +514,9 @@ export function AdminContent() {
       reloadStories();
       reloadStats();
       reloadApprovals();
-    } catch (err: any) {
-      showToast(err.message || "Failed to moderate story");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to moderate story";
+      showToast(message);
     } finally {
       setModeratingId(null);
     }
@@ -397,8 +530,9 @@ export function AdminContent() {
       showToast(`Job status updated to ${nextStatus}`);
       reloadJobs();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to update job status");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to update job status";
+      showToast(message);
     }
   };
 
@@ -408,8 +542,9 @@ export function AdminContent() {
       showToast("Job posting deleted");
       reloadJobs();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to delete job");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to delete job";
+      showToast(message);
     }
   };
 
@@ -426,13 +561,14 @@ export function AdminContent() {
         priority: broadcastPriority,
         isPinned: broadcastPinned,
       });
-      showToast(`Broadcast published! Notified ${res.notifiedCount || 0} members.`);
+      showToast(`Broadcast published! Notified ${(res as unknown as { notifiedCount?: number })?.notifiedCount || 0} members.`);
       setBroadcastTitle("");
       setBroadcastContent("");
       reloadAnnouncements();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to send broadcast");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to send broadcast";
+      showToast(message);
     } finally {
       setSendingBroadcast(false);
     }
@@ -443,8 +579,9 @@ export function AdminContent() {
     try {
       await apiClient.admin.nudgeUser(id);
       showToast(`Re-engagement nudge sent to ${name}`);
-    } catch (err: any) {
-      showToast(err.message || "Failed to send nudge");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to send nudge";
+      showToast(message);
     }
   };
 
@@ -457,13 +594,14 @@ export function AdminContent() {
       const formData = new FormData();
       formData.append("file", csvFile);
       const res = await apiClient.admin.importCsv(formData);
-      setCsvResult(res);
-      showToast(`Imported ${res.summary?.imported || 0} alumni successfully!`);
+      setCsvResult(res as unknown as typeof csvResult);
+      showToast(`Imported ${(res as unknown as { summary?: { imported?: number }; importedCount?: number })?.summary?.imported || (res as unknown as { importedCount?: number })?.importedCount || 0} alumni successfully!`);
       setCsvFile(null);
       reloadUsers();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "CSV import failed");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "CSV import failed";
+      showToast(message);
     } finally {
       setImportingCsv(false);
     }
@@ -484,8 +622,9 @@ export function AdminContent() {
       setEditingEventId(null);
       reloadEvents();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to save event");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to save event";
+      showToast(message);
     }
   };
 
@@ -495,8 +634,9 @@ export function AdminContent() {
       showToast("Event removed");
       reloadEvents();
       reloadStats();
-    } catch (err: any) {
-      showToast(err.message || "Failed to delete event");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to delete event";
+      showToast(message);
     }
   };
 
@@ -514,8 +654,9 @@ export function AdminContent() {
       setNewsletterModalOpen(false);
       setEditingNewsletterId(null);
       reloadNewsletters();
-    } catch (err: any) {
-      showToast(err.message || "Failed to save newsletter");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to save newsletter";
+      showToast(message);
     }
   };
 
@@ -524,8 +665,9 @@ export function AdminContent() {
       await apiClient.admin.newsletters.delete(id);
       showToast("Newsletter deleted");
       reloadNewsletters();
-    } catch (err: any) {
-      showToast(err.message || "Failed to delete newsletter");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to delete newsletter";
+      showToast(message);
     }
   };
 
@@ -550,8 +692,9 @@ export function AdminContent() {
       setPageModalOpen(false);
       setEditingPageId(null);
       reloadPages();
-    } catch (err: any) {
-      showToast(err.message || "Failed to save page");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to save page";
+      showToast(message);
     }
   };
 
@@ -560,8 +703,9 @@ export function AdminContent() {
       await apiClient.admin.pages.delete(id);
       showToast("Page deleted");
       reloadPages();
-    } catch (err: any) {
-      showToast(err.message || "Failed to delete page");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to delete page";
+      showToast(message);
     }
   };
 
@@ -896,7 +1040,7 @@ export function AdminContent() {
                           <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase">
                             {act.userRole || "STUDENT"}
                           </span>
-                          {act.pointsEarned > 0 && (
+                          {Boolean(act.pointsEarned && act.pointsEarned > 0) && (
                             <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
                               <Coins size={10} /> +{act.pointsEarned} pts
                             </span>
@@ -991,7 +1135,7 @@ export function AdminContent() {
                       </td>
                     </tr>
                   ) : (
-                    users.map((u: any) => {
+                    users.map((u) => {
                       const isOnline = onlineUsers.has(u.id);
                       return (
                         <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
@@ -1166,7 +1310,7 @@ export function AdminContent() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {pendingVideos.map((v: any) => (
+                {pendingVideos.map((v) => (
                   <Card key={v.id} padding="md" className="space-y-3 border-purple-500/20">
                     <div className="flex items-start justify-between gap-2">
                       <div>
@@ -1249,7 +1393,7 @@ export function AdminContent() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-ink/5">
-                    {unverifiedAlumni.map((u: any) => (
+                    {unverifiedAlumni.map((u) => (
                       <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
                         <td className="py-3 px-4">
                           <p className="font-bold text-slate-900 dark:text-slate-100">{u.name}</p>
@@ -1353,7 +1497,7 @@ export function AdminContent() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {pendingStories.map((s: any) => (
+                {pendingStories.map((s) => (
                   <Card key={s.id} padding="md" className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div>
@@ -1410,7 +1554,7 @@ export function AdminContent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-ink/5">
-                  {jobs.map((j: any) => (
+                  {jobs.map((j) => (
                     <tr key={j.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
                       <td className="py-3 px-4 font-bold text-slate-900 dark:text-slate-100">{j.title}</td>
                       <td className="py-3 px-4">{j.company}</td>
@@ -1424,7 +1568,7 @@ export function AdminContent() {
                       </td>
                       <td className="py-3 px-4 text-right space-x-2">
                         <button
-                          onClick={() => handleToggleJobStatus(j.id, j.status)}
+                          onClick={() => handleToggleJobStatus(j.id, j.status || "OPEN")}
                           className="text-xs text-blue-600 hover:underline font-medium cursor-pointer"
                         >
                           {j.status === "OPEN" ? "Close" : "Reopen"}
@@ -1481,7 +1625,7 @@ export function AdminContent() {
                     </td>
                   </tr>
                 ) : (
-                  staleUsers.map((u: any) => (
+                  staleUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
                       <td className="py-3 px-4">
                         <p className="font-bold text-slate-900 dark:text-slate-100">{u.name}</p>
@@ -1641,7 +1785,7 @@ export function AdminContent() {
                   Existing Broadcast Feed ({announcements.length})
                 </h4>
                 <div className="grid grid-cols-1 gap-3">
-                  {announcements.map((a: any) => (
+                  {announcements.map((a) => (
                     <Card key={a.id} padding="md" className="flex items-start justify-between gap-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -1712,7 +1856,7 @@ export function AdminContent() {
                         </td>
                       </tr>
                     ) : (
-                      events.map((ev: any) => (
+                      events.map((ev) => (
                         <tr key={ev.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
                           <td className="py-3 px-4">
                             <p className="font-bold text-slate-900 dark:text-slate-100">{ev.title}</p>
@@ -1795,10 +1939,17 @@ export function AdminContent() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {newsletters.map((nl: any) => (
+                {newsletters.map((nl) => (
                   <Card key={nl.id} padding="md" className="space-y-3">
                     <div className="h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
-                      <img src={nl.coverImage} alt={nl.title} className="w-full h-full object-cover" />
+                      <Image
+                        src={nl.coverImage}
+                        alt={nl.title}
+                        width={600}
+                        height={300}
+                        unoptimized
+                        className="w-full h-full object-cover"
+                      />
                       <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-xs text-white text-[10px] font-mono font-bold">
                         {nl.year}
                       </span>
@@ -1903,7 +2054,7 @@ export function AdminContent() {
                         </td>
                       </tr>
                     ) : (
-                      customPages.map((pg: any) => (
+                      customPages.map((pg) => (
                         <tr key={pg.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-2">

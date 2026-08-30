@@ -76,14 +76,30 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // ── 5. Admins bypass profile gates ──
-  if (payload.role === "ADMIN") {
+  // ── 5. Admin route protection ──
+  const userRole = payload.role?.toUpperCase();
+  if (pathname.startsWith("/admin")) {
+    if (userRole !== "ADMIN") {
+      return NextResponse.redirect(new URL("/home", request.url));
+    }
     return NextResponse.next();
+  }
+
+  // Admins bypass remaining profile status gates
+  if (userRole === "ADMIN") {
+    return NextResponse.next();
+  }
+
+  // ── 6. Creator route protection (jobs/new, events/new) ──
+  if (pathname.startsWith("/jobs/new") || pathname.startsWith("/events/new")) {
+    if (userRole !== "ALUMNI" && userRole !== "FACULTY" && userRole !== "ADMIN") {
+      return NextResponse.redirect(new URL("/jobs", request.url));
+    }
   }
 
   const profileStatus = payload.profileStatus?.toUpperCase();
 
-  // ── 6. Profile status gates ──
+  // ── 7. Profile status gates ──
   // INCOMPLETE or REJECTED → must complete/fix profile
   if (profileStatus === "INCOMPLETE" || profileStatus === "REJECTED") {
     if (pathname !== "/complete-profile" && pathname !== "/login" && pathname !== "/register") {

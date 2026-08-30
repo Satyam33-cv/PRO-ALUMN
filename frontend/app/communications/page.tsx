@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { RoleShell } from "@/components/RoleShell";
 import { Card } from "@/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
@@ -225,9 +226,12 @@ export default function CommunicationsPage() {
                 onClick={() => connectGoogleWorkspace()}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 shadow-xs hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                <img
+                <Image
                   src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                   alt="Google"
+                  width={16}
+                  height={16}
+                  unoptimized
                   className="w-4 h-4"
                 />
                 <span>Connect Google Account</span>

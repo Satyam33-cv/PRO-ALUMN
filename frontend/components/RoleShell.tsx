@@ -122,7 +122,7 @@ export interface NotificationShellItem {
   [key: string]: unknown;
 }
 
-function NotificationsPanel({
+function NotificationPanel({
   open,
   onClose,
   triggerRef,
@@ -399,6 +399,7 @@ export function RoleShell({
                   onClick={() => mobile && setSidebarOpen(false)}
                   className={baseItemClasses}
                   title={compact ? item.title : undefined}
+                  aria-current={isExactActive ? "page" : undefined}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className={`w-5 h-5 shrink-0 ${isExactActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
@@ -416,6 +417,7 @@ export function RoleShell({
                   onClick={() => handleToggle(item.title)}
                   className={baseItemClasses}
                   title={compact ? item.title : undefined}
+                  aria-expanded={isOpen}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className={`w-5 h-5 shrink-0 ${isDropActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
@@ -444,6 +446,7 @@ export function RoleShell({
                             key={subItem.title}
                             href={subItem.href as `/${string}`}
                             onClick={() => mobile && setSidebarOpen(false)}
+                            aria-current={isSubActive ? "page" : undefined}
                             className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                               isSubActive 
                                 ? 'text-blue-700 bg-blue-50/50 dark:text-blue-400 dark:bg-blue-500/10 font-semibold' 

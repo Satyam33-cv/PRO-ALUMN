@@ -317,7 +317,8 @@ export const apiClient = {
       });
       return res.announcement;
     },
-    togglePin: async (): Promise<boolean> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    togglePin: async (_id?: string): Promise<boolean> => {
       return true; // Wait backend to support this properly
     },
   },

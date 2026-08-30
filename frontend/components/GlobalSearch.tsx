@@ -41,148 +41,6 @@ export interface SearchResultItem {
   date?: string;
 }
 
-// Fallback Google Docs records to ensure instant rich content
-const FALLBACK_DOCS: SearchResultItem[] = [
-  {
-    id: "doc-sample-1",
-    type: "doc",
-    title: "Alumni Mentorship Playbook 2025",
-    subtitle: "Guide & Best Practices for Alumni Mentors & Mentees",
-    snippet: "Structured framework for monthly check-ins, goal setting, career transition milestones, and technical interview preparation.",
-    tag: "Mentorship",
-    url: "/docs?search=Mentorship+Playbook",
-    badge: "Google Doc",
-    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-    date: "Updated yesterday",
-  },
-  {
-    id: "doc-sample-2",
-    type: "doc",
-    title: "Tech Career Transition & Resume Guide",
-    subtitle: "Curated by Engineering Alumni from Google, Stripe & Meta",
-    snippet: "Comprehensive resume formatting templates, STAR story breakdowns, and system design reading lists for alumni advancing into senior roles.",
-    tag: "Career",
-    url: "/docs?search=Career+Transition",
-    badge: "Google Doc",
-    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-    date: "3 days ago",
-  },
-  {
-    id: "doc-sample-3",
-    type: "doc",
-    title: "Annual Alumni Association Bylaws & Minutes",
-    subtitle: "Official records, leadership roster, and regional chapter guidelines",
-    snippet: "Documentation of the annual general assembly, charter revisions, scholarship allocations, and global chapter bylaws.",
-    tag: "Governance",
-    url: "/docs?search=Bylaws",
-    badge: "Google Doc",
-    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-    date: "Last week",
-  },
-  {
-    id: "doc-sample-4",
-    type: "doc",
-    title: "Startup Pitch Deck & Fundraising Checklist",
-    subtitle: "Alumni Founders Group Resource Library",
-    snippet: "Step-by-step pitch deck structure, cap table hygiene, angel investor outreach templates, and demo day memo notes.",
-    tag: "Entrepreneurship",
-    url: "/docs?search=Pitch+Deck",
-    badge: "Google Doc",
-    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-    date: "May 2025",
-  },
-];
-
-// Fallback Google Keep Memos & Notes
-const FALLBACK_KEEP_NOTES: SearchResultItem[] = [
-  {
-    id: "keep-sample-1",
-    type: "keep",
-    title: "Meeting Memo: Q3 Mentorship Cohort Kickoff",
-    subtitle: "Action items & timeline for incoming student matches",
-    snippet: "1. Finalize mentor-mentee pairing algorithms by Friday. 2. Distribute orientation Google Doc to 150 participants. 3. Confirm keynote alumni speaker.",
-    tag: "Meeting Memo",
-    color: "bg-amber-50",
-    url: "/keep?search=Mentorship+Cohort",
-    badge: "Keep Memo",
-    badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
-    date: "Pinned note",
-  },
-  {
-    id: "keep-sample-2",
-    type: "keep",
-    title: "Notes: Alumni Speaker Series - AI in Industry",
-    subtitle: "Discussion points with Elena Rostova & Marcus Vance",
-    snippet: "Key topics: LLMs in production, scaling infra, career mobility from IC to Staff+. Suggested Q&A format and alumni networking breakout rooms.",
-    tag: "Speaker Notes",
-    color: "bg-emerald-50",
-    url: "/keep?search=Speaker+Series",
-    badge: "Keep Memo",
-    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    date: "2 days ago",
-  },
-  {
-    id: "keep-sample-3",
-    type: "keep",
-    title: "Checklist: Annual Alumni Reunion Mixer",
-    subtitle: "Logistics, venue booking & catering reminders",
-    snippet: "Venue walkthrough booked for next Tuesday. Digital nametags ready via AlumniConnect QR codes. Catering deposit confirmed.",
-    tag: "Event Checklist",
-    color: "bg-sky-50",
-    url: "/keep?search=Reunion+Mixer",
-    badge: "Keep Memo",
-    badgeColor: "bg-sky-50 text-sky-700 border-sky-200",
-    date: "4 days ago",
-  },
-  {
-    id: "keep-sample-4",
-    type: "keep",
-    title: "Memo: Candidate Referral Screening Tips",
-    subtitle: "Quick notes for alumni submitting company referrals",
-    snippet: "Ensure candidates have updated portfolio links and customized cover notes. Review matching requirements on job listings before submitting.",
-    tag: "Referrals",
-    color: "bg-purple-50",
-    url: "/keep?search=Referral+Screening",
-    badge: "Keep Memo",
-    badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
-    date: "1 week ago",
-  },
-];
-
-// System Actions for the Command Palette
-const SYSTEM_ACTIONS: SearchResultItem[] = [
-  {
-    id: "action-theme",
-    type: "action",
-    title: "Toggle Dark Mode",
-    subtitle: "Switch between light and dark theme",
-    tag: "System",
-    url: "action:theme",
-    badge: "Action",
-    badgeColor: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
-  },
-  {
-    id: "action-profile",
-    type: "action",
-    title: "View My Profile",
-    subtitle: "Manage your account and preferences",
-    tag: "System",
-    url: "/profile",
-    badge: "Action",
-    badgeColor: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
-  },
-  {
-    id: "action-signout",
-    type: "action",
-    title: "Sign Out",
-    subtitle: "Log out of your PRO ALUMN account",
-    tag: "System",
-    url: "action:signout",
-    badge: "Action",
-    badgeColor: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/50",
-  },
-];
-
 export function GlobalSearch() {
   const router = useRouter();
   const { accessToken, signOut } = useAuth();
@@ -194,6 +52,8 @@ export function GlobalSearch() {
   const [firestoreDocs, setFirestoreDocs] = useState<SearchResultItem[]>([]);
   const [firestoreNotes, setFirestoreNotes] = useState<SearchResultItem[]>([]);
   const [driveDocs, setDriveDocs] = useState<SearchResultItem[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const resultsContainerRef = useRef<HTMLDivElement>(null);
 
   const [backendResults, setBackendResults] = useState<{
     alumni?: Array<{ id: string; name: string; jobTitle?: string; currentCompany?: string; batchYear?: number | string; department?: string }>;
@@ -220,7 +80,6 @@ export function GlobalSearch() {
     return () => clearTimeout(timer);
   }, [queryText, selectedCategory]);
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -336,8 +195,8 @@ export function GlobalSearch() {
   }, [isOpen]);
 
   const allResults = useMemo(() => {
-    const combinedDocs = [...driveDocs, ...firestoreDocs, ...DEFAULT_DOCS];
-    const combinedNotes = [...firestoreNotes, ...DEFAULT_NOTES];
+    const combinedDocs = [...driveDocs, ...firestoreDocs];
+    const combinedNotes = [...firestoreNotes];
 
     const SYSTEM_ACTIONS: SearchResultItem[] = [
       {

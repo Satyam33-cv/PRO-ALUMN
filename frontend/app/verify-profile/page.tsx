@@ -17,11 +17,14 @@ import { getCurrentUserVerificationStatusAction } from "@/app/actions/verificati
 import Link from "next/link";
 
 interface VerificationUser {
-  name?: string;
-  profileStatus?: string;
-  verificationMethod?: string;
-  rejectionReason?: string;
-  [key: string]: unknown;
+  name?: string | null;
+  profileStatus?: string | null;
+  verificationMethod?: string | null;
+  rejectionReason?: string | null;
+  email?: string | null;
+  department?: string | null;
+  batchYear?: number | string | null;
+  referredByCode?: string | null;
 }
 
 export default function VerifyProfileHoldingPage() {

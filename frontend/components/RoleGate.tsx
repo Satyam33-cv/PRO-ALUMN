@@ -12,9 +12,20 @@ export function RoleGate({
   allow: UserRole[];
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  if (user?.role && allow.includes(user.role)) return <>{children}</>;
+  if (loading) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <div className="h-7 w-7 animate-spin rounded-full border-2 border-slate-300 dark:border-slate-700 border-t-blue-600" />
+      </div>
+    );
+  }
+
+  const userRole = user?.role?.toLowerCase() as UserRole | undefined;
+  if (userRole && allow.map((r) => r.toLowerCase()).includes(userRole)) {
+    return <>{children}</>;
+  }
 
   return (
     <Card padding="lg" className="mx-auto max-w-xl text-center">
