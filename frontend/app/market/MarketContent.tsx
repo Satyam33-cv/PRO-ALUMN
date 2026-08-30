@@ -1,18 +1,35 @@
 "use client";
 
 import { RoleShell } from "@/components/RoleShell";
-import { Card, Badge } from "@/components/ui";
+import { Card } from "@/components/ui";
 import { Video, Plus, CheckCircle2, Lock, Play, Flame, User as UserIcon, Coins } from "lucide-react";
 import { useState, useTransition } from "react";
 import { submitVideoAction, unlockVideoAction } from "../actions/market";
 import Image from "next/image";
+
+export interface MarketVideo {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  price: number;
+  duration?: string | null;
+  thumbnailUrl?: string | null;
+  uploader?: {
+    name?: string | null;
+    currentCompany?: string | null;
+    batchYear?: number | null;
+    avatarUrl?: string | null;
+  } | null;
+  [key: string]: unknown;
+}
 
 export function MarketContent({ 
   initialVideos, 
   balance, 
   unlockedIds 
 }: { 
-  initialVideos: any[]; 
+  initialVideos: MarketVideo[]; 
   balance: number; 
   unlockedIds: string[];
 }) {
@@ -32,8 +49,9 @@ export function MarketContent({
         await submitVideoAction(formData);
         setSuccessMsg("Video submitted successfully and is pending admin approval!");
         setShowForm(false);
-      } catch (err: any) {
-        setErrorMsg(err.message || "Failed to submit video");
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Failed to submit video";
+        setErrorMsg(message);
       }
     });
   };
@@ -46,8 +64,9 @@ export function MarketContent({
       try {
         await unlockVideoAction(videoId);
         setSuccessMsg("Premium video unlocked successfully! Let's start learning.");
-      } catch (err: any) {
-        setErrorMsg(err.message || "Failed to unlock video");
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Failed to unlock video";
+        setErrorMsg(message);
       }
     });
   };

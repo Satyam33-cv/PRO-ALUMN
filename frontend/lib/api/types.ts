@@ -15,7 +15,7 @@ export type PaginatedResponse<T> = {
 export type ApiError = {
   error: string;
   code?: string;
-  details?: any;
+  details?: unknown;
 };
 
 // --- Request/Response types ---
@@ -47,7 +47,7 @@ export type SearchParams = {
 };
 
 export type TopAlumniResponse = {
-  student: any;
+  student: Record<string, unknown>;
   alumni: import("@/lib/types").Alumni[];
 };
 
@@ -84,7 +84,7 @@ export type User = {
   skillsOffered?: string;
   skillsWanted?: string;
   interests?: string;
-  timeline?: any;
+  timeline?: unknown;
   resumeUrl?: string;
   currentStreak?: number;
   longestStreak?: number;

@@ -20,7 +20,7 @@ export function reportError(error: unknown, context?: ErrorContext): void {
   console.error("[PRO ALUMN] Unhandled error:", error, context);
 
   const dsn = typeof window !== "undefined"
-    ? (window as any).__NEXT_DATA__?.props?.pageProps?.sentryDsn ?? process.env.NEXT_PUBLIC_SENTRY_DSN
+    ? (window as unknown as { __NEXT_DATA__?: { props?: { pageProps?: { sentryDsn?: string } } } }).__NEXT_DATA__?.props?.pageProps?.sentryDsn ?? process.env.NEXT_PUBLIC_SENTRY_DSN
     : process.env.NEXT_PUBLIC_SENTRY_DSN;
 
   if (!dsn) return;

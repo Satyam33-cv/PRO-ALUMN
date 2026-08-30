@@ -9,12 +9,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Search,
-  Share2,
   FileText,
   Mail,
-  Palette,
-  CheckSquare,
-  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { db } from "@/lib/firebase";
@@ -51,7 +47,7 @@ const NOTE_COLORS = [
 ];
 
 export function KeepContent() {
-  const { user, accessToken, signInWithGoogle } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [notes, setNotes] = useState<KeepNote[]>([]);
   const [loading, setLoading] = useState(false);
@@ -102,7 +98,17 @@ export function KeepContent() {
       const snapshot = await getDocs(q);
       const items: KeepNote[] = [];
       snapshot.forEach((docSnap) => {
-        items.push({ id: docSnap.id, ...(docSnap.data() as any) });
+        const data = docSnap.data();
+        items.push({
+          id: docSnap.id,
+          title: data.title || "Untitled Note",
+          content: data.content || "",
+          category: data.category || "General",
+          color: data.color || "bg-white",
+          pinned: !!data.pinned,
+          authorId: data.authorId || "",
+          createdAt: data.createdAt || new Date().toISOString(),
+        });
       });
 
       // Sort pinned first then date
@@ -116,7 +122,7 @@ export function KeepContent() {
       });
 
       setNotes(items);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.warn("Could not fetch notes:", err);
     } finally {
       setLoading(false);
@@ -125,6 +131,7 @@ export function KeepContent() {
 
   useEffect(() => {
     fetchNotes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleCreateNote = async () => {
@@ -151,10 +158,11 @@ export function KeepContent() {
       setColor("bg-white");
       setPinned(false);
       fetchNotes();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to save note.";
       setStatusMsg({
         type: "error",
-        text: err.message || "Failed to save note.",
+        text: message,
       });
     } finally {
       setSubmitting(false);
@@ -184,10 +192,11 @@ export function KeepContent() {
             text: "Note deleted.",
           });
           fetchNotes();
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : "Failed to delete note.";
           setStatusMsg({
             type: "error",
-            text: err.message || "Failed to delete note.",
+            text: message,
           });
         } finally {
           setConfirmDialog(null);

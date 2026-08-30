@@ -10,19 +10,15 @@ import {
   ChevronDown,
   ChevronRight,
   GraduationCap,
-  Heart,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
-  Settings,
-  ShieldCheck,
   Users,
   BookOpen,
   X,
-  Check,
   Mail,
   FileQuestion,
   Megaphone,
@@ -31,12 +27,10 @@ import {
   StickyNote,
   Flame,
   Coins,
-  Newspaper,
   Trophy,
   Target,
   Sparkles,
   MonitorCheck,
-  Wallet,
   Compass,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
@@ -117,7 +111,18 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-function NotificationPanel({
+export interface NotificationShellItem {
+  id: string;
+  isRead?: boolean;
+  title?: string;
+  text?: string;
+  message?: string;
+  createdAt?: string;
+  time?: string;
+  [key: string]: unknown;
+}
+
+function NotificationsPanel({
   open,
   onClose,
   triggerRef,
@@ -127,7 +132,7 @@ function NotificationPanel({
   open: boolean;
   onClose: () => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
-  notifications: any[];
+  notifications: NotificationShellItem[];
   onMarkAllRead: () => void;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -249,8 +254,8 @@ export function RoleShell({
     { enabled: Boolean(user) }
   );
 
-  const notifications = notifData?.notifications || [];
-  const unreadCount = notifData?.unreadCount ?? notifications.filter((n: any) => !n.isRead).length;
+  const notifications = (notifData?.notifications as unknown as NotificationShellItem[]) || [];
+  const unreadCount = notifData?.unreadCount ?? notifications.filter((n) => !n.isRead).length;
 
   const handleMarkAllRead = async () => {
     try {

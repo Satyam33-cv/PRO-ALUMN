@@ -231,17 +231,17 @@ export async function listGmailMessages({
           };
         }
         const details = await detailRes.json();
-        const headers = details.payload?.headers || [];
+        const headers: Array<{ name: string; value?: string }> = details.payload?.headers || [];
         const subject =
-          headers.find((h: any) => h.name.toLowerCase() === "subject")?.value ||
+          headers.find((h) => h.name.toLowerCase() === "subject")?.value ||
           "(No subject)";
         const from =
-          headers.find((h: any) => h.name.toLowerCase() === "from")?.value ||
+          headers.find((h) => h.name.toLowerCase() === "from")?.value ||
           "Unknown";
         const to =
-          headers.find((h: any) => h.name.toLowerCase() === "to")?.value || "Me";
+          headers.find((h) => h.name.toLowerCase() === "to")?.value || "Me";
         const date =
-          headers.find((h: any) => h.name.toLowerCase() === "date")?.value || "";
+          headers.find((h) => h.name.toLowerCase() === "date")?.value || "";
 
         return {
           id: msg.id,

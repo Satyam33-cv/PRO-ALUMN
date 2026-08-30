@@ -86,7 +86,7 @@ function RequestModal({
             subject: `PRO ALUMN Mentorship Request: ${area}`,
             body: `Hi ${name},\n\nI'm ${user?.name || "a student"} from the PRO ALUMN platform. I'm reaching out to request mentorship in the area of "${area}".\n\n${message}\n\nLooking forward to hearing from you!\n\nBest regards,\n${user?.name || "Student"}\n${user?.email || ""}\nPRO ALUMN Platform`,
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.warn("Gmail notification failed (request still recorded):", err);
         }
       }
@@ -94,9 +94,10 @@ function RequestModal({
       setSent(true);
       if (onSuccess) onSuccess();
       setTimeout(() => onClose(), 2000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to create mentorship request:", err);
-      setError(err?.error || err?.message || "Failed to submit mentorship request. Please try again.");
+      const message = err instanceof Error ? err.message : "Failed to submit mentorship request. Please try again.";
+      setError(message);
     } finally {
       setSending(false);
     }
@@ -199,8 +200,23 @@ function RequestModal({
   );
 }
 
+interface TopMatchAlumni {
+  id?: string;
+  name?: string;
+  jobTitle?: string;
+  role?: string;
+  company?: string;
+  currentCompany?: string;
+  skills?: string | string[];
+  avatarUrl?: string;
+  initials?: string;
+  matchScore?: number;
+  match?: number;
+}
+
 export function MentorshipContent() {
   const router = useRouter();
+  const { user } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [startingChat, setStartingChat] = useState(false);
   const [calendarWeek, setCalendarWeek] = useState<number>(0);
@@ -208,7 +224,7 @@ export function MentorshipContent() {
   
   const requests = useMemo(() => {
     if (!mentorshipData?.mentorships) return [];
-    return mentorshipData.mentorships.map((m: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
+    return mentorshipData.mentorships.map((m: any) => {
       const studentName = m.student?.name || m.mentor?.name || "Unknown";
       const studentInitials = studentName.split(" ").map((n: string) => n[0]).join("");
       return {
@@ -232,7 +248,7 @@ export function MentorshipContent() {
   const [showChatPreview, setShowChatPreview] = useState(false);
 
   const { data: topAlumniData } = useApi("mentorship:top-alumni", () => apiClient.matching.topAlumni());
-  const topMatch = (topAlumniData?.alumni?.[0] || null) as any;
+  const topMatch = (topAlumniData?.alumni?.[0] || null) as unknown as TopMatchAlumni | null;
 
   const skillsList: string[] = typeof topMatch?.skills === 'string' 
     ? topMatch.skills.split(',').map((s: string) => s.trim())

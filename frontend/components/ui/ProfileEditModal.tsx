@@ -18,7 +18,7 @@ export interface ProfileEditModalProps {
     phone?: string;
   } | null;
   onClose: () => void;
-  onSave: (data: Record<string, any>) => Promise<void>;
+  onSave: (data: Record<string, unknown>) => Promise<void>;
 }
 
 export function ProfileEditModal({

@@ -24,7 +24,7 @@ async function getUserSession() {
     const decoded = verifyJwt(token, JWT_SECRET);
     if (!decoded || !decoded.id) return null;
     return decoded;
-  } catch (err) {
+  } catch {
     return null;
   }
 }

@@ -7,6 +7,17 @@ import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
 import { useState } from "react";
 
+interface NotificationItem {
+  id: string;
+  isRead?: boolean;
+  title?: string;
+  text?: string;
+  message?: string;
+  content?: string;
+  createdAt?: string;
+  time?: string;
+}
+
 export default function NotificationsPage() {
   const { data: notifData, refresh: reloadNotifs, isLoading } = useApi(
     "notifications:list",
@@ -14,8 +25,8 @@ export default function NotificationsPage() {
   );
   const [markingRead, setMarkingRead] = useState(false);
 
-  const notifications = notifData?.notifications || [];
-  const unreadCount = notifData?.unreadCount ?? notifications.filter((n: any) => !n.isRead).length;
+  const notifications = (notifData?.notifications as unknown as NotificationItem[]) || [];
+  const unreadCount = notifData?.unreadCount ?? notifications.filter((n) => !n.isRead).length;
 
   const handleMarkAllRead = async () => {
     try {
@@ -77,7 +88,7 @@ export default function NotificationsPage() {
               <p className="text-xs text-slate-400">When you receive referrals, messages, or event alerts, they will appear here.</p>
             </div>
           ) : (
-            notifications.map((n: any) => {
+            notifications.map((n) => {
               const isUnread = !n.isRead;
               return (
                 <div

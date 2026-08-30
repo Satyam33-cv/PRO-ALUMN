@@ -2,8 +2,7 @@
 
 import { memo, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Flame,
   Award,
@@ -11,34 +10,21 @@ import {
   Coins,
   Sparkles,
   CheckCircle2,
-  TrendingUp,
   Calendar,
   ShieldCheck,
-  Star,
-  Users,
   Briefcase,
   GraduationCap,
-  ArrowRight,
   Zap,
   Lock,
-  ChevronRight,
-  RefreshCw,
 } from "lucide-react";
-import { useAuth } from "@/lib/context/AuthContext";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
-import { Card, Badge as UiBadge } from "@/components/ui";
-import { fadeIn, slideUp, staggerContainer } from "@/lib/motion";
-import type { Badge, LeaderboardEntry, ActivityLog } from "@/lib/api/types";
 
 export const RewardsContent = memo(function RewardsContent() {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<"badges" | "leaderboard" | "history">("badges");
   const [leaderboardFilter, setLeaderboardFilter] = useState<string>("all");
-  const [claiming, setClaiming] = useState(false);
-  const [claimSuccess, setClaimSuccess] = useState<string | null>(null);
 
-  const { data: statusData, reload: reloadStatus } = useApi("rewards:status", () =>
+  const { data: statusData } = useApi("rewards:status", () =>
     apiClient.gamification.getStatus()
   );
 
@@ -51,25 +37,9 @@ export const RewardsContent = memo(function RewardsContent() {
   const longestStreak = statusData?.streak?.longest || 1;
   const totalPoints = statusData?.totalPoints || 0;
   const rank = statusData?.rank || 1;
-  const completeness = statusData?.completeness || 70;
   const badges = statusData?.badges || [];
   const activities = statusData?.recentActivities || [];
   const leaderboard = leaderboardData?.leaderboard || [];
-
-  const handleClaimBonus = async (actionType: string) => {
-    setClaiming(true);
-    setClaimSuccess(null);
-    try {
-      const res = await apiClient.gamification.claimAction(actionType);
-      setClaimSuccess(res.message);
-      reloadStatus();
-      setTimeout(() => setClaimSuccess(null), 4000);
-    } catch (err: any) {
-      console.error("Failed to claim action:", err);
-    } finally {
-      setClaiming(false);
-    }
-  };
 
   // 7-day streak progress indicators
   const streakDays = [
@@ -152,7 +122,7 @@ export const RewardsContent = memo(function RewardsContent() {
           </div>
 
           <div className="grid grid-cols-7 gap-2 sm:gap-4">
-            {streakDays.map((item, idx) => (
+            {streakDays.map((item) => (
               <div
                 key={item.day}
                 className={`flex flex-col items-center justify-center p-2 sm:p-3 rounded-2xl border transition-all ${

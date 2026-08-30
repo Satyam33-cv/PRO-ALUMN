@@ -99,11 +99,11 @@ export const apiClient = {
     }): Promise<{ job: Job }> => {
       return await apiFetch<{ job: Job }>({ method: "POST", url: "/jobs", data });
     },
-    myPostings: async (): Promise<{ jobs: any[] }> => {
-      return await apiFetch<{ jobs: any[] }>({ method: "GET", url: "/jobs/my-postings" });
+    myPostings: async (): Promise<{ jobs: Job[] }> => {
+      return await apiFetch<{ jobs: Job[] }>({ method: "GET", url: "/jobs/my-postings" });
     },
-    updateApplicantStatus: async (jobId: string, requestId: string, status: string, alumniNote?: string): Promise<any> => {
-      return await apiFetch<any>({
+    updateApplicantStatus: async (jobId: string, requestId: string, status: string, alumniNote?: string): Promise<{ success: boolean; message?: string }> => {
+      return await apiFetch<{ success: boolean; message?: string }>({
         method: "PATCH",
         url: `/jobs/${jobId}/applicants/${requestId}/status`,
         data: { status, alumniNote },
@@ -135,11 +135,11 @@ export const apiClient = {
     },
   },
   referrals: {
-    mySent: async (): Promise<{ referrals: any[]; pagination: any }> => {
-      return await apiFetch<{ referrals: any[]; pagination: any }>({ method: "GET", url: "/referrals/me/sent" });
+    mySent: async (): Promise<{ referrals: ReferralRequest[]; pagination?: Record<string, unknown> }> => {
+      return await apiFetch<{ referrals: ReferralRequest[]; pagination?: Record<string, unknown> }>({ method: "GET", url: "/referrals/me/sent" });
     },
-    myReceived: async (status?: string): Promise<{ referrals: any[]; pagination: any }> => {
-      return await apiFetch<{ referrals: any[]; pagination: any }>({
+    myReceived: async (status?: string): Promise<{ referrals: ReferralRequest[]; pagination?: Record<string, unknown> }> => {
+      return await apiFetch<{ referrals: ReferralRequest[]; pagination?: Record<string, unknown> }>({
         method: "GET",
         url: "/referrals/me/received",
         params: status ? { status } : undefined,
@@ -151,15 +151,15 @@ export const apiClient = {
         url: "/referrals/me/received",
       }).then((res) => res.referrals || []);
     },
-    create: async (data: { jobId: string; message?: string; studentNote?: string; resumeUrl?: string; coverLetter?: string } | string, legacyMsg?: string): Promise<any> => {
+    create: async (data: { jobId: string; message?: string; studentNote?: string; resumeUrl?: string; coverLetter?: string } | string, legacyMsg?: string): Promise<ReferralRequest> => {
       const payload = typeof data === "string" ? { jobId: data, studentNote: legacyMsg } : { ...data, studentNote: data.studentNote || data.message };
-      return await apiFetch<any>({ method: "POST", url: "/referrals", data: payload });
+      return await apiFetch<ReferralRequest>({ method: "POST", url: "/referrals", data: payload });
     },
-    updateStatus: async (id: string, status: string): Promise<any> => {
-      return await apiFetch<any>({ method: "PATCH", url: `/referrals/${id}/status`, data: { status: status.toUpperCase() } });
+    updateStatus: async (id: string, status: string): Promise<ReferralRequest> => {
+      return await apiFetch<ReferralRequest>({ method: "PATCH", url: `/referrals/${id}/status`, data: { status: status.toUpperCase() } });
     },
-    getById: async (id: string): Promise<any> => {
-      return await apiFetch<any>({ method: "GET", url: `/referrals/${id}` });
+    getById: async (id: string): Promise<ReferralRequest> => {
+      return await apiFetch<ReferralRequest>({ method: "GET", url: `/referrals/${id}` });
     },
   },
   requests: {
@@ -173,118 +173,118 @@ export const apiClient = {
       return await apiFetch<ReferralRequest>({ method: "POST", url: "/referrals", data: { jobId, studentNote: message } });
     },
     updateStatus: async (id: string, status: ReferralRequest["status"]): Promise<ReferralRequest> => {
-      return await apiFetch<ReferralRequest>({ method: "PATCH", url: `/referrals/${id}/status`, data: { status: status.toUpperCase() as any } });
+      return await apiFetch<ReferralRequest>({ method: "PATCH", url: `/referrals/${id}/status`, data: { status: status.toUpperCase() as ReferralRequest["status"] } });
     },
   },
   admin: {
-    stats: async (): Promise<any> => {
-      return await apiFetch<any>({ method: "GET", url: "/admin/stats" });
+    stats: async (): Promise<Record<string, unknown>> => {
+      return await apiFetch<Record<string, unknown>>({ method: "GET", url: "/admin/stats" });
     },
-    systemHealth: async (): Promise<any> => {
-      return await apiFetch<any>({ method: "GET", url: "/admin/system-health" });
+    systemHealth: async (): Promise<Record<string, unknown>> => {
+      return await apiFetch<Record<string, unknown>>({ method: "GET", url: "/admin/system-health" });
     },
-    users: async (params?: Record<string, string>): Promise<{ users: any[]; pagination: any }> => {
-      return await apiFetch<{ users: any[]; pagination: any }>({ method: "GET", url: "/admin/users", params });
+    users: async (params?: Record<string, string>): Promise<{ users: User[]; pagination?: Record<string, unknown> }> => {
+      return await apiFetch<{ users: User[]; pagination?: Record<string, unknown> }>({ method: "GET", url: "/admin/users", params });
     },
-    updateUserVerify: async (id: string, verified: boolean): Promise<any> => {
-      return await apiFetch<any>({ method: "PATCH", url: `/admin/users/${id}/verify`, data: { verified } });
+    updateUserVerify: async (id: string, verified: boolean): Promise<{ success: boolean; user?: User }> => {
+      return await apiFetch<{ success: boolean; user?: User }>({ method: "PATCH", url: `/admin/users/${id}/verify`, data: { verified } });
     },
-    updateUserRole: async (id: string, role: string): Promise<any> => {
-      return await apiFetch<any>({ method: "PATCH", url: `/admin/users/${id}/role`, data: { role } });
+    updateUserRole: async (id: string, role: string): Promise<{ success: boolean; user?: User }> => {
+      return await apiFetch<{ success: boolean; user?: User }>({ method: "PATCH", url: `/admin/users/${id}/role`, data: { role } });
     },
-    updateUserStatus: async (id: string, isActive: boolean): Promise<any> => {
-      return await apiFetch<any>({ method: "PATCH", url: `/admin/users/${id}/status`, data: { isActive } });
+    updateUserStatus: async (id: string, isActive: boolean): Promise<{ success: boolean; user?: User }> => {
+      return await apiFetch<{ success: boolean; user?: User }>({ method: "PATCH", url: `/admin/users/${id}/status`, data: { isActive } });
     },
-    deleteUser: async (id: string): Promise<any> => {
-      return await apiFetch<any>({ method: "DELETE", url: `/admin/users/${id}` });
+    deleteUser: async (id: string): Promise<{ success: boolean; message?: string }> => {
+      return await apiFetch<{ success: boolean; message?: string }>({ method: "DELETE", url: `/admin/users/${id}` });
     },
-    stories: async (status?: string): Promise<{ stories: any[] }> => {
+    stories: async (status?: string): Promise<{ stories: Record<string, unknown>[] }> => {
       const params = status ? { status } : undefined;
-      return await apiFetch<{ stories: any[] }>({ method: "GET", url: "/admin/stories", params });
+      return await apiFetch<{ stories: Record<string, unknown>[] }>({ method: "GET", url: "/admin/stories", params });
     },
-    updateStoryStatus: async (id: string, data: { isApproved?: boolean; isFeatured?: boolean }): Promise<any> => {
-      return await apiFetch<any>({ method: "PATCH", url: `/admin/stories/${id}/status`, data });
+    updateStoryStatus: async (id: string, data: { isApproved?: boolean; isFeatured?: boolean }): Promise<{ success: boolean }> => {
+      return await apiFetch<{ success: boolean }>({ method: "PATCH", url: `/admin/stories/${id}/status`, data });
     },
-    jobs: async (status?: string): Promise<{ jobs: any[] }> => {
+    jobs: async (status?: string): Promise<{ jobs: Job[] }> => {
       const params = status ? { status } : undefined;
-      return await apiFetch<{ jobs: any[] }>({ method: "GET", url: "/admin/jobs", params });
+      return await apiFetch<{ jobs: Job[] }>({ method: "GET", url: "/admin/jobs", params });
     },
-    updateJobStatus: async (id: string, status: string): Promise<any> => {
-      return await apiFetch<any>({ method: "PATCH", url: `/admin/jobs/${id}/status`, data: { status } });
+    updateJobStatus: async (id: string, status: string): Promise<{ success: boolean }> => {
+      return await apiFetch<{ success: boolean }>({ method: "PATCH", url: `/admin/jobs/${id}/status`, data: { status } });
     },
-    deleteJob: async (id: string): Promise<any> => {
-      return await apiFetch<any>({ method: "DELETE", url: `/admin/jobs/${id}` });
+    deleteJob: async (id: string): Promise<{ success: boolean }> => {
+      return await apiFetch<{ success: boolean }>({ method: "DELETE", url: `/admin/jobs/${id}` });
     },
-    broadcast: async (data: { title: string; content: string; targetRole?: string; priority?: string; isPinned?: boolean }): Promise<any> => {
-      return await apiFetch<any>({ method: "POST", url: "/admin/broadcast", data });
+    broadcast: async (data: { title: string; content: string; targetRole?: string; priority?: string; isPinned?: boolean }): Promise<{ success: boolean; message?: string }> => {
+      return await apiFetch<{ success: boolean; message?: string }>({ method: "POST", url: "/admin/broadcast", data });
     },
-    staleProfiles: async (): Promise<{ count: number; users: any[] }> => {
-      return await apiFetch<{ count: number; users: any[] }>({ method: "GET", url: "/admin/stale-profiles" });
+    staleProfiles: async (): Promise<{ count: number; users: User[] }> => {
+      return await apiFetch<{ count: number; users: User[] }>({ method: "GET", url: "/admin/stale-profiles" });
     },
-    nudgeUser: async (id: string): Promise<any> => {
-      return await apiFetch<any>({ method: "POST", url: `/admin/nudge-user/${id}` });
+    nudgeUser: async (id: string): Promise<{ success: boolean; message?: string }> => {
+      return await apiFetch<{ success: boolean; message?: string }>({ method: "POST", url: `/admin/nudge-user/${id}` });
     },
-    importCsv: async (formData: FormData): Promise<any> => {
-      return await apiFetch<any>({
+    importCsv: async (formData: FormData): Promise<{ success: boolean; importedCount?: number; message?: string }> => {
+      return await apiFetch<{ success: boolean; importedCount?: number; message?: string }>({
         method: "POST",
         url: "/admin/import-csv",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
     },
-    approvals: async (): Promise<any> => {
-      return await apiFetch<any>({ method: "GET", url: "/admin/approvals" });
+    approvals: async (): Promise<Record<string, unknown>> => {
+      return await apiFetch<Record<string, unknown>>({ method: "GET", url: "/admin/approvals" });
     },
-    videos: async (status?: string): Promise<{ videos: any[] }> => {
+    videos: async (status?: string): Promise<{ videos: Record<string, unknown>[] }> => {
       const params = status ? { status } : undefined;
-      return await apiFetch<{ videos: any[] }>({ method: "GET", url: "/admin/videos", params });
+      return await apiFetch<{ videos: Record<string, unknown>[] }>({ method: "GET", url: "/admin/videos", params });
     },
-    updateVideoStatus: async (id: string, status: string): Promise<any> => {
-      return await apiFetch<any>({ method: "PATCH", url: `/admin/videos/${id}/status`, data: { status } });
+    updateVideoStatus: async (id: string, status: string): Promise<{ success: boolean }> => {
+      return await apiFetch<{ success: boolean }>({ method: "PATCH", url: `/admin/videos/${id}/status`, data: { status } });
     },
     events: {
       create: async (data: { title: string; description: string; date: string; location?: string; mode?: string; coverImage?: string; maxCapacity?: number }) => {
-        return await apiFetch<any>({ method: "POST", url: "/admin/events", data });
+        return await apiFetch<{ event: EventItem }>({ method: "POST", url: "/admin/events", data });
       },
       update: async (id: string, data: Partial<{ title: string; description: string; date: string; location?: string; mode?: string; coverImage?: string; maxCapacity?: number }>) => {
-        return await apiFetch<any>({ method: "PUT", url: `/admin/events/${id}`, data });
+        return await apiFetch<{ event: EventItem }>({ method: "PUT", url: `/admin/events/${id}`, data });
       },
       delete: async (id: string) => {
-        return await apiFetch<any>({ method: "DELETE", url: `/admin/events/${id}` });
+        return await apiFetch<{ success: boolean }>({ method: "DELETE", url: `/admin/events/${id}` });
       },
     },
     newsletters: {
       create: async (data: { title: string; issueDate?: string; year?: number; coverImage?: string; fileUrl: string }) => {
-        return await apiFetch<any>({ method: "POST", url: "/admin/newsletters", data });
+        return await apiFetch<{ newsletter: import("./types").Newsletter }>({ method: "POST", url: "/admin/newsletters", data });
       },
       update: async (id: string, data: Partial<{ title: string; issueDate?: string; year?: number; coverImage?: string; fileUrl?: string }>) => {
-        return await apiFetch<any>({ method: "PUT", url: `/admin/newsletters/${id}`, data });
+        return await apiFetch<{ newsletter: import("./types").Newsletter }>({ method: "PUT", url: `/admin/newsletters/${id}`, data });
       },
       delete: async (id: string) => {
-        return await apiFetch<any>({ method: "DELETE", url: `/admin/newsletters/${id}` });
+        return await apiFetch<{ success: boolean }>({ method: "DELETE", url: `/admin/newsletters/${id}` });
       },
     },
     pages: {
-      list: async (): Promise<{ pages: any[] }> => {
-        return await apiFetch<{ pages: any[] }>({ method: "GET", url: "/admin/pages" });
+      list: async (): Promise<{ pages: Record<string, unknown>[] }> => {
+        return await apiFetch<{ pages: Record<string, unknown>[] }>({ method: "GET", url: "/admin/pages" });
       },
-      create: async (data: { title: string; slug?: string; description?: string; heroTitle?: string; heroSubtitle?: string; blocks?: any[]; status?: string }): Promise<any> => {
-        return await apiFetch<any>({ method: "POST", url: "/admin/pages", data });
+      create: async (data: { title: string; slug?: string; description?: string; heroTitle?: string; heroSubtitle?: string; blocks?: unknown[]; status?: string }): Promise<{ page: Record<string, unknown> }> => {
+        return await apiFetch<{ page: Record<string, unknown> }>({ method: "POST", url: "/admin/pages", data });
       },
-      update: async (id: string, data: Partial<{ title: string; slug?: string; description?: string; heroTitle?: string; heroSubtitle?: string; blocks?: any[]; status?: string }>): Promise<any> => {
-        return await apiFetch<any>({ method: "PUT", url: `/admin/pages/${id}`, data });
+      update: async (id: string, data: Partial<{ title: string; slug?: string; description?: string; heroTitle?: string; heroSubtitle?: string; blocks?: unknown[]; status?: string }>): Promise<{ page: Record<string, unknown> }> => {
+        return await apiFetch<{ page: Record<string, unknown> }>({ method: "PUT", url: `/admin/pages/${id}`, data });
       },
-      delete: async (id: string): Promise<any> => {
-        return await apiFetch<any>({ method: "DELETE", url: `/admin/pages/${id}` });
+      delete: async (id: string): Promise<{ success: boolean }> => {
+        return await apiFetch<{ success: boolean }>({ method: "DELETE", url: `/admin/pages/${id}` });
       },
     },
   },
   pages: {
-    getBySlug: async (slug: string): Promise<{ page: any }> => {
-      return await apiFetch<{ page: any }>({ method: "GET", url: `/pages/${slug}` });
+    getBySlug: async (slug: string): Promise<{ page: Record<string, unknown> }> => {
+      return await apiFetch<{ page: Record<string, unknown> }>({ method: "GET", url: `/pages/${slug}` });
     },
-    listPublished: async (): Promise<{ pages: any[] }> => {
-      return await apiFetch<{ pages: any[] }>({ method: "GET", url: "/pages" });
+    listPublished: async (): Promise<{ pages: Record<string, unknown>[] }> => {
+      return await apiFetch<{ pages: Record<string, unknown>[] }>({ method: "GET", url: "/pages" });
     },
   },
   stories: {
@@ -303,8 +303,8 @@ export const apiClient = {
   },
   announcements: {
     list: async (): Promise<unknown[]> => {
-      const res = await apiFetch<{ announcements: unknown[] }>({ method: "GET", url: "/announcements" });
-      return (res.announcements || []).sort((a: any, b: any) => {
+      const res = await apiFetch<{ announcements: Array<{ pinned?: boolean }> }>({ method: "GET", url: "/announcements" });
+      return (res.announcements || []).sort((a, b) => {
         if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
         return 0;
       });
@@ -317,7 +317,7 @@ export const apiClient = {
       });
       return res.announcement;
     },
-    togglePin: async (id: string): Promise<boolean> => {
+    togglePin: async (): Promise<boolean> => {
       return true; // Wait backend to support this properly
     },
   },
@@ -339,17 +339,17 @@ export const apiClient = {
     },
   },
   chat: {
-    list: async (): Promise<{ threads: any[] }> => {
-      return await apiFetch<{ threads: any[] }>({ method: "GET", url: "/chat" });
+    list: async (): Promise<{ threads: Record<string, unknown>[] }> => {
+      return await apiFetch<{ threads: Record<string, unknown>[] }>({ method: "GET", url: "/chat" });
     },
-    getThread: async (id: string): Promise<{ messages: any[] }> => {
-      return await apiFetch<{ messages: any[] }>({ method: "GET", url: `/chat/${id}` });
+    getThread: async (id: string): Promise<{ messages: Record<string, unknown>[] }> => {
+      return await apiFetch<{ messages: Record<string, unknown>[] }>({ method: "GET", url: `/chat/${id}` });
     },
-    sendMessage: async (id: string, text: string): Promise<{ message: any }> => {
-      return await apiFetch<{ message: any }>({ method: "POST", url: `/chat/${id}`, data: { text } });
+    sendMessage: async (id: string, text: string): Promise<{ message: Record<string, unknown> }> => {
+      return await apiFetch<{ message: Record<string, unknown> }>({ method: "POST", url: `/chat/${id}`, data: { text } });
     },
-    createThread: async (targetUserId: string): Promise<{ thread: any }> => {
-      return await apiFetch<{ thread: any }>({ method: "POST", url: "/chat", data: { targetUserId } });
+    createThread: async (targetUserId: string): Promise<{ thread: Record<string, unknown> }> => {
+      return await apiFetch<{ thread: Record<string, unknown> }>({ method: "POST", url: "/chat", data: { targetUserId } });
     },
   },
   gamification: {
@@ -393,7 +393,7 @@ export const apiClient = {
   },
   notifications: {
     list: async () => {
-      return await apiFetch<{ notifications: any[]; unreadCount: number }>({
+      return await apiFetch<{ notifications: Record<string, unknown>[]; unreadCount: number }>({
         method: "GET",
         url: "/notifications",
       });
@@ -416,7 +416,7 @@ export const apiClient = {
       const params: Record<string, string> = { q };
       if (type) params.type = type;
       if (limit) params.limit = limit.toString();
-      return await apiFetch<{ results: any }>({ method: "GET", url: "/search", params }).then((res) => res.results);
+      return await apiFetch<{ results: Record<string, unknown> }>({ method: "GET", url: "/search", params }).then((res) => res.results);
     }
   },
 };

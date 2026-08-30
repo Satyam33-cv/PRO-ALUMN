@@ -13,16 +13,12 @@ import {
   FileUp,
   Inbox,
   Target,
-  Timer,
   CheckCircle2,
-  XCircle,
   Check,
   Search,
-  Filter,
   Plus,
   Trash2,
   Megaphone,
-  Radio,
   Download,
   AlertTriangle,
   Server,
@@ -30,13 +26,8 @@ import {
   RefreshCw,
   Eye,
   UserCheck,
-  UserX,
-  Sparkles,
-  Flame,
   Coins,
   Send,
-  Building,
-  GraduationCap,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
@@ -45,8 +36,6 @@ import {
   Pause,
   Play,
   FileText,
-  Edit3,
-  PlusCircle,
   Layout,
   Globe,
   HelpCircle,
@@ -61,7 +50,7 @@ import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { getSocket } from "@/lib/socket";
 import { getToken } from "@/lib/auth";
-import { Card, Badge, Skeleton } from "@/components/ui";
+import { Card } from "@/components/ui";
 import {
   approveProfileAction,
   rejectProfileAction,
@@ -244,7 +233,7 @@ export function AdminContent() {
   );
   const { data: storiesData, reload: reloadStories } = useApi("admin:stories", () => apiClient.admin.stories());
   const { data: jobsData, reload: reloadJobs } = useApi("admin:jobs", () => apiClient.admin.jobs());
-  const { data: staleData, reload: reloadStale } = useApi("admin:stale", () => apiClient.admin.staleProfiles());
+  const { data: staleData } = useApi("admin:stale", () => apiClient.admin.staleProfiles());
   const { data: announcementsData, reload: reloadAnnouncements } = useApi("admin:announcements", () => apiClient.announcements.list());
   const { data: approvalsData, reload: reloadApprovals } = useApi("admin:approvals", () => apiClient.admin.approvals());
   const { data: videosData, reload: reloadVideos } = useApi("admin:videos", () => apiClient.admin.videos());
@@ -255,7 +244,7 @@ export function AdminContent() {
   const stats = statsData?.stats || {};
   const users = usersData?.users || [];
   const totalUserPages = usersData?.pagination?.pages || 1;
-  const pendingStories = (storiesData?.stories || []).filter((s: any) => !s.isApproved);
+  const pendingStories = (storiesData?.stories || []).filter((s) => !s.isApproved);
   const jobs = jobsData?.jobs || [];
   const staleUsers = staleData?.users || [];
   const announcements = announcementsData || [];

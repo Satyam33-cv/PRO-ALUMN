@@ -7,17 +7,8 @@ type BackgroundPatternProps = {
   children?: React.ReactNode;
 };
 
-const colorMap: Record<string, string> = {
-  brass: "#b8863b",
-  sage: "#5c7a6b",
-  clay: "#b5573f",
-  ink: "#12213d",
-  paper: "#f7f5f0",
-};
-
 export function BackgroundPattern({
   className,
-  color = "slate",
   children,
 }: BackgroundPatternProps) {
   // We ignore `speed` since moving patterns are distracting.

@@ -1,0 +1,8 @@
+node_modules
+.next
+prisma
+jest.config.js
+jest.setup.ts
+postcss.config.mjs
+tailwind.config.ts
+__tests__

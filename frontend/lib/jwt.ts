@@ -8,7 +8,7 @@ export interface JwtPayload {
   isVerified?: boolean;
   iat?: number;
   exp?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -56,7 +56,7 @@ export function verifyJwt(token: string, secret: string): JwtPayload | null {
     }
 
     return payload;
-  } catch (err) {
+  } catch {
     return null;
   }
 }

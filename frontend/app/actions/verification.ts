@@ -51,7 +51,7 @@ async function getCurrentUser() {
     });
 
     return user;
-  } catch (err) {
+  } catch {
     return null;
   }
 }
@@ -215,9 +215,10 @@ export async function submitProfileDetailsAction(data: {
         referralCode: updated.referralCode,
       },
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Failed to save profile details:", err);
-    return { success: false, error: err.message || "Failed to update profile." };
+    const message = err instanceof Error ? err.message : "Failed to update profile.";
+    return { success: false, error: message };
   }
 }
 

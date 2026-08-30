@@ -24,7 +24,7 @@ async function getUserSession() {
     const decoded = verifyJwt(token, JWT_SECRET);
     if (!decoded || !decoded.id) return null;
     return decoded;
-  } catch (err) {
+  } catch {
     return null;
   }
 }
@@ -55,7 +55,7 @@ export default async function MarketPage() {
     where: { userId: session.id },
     select: { videoId: true },
   });
-  const unlockedIds = unlocked.map((u: any) => u.videoId);
+  const unlockedIds = unlocked.map((u) => u.videoId);
 
-  return <MarketContent initialVideos={videos} balance={balance} unlockedIds={unlockedIds} />;
+  return <MarketContent initialVideos={videos as unknown as import("./MarketContent").MarketVideo[]} balance={balance} unlockedIds={unlockedIds} />;
 }

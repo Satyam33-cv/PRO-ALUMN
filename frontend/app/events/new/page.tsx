@@ -6,7 +6,7 @@ import Link from "next/link";
 import { RoleShell } from "@/components/RoleShell";
 import { Card } from "@/components/ui";
 import { apiClient } from "@/lib/api/client";
-import { ArrowLeft, Calendar, MapPin, Users, Sparkles, Loader2, CheckCircle2, Globe, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function NewEventPage() {
   const router = useRouter();
@@ -53,9 +53,10 @@ export default function NewEventPage() {
       setTimeout(() => {
         router.push("/events");
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Event creation error:", err);
-      setError(err.message || "Failed to publish event. Please try again.");
+      const message = err instanceof Error ? err.message : "Failed to publish event. Please try again.";
+      setError(message);
       setLoading(false);
     }
   };
@@ -124,7 +125,7 @@ export default function NewEventPage() {
                 </label>
                 <select
                   value={category}
-                  onChange={(e) => setCategory(e.target.value as any)}
+                  onChange={(e) => setCategory(e.target.value as "reunion" | "meetup" | "webinar" | "career")}
                   className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-colors"
                 >
                   <option value="meetup">Networking Meetup</option>

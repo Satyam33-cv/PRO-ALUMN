@@ -12,7 +12,6 @@ import {
   RefreshCw,
   Loader2,
   BookOpen,
-  Heart,
   BookMarked,
   Settings,
   LogOut,
@@ -177,7 +176,7 @@ function TimelineModal({
 
 
 export function ProfileContent() {
-  const { user, signOut, setUser, setSession, session, googleAccessToken } = useAuth();
+  const { user, signOut, setSession, session, googleAccessToken } = useAuth();
   const router = useRouter();
   const { data: fullProfile, refresh: refreshProfile } = useApi("profile:me", () => apiClient.auth.me());
   const { data: gamificationData, reload: reloadGamification } = useApi("profile:gamification", () => apiClient.gamification.getStatus());
@@ -303,15 +302,16 @@ export function ProfileContent() {
   const uploadAvatar = async (file: File) => {
     try {
       setUploadingAvatar(true);
-      const res = await apiClient.uploads.avatar(file);
+      await apiClient.uploads.avatar(file);
       await refreshProfile();
       const updatedUser = await apiClient.auth.me();
       if (session) {
         setSession({ ...session, user: updatedUser });
       }
       showToast("Profile photo updated on Supabase & publicly visible!");
-    } catch (err: any) {
-      showToast(err.message || "Failed to upload avatar");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to upload avatar";
+      showToast(message);
     } finally {
       setUploadingAvatar(false);
     }
@@ -323,14 +323,15 @@ export function ProfileContent() {
       const res = await apiClient.uploads.certificate(file);
       setCertificates((prev) => [...prev, { name: file.name, url: res.url }]);
       showToast("Experience certificate / proof stored on Supabase!");
-    } catch (err: any) {
-      showToast(err.message || "Failed to upload certificate");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to upload certificate";
+      showToast(message);
     } finally {
       setUploadingCert(false);
     }
   };
 
-  const handleSaveProfile = async (data: any) => {
+  const handleSaveProfile = async (data: Record<string, unknown>) => {
     await apiClient.users.updateProfile(data);
     await refreshProfile();
     const updatedUser = await apiClient.auth.me();

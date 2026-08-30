@@ -6,9 +6,21 @@ import { MatchRing } from "@/components/MatchRing";
 import { RoleShell } from "@/components/RoleShell";
 import { Sparkles, Building, Briefcase, GraduationCap } from "lucide-react";
 
+interface MatchItem {
+  id: string;
+  name: string;
+  currentCompany?: string;
+  department?: string;
+  jobTitle?: string;
+  role?: string;
+  skills?: string;
+  matchScore?: number;
+  similarity?: number;
+}
+
 export default function MatchingPage() {
   const { user } = useAuth();
-  const [matches, setMatches] = useState<{ alumni: any[] } | null>(null);
+  const [matches, setMatches] = useState<{ alumni: MatchItem[] } | null>(null);
   const [loading, setLoading] = useState(true);
   const [synced, setSynced] = useState(false);
 
@@ -25,7 +37,7 @@ export default function MatchingPage() {
   const loadMatches = async () => {
     try {
       const data = await apiClient.matching.topAlumni();
-      setMatches(data);
+      setMatches(data as unknown as { alumni: MatchItem[] });
     } catch (e) {
       console.error(e);
     } finally {

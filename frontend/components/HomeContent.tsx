@@ -9,8 +9,6 @@ import { ScrollReveal } from "@/components/ui/Layout/ScrollReveal";
 import {
   BriefcaseBusiness,
   GraduationCap,
-  Heart,
-  User,
   Calendar,
   Megaphone,
   ArrowRight,
@@ -20,15 +18,12 @@ import {
   Send,
   Sparkles,
   Target,
-  TrendingUp,
   Award,
   Pin,
   Flame,
   CheckCircle2,
-  AlertCircle,
   Coins,
   ShieldCheck,
-  Zap,
   X,
   FileText,
   StickyNote,
@@ -36,9 +31,6 @@ import {
   Download,
   Check,
   BookOpen,
-  UserCheck,
-  Radio,
-  ExternalLink,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { apiClient } from "@/lib/api/client";
@@ -55,22 +47,16 @@ export const HomeContent = memo(function HomeContent() {
   const [toast, setToast] = useState<string | null>(null);
 
   // Queries
-  const { data: eventsData } = useApi("home:events", () => apiClient.events.list());
   const { data: alumniData } = useApi("home:alumni", () => apiClient.alumni.list(undefined, { filter: "role", value: "ALUMNI" }));
   const { data: announcementsData } = useApi("home:announcements", () => apiClient.announcements.list());
   const { data: topAlumniData } = useApi("home:top-alumni", () => apiClient.matching.topAlumni(), { enabled: user?.role === "student" });
   const { data: gamificationData, reload: reloadGamification } = useApi("home:gamification", () => apiClient.gamification.getStatus());
   const { data: myJobsData, reload: reloadMyJobs } = useApi("home:my-jobs", () => apiClient.jobs.myPostings(), { enabled: user?.role === "alumni" || user?.role === "admin" });
   const { data: mentorshipData, reload: reloadMentorship } = useApi("home:mentorship", () => apiClient.mentorship.list(), { enabled: user?.role === "faculty" || user?.role === "alumni" });
-  const { data: jobsData } = useApi("home:jobs", () => apiClient.jobs.list());
-  const { data: storiesData } = useApi("home:stories", () => apiClient.stories.list());
 
-  const events = eventsData || [];
   const announcements = announcementsData || [];
   const myJobs = myJobsData?.jobs || [];
   const mentorships = mentorshipData?.mentorships || [];
-  const publicJobs = jobsData || [];
-  const stories = storiesData || [];
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -106,8 +92,9 @@ export const HomeContent = memo(function HomeContent() {
       showToast(`Candidate status marked as ${status}!`);
       reloadMyJobs();
       reloadGamification();
-    } catch (err: any) {
-      showToast(err.message || "Failed to update candidate status");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to update candidate status";
+      showToast(message);
     }
   };
 
@@ -117,8 +104,9 @@ export const HomeContent = memo(function HomeContent() {
       await apiClient.mentorship.updateStatus(id, status);
       showToast(`Mentorship request ${status.toLowerCase()}!`);
       reloadMentorship();
-    } catch (err: any) {
-      showToast(err.message || "Failed to update mentorship");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to update mentorship";
+      showToast(message);
     }
   };
 
@@ -453,7 +441,7 @@ export const HomeContent = memo(function HomeContent() {
               </div>
 
               <div className="space-y-4">
-                {myJobs.map((job: any) => (
+                {myJobs.map((job) => (
                   <Card key={job.id} padding="lg" className="space-y-4 border-blue-200 dark:border-blue-900/40">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-ink/10 pb-3">
                       <div>
@@ -486,7 +474,7 @@ export const HomeContent = memo(function HomeContent() {
 
                       {job.referrals && job.referrals.length > 0 ? (
                         <div className="divide-y divide-ink/5 border border-ink/10 rounded-xl overflow-hidden">
-                          {job.referrals.map((refReq: any) => (
+                          {job.referrals.map((refReq) => (
                             <div key={refReq.id} className="p-3 bg-white/50 dark:bg-slate-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                               <div className="flex items-center gap-3">
                                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 font-bold">
@@ -691,13 +679,15 @@ export const HomeContent = memo(function HomeContent() {
             </ScrollReveal>
           )}
 
-          {/* ================= STUDENT RECOMMENDED ALUMNI MENTORS ================= */}
-          {userRole === "student" && (
+          {/* ================= STUDENT: TOP AI ALUMNI MATCHES ================= */}
+          {userRole === "student" && recommendedAlumni.length > 0 && (
             <ScrollReveal direction="up">
-              <div className="mb-5 flex items-baseline justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600">
-                    <Users size={20} />
+              <div className="mb-4 flex items-baseline justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-blue-600">
+                      Gemini 384-Dim Matching
+                    </span>
                   </div>
                   <h2 className="font-heading text-3xl font-bold">Recommended Alumni Mentors</h2>
                 </div>
@@ -742,7 +732,7 @@ export const HomeContent = memo(function HomeContent() {
                     </div>
 
                     <Link
-                      href={`/directory?search=${encodeURIComponent(alumni.name)}`}
+                      href={`/directory/${alumni.id}`}
                       className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700"
                     >
                       Connect & Request Referral

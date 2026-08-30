@@ -15,9 +15,7 @@ import {
   ChevronRight,
   RefreshCw,
   Hash,
-  Users,
   MessageSquare,
-  Sparkles,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
@@ -116,13 +114,14 @@ export function ChatContent() {
   );
   const recommendedAlumni = recommendedAlumniData || [];
 
-  const { data: chatData, refresh: refreshThreads } = useApi("chat:threads", () =>
-    apiClient.chat.list()
+  const { data: chatData } = useApi(
+    "chat:list",
+    () => apiClient.chat.list()
   );
 
   const chatThreads = useMemo(() => {
     if (!chatData?.threads) return [];
-    return chatData.threads.map((t: any) => ({
+    return (chatData.threads as unknown as Array<{ id: string; name: string; isGroup: boolean; participants?: Array<{ role?: string }>; lastMessage?: string; lastMessageAt: string; unread?: number }>).map((t) => ({
       id: t.id,
       name: t.name,
       isGroup: t.isGroup,
@@ -170,6 +169,7 @@ export function ChatContent() {
     if (activeTab === "GoogleChat" && accessToken) {
       fetchGoogleSpaces();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, accessToken]);
 
   // Fetch Google Chat Messages when a space is selected
@@ -240,13 +240,13 @@ export function ChatContent() {
   };
 
   const filtered = useMemo(() => {
-    let result = chatThreads.filter((t: any) =>
+    let result = chatThreads.filter((t) =>
       activeTab === "Groups" ? t.isGroup : !t.isGroup
     );
     if (messageSearch.trim()) {
       const q = messageSearch.toLowerCase();
       result = result.filter(
-        (t: any) =>
+        (t) =>
           t.name.toLowerCase().includes(q) ||
           t.lastMessage.toLowerCase().includes(q) ||
           (t.role && t.role.toLowerCase().includes(q))
@@ -256,7 +256,7 @@ export function ChatContent() {
   }, [activeTab, messageSearch, chatThreads]);
 
   const totalUnread = chatThreads.reduce(
-    (sum: number, t: any) => sum + t.unread,
+    (sum: number, t) => sum + t.unread,
     0
   );
 
@@ -277,7 +277,7 @@ export function ChatContent() {
     socket.emit("join_room", selectedId);
 
     // Listen for incoming messages
-    const handleReceiveMessage = (data: any) => {
+    const handleReceiveMessage = (data: { roomId: string; id: string; text: string; time: string; sent: boolean }) => {
       if (data.roomId === selectedId) {
         setLocalThreads((prev) => {
           const current = prev[selectedId] || [];
@@ -324,7 +324,7 @@ export function ChatContent() {
     return () => {
       socket.off("receive_message", handleReceiveMessage);
     };
-  }, [selectedId, user]);
+  }, [selectedId, user, accessToken]);
 
   const handleSendReply = async (threadId: string) => {
     const text = replyInputs[threadId]?.trim();

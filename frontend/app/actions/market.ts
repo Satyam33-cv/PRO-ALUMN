@@ -76,7 +76,7 @@ export async function unlockVideoAction(videoId: string) {
   }
 
   // 2. Start a transaction to deduct points and unlock
-  return await prisma.$transaction(async (tx: any) => {
+  return await prisma.$transaction(async (tx) => {
     // Lock the wallet row for update
     const wallet = await tx.wallet.findUnique({
       where: { userId: session.id },

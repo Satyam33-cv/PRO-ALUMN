@@ -49,18 +49,33 @@ const cardVariants = {
   }),
 };
 
+interface ApiRequestRaw {
+  id: string;
+  requester?: { name?: string };
+  requesterName?: string;
+  recipient?: { name?: string };
+  recipientName?: string;
+  job?: { title?: string; company?: string };
+  jobTitle?: string;
+  company?: string;
+  message?: string;
+  studentNote?: string;
+  status?: string;
+  createdAt?: string;
+}
+
 export function RequestsContent() {
   const [activeTab, setActiveTab] = useState<Status | "all">("all");
   const { data: apiRequests, refresh: refreshRequests } = useApi("requests:list", () => apiClient.requests.list());
   
   const requests: ReferralRequest[] = useMemo(() => {
     if (!apiRequests) return [];
-    return (apiRequests as any[]).map((r: any) => ({
+    return (apiRequests as unknown as ApiRequestRaw[]).map((r) => ({
       id: r.id,
       requesterName: r.requester?.name || r.requesterName || "Student Member",
-      requesterInitials: r.requester?.name ? r.requester.name.split(" ").map((n: string) => n[0]).join("") : "SM",
+      requesterInitials: r.requester?.name ? r.requester.name.split(" ").map((n) => n[0]).join("") : "SM",
       recipientName: r.recipient?.name || r.recipientName || "Alumni Member",
-      recipientInitials: r.recipient?.name ? r.recipient.name.split(" ").map((n: string) => n[0]).join("") : "AM",
+      recipientInitials: r.recipient?.name ? r.recipient.name.split(" ").map((n) => n[0]).join("") : "AM",
       jobTitle: r.job?.title || r.jobTitle || "Job Referral",
       company: r.job?.company || r.company || "Company",
       message: r.message || r.studentNote || "",

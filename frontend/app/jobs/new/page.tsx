@@ -6,7 +6,7 @@ import Link from "next/link";
 import { RoleShell } from "@/components/RoleShell";
 import { Card } from "@/components/ui";
 import { apiClient } from "@/lib/api/client";
-import { ArrowLeft, Briefcase, Building2, MapPin, Sparkles, Plus, X, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Briefcase, Sparkles, Plus, X, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function NewJobPage() {
   const router = useRouter();
@@ -62,9 +62,10 @@ export default function NewJobPage() {
       setTimeout(() => {
         router.push("/jobs");
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Job posting error:", err);
-      setError(err.message || "Failed to publish role. Please try again.");
+      const message = err instanceof Error ? err.message : "Failed to publish role. Please try again.";
+      setError(message);
       setLoading(false);
     }
   };

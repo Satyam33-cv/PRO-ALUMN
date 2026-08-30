@@ -10,8 +10,7 @@ import {
   GoogleAuthProvider,
   type User as FirebaseUser,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db, googleAuthProvider, googleWorkspaceAuthProvider } from "@/lib/firebase";
+import { auth, googleWorkspaceAuthProvider } from "@/lib/firebase";
 import { apiClient } from "@/lib/api/client";
 
 export type UserRole = "student" | "alumni" | "admin" | "faculty";

@@ -12,11 +12,8 @@ import {
   Search,
   CheckCircle2,
   AlertCircle,
-  Clock,
-  User,
   ShieldCheck,
   Sparkles,
-  ExternalLink,
   Plus,
   X,
   FileText,
@@ -111,9 +108,10 @@ export default function CommunicationsPage() {
         maxResults: 15,
       });
       setMessages(fetched);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load Gmail messages:", err);
-      setError(err.message || "Failed to load Gmail inbox.");
+      const message = err instanceof Error ? err.message : "Failed to load Gmail inbox.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -124,6 +122,7 @@ export default function CommunicationsPage() {
       loadInbox();
     }
     loadSentLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleAccessToken]);
 
   const handleApplyTemplate = (tmpl: (typeof EMAIL_TEMPLATES)[0]) => {
@@ -176,9 +175,10 @@ export default function CommunicationsPage() {
         setSubject("");
         setBody("");
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Email send failed:", err);
-      setError(err.message || "Failed to send email via Gmail API.");
+      const message = err instanceof Error ? err.message : "Failed to send email via Gmail API.";
+      setError(message);
     } finally {
       setIsSending(false);
     }

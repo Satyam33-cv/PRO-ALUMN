@@ -2,19 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { RoleShell } from "@/components/RoleShell";
-import { Card, Badge } from "@/components/ui";
+import { Card } from "@/components/ui";
 import {
   FileQuestion,
   Plus,
-  ExternalLink,
   Users,
   CheckCircle2,
-  Calendar,
-  Layers,
   Search,
   Sparkles,
   ClipboardList,
-  MessageSquare,
   Share2,
   Trash2,
   Eye,
@@ -194,8 +190,9 @@ export default function GoogleFormsPage() {
       setIsModalOpen(false);
       setTitle("");
       setDescription("");
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to create form." });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to create form.";
+      setStatusMsg({ type: "error", text: message });
     } finally {
       setIsCreating(false);
     }
@@ -208,8 +205,9 @@ export default function GoogleFormsPage() {
       }
       setFormsList((prev) => prev.filter((f) => f.id !== formId));
       setStatusMsg({ type: "success", text: `Deleted "${formTitle}"` });
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to delete form." });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to delete form.";
+      setStatusMsg({ type: "error", text: message });
     }
   };
 
@@ -247,8 +245,9 @@ export default function GoogleFormsPage() {
 
       setStatusMsg({ type: "success", text: "Response submitted successfully! Thank you." });
       setRespondingForm(null);
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to submit response." });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to submit response.";
+      setStatusMsg({ type: "error", text: message });
     } finally {
       setSubmittingResponse(false);
     }
@@ -705,7 +704,7 @@ export default function GoogleFormsPage() {
                     No responses collected for this survey yet.
                   </div>
                 ) : (
-                  viewingResponses.map((r, i) => (
+                  viewingResponses.map((r) => (
                     <div
                       key={r.id}
                       className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 space-y-2.5 text-xs"

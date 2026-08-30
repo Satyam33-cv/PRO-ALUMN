@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -11,13 +11,8 @@ import {
   BriefcaseBusiness,
   Megaphone,
   X,
-  ExternalLink,
   ChevronRight,
-  ArrowUpRight,
-  Sparkles,
   Command,
-  CornerDownLeft,
-  Calendar,
   Layers,
   Settings2,
 } from "lucide-react";
@@ -26,7 +21,6 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useAuth } from "@/lib/context/AuthContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { apiClient } from "@/lib/api/client";
-import { useApi } from "@/lib/hooks/useApi";
 
 import { listUserDocsFromDrive } from "@/lib/google-workspace";
 
@@ -191,7 +185,7 @@ const SYSTEM_ACTIONS: SearchResultItem[] = [
 
 export function GlobalSearch() {
   const router = useRouter();
-  const { user, accessToken, signOut } = useAuth();
+  const { accessToken, signOut } = useAuth();
   const { toggle: toggleTheme } = useTheme();
   const [queryText, setQueryText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -201,9 +195,14 @@ export function GlobalSearch() {
   const [firestoreNotes, setFirestoreNotes] = useState<SearchResultItem[]>([]);
   const [driveDocs, setDriveDocs] = useState<SearchResultItem[]>([]);
 
-  const [backendResults, setBackendResults] = useState<{alumni?: any[], jobs?: any[], events?: any[], stories?: any[], announcements?: any[]}>({});
+  const [backendResults, setBackendResults] = useState<{
+    alumni?: Array<{ id: string; name: string; jobTitle?: string; currentCompany?: string; batchYear?: number | string; department?: string }>;
+    jobs?: Array<{ id: string; title: string; company: string; location?: string; type?: string; description?: string }>;
+    events?: Array<{ id: string; title: string }>;
+    stories?: Array<{ id: string; title: string }>;
+    announcements?: Array<{ id: string; title: string; content?: string; body?: string }>;
+  }>({});
 
-  // Debounced backend search
   useEffect(() => {
     if (queryText.length < 2) {
       setBackendResults({});
@@ -213,7 +212,7 @@ export function GlobalSearch() {
       try {
         const type = selectedCategory !== "all" && selectedCategory !== "docs" && selectedCategory !== "keep" ? selectedCategory : undefined;
         const res = await apiClient.search.global(queryText, type);
-        setBackendResults(res || {});
+        setBackendResults((res as typeof backendResults) || {});
       } catch (e) {
         console.error("Global search failed:", e);
       }
@@ -223,14 +222,11 @@ export function GlobalSearch() {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const resultsContainerRef = useRef<HTMLDivElement>(null);
 
-  // 1. Fetch real documents and notes from Firestore & Google Drive
   useEffect(() => {
     let mounted = true;
 
     async function loadData() {
-      // Fetch Firestore Docs
       try {
         const qDocs = query(collection(db, "docs"), orderBy("createdAt", "desc"));
         const snapDocs = await getDocs(qDocs);
@@ -253,11 +249,10 @@ export function GlobalSearch() {
         if (mounted && fetchedDocs.length > 0) {
           setFirestoreDocs(fetchedDocs);
         }
-      } catch (err) {
+      } catch {
         // Fallback already available
       }
 
-      // Fetch Firestore Keep Notes
       try {
         const qNotes = query(collection(db, "notes"));
         const snapNotes = await getDocs(qNotes);
@@ -281,11 +276,10 @@ export function GlobalSearch() {
         if (mounted && fetchedNotes.length > 0) {
           setFirestoreNotes(fetchedNotes);
         }
-      } catch (err) {
+      } catch {
         // Fallback already available
       }
 
-      // Fetch Google Drive Docs if OAuth token is available
       if (accessToken) {
         try {
           const driveFiles = await listUserDocsFromDrive({ token: accessToken });
@@ -304,7 +298,7 @@ export function GlobalSearch() {
             }));
             setDriveDocs(mappedDrive);
           }
-        } catch (e) {
+        } catch {
           // Token expired or network issue
         }
       }
@@ -317,49 +311,83 @@ export function GlobalSearch() {
     };
   }, [accessToken]);
 
-  // Global keyboard shortcut (Cmd+K / Ctrl+K)
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setIsOpen(true);
-        inputRef.current?.focus();
+        setIsOpen((prev) => !prev);
       }
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && isOpen) {
         setIsOpen(false);
       }
-    }
-
+    };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isOpen]);
 
-  // Close when clicking outside
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
+    if (isOpen) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+      setSelectedIndex(0);
+    } else {
+      setQueryText("");
+      setSelectedCategory("all");
     }
+  }, [isOpen]);
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const allResults = useMemo(() => {
+    const combinedDocs = [...driveDocs, ...firestoreDocs, ...DEFAULT_DOCS];
+    const combinedNotes = [...firestoreNotes, ...DEFAULT_NOTES];
 
-  // Combine and index all searchable records
-  const allResults = useMemo<SearchResultItem[]>(() => {
-    const combinedDocs = [
-      ...firestoreDocs,
-      ...driveDocs,
-      ...FALLBACK_DOCS.filter((fb) => !firestoreDocs.some((fd) => fd.title === fb.title)),
+    const SYSTEM_ACTIONS: SearchResultItem[] = [
+      {
+        id: "act-theme",
+        type: "action",
+        title: "Toggle Light / Dark Mode",
+        subtitle: "Switch appearance theme instantly",
+        url: "#",
+        badge: "Theme",
+        badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+      },
+      {
+        id: "act-logout",
+        type: "action",
+        title: "Sign Out of PRO ALUMN",
+        subtitle: "Safely end your session",
+        url: "/login",
+        badge: "Auth",
+        badgeColor: "bg-red-50 text-red-700 border-red-200",
+      },
+      {
+        id: "act-post-job",
+        type: "action",
+        title: "Post a New Career Opportunity",
+        subtitle: "Share referrals with students and alumni",
+        url: "/jobs/new",
+        badge: "Action",
+        badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+      },
+      {
+        id: "act-create-doc",
+        type: "action",
+        title: "New Google Collaborative Doc",
+        subtitle: "Create note or reference document",
+        url: "/docs",
+        badge: "Action",
+        badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+      },
+      {
+        id: "act-profile",
+        type: "action",
+        title: "Edit My Profile & Experience",
+        subtitle: "Update career info and skills",
+        url: "/profile",
+        badge: "Account",
+        badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      },
     ];
 
-    const combinedNotes = [
-      ...firestoreNotes,
-      ...FALLBACK_KEEP_NOTES.filter((fn) => !firestoreNotes.some((fd) => fd.title === fn.title)),
-    ];
-
-    const alumniResults: SearchResultItem[] = (backendResults.alumni || []).map((a: any) => ({
+    const alumniResults: SearchResultItem[] = (backendResults.alumni || []).map((a) => ({
       id: `alumni-${a.id}`,
       type: "alumni",
       title: a.name,
@@ -371,7 +399,7 @@ export function GlobalSearch() {
       badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
     }));
 
-    const jobResults: SearchResultItem[] = (backendResults.jobs || []).map((j: any) => ({
+    const jobResults: SearchResultItem[] = (backendResults.jobs || []).map((j) => ({
       id: `job-${j.id}`,
       type: "job",
       title: j.title,
@@ -383,7 +411,7 @@ export function GlobalSearch() {
       badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
     }));
 
-    const announcementResults: SearchResultItem[] = (backendResults.announcements || []).map((ann: any) => ({
+    const announcementResults: SearchResultItem[] = (backendResults.announcements || []).map((ann) => ({
       id: `ann-${ann.id}`,
       type: "announcement",
       title: ann.title,
@@ -398,7 +426,6 @@ export function GlobalSearch() {
     return [...combinedDocs, ...combinedNotes, ...alumniResults, ...jobResults, ...announcementResults, ...SYSTEM_ACTIONS];
   }, [firestoreDocs, driveDocs, firestoreNotes, backendResults]);
 
-  // Filtered results based on search text and active category
   const filteredResults = useMemo(() => {
     const q = queryText.trim().toLowerCase();
 
@@ -689,7 +716,7 @@ export function GlobalSearch() {
                       }}
                       className="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 font-medium hover:bg-blue-100"
                     >
-                      Search "Mentorship" in Docs
+                      Search &ldquo;Mentorship&rdquo; in Docs
                     </button>
                     <button
                       type="button"
@@ -699,7 +726,7 @@ export function GlobalSearch() {
                       }}
                       className="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-medium hover:bg-amber-100"
                     >
-                      Search "Memo" in Keep
+                      Search &ldquo;Memo&rdquo; in Keep
                     </button>
                     <button
                       type="button"
@@ -709,7 +736,7 @@ export function GlobalSearch() {
                       }}
                       className="text-xs px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 font-medium hover:bg-indigo-100"
                     >
-                      Search "Engineer" in Alumni
+                      Search &ldquo;Engineer&rdquo; in Alumni
                     </button>
                   </div>
                 </div>

@@ -7,7 +7,6 @@ import {
   ShieldCheck,
   CreditCard,
   Mail,
-  FileCheck,
   CheckCircle2,
   AlertTriangle,
   Sparkles,
@@ -21,10 +20,9 @@ import {
   Phone,
   Gift,
   RefreshCw,
-  Clock,
   Lock,
 } from "lucide-react";
-import { Card, Badge } from "@/components/ui";
+import { Card } from "@/components/ui";
 import {
   getCurrentUserVerificationStatusAction,
   submitProfileDetailsAction,
@@ -38,8 +36,8 @@ export default function CompleteProfilePage() {
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [userData, setUserData] = useState<any>(null);
-  const [config, setConfig] = useState<any>({ mode: "free" });
+  const [userData, setUserData] = useState<Record<string, unknown> | null>(null);
+  const [config, setConfig] = useState<{ mode: "paid" | "free"; feeAmount?: number }>({ mode: "free" });
   const [hasPaid, setHasPaid] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [toast, setToast] = useState<string | null>(null);
@@ -98,7 +96,7 @@ export default function CompleteProfilePage() {
             router.push("/verify-profile");
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to load verification status:", err);
       } finally {
         setLoading(false);
@@ -136,8 +134,9 @@ export default function CompleteProfilePage() {
 
       showToast("Profile details saved! Proceed to verification.");
       setStep(2);
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to submit profile");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to submit profile";
+      setErrorMessage(message);
     } finally {
       setSubmitting(false);
     }
@@ -171,7 +170,7 @@ export default function CompleteProfilePage() {
         name: "PRO ALUMN",
         description: "Alumni Identity Verification Fee",
         order_id: init.orderId,
-        handler: async function (response: any) {
+        handler: async function (response: { razorpay_payment_id?: string; razorpay_signature?: string }) {
           const verifyRes = await verifyRazorpayPaymentAction({
             orderId: init.orderId!,
             paymentId: response.razorpay_payment_id || `pay_${Date.now()}`,
@@ -187,7 +186,7 @@ export default function CompleteProfilePage() {
         },
         prefill: {
           name,
-          email: userData?.email || collegeEmail,
+          email: (userData?.email as string) || collegeEmail,
         },
         theme: {
           color: "#2563EB",
@@ -195,8 +194,9 @@ export default function CompleteProfilePage() {
       };
 
       // Check if Razorpay SDK is available in window, or use simulation fallback in test environment
-      if (typeof window !== "undefined" && (window as any).Razorpay) {
-        const rzp = new (window as any).Razorpay(options);
+      const win = window as unknown as { Razorpay?: new (opts: typeof options) => { open: () => void } };
+      if (typeof window !== "undefined" && win.Razorpay) {
+        const rzp = new win.Razorpay(options);
         rzp.open();
       } else {
         // Dev fallback for instant test verification
@@ -212,8 +212,9 @@ export default function CompleteProfilePage() {
           setErrorMessage(mockVerify.error || "Payment verification failed");
         }
       }
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to initiate payment");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to initiate payment";
+      setErrorMessage(message);
     } finally {
       setSubmitting(false);
     }
@@ -240,8 +241,9 @@ export default function CompleteProfilePage() {
 
       showToast("Verification submitted successfully!");
       router.push("/verify-profile");
-    } catch (err: any) {
-      setErrorMessage(err.message || "Verification failed");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Verification failed";
+      setErrorMessage(message);
     } finally {
       setSubmitting(false);
     }
@@ -577,7 +579,7 @@ export default function CompleteProfilePage() {
                       <button
                         key={m.id}
                         type="button"
-                        onClick={() => setFreeMethod(m.id as any)}
+                        onClick={() => setFreeMethod(m.id as "college_email" | "id_upload" | "otp")}
                         className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
                           freeMethod === m.id
                             ? "bg-blue-600/20 border-blue-500 text-blue-300 shadow-md shadow-blue-600/10"

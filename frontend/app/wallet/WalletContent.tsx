@@ -4,7 +4,22 @@ import { RoleShell } from "@/components/RoleShell";
 import { Card } from "@/components/ui";
 import { Coins, ArrowDownLeft, ArrowUpRight, Clock, CheckCircle2 } from "lucide-react";
 
-export function WalletContent({ wallet }: { wallet: any }) {
+export interface WalletTransaction {
+  id: string;
+  type: "CREDIT" | "DEBIT";
+  amount: number;
+  description?: string | null;
+  reason?: string | null;
+  createdAt: string | Date;
+}
+
+export interface UserWallet {
+  id?: string;
+  balance: number;
+  transactions?: WalletTransaction[];
+}
+
+export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
   const transactions = wallet?.transactions || [];
 
   return (
@@ -69,7 +84,7 @@ export function WalletContent({ wallet }: { wallet: any }) {
             </Card>
           ) : (
             <div className="space-y-3">
-              {transactions.map((tx: any) => (
+              {transactions.map((tx) => (
                 <Card key={tx.id} padding="md" className="flex items-center justify-between hover:border-blue-500/30 transition-all">
                   <div className="flex items-center gap-4">
                     <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold ${

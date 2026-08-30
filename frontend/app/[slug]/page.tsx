@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -12,13 +12,8 @@ import {
   ArrowRight,
   ChevronDown,
   Layers,
-  Zap,
-  Globe,
   ShieldAlert,
   ArrowLeft,
-  Calendar,
-  CheckCircle2,
-  HelpCircle,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { PreLoginNav } from "@/components/PreLoginNav";
@@ -58,7 +53,6 @@ interface SitePageData {
 export default function DynamicCustomPage() {
   const params = useParams();
   const slug = params?.slug as string;
-  const router = useRouter();
 
   const [page, setPage] = useState<SitePageData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -76,14 +70,15 @@ export default function DynamicCustomPage() {
         const res = await apiClient.pages.getBySlug(slug);
         if (isMounted) {
           if (res?.page) {
-            setPage(res.page);
+            setPage(res.page as unknown as SitePageData);
           } else {
             setError("Page not found");
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (isMounted) {
-          setError(err?.response?.data?.error || err.message || "Page not found");
+          const message = err instanceof Error ? err.message : "Page not found";
+          setError(message);
         }
       } finally {
         if (isMounted) setLoading(false);

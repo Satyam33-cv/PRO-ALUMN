@@ -35,7 +35,6 @@ export default function AnnouncementsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   // New announcement modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,7 +47,6 @@ export default function AnnouncementsPage() {
   React.useEffect(() => {
     apiClient.announcements.list().then((res) => {
       setAnnouncementsList(res as Announcement[]);
-      setLoading(false);
     });
   }, []);
 

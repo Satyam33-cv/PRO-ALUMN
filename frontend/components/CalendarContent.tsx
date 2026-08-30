@@ -12,7 +12,6 @@ import {
   AlertCircle,
   RefreshCw,
   CalendarCheck,
-  Video,
   Download,
   Users,
   Sparkles,
@@ -192,10 +191,11 @@ export function CalendarContent() {
       setDescription("");
       setLocation("Online (Google Meet)");
       setAttendeeEmail("");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to save event.";
       setStatusMsg({
         type: "error",
-        text: err.message || "Failed to save event.",
+        text: message,
       });
     } finally {
       setSubmitting(false);
@@ -216,10 +216,11 @@ export function CalendarContent() {
             type: "success",
             text: `Event "${eventTitle}" was deleted.`,
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : "Failed to delete event.";
           setStatusMsg({
             type: "error",
-            text: err.message || "Failed to delete event.",
+            text: message,
           });
         } finally {
           setConfirmDialog(null);

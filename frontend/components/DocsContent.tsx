@@ -13,7 +13,6 @@ import {
   Sparkles,
   BookOpen,
   Trash2,
-  Share2,
   Copy,
   Download,
 } from "lucide-react";
@@ -151,6 +150,7 @@ export function DocsContent() {
 
   useEffect(() => {
     loadDocuments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectDoc = (docItem: SavedDocRef) => {
@@ -196,10 +196,11 @@ export function DocsContent() {
       setIsCreating(false);
       setNewTitle("");
       setInitialContent("");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to save document.";
       setStatusMsg({
         type: "error",
-        text: err.message || "Failed to save document.",
+        text: message,
       });
     } finally {
       setSubmitting(false);
@@ -220,8 +221,9 @@ export function DocsContent() {
       setDocsList((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
       setIsEditing(false);
       setStatusMsg({ type: "success", text: "Document changes saved successfully!" });
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to update document." });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to update document.";
+      setStatusMsg({ type: "error", text: message });
     }
   };
 
@@ -248,10 +250,11 @@ export function DocsContent() {
         type: "success",
         text: "Note successfully appended to document!",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to append text.";
       setStatusMsg({
         type: "error",
-        text: err.message || "Failed to append text.",
+        text: message,
       });
     } finally {
       setAppending(false);
@@ -273,8 +276,9 @@ export function DocsContent() {
             setActiveDoc(remaining.length > 0 ? remaining[0] : null);
           }
           setStatusMsg({ type: "success", text: `Deleted "${docItem.title}"` });
-        } catch (err: any) {
-          setStatusMsg({ type: "error", text: err.message || "Failed to delete document." });
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : "Failed to delete document.";
+          setStatusMsg({ type: "error", text: message });
         } finally {
           setConfirmModal(null);
         }

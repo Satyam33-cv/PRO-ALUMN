@@ -1,13 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import {
   Clock,
-  ShieldCheck,
-  CheckCircle2,
-  AlertTriangle,
   RefreshCw,
   Mail,
   CreditCard,
@@ -15,28 +11,33 @@ import {
   Phone,
   ArrowRight,
   Sparkles,
-  HelpCircle,
 } from "lucide-react";
 import { Card } from "@/components/ui";
 import { getCurrentUserVerificationStatusAction } from "@/app/actions/verification";
 import Link from "next/link";
+
+interface VerificationUser {
+  name?: string;
+  profileStatus?: string;
+  verificationMethod?: string;
+  rejectionReason?: string;
+  [key: string]: unknown;
+}
 
 export default function VerifyProfileHoldingPage() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [checking, setChecking] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [hasPaid, setHasPaid] = useState(false);
+  const [user, setUser] = useState<VerificationUser | null>(null);
   const [lastChecked, setLastChecked] = useState<Date>(new Date());
 
-  const checkStatus = async (showSpinner = false) => {
+  const checkStatus = useCallback(async (showSpinner = false) => {
     if (showSpinner) setChecking(true);
     try {
       const res = await getCurrentUserVerificationStatusAction();
       if (res.success && res.user) {
-        setUser(res.user);
-        setHasPaid(res.hasSuccessfulPayment);
+        setUser(res.user as unknown as VerificationUser);
         setLastChecked(new Date());
 
         if (res.user.profileStatus === "APPROVED") {
@@ -51,14 +52,14 @@ export default function VerifyProfileHoldingPage() {
       if (showSpinner) setChecking(false);
       setLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     checkStatus(false);
     // Poll every 8 seconds in background
     const interval = setInterval(() => checkStatus(false), 8000);
     return () => clearInterval(interval);
-  }, []);
+  }, [checkStatus]);
 
   if (loading) {
     return (

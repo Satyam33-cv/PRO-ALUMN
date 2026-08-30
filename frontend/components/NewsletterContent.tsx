@@ -9,12 +9,10 @@ import {
   Download,
   BookOpen,
   Search,
-  Filter,
-  ExternalLink,
   X,
   FileText,
+  ExternalLink,
   Sparkles,
-  ChevronDown,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
@@ -25,16 +23,16 @@ export const NewsletterContent = memo(function NewsletterContent() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activePdf, setActivePdf] = useState<{ title: string; url: string } | null>(null);
 
-  const { data, loading } = useApi(
+  const { data, isLoading: loading } = useApi(
     `newsletters:${selectedYear}`,
     () => apiClient.newsletters.list(selectedYear, searchQuery)
   );
 
-  const newsletters = data?.newsletters || [];
   const availableYears = data?.years || [2024, 2023, 2022, 2021];
 
   const filteredNewsletters = useMemo(() => {
-    return newsletters.filter((n) => {
+    const list = data?.newsletters || [];
+    return list.filter((n) => {
       const matchSearch =
         !searchQuery ||
         n.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -42,7 +40,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
         selectedYear === "all" || n.year.toString() === selectedYear;
       return matchSearch && matchYear;
     });
-  }, [newsletters, searchQuery, selectedYear]);
+  }, [data?.newsletters, searchQuery, selectedYear]);
 
   // Group newsletters by year for clean sections
   const groupedByYear = useMemo(() => {

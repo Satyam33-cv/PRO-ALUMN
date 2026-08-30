@@ -26,18 +26,12 @@ import {
   CheckCircle2,
   Send,
   Database,
-  Globe,
   Megaphone,
   FileText,
-  StickyNote,
-  Mail,
-  FileQuestion,
   BookOpen,
   Zap,
   Lock,
   Layers,
-  ChevronRight,
-  TrendingUp,
 } from "lucide-react";
 import { PreLoginNav } from "@/components/PreLoginNav";
 

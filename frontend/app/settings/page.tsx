@@ -238,7 +238,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
                   <div>
                     <p className="font-semibold text-sm">Open to Mentoring Students</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Show the "Request Mentorship" button on your public alumni profile.</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Show the &ldquo;Request Mentorship&rdquo; button on your public alumni profile.</p>
                   </div>
                   <button
                     type="button"

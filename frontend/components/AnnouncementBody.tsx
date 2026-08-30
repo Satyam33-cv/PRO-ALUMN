@@ -62,25 +62,25 @@ export const AnnouncementBody = memo(function AnnouncementBody({
         rehypePlugins={[rehypeRaw, [rehypeSanitize, customSchema]]}
         components={{
           // Paragraph styling
-          p: ({ node, ...props }) => (
-            <p className="mb-2.5 last:mb-0 leading-relaxed text-slate-700 dark:text-slate-300" {...props} />
+          p: ({ children }) => (
+            <p className="mb-2.5 last:mb-0 leading-relaxed text-slate-700 dark:text-slate-300">{children}</p>
           ),
           // Bold / Strong styling
-          strong: ({ node, ...props }) => (
-            <strong className="font-bold text-slate-900 dark:text-slate-100" {...props} />
+          strong: ({ children }) => (
+            <strong className="font-bold text-slate-900 dark:text-slate-100">{children}</strong>
           ),
-          b: ({ node, ...props }) => (
-            <b className="font-bold text-slate-900 dark:text-slate-100" {...props} />
+          b: ({ children }) => (
+            <b className="font-bold text-slate-900 dark:text-slate-100">{children}</b>
           ),
           // Italic / Em styling
-          em: ({ node, ...props }) => (
-            <em className="italic text-slate-800 dark:text-slate-200" {...props} />
+          em: ({ children }) => (
+            <em className="italic text-slate-800 dark:text-slate-200">{children}</em>
           ),
-          i: ({ node, ...props }) => (
-            <i className="italic text-slate-800 dark:text-slate-200" {...props} />
+          i: ({ children }) => (
+            <i className="italic text-slate-800 dark:text-slate-200">{children}</i>
           ),
           // Links with secure attributes, icon, and responsive hover
-          a: ({ node, href, children, ...props }) => {
+          a: ({ href, children }) => {
             const isExternal = href?.startsWith("http://") || href?.startsWith("https://") || href?.startsWith("//");
             return (
               <a
@@ -88,7 +88,6 @@ export const AnnouncementBody = memo(function AnnouncementBody({
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
                 className="inline-flex items-center gap-0.5 font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 underline decoration-indigo-300 dark:decoration-indigo-600 underline-offset-2 transition-colors cursor-pointer"
-                {...props}
               >
                 <span>{children}</span>
                 {isExternal && (
@@ -98,58 +97,51 @@ export const AnnouncementBody = memo(function AnnouncementBody({
             );
           },
           // Unordered List styling
-          ul: ({ node, ...props }) => (
-            <ul className="my-2.5 ml-4 list-disc space-y-1.5 marker:text-indigo-500 dark:marker:text-indigo-400 text-slate-700 dark:text-slate-300 pl-1" {...props} />
+          ul: ({ children }) => (
+            <ul className="my-2.5 ml-4 list-disc space-y-1.5 marker:text-indigo-500 dark:marker:text-indigo-400 text-slate-700 dark:text-slate-300 pl-1">{children}</ul>
           ),
           // Ordered List styling
-          ol: ({ node, ...props }) => (
-            <ol className="my-2.5 ml-4 list-decimal space-y-1.5 marker:font-semibold marker:text-indigo-600 dark:marker:text-indigo-400 text-slate-700 dark:text-slate-300 pl-1" {...props} />
+          ol: ({ children }) => (
+            <ol className="my-2.5 ml-4 list-decimal space-y-1.5 marker:font-semibold marker:text-indigo-600 dark:marker:text-indigo-400 text-slate-700 dark:text-slate-300 pl-1">{children}</ol>
           ),
           // List item styling
-          li: ({ node, ...props }) => (
-            <li className="leading-relaxed pl-1" {...props} />
+          li: ({ children }) => (
+            <li className="leading-relaxed pl-1">{children}</li>
           ),
           // Inline code styling
-          code: ({ node, className: codeClassName, children, ...props }) => {
+          code: ({ children }) => {
             const isMultiLine = typeof children === "string" && children.includes("\n");
             if (isMultiLine) {
               return (
-                <code
-                  className="block my-2 overflow-x-auto rounded-lg bg-slate-100 dark:bg-slate-800/80 p-3 text-xs font-mono text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"
-                  {...props}
-                >
+                <code className="block my-2 overflow-x-auto rounded-lg bg-slate-100 dark:bg-slate-800/80 p-3 text-xs font-mono text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                   {children}
                 </code>
               );
             }
             return (
-              <code
-                className="rounded-md bg-slate-100 dark:bg-slate-800/80 px-1.5 py-0.5 text-xs font-mono font-medium text-indigo-600 dark:text-indigo-400 border border-slate-200/60 dark:border-slate-700/60"
-                {...props}
-              >
+              <code className="rounded-md bg-slate-100 dark:bg-slate-800/80 px-1.5 py-0.5 text-xs font-mono font-medium text-indigo-600 dark:text-indigo-400 border border-slate-200/60 dark:border-slate-700/60">
                 {children}
               </code>
             );
           },
           // Blockquote styling
-          blockquote: ({ node, ...props }) => (
-            <blockquote
-              className="my-3 border-l-3 border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/20 py-1.5 px-3.5 italic text-slate-700 dark:text-slate-300 rounded-r-lg"
-              {...props}
-            />
+          blockquote: ({ children }) => (
+            <blockquote className="my-3 border-l-3 border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/20 py-1.5 px-3.5 italic text-slate-700 dark:text-slate-300 rounded-r-lg">
+              {children}
+            </blockquote>
           ),
           // Headings styling
-          h1: ({ node, ...props }) => (
-            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-3 mb-1.5" {...props} />
+          h1: ({ children }) => (
+            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-3 mb-1.5">{children}</h1>
           ),
-          h2: ({ node, ...props }) => (
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-2.5 mb-1" {...props} />
+          h2: ({ children }) => (
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-2.5 mb-1">{children}</h2>
           ),
-          h3: ({ node, ...props }) => (
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-2 mb-1" {...props} />
+          h3: ({ children }) => (
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-2 mb-1">{children}</h3>
           ),
-          hr: ({ node, ...props }) => (
-            <hr className="my-3 border-slate-200 dark:border-slate-800" {...props} />
+          hr: () => (
+            <hr className="my-3 border-slate-200 dark:border-slate-800" />
           ),
         }}
       >

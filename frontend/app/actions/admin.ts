@@ -43,7 +43,7 @@ async function verifyAdminSession(): Promise<boolean> {
     });
 
     return Boolean(user && user.isActive && user.role === "ADMIN");
-  } catch (err) {
+  } catch {
     if (process.env.NODE_ENV !== "production") {
       return true;
     }
@@ -173,9 +173,10 @@ export async function approveProfileAction(input: FormData | string) {
       success: true,
       message: `Profile approved! Member wallet credited (+50 pts)${referralMsg}.`,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to approve profile:", error);
-    return { success: false, error: error.message || "Database transaction failed." };
+    const message = error instanceof Error ? error.message : "Database transaction failed.";
+    return { success: false, error: message };
   }
 }
 
@@ -226,9 +227,10 @@ export async function rejectProfileAction(input: FormData | string | { userId: s
       success: true,
       message: "Profile rejected and feedback recorded. Member can resubmit corrections.",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to reject profile:", error);
-    return { success: false, error: error.message || "Failed to update profile status." };
+    const message = error instanceof Error ? error.message : "Failed to update profile status.";
+    return { success: false, error: message };
   }
 }
 
@@ -257,9 +259,10 @@ export async function approveVideoAction(input: FormData | string) {
     revalidatePath("/videos");
 
     return { success: true, message: "Video approved and is now live on marketplace." };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to approve video:", error);
-    return { success: false, error: error.message || "Failed to update video status." };
+    const message = error instanceof Error ? error.message : "Failed to update video status.";
+    return { success: false, error: message };
   }
 }
 
@@ -288,9 +291,10 @@ export async function rejectVideoAction(input: FormData | string) {
     revalidatePath("/videos");
 
     return { success: true, message: "Video rejected." };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to reject video:", error);
-    return { success: false, error: error.message || "Failed to update video status." };
+    const message = error instanceof Error ? error.message : "Failed to update video status.";
+    return { success: false, error: message };
   }
 }
 

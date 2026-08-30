@@ -7,19 +7,13 @@ import {
   X,
   Send,
   Loader2,
-  Heart,
   Star,
-  ExternalLink,
   Sparkles,
-  Upload,
   Image as ImageIcon,
-  Building,
-  GraduationCap,
-  Award,
   CheckCircle2,
   Share2,
 } from "lucide-react";
-import { Card, Badge } from "@/components/ui";
+import { Card } from "@/components/ui";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
 import { useAuth } from "@/lib/context/AuthContext";
@@ -27,10 +21,27 @@ import { fadeIn, slideUp, staggerContainer } from "@/lib/motion";
 
 type CategoryFilter = "all" | "achievements" | "career" | "featured";
 
+export interface StoryItem {
+  id: string;
+  title: string;
+  story: string;
+  company?: string;
+  role?: string;
+  imageUrl?: string;
+  isFeatured?: boolean;
+  hasVoted?: boolean;
+  upvoteCount?: number;
+  author?: {
+    name?: string;
+    avatarUrl?: string;
+  };
+  createdAt?: string;
+  [key: string]: unknown;
+}
+
 export function StoriesContent() {
   const { user } = useAuth();
   const [filter, setFilter] = useState<CategoryFilter>("all");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
@@ -44,7 +55,7 @@ export function StoriesContent() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: apiStories, mutate: mutateStories, refresh: refreshStories } = useApi("stories:list", () => apiClient.stories.list());
-  const allStories = (apiStories || []) as any[];
+  const allStories = ((apiStories || []) as unknown as StoryItem[]);
 
   const filtered = allStories.filter((s) => {
     if (filter === "featured") return s.isFeatured;
@@ -63,8 +74,9 @@ export function StoriesContent() {
       const res = await apiClient.uploads.media(file, "stories");
       setImageUrl(res.url);
       showToast("Achievement image uploaded to Supabase!");
-    } catch (err: any) {
-      showToast(err.message || "Failed to upload image");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to upload image";
+      showToast(message);
     } finally {
       setUploadingImage(false);
     }
@@ -91,9 +103,10 @@ export function StoriesContent() {
       setImageUrl("");
       showToast("Achievement story shared to community feed!");
       refreshStories();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setSubmitting(false);
-      showToast(err.message || "Error submitting story");
+      const message = err instanceof Error ? err.message : "Error submitting story";
+      showToast(message);
     }
   };
 
@@ -115,7 +128,7 @@ export function StoriesContent() {
       const res = await apiClient.stories.vote(storyId);
       if (res.hasVoted) showToast("Upvoted! ⭐");
       refreshStories();
-    } catch (err) {
+    } catch {
       refreshStories();
       showToast("Failed to vote");
     }
