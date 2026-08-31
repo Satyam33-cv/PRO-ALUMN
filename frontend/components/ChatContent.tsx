@@ -746,14 +746,14 @@ export function ChatContent() {
                     </div>
                   </div>
                   
-                  {/* Stats Context instead of End button */}
+                  {/* Escrow Release Action */}
                   <div className="hidden sm:flex items-center gap-4 text-right">
-                    <div className="bg-paper/50 px-4 py-2 rounded-xl border border-ink/5">
-                      <p className="text-[10px] font-bold text-ink/50 uppercase tracking-wider mb-0.5">Achievements</p>
-                      <p className="text-sm font-semibold text-ink flex items-center gap-1.5">
-                        <ShieldCheck size={14} className="text-brass"/> 3 Badges
-                      </p>
-                    </div>
+                    <button 
+                      className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-sm rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center gap-2 border border-emerald-400/50 shadow-emerald-500/20"
+                      onClick={() => alert("Mentorship completed! 50 Credits released from escrow.")}
+                    >
+                      <ShieldCheck size={16} /> End & Release Credits
+                    </button>
                   </div>
                 </div>
 

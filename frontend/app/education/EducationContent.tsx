@@ -26,7 +26,7 @@ export interface MarketVideo {
   createdAt?: string | Date;
 }
 
-export function MarketContent({ 
+export function EducationContent({ 
   initialVideos, 
   balance, 
   unlockedIds 
@@ -223,9 +223,11 @@ export function MarketContent({
                   <Play size={24} className="text-blue-500" />
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Trending Free Skills</h2>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-4 px-4 sm:-mx-8 sm:px-8 [&::-webkit-scrollbar]:hidden">
                   {initialVideos.filter(v => v.priceInCredits === 0).map((video) => (
-                    <VideoCard key={video.id} video={video} isUnlocked={true} isFree={true} handleUnlock={handleUnlock} isPending={isPending} setPlayingVideo={setPlayingVideo} />
+                    <div key={video.id} className="min-w-[280px] sm:min-w-[320px] snap-center shrink-0">
+                      <VideoCard video={video} isUnlocked={true} isFree={true} handleUnlock={handleUnlock} isPending={isPending} setPlayingVideo={setPlayingVideo} />
+                    </div>
                   ))}
                 </div>
               </div>
@@ -238,17 +240,18 @@ export function MarketContent({
                   <Flame size={24} className="text-orange-500" />
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Premium Deep Dives</h2>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-4 px-4 sm:-mx-8 sm:px-8 [&::-webkit-scrollbar]:hidden">
                   {initialVideos.filter(v => v.priceInCredits > 0).map((video) => (
-                    <VideoCard 
-                      key={video.id} 
-                      video={video} 
-                      isUnlocked={unlockedIds.includes(video.id)} 
-                      isFree={false} 
-                      handleUnlock={handleUnlock} 
-                      isPending={isPending} 
-                      setPlayingVideo={setPlayingVideo}
-                    />
+                    <div key={video.id} className="min-w-[280px] sm:min-w-[320px] snap-center shrink-0">
+                      <VideoCard 
+                        video={video} 
+                        isUnlocked={unlockedIds.includes(video.id)} 
+                        isFree={false} 
+                        handleUnlock={handleUnlock} 
+                        isPending={isPending} 
+                        setPlayingVideo={setPlayingVideo}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>

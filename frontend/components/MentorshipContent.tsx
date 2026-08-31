@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, ChevronDown, ArrowRight, Send, Star, AlertCircle, Loader2, Repeat, Video } from "lucide-react";
+import { Check, X, ChevronDown, Send, Star, AlertCircle, Loader2, Repeat, Video } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
@@ -18,24 +18,6 @@ import {
 } from "@/lib/motion";
 
 const AREAS = ["All", "Career Advice", "Interview Prep", "Entrepreneurship", "Higher Studies"] as const;
-
-const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const TIME_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
-
-
-const mockAvailability: Record<string, boolean> = {
-  "Mon-09:00": true,
-  "Mon-10:00": true,
-  "Mon-11:00": false,
-  "Tue-14:00": true,
-  "Tue-15:00": true,
-  "Wed-10:00": true,
-  "Wed-11:00": true,
-  "Thu-14:00": false,
-  "Thu-15:00": true,
-  "Fri-09:00": true,
-  "Fri-10:00": true,
-};
 
 interface TopMatchAlumni {
   id?: string;
@@ -53,13 +35,6 @@ interface TopMatchAlumni {
   match?: number;
   skills?: string | string[];
 }
-
-const mockChatPreview = [
-  { id: "c1", text: "Hi! I'd love some guidance on breaking into fintech.", time: "10:00 AM", sent: true },
-  { id: "c2", text: "Great choice! What's your current background?", time: "10:05 AM", sent: false },
-  { id: "c3", text: "I'm a CS grad, did some React internships.", time: "10:08 AM", sent: true },
-  { id: "c4", text: "Perfect. Let's schedule a call to map out a plan.", time: "10:12 AM", sent: false },
-];
 
 function RequestModal({
   name,
@@ -244,44 +219,44 @@ interface TopMatchAlumni {
 
 export function MentorshipContent() {
   const router = useRouter();
+  const { user } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [startingChat, setStartingChat] = useState(false);
-  const [calendarWeek, setCalendarWeek] = useState<number>(0);
   const { data: mentorshipData, refresh: refreshMentorship } = useApi("mentorship:list", () => apiClient.mentorship.list());
   
   const requests = useMemo(() => {
     if (!mentorshipData?.mentorships) return [];
     return (mentorshipData.mentorships as {
       id: string;
-      student?: { name?: string; department?: string; batchYear?: string | number; avatarUrl?: string };
-      mentor?: { name?: string; jobTitle?: string; batchYear?: string | number; avatarUrl?: string };
+      student?: { id?: string; name?: string; department?: string; batchYear?: string | number; avatarUrl?: string };
+      mentor?: { id?: string; name?: string; jobTitle?: string; batchYear?: string | number; avatarUrl?: string };
       area?: string;
       message?: string;
       status?: string;
       createdAt?: string;
     }[]).map((m) => {
-      const studentName = m.student?.name || m.mentor?.name || "Unknown";
-      const studentInitials = studentName.split(" ").map((n: string) => n[0]).join("");
+      const isReceived = user?.id === m.mentor?.id;
+      const displayUser = isReceived ? m.student : m.mentor;
+      const displayName = displayUser?.name || "Unknown";
+      const displayInitials = displayName.split(" ").map((n: string) => n[0]).join("");
+      
       return {
         id: m.id,
-        studentName,
-        studentInitials,
-        role: m.student ? `${m.student.department} '${m.student.batchYear}` : m.mentor?.jobTitle || "Alumni",
-        avatar: m.student?.avatarUrl || m.mentor?.avatarUrl || "",
+        isReceived,
+        studentName: displayName,
+        studentInitials: displayInitials,
+        role: isReceived ? `${m.student?.department} '${m.student?.batchYear}` : m.mentor?.jobTitle || "Alumni",
+        avatar: displayUser?.avatarUrl || "",
         area: m.area,
         message: m.message,
         status: m.status?.toLowerCase() || "pending",
         createdAt: m.createdAt ? new Date(m.createdAt).toLocaleDateString() : "Unknown",
-        batch: m.student?.batchYear || m.mentor?.batchYear || "",
+        batch: displayUser?.batchYear || "",
       };
     });
-  }, [mentorshipData]);
+  }, [mentorshipData, user?.id]);
 
   const [activeArea, setActiveArea] = useState<string>("All");
-  const [selectedDate, setSelectedDate] = useState<string>("Mon");
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [showChatPreview, setShowChatPreview] = useState(false);
-  const [topMatch, setTopMatch] = useState<TopMatchAlumni | null>(null);
   const [swapRequestingId, setSwapRequestingId] = useState<string | null>(null);
   const [grantVideoMap, setGrantVideoMap] = useState<Record<string, boolean>>({});
 
@@ -333,7 +308,11 @@ export function MentorshipContent() {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 relative">
+      {/* Decorative colorful background for glassmorphism */}
+      <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      
       <div>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-sage">
           Mentorship
@@ -540,178 +519,6 @@ export function MentorshipContent() {
         </Link>
       </motion.div>
 
-      <section className="space-y-6">
-        <div>
-          <h2 className="font-display text-2xl text-ink">Book a Session</h2>
-          <p className="mt-1 text-sm text-ink/50">Select an available slot with your top match</p>
-        </div>
-
-        <Card padding="lg" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setCalendarWeek((w) => w - 1)}
-                className="p-1 text-ink/40 hover:text-ink transition-colors"
-                aria-label="Previous week"
-              >
-                <ChevronDown size={18} className="-rotate-90" />
-              </button>
-              <span className="font-mono text-xs uppercase tracking-wider text-ink/50">
-                Week of {formatDate(WEEKDAYS[0])}
-              </span>
-              <button
-                onClick={() => setCalendarWeek((w) => w + 1)}
-                className="p-1 text-ink/40 hover:text-ink transition-colors"
-                aria-label="Next week"
-              >
-                <ChevronDown size={18} />
-              </button>
-            </div>
-            <div className="flex items-center gap-2">
-              {WEEKDAYS.slice(0, 5).map((day) => (
-                <button
-                  key={day}
-                  onClick={() => setSelectedDate(day)}
-                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                    selectedDate === day
-                      ? "bg-brass text-white"
-                      : "text-ink/60 hover:bg-muted"
-                  }`}
-                >
-                  {day}
-                  <span className="font-mono text-[10px] text-ink/45">{formatDate(day)}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {TIME_SLOTS.map((slot) => (
-              <div key={slot} className="flex items-center gap-3 p-3 rounded-lg bg-white/50 border border-ink/10">
-                <span className="w-20 shrink-0 font-mono text-xs text-ink/50">{slot}</span>
-                {WEEKDAYS.slice(0, 5).map((day) => {
-                  const key = `${day}-${slot}`;
-                  const available = mockAvailability[key];
-                  const booked = selectedSlot === key;
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => available && handleBookSlot(day, slot)}
-                      disabled={!available}
-                      className={`flex-1 h-10 rounded-lg text-xs font-medium transition-all ${
-                        booked
-                          ? "bg-brass text-white"
-                          : available
-                          ? "bg-white border border-ink/10 hover:bg-brass/5 hover:border-brass"
-                          : "bg-ink/5 text-ink/20 cursor-not-allowed"
-                      }`}
-                      aria-label={`${day} ${slot} ${available ? "Available" : "Booked"}`}
-                    >
-                      {booked ? "Booked ✓" : available ? "Available" : "—"}
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </Card>
-      </section>
-
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-display text-2xl text-ink">Chat Preview</h2>
-            <p className="mt-1 text-sm text-ink/50">Preview your conversation before the session</p>
-          </div>
-          <button
-            onClick={() => setShowChatPreview(!showChatPreview)}
-            className="flex items-center gap-1 text-sm font-semibold text-brass hover:text-brass-600"
-          >
-            {showChatPreview ? "Collapse" : "Expand"}
-            <ArrowRight size={14} />
-          </button>
-        </div>
-
-        <AnimatePresence>
-          {showChatPreview && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden"
-            >
-              <Card padding="lg" className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brass/15 text-brass font-semibold text-sm overflow-hidden">
-                      {topMatch?.avatarUrl ? (
-                        <Image src={topMatch.avatarUrl} alt={topMatch?.name || "Match"} width={40} height={40} unoptimized className="h-full w-full object-cover" />
-                      ) : (topMatch?.initials || (topMatch?.name ? topMatch.name.split(" ").map((n: string) => n[0]).join("") : "?"))}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-ink">{topMatch?.name || "Match"}</p>
-                      <p className="text-xs text-ink/50">{topMatch?.jobTitle || topMatch?.role} at {topMatch?.currentCompany || topMatch?.company}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-sage/10 px-2 py-0.5 text-[10px] font-medium text-sage">
-                      <Star size={10} /> {topMatch?.matchScore || topMatch?.match}% Match
-                    </span>
-                    <button
-                      onClick={() => setShowChatPreview(false)}
-                      className="p-1 text-ink/40 hover:text-ink"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-3 max-h-64 overflow-y-auto">
-                  {mockChatPreview.map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`flex items-end gap-2 ${msg.sent ? "justify-end" : "justify-start"}`}
-                    >
-                      {!msg.sent && (
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-[10px] font-semibold">
-                          {topMatch?.initials || (topMatch?.name ? topMatch.name.split(" ").map((n: string) => n[0]).join("") : "?")}
-                        </div>
-                      )}
-                      <div
-                        className={`max-w-[75%] rounded-lg px-3 py-2 ${
-                          msg.sent
-                            ? "bg-brass/10 text-ink"
-                            : "bg-ink/5 text-ink"
-                        }`}
-                      >
-                        <p className="text-sm">{msg.text}</p>
-                        <p className="mt-1 font-mono text-[9px] text-ink/40">{msg.time}</p>
-                      </div>
-                      {msg.sent && (
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage text-[10px] font-semibold text-white">
-                          You
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-2 border-t border-ink/10 pt-4">
-                  <input
-                    type="text"
-                    placeholder="Type a message..."
-                    className="flex-1 rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none transition-colors placeholder:text-ink/35 focus:border-brass"
-                  />
-                  <button className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brass text-white transition-colors hover:bg-ink">
-                    <Send size={14} />
-                  </button>
-                </div>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
 
       <section className="space-y-6">
         <div className="flex items-center gap-3">
@@ -784,7 +591,6 @@ export function MentorshipContent() {
                         key="accepted"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="inline-flex items-center gap-1 rounded-full bg-sage px-4 py-1.5 text-xs font-semibold text-white"
                       >
                         <Check size={12} /> Accepted
                       </motion.span>
@@ -797,7 +603,7 @@ export function MentorshipContent() {
                       >
                         Declined
                       </motion.span>
-                    ) : (
+                    ) : req.isReceived ? (
                       <motion.div
                         key="actions"
                         initial={{ opacity: 0 }}
@@ -828,6 +634,15 @@ export function MentorshipContent() {
                           Grant free access to my Premium Videos
                         </label>
                       </motion.div>
+                    ) : (
+                      <motion.span
+                        key="waiting"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="inline-flex items-center gap-1 rounded-full border border-ink/10 bg-ink/5 px-4 py-1.5 text-xs font-semibold text-ink/60"
+                      >
+                        Waiting for response...
+                      </motion.span>
                     )}
                   </AnimatePresence>
                 </div>

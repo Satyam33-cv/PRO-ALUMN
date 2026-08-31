@@ -864,7 +864,6 @@ const RESERVED_SLUGS = new Set([
   'chat',
   'events',
   'mentorship',
-  'giving',
   'education',
   'docs',
   'keep',

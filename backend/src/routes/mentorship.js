@@ -7,8 +7,7 @@ const { authenticate } = require('../middleware/auth');
 // List mentorship requests for the logged-in user
 router.get('/', authenticate, async (req, res) => {
   try {
-    const isMentor = req.user.role === 'ALUMNI' || req.user.role === 'FACULTY';
-    const where = isMentor ? { mentorId: req.user.id } : { studentId: req.user.id };
+    const where = { OR: [{ mentorId: req.user.id }, { studentId: req.user.id }] };
 
     const mentorships = await prisma.mentorship.findMany({
       where,

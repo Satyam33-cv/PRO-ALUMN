@@ -43,7 +43,6 @@ const achievements: { label: string; tone: "success" | "accent" | "neutral" | "w
 
 const quickLinks = [
   { label: "Mentorship Hub", href: "/mentorship", icon: BookOpen },
-  { label: "Giving", href: "/giving", icon: Heart },
   { label: "Stories", href: "/stories", icon: BookMarked },
   { label: "Settings", href: "#", icon: Settings },
 ];

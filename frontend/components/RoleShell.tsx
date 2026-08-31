@@ -80,6 +80,7 @@ const navConfig: NavItemConfig[] = [
     title: 'Engage',
     icon: Compass,
     subItems: [
+      { title: 'Education Centre', href: '/education', icon: Video },
       { title: 'Announcements', href: '/announcements', icon: Megaphone },
       { title: 'Messages & Chat', href: '/chat', icon: MessageCircle },
       { title: 'Mentorship Hub', href: '/mentorship', icon: GraduationCap },
