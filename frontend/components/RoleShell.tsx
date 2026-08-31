@@ -32,6 +32,7 @@ import {
   Sparkles,
   MonitorCheck,
   Compass,
+  Video,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
@@ -57,18 +58,18 @@ type NavItemConfig = {
 };
 
 const navConfig: NavItemConfig[] = [
-  { 
-    title: 'Dashboard', 
-    href: '/home', 
-    icon: LayoutDashboard 
+  {
+    title: 'Dashboard',
+    href: '/home',
+    icon: LayoutDashboard
   },
-  { 
-    title: 'Network', 
-    href: '/directory', 
-    icon: Users 
+  {
+    title: 'Network',
+    href: '/directory',
+    icon: Users
   },
-  { 
-    title: 'Opportunities', 
+  {
+    title: 'Opportunities',
     icon: BriefcaseBusiness,
     subItems: [
       { title: 'Job Board', href: '/jobs', icon: BriefcaseBusiness },
@@ -210,9 +211,8 @@ function NotificationPanel({
           notifications.map((n) => (
             <li
               key={n.id}
-              className={`px-4 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
-                !n.isRead ? "bg-blue-50/40 dark:bg-blue-950/20" : ""
-              }`}
+              className={`px-4 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${!n.isRead ? "bg-blue-50/40 dark:bg-blue-950/20" : ""
+                }`}
             >
               <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{n.title || n.message || n.text}</p>
               {n.message && n.title && (
@@ -350,7 +350,7 @@ export function RoleShell({
 
   function sidebarContent(mobile: boolean) {
     const compact = collapsed && !mobile;
-    
+
     return (
       <>
         <div className={`flex items-center justify-between ${compact ? "justify-center px-2" : "px-6"} pb-4`}>
@@ -387,11 +387,10 @@ export function RoleShell({
             <Link
               href="/admin"
               onClick={() => mobile && setSidebarOpen(false)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                active("/admin")
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${active("/admin")
                   ? "bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
                   : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100"
-              } ${compact ? "justify-center px-0" : ""}`}
+                } ${compact ? "justify-center px-0" : ""}`}
               title={compact ? "Admin Console" : undefined}
               aria-current={active("/admin") ? "page" : undefined}
             >
@@ -406,18 +405,17 @@ export function RoleShell({
             const isStandardLink = !item.subItems;
             const isExactActive = item.href ? active(item.href) : false;
             const isDropActive = isActiveDropdown(item);
-            
-            const baseItemClasses = `w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-              isExactActive || (isDropActive && !openSection)
+
+            const baseItemClasses = `w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${isExactActive || (isDropActive && !openSection)
                 ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400'
                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
-            } ${compact ? "justify-center px-0" : ""}`;
+              } ${compact ? "justify-center px-0" : ""}`;
 
             if (isStandardLink) {
               return (
-                <Link 
-                  key={item.title} 
-                  href={item.href as `/${string}`} 
+                <Link
+                  key={item.title}
+                  href={item.href as `/${string}`}
                   onClick={() => mobile && setSidebarOpen(false)}
                   className={baseItemClasses}
                   title={compact ? item.title : undefined}
@@ -435,7 +433,7 @@ export function RoleShell({
 
             return (
               <div key={item.title} className="space-y-1">
-                <button 
+                <button
                   onClick={() => handleToggle(item.title)}
                   className={baseItemClasses}
                   title={compact ? item.title : undefined}
@@ -453,12 +451,11 @@ export function RoleShell({
                     )
                   )}
                 </button>
-                
+
                 {!compact && (
-                  <div 
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      isOpen ? 'max-h-64 opacity-100 mt-1' : 'max-h-0 opacity-0'
-                    }`}
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-64 opacity-100 mt-1' : 'max-h-0 opacity-0'
+                      }`}
                   >
                     <div className="pl-10 pr-2 py-1 space-y-1 border-l-2 border-slate-100 dark:border-slate-800 ml-4">
                       {item.subItems!.filter((subItem) => {
@@ -473,11 +470,10 @@ export function RoleShell({
                             href={subItem.href as `/${string}`}
                             onClick={() => mobile && setSidebarOpen(false)}
                             aria-current={isSubActive ? "page" : undefined}
-                            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                              isSubActive 
-                                ? 'text-blue-700 bg-blue-50/50 dark:text-blue-400 dark:bg-blue-500/10 font-semibold' 
+                            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${isSubActive
+                                ? 'text-blue-700 bg-blue-50/50 dark:text-blue-400 dark:bg-blue-500/10 font-semibold'
                                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/50'
-                            }`}
+                              }`}
                           >
                             <subItem.icon className="w-4 h-4 opacity-70 shrink-0" />
                             {subItem.title}
@@ -564,11 +560,10 @@ export function RoleShell({
             onClick={handleSignOut}
             title="Sign out"
             aria-label="Sign out"
-            className={`flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 cursor-pointer ${
-              compact 
-                ? "justify-center px-0 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400" 
+            className={`flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 cursor-pointer ${compact
+                ? "justify-center px-0 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400"
                 : "px-2 text-slate-600 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/30 dark:hover:text-red-400"
-            }`}
+              }`}
           >
             <LogOut size={18} className="shrink-0 opacity-75" />
             {!compact && "Sign out"}
@@ -675,7 +670,7 @@ export function RoleShell({
             )}
 
             <ThemeToggle className="shrink-0" />
-            
+
             <div className="relative">
               <button
                 type="button"
@@ -721,17 +716,16 @@ export function RoleShell({
           {navConfig.slice(0, 5).map(({ title, href, icon: Icon, subItems }) => {
             const destHref = href || (subItems ? subItems[0].href : "");
             const isItemActive = (href && active(href)) || (subItems && subItems.some((s) => active(s.href)));
-            
+
             return (
               <li key={title} className="flex-1">
                 <Link
                   href={destHref as `/${string}`}
                   aria-current={isItemActive ? "page" : undefined}
-                  className={`flex flex-col items-center gap-0.5 px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                    isItemActive
+                  className={`flex flex-col items-center gap-0.5 px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${isItemActive
                       ? "text-blue-600 dark:text-blue-400 font-bold"
                       : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                  }`}
+                    }`}
                 >
                   <Icon size={19} strokeWidth={isItemActive ? 2.2 : 1.6} />
                   <span className="text-[10px] leading-none mt-0.5">{title}</span>

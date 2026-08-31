@@ -259,6 +259,7 @@ export function MentorshipContent() {
   const [activeArea, setActiveArea] = useState<string>("All");
   const [swapRequestingId, setSwapRequestingId] = useState<string | null>(null);
   const [grantVideoMap, setGrantVideoMap] = useState<Record<string, boolean>>({});
+  const [topMatch, setTopMatch] = useState<TopMatchAlumni | null>(null);
 
   const { data: topAlumniData } = useApi("mentorship:top-alumni", () => apiClient.matching.topAlumni());
   const { data: skillSwapData } = useApi("matching:skill-swap", () => apiClient.matching.skillSwap());
@@ -291,21 +292,7 @@ export function MentorshipContent() {
     }
   };
 
-  const handleBookSlot = (day: string, slot: string) => {
-    const key = `${day}-${slot}`;
-    if (!mockAvailability[key]) return;
-    setSelectedSlot(key);
-    setShowChatPreview(true);
-  };
 
-  const formatDate = (day: string) => {
-    const today = new Date();
-    const dayIndex = WEEKDAYS.indexOf(day);
-    const diff = (dayIndex - today.getDay() + 7) % 7;
-    const date = new Date(today);
-    date.setDate(today.getDate() + diff + calendarWeek * 7);
-    return date.toLocaleDateString("en-US", { day: "numeric", month: "short" });
-  };
 
   return (
     <div className="space-y-10 relative">

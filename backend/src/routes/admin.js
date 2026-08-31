@@ -99,7 +99,7 @@ router.get('/stats', async (req, res) => {
       orderBy: { createdAt: 'desc' }, take: 6,
       select: { id: true, name: true, email: true, role: true, isVerified: true, createdAt: true, currentCompany: true, jobTitle: true },
     });
-    
+
     const recentReferrals = await prisma.referralRequest.findMany({
       orderBy: { createdAt: 'desc' }, take: 6,
       select: {
@@ -247,9 +247,9 @@ router.delete('/users/:id', async (req, res) => {
     });
 
     if (userToDelete) {
-      if (userToDelete.resumeUrl) await deleteFromStorage('resumes', userToDelete.resumeUrl).catch(() => {});
-      if (userToDelete.avatarUrl) await deleteFromStorage('avatars', userToDelete.avatarUrl).catch(() => {});
-      if (userToDelete.idCardUrl) await deleteFromStorage('certificates', userToDelete.idCardUrl).catch(() => {});
+      if (userToDelete.resumeUrl) await deleteFromStorage('resumes', userToDelete.resumeUrl).catch(() => { });
+      if (userToDelete.avatarUrl) await deleteFromStorage('avatars', userToDelete.avatarUrl).catch(() => { });
+      if (userToDelete.idCardUrl) await deleteFromStorage('certificates', userToDelete.idCardUrl).catch(() => { });
     }
 
     await prisma.user.delete({ where: { id: req.params.id } });
@@ -440,7 +440,7 @@ router.get('/stale-profiles', async (req, res) => {
 // =================== POST /api/admin/nudge-user/:id ===================
 router.post('/nudge-user/:id', async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ 
+    const user = await prisma.user.findUnique({
       where: { id: req.params.id },
       select: { id: true, name: true }
     });
@@ -525,7 +525,7 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
       if (!name || !emailAddress) { failed.push({ row: index, reason: 'missing name/email' }); continue; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)) { failed.push({ row: index, email: emailAddress, reason: 'invalid email format' }); continue; }
 
-      const existing = await prisma.user.findUnique({ 
+      const existing = await prisma.user.findUnique({
         where: { email: emailAddress },
         select: { id: true }
       });
@@ -558,7 +558,7 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
 
     if (importedForEmail.length > 0) {
       console.log(`📧 Sending ${importedForEmail.length} welcome email(s)`);
-      await Promise.all(importedForEmail.map((u) => email.sendWelcomeEmail({ to: u.email, name: u.name, tempPassword: u.tempPassword })).catch(() => {}));
+      await Promise.all(importedForEmail.map((u) => email.sendWelcomeEmail({ to: u.email, name: u.name, tempPassword: u.tempPassword })).catch(() => { }));
     }
 
     res.status(201).json({

@@ -143,7 +143,7 @@ function TimelineModal({
 export function ProfileContent() {
   const { user, signOut, setSession, session, googleAccessToken } = useAuth();
   const router = useRouter();
-  
+
   useEffect(() => {
     // Admins do not need profile customization, they should focus on monitoring and activity dashboards
     if (user?.role === "admin") {
@@ -481,7 +481,7 @@ export function ProfileContent() {
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <button 
+              <button
                 onClick={() => setIsEditingProfile(true)}
                 className="rounded-full border border-ink/15 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-brass hover:text-brass"
               >
@@ -489,7 +489,7 @@ export function ProfileContent() {
                   <Pencil size={14} /> Edit profile
                 </span>
               </button>
-              <button 
+              <button
                 onClick={() => setScheduleOpen(true)}
                 className="rounded-full border border-sage/30 bg-sage/10 px-4 py-2.5 text-sm font-semibold text-sage transition-colors hover:bg-sage/20"
               >
@@ -723,14 +723,12 @@ export function ProfileContent() {
             </span>
             <button
               onClick={() => setMentoring(!mentoring)}
-              className={`relative h-6 w-11 rounded-full transition-colors ${
-                mentoring ? "bg-sage" : "bg-ink/20"
-              }`}
+              className={`relative h-6 w-11 rounded-full transition-colors ${mentoring ? "bg-sage" : "bg-ink/20"
+                }`}
             >
               <span
-                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  mentoring ? "translate-x-5" : ""
-                }`}
+                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${mentoring ? "translate-x-5" : ""
+                  }`}
               />
             </button>
           </div>
@@ -750,11 +748,10 @@ export function ProfileContent() {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
-                dragOver
+              className={`flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-8 text-center transition-colors ${dragOver
                   ? "border-brass bg-brass/5"
                   : "border-ink/15 bg-white/50 hover:border-ink/30"
-              }`}
+                }`}
             >
               <Upload size={24} className="text-ink/35" />
               {uploadingResume ? (
@@ -934,7 +931,7 @@ export function ProfileContent() {
               <Plus size={12} /> Add Event
             </button>
           </div>
-          
+
           <div className="space-y-0">
             {currentTimeline.length === 0 ? (
               <p className="text-sm text-ink/50 text-center py-4">No timeline events added yet.</p>
@@ -994,11 +991,10 @@ export function ProfileContent() {
               gamificationData.badges.map((b) => (
                 <div
                   key={b.id || b.name}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold ${
-                    b.isUnlocked
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold ${b.isUnlocked
                       ? "border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 shadow-2xs"
                       : "border-ink/10 bg-ink/5 text-ink/40 opacity-70"
-                  }`}
+                    }`}
                   title={b.description}
                 >
                   <span>{b.isUnlocked ? "🏆" : "🔒"}</span>

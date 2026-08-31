@@ -12,9 +12,10 @@ import Image from "next/image";
 export interface MarketVideo {
   id: string;
   title: string;
-  description: string;
+  description?: string | null;
   videoUrl: string;
   priceInCredits: number;
+  durationSeconds?: number | null;
   duration?: string | null;
   thumbnailUrl?: string | null;
   uploader?: {
