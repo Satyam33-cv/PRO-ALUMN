@@ -319,7 +319,7 @@ router.get('/jobs', async (req, res) => {
       orderBy: { createdAt: 'desc' },
       include: {
         postedBy: { select: { id: true, name: true, email: true, currentCompany: true } },
-        _count: { select: { applications: true, referralRequests: true } },
+        _count: { select: { referrals: true } },
       },
     });
 

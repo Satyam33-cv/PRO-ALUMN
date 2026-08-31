@@ -6,7 +6,7 @@ import { Coins, ArrowDownLeft, ArrowUpRight, Clock, CheckCircle2 } from "lucide-
 
 export interface WalletTransaction {
   id: string;
-  type: "CREDIT" | "DEBIT";
+  type: string;
   amount: number;
   description?: string | null;
   reason?: string | null;
@@ -88,13 +88,13 @@ export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
                 <Card key={tx.id} padding="md" className="flex items-center justify-between hover:border-blue-500/30 transition-all">
                   <div className="flex items-center gap-4">
                     <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold ${
-                      tx.type === "CREDIT" ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"
+                      tx.amount > 0 ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"
                     }`}>
-                      {tx.type === "CREDIT" ? <ArrowDownLeft size={20} /> : <ArrowUpRight size={20} />}
+                      {tx.amount > 0 ? <ArrowDownLeft size={20} /> : <ArrowUpRight size={20} />}
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                        {tx.description || tx.reason || (tx.type === "CREDIT" ? "Points Earned" : "Points Spent")}
+                        {tx.description || tx.reason || (tx.amount > 0 ? "Points Earned" : "Points Spent")}
                       </h4>
                       <p className="text-[11px] text-slate-500 font-mono mt-0.5">
                         {new Date(tx.createdAt).toLocaleString()}
@@ -103,9 +103,9 @@ export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
                   </div>
                   
                   <div className={`font-mono font-bold text-lg ${
-                    tx.type === "CREDIT" ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
+                    tx.amount > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                   }`}>
-                    {tx.type === "CREDIT" ? "+" : "-"}{tx.amount}
+                    {tx.amount > 0 ? "+" : ""}{tx.amount}
                   </div>
                 </Card>
               ))}

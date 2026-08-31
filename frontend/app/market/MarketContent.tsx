@@ -305,7 +305,8 @@ function VideoCard({
   isUnlocked: boolean, 
   isFree: boolean, 
   handleUnlock: (id: string) => void, 
-  isPending: boolean 
+  isPending: boolean,
+  setPlayingVideo: (video: MarketVideo | null) => void
 }) {
   const gradientIndex = video.title.charCodeAt(0) % 5;
   const gradients = [
