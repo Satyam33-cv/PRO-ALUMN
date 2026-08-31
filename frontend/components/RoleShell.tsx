@@ -269,7 +269,8 @@ export function RoleShell({
   const { data: gamificationData } = useApi(
     "shell:gamification",
     () => apiClient.gamification.getStatus(),
-    { enabled: Boolean(user) }
+    // Admins are invisible overseers — they don't participate in the gamification economy
+    { enabled: Boolean(user) && role !== "admin" }
   );
 
   useEffect(() => {
@@ -380,6 +381,26 @@ export function RoleShell({
         </div>
 
         <nav className={`flex-1 overflow-y-auto px-3 py-2 space-y-1 ${compact ? "px-2" : ""}`}>
+          {/* Admin Console shortcut — only shown to admins */}
+          {role === "admin" && (
+            <Link
+              href="/admin"
+              onClick={() => mobile && setSidebarOpen(false)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                active("/admin")
+                  ? "bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100"
+              } ${compact ? "justify-center px-0" : ""}`}
+              title={compact ? "Admin Console" : undefined}
+              aria-current={active("/admin") ? "page" : undefined}
+            >
+              <div className="flex items-center gap-3">
+                <MonitorCheck className={`w-5 h-5 shrink-0 ${active("/admin") ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"}`} />
+                {!compact && "Admin Console"}
+              </div>
+            </Link>
+          )}
+
           {navConfig.map((item) => {
             const isStandardLink = !item.subItems;
             const isExactActive = item.href ? active(item.href) : false;
@@ -439,7 +460,11 @@ export function RoleShell({
                     }`}
                   >
                     <div className="pl-10 pr-2 py-1 space-y-1 border-l-2 border-slate-100 dark:border-slate-800 ml-4">
-                      {item.subItems!.map((subItem) => {
+                      {item.subItems!.filter((subItem) => {
+                        // Admins are invisible overseers — hide specific user features from their nav
+                        if (role === "admin" && ["/rewards", "/mentorship", "/stories", "/giving"].includes(subItem.href)) return false;
+                        return true;
+                      }).map((subItem) => {
                         const isSubActive = active(subItem.href);
                         return (
                           <Link
@@ -467,44 +492,56 @@ export function RoleShell({
         </nav>
 
         <div className={`mt-auto space-y-4 border-t border-slate-200 dark:border-slate-800 pt-4 bg-slate-50/50 dark:bg-slate-900/50 ${compact ? "px-2 pb-4" : "p-4"}`}>
-          {compact ? (
-            <Link
-              href="/rewards"
-              title={`Rewards: ${gamificationData?.totalPoints ?? 0} pts • 🔥 ${gamificationData?.streak?.current ?? 0}d streak`}
-              className="flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 text-amber-700 dark:text-amber-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shadow-xs group"
-            >
-              <Flame className="w-5 h-5 text-orange-500 fill-orange-500/20 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-bold mt-1 text-slate-900 dark:text-slate-100">
-                {gamificationData?.totalPoints ?? 0}
-              </span>
-            </Link>
-          ) : (
-            <Link
-              href="/rewards"
-              className="group block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 rounded-xl p-3 shadow-xs hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            >
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs font-bold tracking-wider text-amber-800 dark:text-amber-400 uppercase">Rewards</span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-100/80 dark:bg-orange-950/60 px-1.5 py-0.5 rounded-md border border-orange-200/60 dark:border-orange-800/40">
-                  <Flame className="w-3 h-3 fill-orange-500 text-orange-500" />
-                  {gamificationData?.streak?.current ?? 0}d streak
+          {/* Gamification widget — hidden for admins who are invisible overseers */}
+          {role !== "admin" && (
+            compact ? (
+              <Link
+                href="/rewards"
+                title={`Rewards: ${gamificationData?.totalPoints ?? 0} pts • 🔥 ${gamificationData?.streak?.current ?? 0}d streak`}
+                className="flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 text-amber-700 dark:text-amber-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shadow-xs group"
+              >
+                <Flame className="w-5 h-5 text-orange-500 fill-orange-500/20 group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-bold mt-1 text-slate-900 dark:text-slate-100">
+                  {gamificationData?.totalPoints ?? 0}
                 </span>
-              </div>
-              <div className="flex items-baseline justify-between">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
-                    {gamificationData?.totalPoints ?? 0}
+              </Link>
+            ) : (
+              <Link
+                href="/rewards"
+                className="group block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 rounded-xl p-3 shadow-xs hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-xs font-bold tracking-wider text-amber-800 dark:text-amber-400 uppercase">Rewards</span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-100/80 dark:bg-orange-950/60 px-1.5 py-0.5 rounded-md border border-orange-200/60 dark:border-orange-800/40">
+                    <Flame className="w-3 h-3 fill-orange-500 text-orange-500" />
+                    {gamificationData?.streak?.current ?? 0}d streak
                   </span>
-                  <span className="text-xs font-medium text-amber-700 dark:text-amber-500">pts</span>
                 </div>
-                <span className="text-[11px] font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                  View <ChevronRight className="w-3 h-3" />
-                </span>
-              </div>
-            </Link>
+                <div className="flex items-baseline justify-between">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
+                      {gamificationData?.totalPoints ?? 0}
+                    </span>
+                    <span className="text-xs font-medium text-amber-700 dark:text-amber-500">pts</span>
+                  </div>
+                  <span className="text-[11px] font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                    View <ChevronRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </Link>
+            )
           )}
 
-          <Link href="/profile" className={`flex items-center gap-3 rounded-lg py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${compact ? "justify-center" : "px-2 hover:bg-slate-100/80 dark:hover:bg-slate-800/60"}`}>
+          {/* Admin identity chip — shown instead of gamification widget */}
+          {role === "admin" && !compact && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/5 dark:bg-slate-100/5 border border-slate-200/60 dark:border-slate-700/60">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span className="text-[11px] font-bold tracking-wider text-emerald-700 dark:text-emerald-400 uppercase">Super Admin</span>
+            </div>
+          )}
+
+          {/* Profile link — redirects to admin console for admins */}
+          <Link href={role === "admin" ? "/admin" : "/profile"} className={`flex items-center gap-3 rounded-lg py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${compact ? "justify-center" : "px-2 hover:bg-slate-100/80 dark:hover:bg-slate-800/60"}`}>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white shadow-sm border-2 border-white dark:border-slate-800 ring-2 ring-slate-100 dark:ring-slate-700">
               {displayInitials}
             </div>
@@ -514,7 +551,8 @@ export function RoleShell({
                   {displayName}
                 </p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  {displayRole} • {displayYear}
+                  {/* Admins show a clean role label only — no class year */}
+                  {role === "admin" ? "Platform Administrator" : `${displayRole} • ${displayYear}`}
                 </p>
               </div>
             )}
@@ -612,23 +650,28 @@ export function RoleShell({
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/rewards"
-              className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-2.5 py-1 text-xs font-bold text-amber-600 dark:text-amber-400 hover:scale-105 hover:border-amber-500/50 transition-all shadow-xs"
-              title="Daily Active Streak"
-            >
-              <Flame size={15} className="text-orange-500 animate-pulse fill-orange-500/20" />
-              <span>{gamificationData?.streak?.current ?? 0}d</span>
-            </Link>
+            {/* Gamification badges — hidden for admins who are invisible overseers */}
+            {role !== "admin" && (
+              <>
+                <Link
+                  href="/rewards"
+                  className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-2.5 py-1 text-xs font-bold text-amber-600 dark:text-amber-400 hover:scale-105 hover:border-amber-500/50 transition-all shadow-xs"
+                  title="Daily Active Streak"
+                >
+                  <Flame size={15} className="text-orange-500 animate-pulse fill-orange-500/20" />
+                  <span>{gamificationData?.streak?.current ?? 0}d</span>
+                </Link>
 
-            <Link
-              href="/rewards"
-              className="hidden sm:flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 px-2.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:scale-105 hover:border-blue-500/50 transition-all shadow-xs"
-              title="Alumni Contribution Points"
-            >
-              <Coins size={14} className="text-blue-500" />
-              <span>{gamificationData?.totalPoints ?? 0} pts</span>
-            </Link>
+                <Link
+                  href="/rewards"
+                  className="hidden sm:flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 px-2.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:scale-105 hover:border-blue-500/50 transition-all shadow-xs"
+                  title="Alumni Contribution Points"
+                >
+                  <Coins size={14} className="text-blue-500" />
+                  <span>{gamificationData?.totalPoints ?? 0} pts</span>
+                </Link>
+              </>
+            )}
 
             <ThemeToggle className="shrink-0" />
             

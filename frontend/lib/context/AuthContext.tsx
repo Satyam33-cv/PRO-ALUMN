@@ -155,7 +155,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.debug('Streak recording failed:', e);
       }
     };
-    if (user && !loading) recordLoginStreak();
+    // Admins are invisible overseers — they don't participate in the gamification economy
+    if (user && !loading && user.role !== 'admin') recordLoginStreak();
   }, [user, loading]);
 
   const signInWithGoogle = useCallback(async () => {

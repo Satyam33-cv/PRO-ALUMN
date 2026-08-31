@@ -694,7 +694,7 @@ router.get('/videos', async (req, res) => {
 router.patch('/videos/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
-    if (!['PENDING', 'APPROVED', 'REJECTED'].includes(status)) {
+    if (!['PENDING', 'PUBLISHED', 'REJECTED'].includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
     }
 

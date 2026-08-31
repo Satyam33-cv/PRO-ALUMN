@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, ChevronDown, ArrowRight, Send, Star, AlertCircle, Loader2 } from "lucide-react";
+import { Check, X, ChevronDown, ArrowRight, Send, Star, AlertCircle, Loader2, Repeat, Video } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
@@ -155,9 +155,12 @@ function RequestModal({
         ) : (
           <>
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-xl text-ink">
-                Request Mentorship from {name}
-              </h2>
+              <div>
+                <h2 className="font-display text-xl text-ink">
+                  Apply for Advice
+                </h2>
+                <p className="text-sm text-ink/60">from {name}</p>
+              </div>
               <button
                 onClick={onClose}
                 className="p-1 text-ink/40 transition-colors hover:text-ink"
@@ -165,6 +168,14 @@ function RequestModal({
               >
                 <X size={18} />
               </button>
+            </div>
+            
+            <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-start gap-3 text-amber-800">
+              <AlertCircle size={18} className="text-amber-600 mt-0.5" />
+              <div className="text-sm">
+                <p className="font-bold">Escrow Required: 50 Credits</p>
+                <p className="opacity-80">This amount will be held securely. If the mentor declines, it will be fully refunded to your wallet.</p>
+              </div>
             </div>
 
             <label className="mt-5 block">
@@ -206,9 +217,9 @@ function RequestModal({
             <button
               onClick={handleSend}
               disabled={!area || !message.trim() || sending}
-              className="mt-5 w-full rounded-full bg-brass px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-secondaryContainer disabled:opacity-40 disabled:cursor-not-allowed"
+              className="mt-5 w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md"
             >
-              {sending ? "Sending email..." : "Send Request"}
+              {sending ? "Processing..." : "Lock 50 Credits & Send Request"}
             </button>
           </>
         )}
@@ -270,13 +281,12 @@ export function MentorshipContent() {
   const [selectedDate, setSelectedDate] = useState<string>("Mon");
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [showChatPreview, setShowChatPreview] = useState(false);
+  const [topMatch, setTopMatch] = useState<TopMatchAlumni | null>(null);
+  const [swapRequestingId, setSwapRequestingId] = useState<string | null>(null);
+  const [grantVideoMap, setGrantVideoMap] = useState<Record<string, boolean>>({});
 
   const { data: topAlumniData } = useApi("mentorship:top-alumni", () => apiClient.matching.topAlumni());
-  const topMatch = (topAlumniData?.alumni?.[0] || null) as unknown as TopMatchAlumni | null;
-
-  const skillsList: string[] = typeof topMatch?.skills === 'string' 
-    ? topMatch.skills.split(',').map((s: string) => s.trim())
-    : Array.isArray(topMatch?.skills) ? topMatch.skills : [];
+  const { data: skillSwapData } = useApi("matching:skill-swap", () => apiClient.matching.skillSwap());
 
   const filteredRequests = useMemo(
     () =>
@@ -288,9 +298,9 @@ export function MentorshipContent() {
 
   const pendingCount = requests.filter((r: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => r.status === "pending").length;
 
-  const handleAccept = async (id: string) => {
+  const handleAccept = async (id: string, grantVideoAccess?: boolean) => {
     try {
-      await apiClient.mentorship.updateStatus(id, "ACCEPTED");
+      await apiClient.mentorship.updateStatus(id, "ACCEPTED", grantVideoAccess);
       refreshMentorship();
     } catch (err) {
       console.error(err);
@@ -331,79 +341,173 @@ export function MentorshipContent() {
         <h1 className="mt-2 font-display text-5xl">Grow together.</h1>
       </div>
 
-      <motion.div {...slideUp}>
-        {topMatch ? (
-          <Card tone="dark" padding="lg" className="max-w-2xl">
-            <p className="text-sm font-semibold text-brass">Top Match for You</p>
-            <div className="mt-5 flex flex-col gap-6 sm:flex-row sm:items-start">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-brass font-semibold text-ink overflow-hidden">
-                {topMatch.avatarUrl ? (
-                  <Image src={topMatch.avatarUrl} alt={topMatch.name || "Match"} width={64} height={64} unoptimized className="h-full w-full object-cover" />
-                ) : (topMatch.initials || (topMatch.name ? topMatch.name.split(" ").map((n: string) => n[0]).join("") : "?"))}
-              </div>
-              <div className="flex-1">
-                <h2 className="font-display text-2xl text-paper">{topMatch.name}</h2>
-                <p className="mt-1 text-sm text-paper/70">
-                  {topMatch.jobTitle || topMatch.role} · {topMatch.currentCompany || topMatch.company}
-                </p>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-paper/45">
-                  Class of {topMatch.batchYear || topMatch.batch}
-                </p>
-              </div>
-              <div className="shrink-0">
-                <MatchRing percentage={topMatch.matchScore || topMatch.match || 0} />
-              </div>
+      {/* =================== SKILL SWAP MATCHES =================== */}
+      {(skillSwapData?.matches as any[] || []).length > 0 && (
+        <motion.div {...slideUp} className="w-full">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-10 w-10 bg-gradient-to-tr from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-md">
+              <Repeat size={20} className="text-white" />
             </div>
+            <div>
+              <h2 className="font-display text-2xl font-bold text-ink">Skill Swap Matches</h2>
+              <p className="text-sm text-ink/50">Exchange skills & videos — no credits needed!</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {(skillSwapData?.matches as any[] || []).map((match: any) => (
+              <Card key={match.id} padding="lg" className="flex flex-col h-full bg-gradient-to-br from-emerald-50/80 to-teal-50/60 backdrop-blur-md border border-emerald-200/50 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                {match.isPerfectMatch && (
+                  <div className="absolute top-3 right-3 px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm flex items-center gap-1">
+                    <Repeat size={10} /> Perfect Match
+                  </div>
+                )}
+                <div className="flex items-start gap-4">
+                  <div className="h-14 w-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 shrink-0">
+                    <div className="flex h-full w-full items-center justify-center rounded-full bg-white font-bold text-emerald-600 overflow-hidden">
+                      {match.avatarUrl ? (
+                        <Image src={match.avatarUrl} alt={match.name} width={56} height={56} unoptimized className="h-full w-full object-cover" />
+                      ) : (match.name ? match.name.split(" ").map((n: string) => n[0]).join("") : "?")}
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display text-lg font-bold text-ink truncate">{match.name}</h3>
+                    <p className="text-xs text-emerald-700 font-semibold">{match.jobTitle || match.role}</p>
+                    {match.currentCompany && <p className="text-[11px] text-ink/40">at {match.currentCompany}</p>}
+                  </div>
+                </div>
 
-            <div className="mt-5 flex flex-wrap gap-2">
-              {skillsList.slice(0, 3).map((skill: string) => (
-                <span
-                  key={skill}
-                  className="rounded-full bg-paper/10 px-3 py-1 text-xs text-paper/80"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
+                {/* Skills exchange visualization */}
+                <div className="mt-4 space-y-2">
+                  <div className="bg-white/70 rounded-lg p-3 border border-emerald-100">
+                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-1.5">They can teach you</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(match.canTeachMe || []).map((skill: string) => (
+                        <span key={skill} className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                  {match.iCanTeachThem?.length > 0 && (
+                    <div className="bg-white/70 rounded-lg p-3 border border-blue-100">
+                      <p className="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1.5">You can teach them</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(match.iCanTeachThem || []).map((skill: string) => (
+                          <span key={skill} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">{skill}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="rounded-full bg-brass px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-secondaryContainer"
-              >
-                Request Mentorship
-              </button>
-              <button
-                onClick={async () => {
-                  if (!topMatch.id) return;
-                  try {
-                    setStartingChat(true);
-                    const res = await apiClient.chat.createThread(topMatch.id);
-                    if (res?.thread?.id) {
-                      router.push(`/chat?thread=${res.thread.id}`);
-                    } else {
-                      router.push("/chat");
-                    }
-                  } catch (err) {
-                    console.error("Failed to start chat:", err);
-                    router.push("/chat");
-                  } finally {
-                    setStartingChat(false);
-                  }
-                }}
-                disabled={startingChat || !topMatch.id}
-                className="inline-flex items-center gap-1.5 rounded-full border border-paper/20 px-5 py-2.5 text-sm font-semibold text-paper hover:bg-paper/10 transition-colors disabled:opacity-50"
-              >
-                {startingChat ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-                Message
-              </button>
-            </div>
-          </Card>
-        ) : (
-          <Card tone="dark" padding="lg" className="max-w-2xl">
-            <p className="text-sm text-paper/70">No top match found. Try updating your profile.</p>
-          </Card>
-        )}
+                {/* Video stats */}
+                <div className="mt-4 flex items-center gap-4 text-xs text-ink/60">
+                  <span className="flex items-center gap-1"><Video size={12} className="text-emerald-500" /> {match.totalVideos || 0} videos</span>
+                  <span className="flex items-center gap-1"><Star size={12} className="text-amber-500 fill-amber-500" /> {match.premiumVideos || 0} premium</span>
+                </div>
+
+                <div className="mt-auto pt-4">
+                  <button
+                    onClick={async () => {
+                      setSwapRequestingId(match.id);
+                      try {
+                        await apiClient.mentorship.create({
+                          mentorId: match.id,
+                          area: (match.canTeachMe || []).join(', ') || 'Skill Exchange',
+                          message: `Skill Swap: I can teach ${(match.iCanTeachThem || []).join(', ') || 'my skills'} in exchange for ${(match.canTeachMe || []).join(', ')}`,
+                          isDirectSwap: true,
+                        });
+                        refreshMentorship();
+                      } catch (err) {
+                        console.error(err);
+                      } finally {
+                        setSwapRequestingId(null);
+                      }
+                    }}
+                    disabled={swapRequestingId === match.id}
+                    className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-sm font-bold rounded-xl shadow-md transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {swapRequestingId === match.id ? <Loader2 size={14} className="animate-spin" /> : <Repeat size={14} />}
+                    {swapRequestingId === match.id ? 'Proposing...' : 'Propose Swap (Free + Videos)'}
+                  </button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* =================== CREDIT-BASED MENTORS =================== */}
+      <div className="flex items-center gap-3 mb-2">
+        <div className="h-10 w-10 bg-gradient-to-tr from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-md">
+          <Star size={20} className="text-white" />
+        </div>
+        <div>
+          <h2 className="font-display text-2xl font-bold text-ink">Expert Mentors</h2>
+          <p className="text-sm text-ink/50">Get advice from top alumni — 50 credits</p>
+        </div>
+      </div>
+
+      <motion.div {...slideUp} className="w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          {(topAlumniData?.alumni || []).map((mentor: any) => {
+            const skillsList = typeof mentor.skills === 'string' 
+              ? mentor.skills.split(',').map((s: string) => s.trim())
+              : Array.isArray(mentor.skills) ? mentor.skills : [];
+            
+            // Generate deterministic fake stats for visual fidelity in the UI
+            const premiumVideos = (mentor.name?.charCodeAt(0) || 5) % 8 + 2;
+            const freeVideos = (mentor.name?.charCodeAt(1) || 2) % 4 + 1;
+
+            return (
+              <Card key={mentor.id} padding="lg" className="flex flex-col h-full bg-white/40 backdrop-blur-md border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300">
+                <div className="flex flex-col items-center text-center">
+                  <div className="h-20 w-20 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 p-1 shadow-lg mb-4">
+                    <div className="flex h-full w-full items-center justify-center rounded-full bg-white font-bold text-xl text-blue-600 overflow-hidden border-2 border-white">
+                      {mentor.avatarUrl ? (
+                        <Image src={mentor.avatarUrl} alt={mentor.name || "Mentor"} width={80} height={80} unoptimized className="h-full w-full object-cover" />
+                      ) : (mentor.initials || (mentor.name ? mentor.name.split(" ").map((n: string) => n[0]).join("") : "?"))}
+                    </div>
+                  </div>
+                  
+                  <h2 className="font-display text-xl font-bold text-ink">{mentor.name}</h2>
+                  <p className="text-xs font-semibold text-blue-600 mb-1">{mentor.jobTitle || mentor.role}</p>
+                  <p className="text-[11px] text-ink/50 uppercase tracking-wider mb-4">at {mentor.currentCompany || mentor.company}</p>
+                  
+                  <div className="w-full bg-slate-50 rounded-xl p-3 mb-5 border border-slate-100">
+                    <div className="flex justify-between items-center text-xs mb-2">
+                      <span className="flex items-center gap-1.5 text-slate-600"><Star size={12} className="text-amber-500 fill-amber-500"/> Match Score</span>
+                      <span className="font-bold text-slate-900">{mentor.matchScore || mentor.match || 85}%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs mb-2">
+                      <span className="flex items-center gap-1.5 text-slate-600"> Premium Videos</span>
+                      <span className="font-bold text-slate-900">{premiumVideos}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="flex items-center gap-1.5 text-slate-600"> Free Videos</span>
+                      <span className="font-bold text-slate-900">{freeVideos}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-auto">
+                  <button
+                    onClick={() => {
+                      setTopMatch(mentor);
+                      setModalOpen(true);
+                    }}
+                    className="w-full py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition-all active:scale-[0.98]"
+                  >
+                    Apply for Advice - 50 pts
+                  </button>
+                </div>
+              </Card>
+            )
+          })}
+          {(!topAlumniData?.alumni || topAlumniData.alumni.length === 0) && (
+            <Card padding="lg" className="w-full col-span-full text-center py-12">
+              <p className="text-sm text-ink/70">No mentors found. Try updating your profile.</p>
+            </Card>
+          )}
+        </div>
       </motion.div>
 
       <AnimatePresence>
@@ -698,20 +802,31 @@ export function MentorshipContent() {
                         key="actions"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="flex gap-2"
+                        className="flex flex-col gap-3"
                       >
-                        <button
-                          onClick={() => handleAccept(req.id)}
-                          className="rounded-full bg-sage px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-sage/90"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() => handleDecline(req.id)}
-                          className="rounded-full border border-ink/20 px-4 py-1.5 text-xs font-semibold text-ink/70 transition-colors hover:border-ink/40"
-                        >
-                          Decline
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleAccept(req.id, grantVideoMap[req.id])}
+                            className="rounded-full bg-sage px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-sage/90"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => handleDecline(req.id)}
+                            className="rounded-full border border-ink/20 px-4 py-1.5 text-xs font-semibold text-ink/70 transition-colors hover:border-ink/40"
+                          >
+                            Decline
+                          </button>
+                        </div>
+                        <label className="flex items-center gap-2 text-[10px] text-ink/70 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!grantVideoMap[req.id]}
+                            onChange={(e) => setGrantVideoMap(prev => ({ ...prev, [req.id]: e.target.checked }))}
+                            className="w-3 h-3 text-sage rounded focus:ring-sage"
+                          />
+                          Grant free access to my Premium Videos
+                        </label>
                       </motion.div>
                     )}
                   </AnimatePresence>

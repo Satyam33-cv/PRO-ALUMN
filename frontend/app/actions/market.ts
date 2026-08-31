@@ -33,7 +33,7 @@ export async function submitVideoAction(formData: FormData) {
     data: {
       title,
       description,
-      url: videoUrl,
+      videoUrl: videoUrl,
       status: "PENDING",
       uploaderId: session.id,
     },
@@ -64,7 +64,7 @@ export async function unlockVideoAction(videoId: string) {
 
   if (!video) throw new Error("Video not found");
 
-  if (video.price === 0) {
+  if (video.priceInCredits === 0) {
     // If it's free, just unlock it instantly
     await prisma.unlockedVideo.upsert({
       where: { userId_videoId: { userId: session.id, videoId } },
@@ -83,14 +83,14 @@ export async function unlockVideoAction(videoId: string) {
     });
 
     if (!wallet) throw new Error("Wallet not found. Complete your profile to set up a wallet.");
-    if (wallet.balance < video.price) {
+    if (wallet.balance < video.priceInCredits) {
       throw new Error("Insufficient points to unlock this video.");
     }
 
     // Deduct points
     await tx.wallet.update({
       where: { id: wallet.id },
-      data: { balance: { decrement: video.price } },
+      data: { balance: { decrement: video.priceInCredits } },
     });
 
     // Create transaction log
@@ -98,7 +98,7 @@ export async function unlockVideoAction(videoId: string) {
       data: {
         walletId: wallet.id,
         userId: session.id,
-        amount: video.price,
+        amount: video.priceInCredits,
         type: "DEBIT",
         reason: "VIDEO_UNLOCK",
         description: `Unlocked premium video: ${video.title}`,

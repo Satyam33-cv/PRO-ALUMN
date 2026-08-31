@@ -105,6 +105,12 @@ export default function CompleteProfilePage() {
           setReferralCode(u.referredByCode || "");
           setCollegeEmail(u.email || "");
 
+          // Admins are invisible overseers — they're decoupled from the profile completion flow
+          if (u.role === "ADMIN") {
+            router.push("/admin");
+            return;
+          }
+
           // If user is already approved, direct to dashboard
           if (u.profileStatus === "APPROVED") {
             router.push("/home");

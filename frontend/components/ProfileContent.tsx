@@ -37,35 +37,9 @@ import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { createCalendarEvent } from "@/lib/google-workspace";
 
-const timelineEntries = [
-  {
-    role: "Software Engineer",
-    company: "Stripe",
-    range: "2022 — Present",
-  },
-  {
-    role: "Junior Developer",
-    company: "Northstar Labs",
-    range: "2020 — 2022",
-  },
-  {
-    role: "Intern",
-    company: "Fieldwork",
-    range: "2019 — 2020",
-  },
-  {
-    role: "B.S. Computer Science",
-    company: "State University",
-    range: "2016 — 2020",
-  },
-];
+const timelineEntries: any[] = [];
 
-const achievements = [
-  { label: "10 referrals given", tone: "success" as const },
-  { label: "Top mentor 2025", tone: "accent" as const },
-  { label: "Active since 2024", tone: "neutral" as const },
-  { label: "5 mentees helped", tone: "warning" as const },
-];
+const achievements: { label: string; tone: "success" | "accent" | "neutral" | "warning" }[] = [];
 
 const quickLinks = [
   { label: "Mentorship Hub", href: "/mentorship", icon: BookOpen },
@@ -74,16 +48,7 @@ const quickLinks = [
   { label: "Settings", href: "#", icon: Settings },
 ];
 
-const DEFAULT_SKILLS = [
-  "React",
-  "TypeScript",
-  "Node.js",
-  "PostgreSQL",
-  "GraphQL",
-  "AWS",
-  "Docker",
-  "CI/CD",
-];
+const DEFAULT_SKILLS: string[] = [];
 
 function TimelineModal({
   onClose,
@@ -179,6 +144,14 @@ function TimelineModal({
 export function ProfileContent() {
   const { user, signOut, setSession, session, googleAccessToken } = useAuth();
   const router = useRouter();
+  
+  useEffect(() => {
+    // Admins do not need profile customization, they should focus on monitoring and activity dashboards
+    if (user?.role === "admin") {
+      router.push("/admin");
+    }
+  }, [user, router]);
+
   const { data: fullProfile, refresh: refreshProfile } = useApi("profile:me", () => apiClient.auth.me());
   const { data: gamificationData, reload: reloadGamification } = useApi("profile:gamification", () => apiClient.gamification.getStatus());
   const [toast, setToast] = useState<string | null>(null);
@@ -187,7 +160,7 @@ export function ProfileContent() {
   const [isAddingTimeline, setIsAddingTimeline] = useState(false);
   const [verifyingStatus, setVerifyingStatus] = useState(false);
   const [bio, setBio] = useState(
-    fullProfile?.bio || "Passionate about building products that make everyday work more human. Open to mentoring students and early-career professionals."
+    fullProfile?.bio || ""
   );
 
   const showToast = (msg: string) => {

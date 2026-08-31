@@ -251,7 +251,7 @@ export async function approveVideoAction(input: FormData | string) {
   try {
     await prisma.video.update({
       where: { id: videoId },
-      data: { status: "APPROVED" },
+      data: { status: "PUBLISHED" },
     });
 
     revalidatePath("/admin");

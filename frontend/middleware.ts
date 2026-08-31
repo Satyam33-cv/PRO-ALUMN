@@ -70,8 +70,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Admins bypass remaining profile status gates
+  // Admins bypass remaining profile status gates but should not access user-facing features
   if (userRole === "ADMIN") {
+    const adminBlockedPaths = ["/profile", "/stories", "/giving", "/mentorship"];
+    if (adminBlockedPaths.some((p) => pathname.startsWith(p))) {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
     return NextResponse.next();
   }
 

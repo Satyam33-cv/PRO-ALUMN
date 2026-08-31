@@ -1,8 +1,12 @@
+import { createClient } from '@supabase/supabase-js';
+
 // frontend/lib/supabase.ts
 // Supabase client instance for frontend direct queries, realtime, and storage
 
 export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://rbcswrdndqylswladdue.supabase.co";
 export const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_KMSA3PCR4AZjNa6ALkjnaA_I_E_Wjrm";
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Simple fetch-based Supabase REST helper for direct Supabase table/storage operations if needed
 export async function supabaseFetch(table: string, queryParams: Record<string, string> = {}) {

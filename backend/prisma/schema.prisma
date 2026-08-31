@@ -31,6 +31,19 @@ enum ItemStatus {
 enum WalletTransactionType {
   CREDIT
   DEBIT
+  MENTORSHIP_ESCROW
+  MENTORSHIP_EARNED
+  ESCROW_REFUND
+  REFERRAL_REWARD
+  VIDEO_COMPLETED
+  CERTIFICATE_CLAIM
+}
+
+enum VideoStatus {
+  PROCESSING
+  PENDING
+  PUBLISHED
+  REJECTED
 }
 
 model User {
@@ -112,6 +125,8 @@ model User {
   videos             Video[]             @relation("UploadedVideos")
   unlockedVideos     UnlockedVideo[]
   paymentRecords     PaymentRecord[]
+  watchSessions      WatchSession[]
+  certificates       Certificate[]
 
   @@index([batchYear])
   @@index([department])
@@ -327,6 +342,7 @@ enum MentorshipStatus {
   ACCEPTED
   DECLINED
   COMPLETED
+  DISPUTED
 }
 
 model Mentorship {
@@ -339,6 +355,18 @@ model Mentorship {
   area    String // "Career Advice", "Interview Prep", etc.
   message String?          @db.Text
   status  MentorshipStatus @default(PENDING)
+
+  creditsCharged Int         @default(0)
+  chatThreadId   String?     @unique
+  chatThread     ChatThread? @relation(fields: [chatThreadId], references: [id])
+  isCompleted    Boolean     @default(false)
+
+  // Skill Swap fields
+  isDirectSwap     Boolean   @default(false) // true = barter (0 credits), false = credit swap
+  scheduledFor     DateTime? // proposed session time
+  durationMins     Int       @default(60)
+  studentConfirmed Boolean   @default(false) // dual-handshake: student confirms session happened
+  mentorConfirmed  Boolean   @default(false) // dual-handshake: mentor confirms session happened
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -356,6 +384,8 @@ model ChatThread {
 
   members  ChatThreadMember[]
   messages ChatMessage[]
+
+  mentorship Mentorship?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -441,18 +471,20 @@ model Newsletter {
 
 // =================== MARKETPLACE & LEDGER ===================
 model Video {
-  id              String     @id @default(uuid())
+  id              String      @id @default(uuid())
   title           String
-  description     String?    @db.Text
-  url             String
-  price           Int        @default(0)
+  description     String?     @db.Text
+  videoUrl        String
+  priceInCredits  Int         @default(0)
   durationSeconds Int?
-  status          ItemStatus @default(PENDING)
+  status          VideoStatus @default(PROCESSING)
 
   uploaderId String
   uploader   User   @relation("UploadedVideos", fields: [uploaderId], references: [id], onDelete: Cascade)
 
-  unlockedBy UnlockedVideo[]
+  unlockedBy    UnlockedVideo[]
+  watchSessions WatchSession[]
+  certificates  Certificate[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -547,4 +579,48 @@ model PaymentRecord {
 
   @@index([userId])
   @@index([razorpayOrderId])
+}
+
+// =================== WATCH SESSION (Anti-Cheat) ===================
+enum SessionStatus {
+  WATCHING
+  COMPLETED
+}
+
+model WatchSession {
+  id                  String        @id @default(uuid())
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  videoId             String
+  video               Video         @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  
+  maxWatchedTimestamp Float         @default(0.0) // Track the furthest point they've watched
+  lastHeartbeat       DateTime      @default(now()) // Timestamp of the last ping
+  
+  status              SessionStatus @default(WATCHING)
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@unique([userId, videoId]) // A user should have one active/completed session per video
+  @@index([userId])
+  @@index([videoId])
+}
+
+// =================== CERTIFICATES ===================
+model Certificate {
+  id             String   @id @default(uuid())
+  certificateUrl String   // AWS S3 / Cloudinary URL for the generated PDF
+  
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  videoId        String
+  video          Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  pointsDeducted Int      // How many credits they paid to claim this
+  issuedAt       DateTime @default(now())
+
+  @@unique([userId, videoId]) // Only 1 certificate per video per user
 }

@@ -2,17 +2,19 @@
 
 import { RoleShell } from "@/components/RoleShell";
 import { Card } from "@/components/ui";
-import { Video, Plus, CheckCircle2, Lock, Play, Flame, User as UserIcon, Coins } from "lucide-react";
+import { Video, Plus, CheckCircle2, Lock, Play, Flame, User as UserIcon, Coins, X, ShieldCheck } from "lucide-react";
 import { useState, useTransition } from "react";
+import { WatchVideoPlayer } from "@/components/WatchVideoPlayer";
 import { submitVideoAction, unlockVideoAction } from "../actions/market";
+import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 
 export interface MarketVideo {
   id: string;
   title: string;
   description: string;
-  url: string;
-  price: number;
+  videoUrl: string;
+  priceInCredits: number;
   duration?: string | null;
   thumbnailUrl?: string | null;
   uploader?: {
@@ -37,17 +39,58 @@ export function MarketContent({
   const [isPending, startTransition] = useTransition();
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [playingVideo, setPlayingVideo] = useState<MarketVideo | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg("");
     setSuccessMsg("");
-    const formData = new FormData(e.currentTarget);
     
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
+    const file = formData.get("videoFile") as File;
+    
+    if (!file || file.size === 0) {
+      setErrorMsg("Please select a video file to upload.");
+      return;
+    }
+    
+    // Check 150MB limit (150 * 1024 * 1024 bytes)
+    if (file.size > 150 * 1024 * 1024) {
+      setErrorMsg("File size exceeds the 150MB limit. Please compress your video.");
+      return;
+    }
+
     startTransition(async () => {
       try {
+        // 1. Upload to Supabase Storage
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `uploads/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('videos')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (uploadError) {
+          throw new Error(`Upload failed: ${uploadError.message}`);
+        }
+
+        // 2. Get Public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('videos')
+          .getPublicUrl(filePath);
+
+        // 3. Submit to our Backend Action
+        formData.delete("videoFile"); // Remove file from formData to save payload size
+        formData.append("videoUrl", publicUrl);
+
         await submitVideoAction(formData);
-        setSuccessMsg("Video submitted successfully and is pending admin approval!");
+        
+        setSuccessMsg("Video uploaded successfully and is pending admin approval!");
         setShowForm(false);
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Failed to submit video";
@@ -147,9 +190,9 @@ export function MarketContent({
                 <textarea required name="description" className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 h-28 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none" placeholder="What will students learn from this video?" />
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Video URL</label>
-                <input required name="videoUrl" type="url" className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="https://youtube.com/..." />
-                <p className="text-xs text-slate-500 mt-1.5">Supports YouTube, Vimeo, or Google Drive links.</p>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Video File (.mp4)</label>
+                <input required name="videoFile" type="file" accept="video/mp4,video/x-m4v,video/*" className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:ring-2 focus:ring-blue-500 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                <p className="text-xs text-slate-500 mt-1.5">Max file size: 150MB.</p>
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={() => setShowForm(false)} className="px-5 py-2.5 font-bold text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">Cancel</button>
@@ -161,7 +204,7 @@ export function MarketContent({
           </Card>
         )}
 
-        {/* GRID DISPLAY */}
+        {/* CATEGORIZED DISPLAY */}
         {initialVideos.length === 0 ? (
           <Card padding="lg" className="text-center py-20 text-slate-500 border-dashed">
             <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -171,101 +214,187 @@ export function MarketContent({
             <p className="text-sm mt-2 max-w-sm mx-auto">Be the first alumni to submit a premium masterclass or technical talk.</p>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {initialVideos.map((video) => {
-              const isFree = video.price === 0;
-              const isUnlocked = isFree || unlockedIds.includes(video.id);
-              
-              // Simple placeholder thumbnail generation using a gradient
-              const gradientIndex = video.title.charCodeAt(0) % 5;
-              const gradients = [
-                "from-blue-500 to-indigo-600",
-                "from-emerald-500 to-teal-600",
-                "from-rose-500 to-pink-600",
-                "from-amber-500 to-orange-600",
-                "from-purple-500 to-fuchsia-600"
-              ];
-              const gradient = gradients[gradientIndex];
-
-              return (
-                <div key={video.id} className="group flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:shadow-xl transition-all duration-300">
-                  
-                  {/* THUMBNAIL */}
-                  <div className={`aspect-video w-full relative bg-gradient-to-br ${gradient} p-6 flex flex-col justify-end overflow-hidden`}>
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                    
-                    <h3 className="relative z-10 font-display text-white text-lg font-bold leading-tight line-clamp-2 drop-shadow-md">
-                      {video.title}
-                    </h3>
-                    
-                    {/* OVERLAYS */}
-                    {isUnlocked ? (
-                      <a href={video.url} target="_blank" rel="noreferrer" className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm cursor-pointer">
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl scale-90 group-hover:scale-100 transition-transform">
-                          <Play size={32} className="text-white ml-1.5 fill-white" />
-                        </div>
-                      </a>
-                    ) : (
-                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 text-center">
-                        <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center mb-3 shadow-lg border border-slate-700">
-                          <Lock size={24} className="text-slate-400" />
-                        </div>
-                        <p className="text-sm font-bold text-white mb-3">Premium Content</p>
-                        <button
-                          onClick={() => handleUnlock(video.id)}
-                          disabled={isPending}
-                          className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl shadow-md transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                        >
-                          Unlock for <Coins size={14}/> {video.price} pts
-                        </button>
-                      </div>
-                    )}
-
-                    {/* BADGES */}
-                    <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-2">
-                      {!isFree && !isUnlocked && (
-                        <div className="px-2.5 py-1 bg-black/60 backdrop-blur-md text-white text-xs font-bold rounded-md flex items-center gap-1 border border-white/10 shadow-sm">
-                          <Coins size={12} className="text-amber-400" /> {video.price} pts
-                        </div>
-                      )}
-                      {isUnlocked && !isFree && (
-                        <div className="px-2.5 py-1 bg-emerald-500 text-white text-xs font-bold rounded-md flex items-center gap-1 shadow-sm">
-                          <CheckCircle2 size={12} /> Unlocked
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* DETAILS */}
-                  <div className="p-4 flex flex-col flex-1">
-                    <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 flex-1">
-                      {video.description}
-                    </p>
-                    
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
-                      <div className="flex items-center gap-2 min-w-0">
-                        {video.uploader?.avatarUrl ? (
-                          <Image src={video.uploader.avatarUrl} alt={video.uploader.name || "Expert"} width={28} height={28} className="w-7 h-7 rounded-full object-cover shrink-0 bg-slate-200" />
-                        ) : (
-                          <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 shrink-0 border border-slate-200 dark:border-slate-700">
-                            <UserIcon size={14} />
-                          </div>
-                        )}
-                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">
-                          {video.uploader?.name || "Expert"}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        {video.createdAt ? new Date(video.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "Recently"}
-                      </span>
-                    </div>
-                  </div>
+          <div className="space-y-12">
+            
+            {/* FREE VIDEOS */}
+            {initialVideos.filter(v => v.priceInCredits === 0).length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <Play size={24} className="text-blue-500" />
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Trending Free Skills</h2>
                 </div>
-              );
-            })}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {initialVideos.filter(v => v.priceInCredits === 0).map((video) => (
+                    <VideoCard key={video.id} video={video} isUnlocked={true} isFree={true} handleUnlock={handleUnlock} isPending={isPending} setPlayingVideo={setPlayingVideo} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* PREMIUM VIDEOS */}
+            {initialVideos.filter(v => v.priceInCredits > 0).length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <Flame size={24} className="text-orange-500" />
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Premium Deep Dives</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {initialVideos.filter(v => v.priceInCredits > 0).map((video) => (
+                    <VideoCard 
+                      key={video.id} 
+                      video={video} 
+                      isUnlocked={unlockedIds.includes(video.id)} 
+                      isFree={false} 
+                      handleUnlock={handleUnlock} 
+                      isPending={isPending} 
+                      setPlayingVideo={setPlayingVideo}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* Video Player Modal */}
+      {playingVideo && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-950/90 backdrop-blur-xl">
+          <div className="relative w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-4 border-b border-slate-800">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <ShieldCheck size={20} className="text-emerald-500" /> Secure Watch-to-Earn Player
+              </h2>
+              <button 
+                onClick={() => setPlayingVideo(null)}
+                className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto">
+              <WatchVideoPlayer 
+                videoId={playingVideo.id} 
+                videoUrl={playingVideo.videoUrl} 
+                title={playingVideo.title} 
+              />
+              
+              <div className="p-6 bg-slate-900">
+                <h3 className="text-lg font-bold text-white mb-2">About this video</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{playingVideo.description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </RoleShell>
+  );
+}
+
+// Helper Component for Video Card
+function VideoCard({ 
+  video, 
+  isUnlocked, 
+  isFree, 
+  handleUnlock, 
+  isPending,
+  setPlayingVideo
+}: { 
+  video: MarketVideo, 
+  isUnlocked: boolean, 
+  isFree: boolean, 
+  handleUnlock: (id: string) => void, 
+  isPending: boolean 
+}) {
+  const gradientIndex = video.title.charCodeAt(0) % 5;
+  const gradients = [
+    "from-blue-500 to-indigo-600",
+    "from-emerald-500 to-teal-600",
+    "from-rose-500 to-pink-600",
+    "from-amber-500 to-orange-600",
+    "from-purple-500 to-fuchsia-600"
+  ];
+  const gradient = gradients[gradientIndex];
+
+  return (
+    <div className="group flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:shadow-xl transition-all duration-300">
+      
+      {/* THUMBNAIL */}
+      <div className={`aspect-video w-full relative bg-gradient-to-br ${gradient} p-6 flex flex-col justify-end overflow-hidden`}>
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+        
+        <h3 className="relative z-10 font-display text-white text-lg font-bold leading-tight line-clamp-2 drop-shadow-md">
+          {video.title}
+        </h3>
+        
+        {/* OVERLAYS */}
+        {isUnlocked ? (
+          <button onClick={() => setPlayingVideo(video)} className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm cursor-pointer border-none outline-none w-full h-full">
+            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl scale-90 group-hover:scale-100 transition-transform">
+              <Play size={32} className="text-white ml-1.5 fill-white" />
+            </div>
+          </button>
+        ) : (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 text-center">
+            <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center mb-3 shadow-lg border border-slate-700">
+              <Lock size={24} className="text-slate-400" />
+            </div>
+            <p className="text-sm font-bold text-white mb-3">Premium Content</p>
+            <button
+              onClick={() => handleUnlock(video.id)}
+              disabled={isPending}
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl shadow-md transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {video.priceInCredits === 0 ? "Free" : `Unlock for ${video.priceInCredits} pts`}
+            </button>
+          </div>
+        )}
+
+        {/* BADGES */}
+        <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-2">
+          {!isFree && !isUnlocked && (
+            <div className="px-2.5 py-1 bg-black/60 backdrop-blur-md text-white text-xs font-bold rounded-md flex items-center gap-1 border border-white/10 shadow-sm">
+              <Coins size={12} className="text-amber-400" /> {video.priceInCredits} pts
+            </div>
+          )}
+          {isFree && (
+            <div className="px-2.5 py-1 bg-blue-500/80 backdrop-blur-md text-white text-xs font-bold rounded-md flex items-center gap-1 shadow-sm">
+              Free Skill
+            </div>
+          )}
+          {isUnlocked && !isFree && (
+            <div className="px-2.5 py-1 bg-emerald-500 text-white text-xs font-bold rounded-md flex items-center gap-1 shadow-sm">
+              <CheckCircle2 size={12} /> Unlocked
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* DETAILS */}
+      <div className="p-4 flex flex-col flex-1">
+        <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 flex-1">
+          {video.description}
+        </p>
+        
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
+          <div className="flex items-center gap-2 min-w-0">
+            {video.uploader?.avatarUrl ? (
+              <Image src={video.uploader.avatarUrl} alt={video.uploader.name || "Expert"} width={28} height={28} className="w-7 h-7 rounded-full object-cover shrink-0 bg-slate-200" />
+            ) : (
+              <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 shrink-0 border border-slate-200 dark:border-slate-700">
+                <UserIcon size={14} />
+              </div>
+            )}
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">
+              {video.uploader?.name || "Expert"}
+            </span>
+          </div>
+          <span className="text-[10px] text-slate-400 font-mono">
+            {video.createdAt ? new Date(video.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "Recently"}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -37,7 +37,7 @@ export default async function MarketPage() {
   }
 
   const videos = await prisma.video.findMany({
-    where: { status: "APPROVED" },
+    where: { status: "PUBLISHED" },
     include: {
       uploader: {
         select: { name: true, avatarUrl: true },

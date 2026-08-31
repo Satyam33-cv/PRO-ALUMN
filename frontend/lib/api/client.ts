@@ -327,16 +327,22 @@ export const apiClient = {
     topAlumni: async (): Promise<{ student: unknown; alumni: unknown[] }> => {
       return await apiFetch<{ student: unknown; alumni: unknown[] }>({ method: "GET", url: "/matching/top-alumni" });
     },
+    skillSwap: async (): Promise<{ matches: unknown[] }> => {
+      return await apiFetch<{ matches: unknown[] }>({ method: "GET", url: "/matching/skill-swap" });
+    },
   },
   mentorship: {
     list: async (): Promise<{ mentorships: unknown[] }> => {
       return await apiFetch<{ mentorships: unknown[] }>({ method: "GET", url: "/mentorship" });
     },
-    create: async (data: { mentorId: string; area: string; message?: string }): Promise<{ mentorship: unknown }> => {
+    create: async (data: { mentorId: string; area: string; message?: string; isDirectSwap?: boolean; scheduledFor?: string; durationMins?: number }): Promise<{ mentorship: unknown }> => {
       return await apiFetch<{ mentorship: unknown }>({ method: "POST", url: "/mentorship", data });
     },
-    updateStatus: async (id: string, status: string): Promise<{ mentorship: unknown }> => {
-      return await apiFetch<{ mentorship: unknown }>({ method: "PATCH", url: `/mentorship/${id}/status`, data: { status } });
+    updateStatus: async (id: string, status: string, grantVideoAccess?: boolean): Promise<{ mentorship: unknown }> => {
+      return await apiFetch<{ mentorship: unknown }>({ method: "PATCH", url: `/mentorship/${id}/status`, data: { status, grantVideoAccess } });
+    },
+    confirm: async (id: string): Promise<{ mentorship: unknown; message: string }> => {
+      return await apiFetch<{ mentorship: unknown; message: string }>({ method: "PATCH", url: `/mentorship/${id}/confirm` });
     },
   },
   chat: {
@@ -420,4 +426,15 @@ export const apiClient = {
       return await apiFetch<{ results: Record<string, unknown> }>({ method: "GET", url: "/search", params }).then((res) => res.results);
     }
   },
+  video: {
+    heartbeat: async (videoId: string, currentTimestamp: number): Promise<{ message: string; isCompleted: boolean; watchPercentage: number }> => {
+      return await apiFetch<{ message: string; isCompleted: boolean; watchPercentage: number }>({ method: "POST", url: "/video/heartbeat", data: { videoId, currentTimestamp } });
+    },
+    claimCertificate: async (videoId: string): Promise<{ message: string; certificate: unknown }> => {
+      return await apiFetch<{ message: string; certificate: unknown }>({ method: "POST", url: "/video/claim-certificate", data: { videoId } });
+    },
+    getProgress: async (videoId: string): Promise<{ maxWatchedTimestamp: number; status: string; hasCertificate: boolean; certificateUrl?: string }> => {
+      return await apiFetch<{ maxWatchedTimestamp: number; status: string; hasCertificate: boolean; certificateUrl?: string }>({ method: "GET", url: `/video/${videoId}/progress` });
+    }
+  }
 };

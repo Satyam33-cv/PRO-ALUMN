@@ -664,308 +664,166 @@ export function ChatContent() {
           </div>
         </div>
       ) : (
-        /* Regular Alumni Direct & Cohort Threads View */
-        <div className="mt-6 flex gap-6 lg:grid lg:grid-cols-[1.2fr_1fr]">
-          <div className="flex-1 min-w-0 lg:border-r lg:border-ink/10 lg:pr-6">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="h-[calc(100vh-12rem)] overflow-y-auto"
-              ref={listRef}
-            >
+        /* Split-Pane UI for Active Mentorships & Direct Messages */
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-0 bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden h-[calc(100vh-14rem)]">
+          
+          {/* LEFT SIDEBAR: Threads List */}
+          <div className="lg:col-span-4 lg:col-span-3 border-r border-ink/10 flex flex-col h-full bg-paper/20">
+            <div className="p-4 border-b border-ink/10 bg-white/50 backdrop-blur-sm">
+              <h2 className="font-display font-bold text-lg">Conversations</h2>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto" ref={listRef}>
               {filtered.length === 0 ? (
-                <div className="flex flex-col items-center gap-4 border border-dashed border-ink/20 bg-paper/60 p-8 sm:p-10 h-full">
-                  <MessageCircle
-                    size={22}
-                    className="text-brass"
-                    strokeWidth={1.6}
-                  />
-                  <div className="text-center">
-                    <h3 className="font-display text-2xl">
-                      No conversations yet
-                    </h3>
-                    <p className="mt-2 max-w-prose text-sm leading-6 text-ink/60">
-                      Start a conversation from the Network page or join a Google
-                      Chat Space.
-                    </p>
-                  </div>
+                <div className="flex flex-col items-center justify-center h-full p-8 text-center opacity-60">
+                  <MessageCircle size={28} className="mb-3" />
+                  <p className="text-sm font-semibold">No active chats</p>
                 </div>
               ) : (
-                <AnimatePresence mode="popLayout">
-                  {filtered.map((thread, i) => {
-                    const messages = localThreads[thread.id] ?? [];
-                    const isExpanded = selectedId === thread.id;
+                <div className="p-2 space-y-1">
+                  {filtered.map((thread) => {
+                    const isSelected = selectedId === thread.id;
                     const role = thread.role || "student";
-                    const roleInfo =
-                      roleBadges[role as keyof typeof roleBadges] ||
-                      roleBadges.student;
-                    const referralStatus = getThreadReferralStatus(thread.id);
-
+                    const roleInfo = roleBadges[role as keyof typeof roleBadges] || roleBadges.student;
+                    
                     return (
-                      <motion.div
-                        key={thread.id}
-                        custom={i}
-                        variants={listItemVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        layout
-                      >
-                        <button
-                          onClick={() => {
-                            setSelectedId(isExpanded ? null : thread.id);
-                            listRef.current?.scrollIntoView({
-                              behavior: "smooth",
-                              block: "start",
-                            });
-                          }}
-                          className={`flex w-full items-center gap-3 px-3 py-3 text-left transition-colors cursor-pointer border-b border-ink/5 ${
-                            isExpanded ? "bg-brass/5" : "hover:bg-muted"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass font-semibold text-sm">
-                              {thread.initials}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-baseline justify-between gap-2">
-                                <span className="font-semibold text-sm truncate">
-                                  {thread.name}
-                                </span>
-                                <span className="shrink-0 font-mono text-[10px] text-ink/40">
-                                  {thread.time}
-                                </span>
-                              </div>
-                              <div className="mt-0.5 flex items-center justify-between gap-2">
-                                <span className="truncate max-w-[200px] text-xs text-ink/50">
-                                  {thread.lastMessage}
-                                </span>
-                                <div className="flex items-center gap-1.5">
-                                  <span
-                                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${roleInfo.color}`}
-                                  >
-                                    <roleInfo.icon size={10} className="mr-1" />
-                                    {roleInfo.label}
-                                  </span>
-                                  {thread.unread > 0 && (
-                                    <span className="flex h-4 min-w-[16px] shrink-0 items-center justify-center rounded-full bg-clay px-1 text-[9px] font-semibold text-white">
-                                      {thread.unread}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <ChevronRight
-                            size={16}
-                            className={`text-ink/30 transition-transform ${
-                              isExpanded ? "rotate-90" : ""
-                            }`}
-                          />
-                        </button>
-
-                        <AnimatePresence>
-                          {isExpanded && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden border-t border-ink/5 bg-paper/30"
-                            >
-                              <div className="px-4 py-4 space-y-3">
-                                {referralStatus && (
-                                  <div className="rounded-lg bg-brass/5 border border-brass/20 p-3">
-                                    <div className="flex items-center justify-between mb-2">
-                                      <span className="font-mono text-xs uppercase tracking-wider text-brass">
-                                        Referral Status
-                                      </span>
-                                      <span className="inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] bg-brass/15 text-brass">
-                                        {referralStatus}
-                                      </span>
-                                    </div>
-                                    <ReferralThread status={referralStatus} />
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="border-t border-ink/5 px-4 py-3">
-                                <div className="space-y-3" ref={scrollRef}>
-                                  {messages.map((msg) => (
-                                    <div
-                                      key={msg.id}
-                                      className={`flex items-end gap-2 ${
-                                        msg.sent
-                                          ? "justify-end"
-                                          : "justify-start"
-                                      }`}
-                                    >
-                                      {!msg.sent && (
-                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-[10px] font-semibold">
-                                          {thread.initials}
-                                        </div>
-                                      )}
-                                      <div
-                                        className={`max-w-[75%] rounded-lg px-3 py-2 ${
-                                          msg.sent
-                                            ? "bg-brass/10 text-ink"
-                                            : "bg-ink/5 text-ink"
-                                        }`}
-                                      >
-                                        <p className="text-sm">{msg.text}</p>
-                                        <p className="mt-1 font-mono text-[9px] text-ink/40">
-                                          {msg.time}
-                                        </p>
-                                      </div>
-                                      {msg.sent && (
-                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage text-[10px] font-semibold text-white">
-                                          You
-                                        </div>
-                                      )}
-                                    </div>
-                                  ))}
-                                  <div ref={replyEndRef} />
-                                </div>
-
-                                <div className="mt-3 flex items-center gap-2">
-                                  <input
-                                    type="text"
-                                    value={replyInputs[thread.id] ?? ""}
-                                    onChange={(e) =>
-                                      setReplyInputs((prev) => ({
-                                        ...prev,
-                                        [thread.id]: e.target.value,
-                                      }))
-                                    }
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter" && !e.shiftKey) {
-                                        e.preventDefault();
-                                        handleSendReply(thread.id);
-                                      }
-                                    }}
-                                    placeholder="Type a message..."
-                                    className="flex-1 rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none transition-colors placeholder:text-ink/35 focus:border-brass"
-                                  />
-                                  <button
-                                    onClick={() => handleSendReply(thread.id)}
-                                    disabled={!replyInputs[thread.id]?.trim()}
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brass text-white transition-colors hover:bg-ink disabled:opacity-40 disabled:cursor-not-allowed"
-                                  >
-                                    <Send size={14} />
-                                  </button>
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    );
-                  })}
-                </AnimatePresence>
-              )}
-            </motion.div>
-          </div>
-
-          <AnimatePresence>
-            {selectedId && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-                className="lg:sticky lg:top-24 h-[calc(100vh-12rem)] overflow-y-auto"
-              >
-                <Card padding="lg" className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brass/15 text-brass font-semibold text-sm">
-                        {chatThreads.find((t) => t.id === selectedId)
-                          ?.initials || "?"}
-                      </div>
-                      <div>
-                        <p className="font-display text-xl">
-                          {chatThreads.find((t) => t.id === selectedId)?.name ||
-                            "Conversation"}
-                        </p>
-                        <p className="text-sm text-ink/50">Active now</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
                       <button
-                        onClick={() => setSelectedId(null)}
-                        className="p-1 text-ink/40 hover:text-ink"
-                      >
-                        <X size={18} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-                    {(localThreads[selectedId!] ?? []).map((msg) => (
-                      <div
-                        key={msg.id}
-                        className={`flex items-end gap-2 ${
-                          msg.sent ? "justify-end" : "justify-start"
+                        key={thread.id}
+                        onClick={() => setSelectedId(thread.id)}
+                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
+                          isSelected ? "bg-brass text-white shadow-md" : "hover:bg-ink/5"
                         }`}
                       >
-                        {!msg.sent && (
-                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-[10px] font-semibold">
-                            {chatThreads.find((t) => t.id === selectedId)
-                              ?.initials || "?"}
-                          </div>
-                        )}
-                        <div
-                          className={`max-w-[75%] rounded-lg px-3 py-2 ${
-                            msg.sent ? "bg-brass/10 text-ink" : "bg-ink/5 text-ink"
-                          }`}
-                        >
-                          <p className="text-sm">{msg.text}</p>
-                          <p className="mt-1 font-mono text-[9px] text-ink/40">
-                            {msg.time}
-                          </p>
+                        <div className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold text-sm ${isSelected ? 'bg-white/20' : 'bg-brass/15 text-brass'}`}>
+                          {thread.initials}
+                          {thread.unread > 0 && (
+                            <div className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-red-500 border-2 border-white"></div>
+                          )}
                         </div>
-                        {msg.sent && (
-                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage text-[10px] font-semibold text-white">
-                            You
+                        <div className="flex-1 min-w-0 text-left">
+                          <div className="flex justify-between items-baseline mb-0.5">
+                            <span className={`font-semibold text-sm truncate ${isSelected ? 'text-white' : 'text-ink'}`}>
+                              {thread.name}
+                            </span>
+                            <span className={`text-[9px] font-mono shrink-0 ${isSelected ? 'text-white/70' : 'text-ink/40'}`}>
+                              {thread.time}
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    ))}
-                    <div ref={replyEndRef} />
-                  </div>
+                          <span className={`text-xs truncate block ${isSelected ? 'text-white/80' : 'text-ink/60'}`}>
+                            {thread.lastMessage}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
 
-                  <div className="mt-3 flex items-center gap-2 border-t border-ink/5 pt-4">
-                    <input
-                      type="text"
-                      value={replyInputs[selectedId!] ?? ""}
-                      onChange={(e) =>
-                        setReplyInputs((prev) => ({
-                          ...prev,
-                          [selectedId!]: e.target.value,
-                        }))
-                      }
+          {/* RIGHT PANE: Chat View */}
+          <div className="lg:col-span-8 lg:col-span-9 flex flex-col h-full bg-white relative">
+            {selectedId ? (
+              <>
+                {/* Rich Context Header */}
+                <div className="px-6 py-4 border-b border-ink/10 flex items-center justify-between bg-white shadow-sm z-10">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brass/15 text-brass font-bold text-lg">
+                      {chatThreads.find((t) => t.id === selectedId)?.initials || "?"}
+                    </div>
+                    <div>
+                      <h3 className="font-display text-xl font-bold text-ink">
+                        {chatThreads.find((t) => t.id === selectedId)?.name || "Conversation"}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Active
+                        </span>
+                        <a href={`/profile/${selectedId}`} className="text-xs text-blue-600 hover:underline font-semibold">
+                          View Profile & Videos
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Stats Context instead of End button */}
+                  <div className="hidden sm:flex items-center gap-4 text-right">
+                    <div className="bg-paper/50 px-4 py-2 rounded-xl border border-ink/5">
+                      <p className="text-[10px] font-bold text-ink/50 uppercase tracking-wider mb-0.5">Achievements</p>
+                      <p className="text-sm font-semibold text-ink flex items-center gap-1.5">
+                        <ShieldCheck size={14} className="text-brass"/> 3 Badges
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Messages Area */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[url('/chat-pattern.png')] bg-fixed bg-opacity-5">
+                  {(localThreads[selectedId] ?? []).map((msg) => (
+                    <div key={msg.id} className={`flex gap-3 ${msg.sent ? "flex-row-reverse" : "flex-row"}`}>
+                      {!msg.sent && (
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-xs font-bold shadow-sm mt-1">
+                          {chatThreads.find((t) => t.id === selectedId)?.initials || "?"}
+                        </div>
+                      )}
+                      <div className={`max-w-[70%] group`}>
+                        <div className={`px-4 py-3 rounded-2xl shadow-sm text-sm leading-relaxed ${
+                          msg.sent 
+                            ? "bg-brass text-white rounded-tr-sm" 
+                            : "bg-paper border border-ink/5 text-ink rounded-tl-sm"
+                        }`}>
+                          {msg.text}
+                        </div>
+                        <span className={`text-[10px] font-mono text-ink/30 mt-1 block px-1 opacity-0 group-hover:opacity-100 transition-opacity ${msg.sent ? "text-right" : "text-left"}`}>
+                          {msg.time}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={replyEndRef} />
+                </div>
+
+                {/* Input Area */}
+                <div className="p-4 border-t border-ink/10 bg-white">
+                  <div className="flex items-end gap-3 bg-paper/50 border border-ink/10 rounded-2xl p-2 focus-within:border-brass focus-within:ring-1 focus-within:ring-brass transition-all">
+                    <button className="p-2 text-ink/40 hover:text-brass transition-colors rounded-full hover:bg-white">
+                      <Plus size={20} />
+                    </button>
+                    <textarea
+                      rows={1}
+                      value={replyInputs[selectedId] ?? ""}
+                      onChange={(e) => setReplyInputs(prev => ({ ...prev, [selectedId]: e.target.value }))}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
-                          handleSendReply(selectedId!);
+                          handleSendReply(selectedId);
                         }
                       }}
-                      placeholder="Type a message..."
-                      className="flex-1 rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none transition-colors placeholder:text-ink/35 focus:border-brass"
+                      placeholder={`Message ${chatThreads.find((t) => t.id === selectedId)?.name || 'them'}...`}
+                      className="flex-1 max-h-32 bg-transparent border-none focus:ring-0 resize-none py-2 text-sm outline-none placeholder:text-ink/40"
                     />
                     <button
-                      onClick={() => handleSendReply(selectedId!)}
-                      disabled={!replyInputs[selectedId!]?.trim()}
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brass text-white transition-colors hover:bg-ink disabled:opacity-40 disabled:cursor-not-allowed"
+                      onClick={() => handleSendReply(selectedId)}
+                      disabled={!replyInputs[selectedId]?.trim()}
+                      className="p-2.5 bg-brass text-white rounded-xl hover:bg-ink transition-colors disabled:opacity-30 mb-0.5 shadow-sm"
                     >
-                      <Send size={14} />
+                      <Send size={16} />
                     </button>
                   </div>
-                </Card>
-              </motion.div>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                <div className="w-20 h-20 bg-paper rounded-full flex items-center justify-center mb-4">
+                  <MessageSquare size={32} className="text-ink/20" />
+                </div>
+                <h3 className="font-display text-2xl font-bold text-ink">Select a Conversation</h3>
+                <p className="text-sm text-ink/50 max-w-sm mt-2">
+                  Choose a direct message or active mentorship from the sidebar to start collaborating.
+                </p>
+              </div>
             )}
-          </AnimatePresence>
+          </div>
         </div>
       )}
 
