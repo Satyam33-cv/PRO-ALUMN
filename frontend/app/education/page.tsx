@@ -51,15 +51,15 @@ export default async function EducationPage() {
     select: { balance: true },
   });
 
-  const unlocked = await prisma.videoAccess.findMany({
+  const unlocked = await prisma.unlockedVideo.findMany({
     where: { userId: session.id },
     select: { videoId: true },
   });
-  const unlockedIds = unlocked.map(u => u.videoId);
+  const unlockedIds = unlocked.map((u: any) => u.videoId);
 
   return (
     <EducationContent 
-      initialVideos={videos} 
+      initialVideos={videos.map((v: any) => ({ ...v, description: v.description || "" }))} 
       balance={wallet?.balance || 0} 
       unlockedIds={unlockedIds}
     />
