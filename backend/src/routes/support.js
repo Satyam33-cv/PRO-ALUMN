@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const prisma = require('../db');
-const authMiddleware = require('../middleware/auth');
+const { authenticate: authMiddleware } = require('../middleware/auth');
 const { sendSupportTicketConfirmation } = require('../utils/email');
 
 // =================== POST /api/support ===================
