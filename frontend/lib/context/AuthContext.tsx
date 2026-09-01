@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Restore Google Access Token if available
     if (typeof window !== "undefined") {
-      const storedToken = sessionStorage.getItem("google_access_token");
+      const storedToken = localStorage.getItem("google_access_token");
       if (storedToken) {
         setGoogleAccessToken(storedToken);
       }
@@ -178,7 +178,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (token) {
         setGoogleAccessToken(token);
         if (typeof window !== "undefined") {
-          sessionStorage.setItem("google_access_token", token);
+          localStorage.setItem("google_access_token", token);
         }
       }
       return token;
@@ -207,7 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSessionState(null);
     setGoogleAccessToken(null);
     if (typeof window !== "undefined") {
-      sessionStorage.removeItem("google_access_token");
+      localStorage.removeItem("google_access_token");
     }
     clearSession();
     try {

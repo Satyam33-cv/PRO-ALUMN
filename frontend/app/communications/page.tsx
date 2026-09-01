@@ -146,28 +146,38 @@ export default function CommunicationsPage() {
     setIsSending(true);
     setError(null);
     try {
-      if (googleAccessToken) {
-        // Send real email via Gmail API
-        await sendGmailMessage({
-          token: googleAccessToken,
-          to: recipient.trim(),
-          subject: subject.trim(),
-          body: body.trim(),
-        });
+      if (!googleAccessToken) {
+        setError("Please click 'Connect Google Account' at the top to authorize Gmail sending.");
+        setIsSending(false);
+        return;
       }
 
-      // Persist to Firestore /emails
+      // Send real email via Gmail API
+      await sendGmailMessage({
+        token: googleAccessToken,
+        to: recipient.trim(),
+        subject: subject.trim(),
+        body: body.trim(),
+      });
+
+      // Persist to Firestore /emails (with safe fallback if offline)
       const newLog = {
         to: recipient.trim(),
         subject: subject.trim(),
         snippet: body.slice(0, 100),
         senderEmail: user?.email || "user@alumni.edu",
-        senderId: user?.firebaseUid || "local-user",
+        senderId: user?.id || user?.firebaseUid || "local-user",
         sentAt: new Date().toISOString(),
       };
-      const docRef = await addDoc(collection(db, "emails"), newLog);
 
-      setSentLogs((prev) => [{ id: docRef.id, ...newLog }, ...prev]);
+      try {
+        const docRef = await addDoc(collection(db, "emails"), newLog);
+        setSentLogs((prev) => [{ id: docRef.id, ...newLog }, ...prev]);
+      } catch (dbErr) {
+        console.warn("Could not sync email log to Firestore:", dbErr);
+        setSentLogs((prev) => [{ id: `local-${Date.now()}`, ...newLog }, ...prev]);
+      }
+
       setSendSuccess(true);
       setTimeout(() => {
         setSendSuccess(false);

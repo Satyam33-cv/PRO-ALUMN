@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   FileText,
   Plus,
@@ -15,9 +16,11 @@ import {
   Trash2,
   Copy,
   Download,
+  ExternalLink,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { db } from "@/lib/firebase";
+import { createGoogleDoc } from "@/lib/google-workspace";
 import {
   collection,
   addDoc,
@@ -70,12 +73,13 @@ const DEFAULT_COMMUNITY_DOCS: SavedDocRef[] = [
 ];
 
 export function DocsContent() {
-  const { user } = useAuth();
+  const { user, googleAccessToken, connectGoogleWorkspace } = useAuth();
   const [docsList, setDocsList] = useState<SavedDocRef[]>(DEFAULT_COMMUNITY_DOCS);
   const [loading, setLoading] = useState(false);
   const [activeDoc, setActiveDoc] = useState<SavedDocRef | null>(DEFAULT_COMMUNITY_DOCS[0]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
+  const [isExportingGoogleDoc, setIsExportingGoogleDoc] = useState(false);
 
   // New Doc Form State
   const [isCreating, setIsCreating] = useState(false);
@@ -108,6 +112,43 @@ export function DocsContent() {
     description: string;
     action: () => Promise<void>;
   } | null>(null);
+
+  const handleExportToGoogleDocs = async (docItem: SavedDocRef) => {
+    let token = googleAccessToken;
+    if (!token) {
+      try {
+        token = await connectGoogleWorkspace();
+      } catch {
+        setStatusMsg({ type: "error", text: "Please connect your Google Account to export to Google Docs." });
+        return;
+      }
+    }
+
+    if (!token) return;
+
+    setIsExportingGoogleDoc(true);
+    try {
+      const created = await createGoogleDoc({
+        token,
+        title: docItem.title,
+        initialContent: docItem.content,
+      });
+
+      if (created.documentId) {
+        window.open(`https://docs.google.com/document/d/${created.documentId}/edit`, "_blank");
+        setStatusMsg({
+          type: "success",
+          text: `"${docItem.title}" exported to Google Docs! Opened in new tab.`,
+        });
+      }
+    } catch (err: unknown) {
+      console.error("Failed to export to Google Docs:", err);
+      const msg = err instanceof Error ? err.message : "Failed to export to Google Docs.";
+      setStatusMsg({ type: "error", text: msg });
+    } finally {
+      setIsExportingGoogleDoc(false);
+    }
+  };
 
   const loadDocuments = async () => {
     setLoading(true);
@@ -332,6 +373,29 @@ export function DocsContent() {
         </div>
 
         <div className="flex items-center gap-3">
+          {!googleAccessToken ? (
+            <button
+              type="button"
+              onClick={() => connectGoogleWorkspace()}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            >
+              <Image
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google"
+                width={16}
+                height={16}
+                unoptimized
+                className="w-4 h-4"
+              />
+              <span>Connect Google Docs</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs font-semibold">
+              <CheckCircle2 size={15} className="text-emerald-600 dark:text-emerald-400" />
+              <span>Google Connected</span>
+            </div>
+          )}
+
           <button
             onClick={() => setIsCreating(true)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-sm cursor-pointer"
@@ -543,8 +607,17 @@ export function DocsContent() {
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <button
+                      onClick={() => handleExportToGoogleDocs(activeDoc)}
+                      disabled={isExportingGoogleDoc}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 text-xs font-semibold transition-colors border border-blue-200 dark:border-blue-800 cursor-pointer disabled:opacity-50"
+                      title="Export and Open in Google Docs"
+                    >
+                      <ExternalLink size={13} />
+                      <span>{isExportingGoogleDoc ? "Exporting..." : "Open in Google Docs"}</span>
+                    </button>
+                    <button
                       onClick={() => handleCopyText(activeDoc.content)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                       title="Copy Document Text"
                     >
                       <Copy size={13} />
@@ -552,7 +625,7 @@ export function DocsContent() {
                     </button>
                     <button
                       onClick={() => handleDownloadDoc(activeDoc)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                       title="Export Markdown"
                     >
                       <Download size={13} />
@@ -563,7 +636,7 @@ export function DocsContent() {
                         setIsEditing(!isEditing);
                         setEditedContent(activeDoc.content || "");
                       }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-100 text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 text-xs font-semibold transition-colors cursor-pointer"
                     >
                       <Edit3 size={13} />
                       <span>{isEditing ? "View Mode" : "Edit Doc"}</span>

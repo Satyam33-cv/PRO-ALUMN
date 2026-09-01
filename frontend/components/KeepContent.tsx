@@ -46,10 +46,43 @@ const NOTE_COLORS = [
   { name: "Rose", bg: "bg-rose-50", border: "border-rose-200" },
 ];
 
+const DEFAULT_KEEP_NOTES: KeepNote[] = [
+  {
+    id: "note-1",
+    title: "Mentorship Session Takeaways with Marcus",
+    content: "1. Focus on System Design patterns (event-driven architecture).\n2. Practice LeetCode Tree and Dynamic Programming problems.\n3. Prepare 3 stories for behavioral interviews using the STAR method.",
+    category: "Mentorship",
+    color: "bg-amber-50",
+    pinned: true,
+    authorId: "default",
+    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id: "note-2",
+    title: "Reunion 2026 Organizing Checklist",
+    content: "• Confirm keynote speakers and tech panel alumni.\n• Send RSVP reminders via Google Forms.\n• Reserve main auditorium & catering hall.\n• Print badge lanyards and alumni welcome kits.",
+    category: "Checklist",
+    color: "bg-sky-50",
+    pinned: true,
+    authorId: "default",
+    createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+  },
+  {
+    id: "note-3",
+    title: "Startup Pitch Ideas: AI Alumni Matcher",
+    content: "Build an AI copilot that matches graduating students with alumni in similar industries using vector embeddings and resume parsing.",
+    category: "Ideas",
+    color: "bg-emerald-50",
+    pinned: false,
+    authorId: "default",
+    createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+  },
+];
+
 export function KeepContent() {
   const { user } = useAuth();
   const router = useRouter();
-  const [notes, setNotes] = useState<KeepNote[]>([]);
+  const [notes, setNotes] = useState<KeepNote[]>(DEFAULT_KEEP_NOTES);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -88,6 +121,20 @@ export function KeepContent() {
   const fetchNotes = async () => {
     setLoading(true);
     try {
+      // 1. Try restoring from localStorage first for instant load
+      if (typeof window !== "undefined") {
+        const cached = localStorage.getItem("proalumn_keep_notes");
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setNotes(parsed);
+            }
+          } catch {}
+        }
+      }
+
+      // 2. Fetch from Firestore
       let q;
       if (user?.id) {
         q = query(collection(db, "notes"), where("authorId", "==", user.id));
@@ -111,19 +158,20 @@ export function KeepContent() {
         });
       });
 
-      // Sort pinned first then date
-      items.sort((a, b) => {
-        if (a.pinned === b.pinned) {
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
+      if (items.length > 0) {
+        items.sort((a, b) => {
+          if (a.pinned === b.pinned) {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          }
+          return a.pinned ? -1 : 1;
+        });
+        setNotes(items);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("proalumn_keep_notes", JSON.stringify(items));
         }
-        return a.pinned ? -1 : 1;
-      });
-
-      setNotes(items);
+      }
     } catch (err: unknown) {
-      console.warn("Could not fetch notes:", err);
+      console.warn("Could not fetch notes from Firestore, using local notes:", err);
     } finally {
       setLoading(false);
     }
@@ -137,15 +185,39 @@ export function KeepContent() {
   const handleCreateNote = async () => {
     if (!title.trim() && !content.trim()) return;
     setSubmitting(true);
+    const newNoteObj: KeepNote = {
+      id: `local-${Date.now()}`,
+      title: title.trim() || "Untitled Note",
+      content: content.trim(),
+      category,
+      color,
+      pinned,
+      authorId: user?.id || "guest",
+      createdAt: new Date().toISOString(),
+    };
+
     try {
-      await addDoc(collection(db, "notes"), {
-        title: title.trim() || "Untitled Note",
-        content: content.trim(),
-        category,
-        color,
-        pinned,
-        authorId: user?.id || "guest",
-        createdAt: new Date().toISOString(),
+      try {
+        const docRef = await addDoc(collection(db, "notes"), {
+          title: newNoteObj.title,
+          content: newNoteObj.content,
+          category: newNoteObj.category,
+          color: newNoteObj.color,
+          pinned: newNoteObj.pinned,
+          authorId: newNoteObj.authorId,
+          createdAt: newNoteObj.createdAt,
+        });
+        newNoteObj.id = docRef.id;
+      } catch (dbErr) {
+        console.warn("Could not sync note to Firestore, keeping locally:", dbErr);
+      }
+
+      setNotes((prev) => {
+        const updated = [newNoteObj, ...prev];
+        if (typeof window !== "undefined") {
+          localStorage.setItem("proalumn_keep_notes", JSON.stringify(updated));
+        }
+        return updated;
       });
 
       setStatusMsg({
@@ -157,7 +229,6 @@ export function KeepContent() {
       setContent("");
       setColor("bg-white");
       setPinned(false);
-      fetchNotes();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to save note.";
       setStatusMsg({

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { RoleShell } from "@/components/RoleShell";
 import { Card } from "@/components/ui";
 import {
@@ -15,10 +16,12 @@ import {
   Trash2,
   Eye,
   Check,
+  ExternalLink,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { createGoogleForm } from "@/lib/google-workspace";
 
 interface FormQuestion {
   id: string;
@@ -48,6 +51,7 @@ interface FormItem {
   createdAt: string;
   questions?: FormQuestion[];
   responseCount: number;
+  responderUri?: string;
 }
 
 const DEFAULT_FORMS: FormItem[] = [
@@ -96,7 +100,7 @@ const DEFAULT_FORMS: FormItem[] = [
 ];
 
 export default function GoogleFormsPage() {
-  const { user } = useAuth();
+  const { user, googleAccessToken, connectGoogleWorkspace } = useAuth();
   const [formsList, setFormsList] = useState<FormItem[]>(DEFAULT_FORMS);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -133,6 +137,7 @@ export default function GoogleFormsPage() {
           creatorEmail: d.creatorEmail,
           createdAt: d.createdAt || new Date().toISOString(),
           responseCount: d.responseCount || 0,
+          responderUri: d.responderUri,
           questions: d.questions || [
             { id: "q1", title: "General Feedback", type: "paragraph", required: true },
           ],
@@ -160,6 +165,23 @@ export default function GoogleFormsPage() {
     setStatusMsg(null);
 
     try {
+      let responderUri: string | undefined = undefined;
+
+      if (googleAccessToken) {
+        try {
+          const gForm = await createGoogleForm({
+            token: googleAccessToken,
+            title: title.trim(),
+            description: description.trim(),
+          });
+          if (gForm?.responderUri) {
+            responderUri = gForm.responderUri;
+          }
+        } catch (gErr) {
+          console.warn("Google Forms API creation note:", gErr);
+        }
+      }
+
       const newFormDoc: Omit<FormItem, "id"> = {
         title: title.trim(),
         description: description.trim(),
@@ -169,6 +191,7 @@ export default function GoogleFormsPage() {
         creatorEmail: user?.email || "",
         createdAt: new Date().toISOString(),
         responseCount: 0,
+        responderUri,
         questions: [
           { id: "q1", title: "Full Name & Graduation Year", type: "text", required: true },
           { id: "q2", title: "Your Feedback / Response", type: "paragraph", required: true },
@@ -186,7 +209,12 @@ export default function GoogleFormsPage() {
         setFormsList((prev) => [created, ...prev]);
       }
 
-      setStatusMsg({ type: "success", text: `Survey form "${title}" created and live!` });
+      setStatusMsg({
+        type: "success",
+        text: responderUri
+          ? `Google Form "${title}" created with live Google link & saved!`
+          : `Survey form "${title}" created and live!`,
+      });
       setIsModalOpen(false);
       setTitle("");
       setDescription("");
@@ -348,7 +376,30 @@ export default function GoogleFormsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {!googleAccessToken ? (
+              <button
+                type="button"
+                onClick={() => connectGoogleWorkspace()}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <Image
+                  src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                  alt="Google"
+                  width={16}
+                  height={16}
+                  unoptimized
+                  className="w-4 h-4"
+                />
+                <span>Connect Google Forms</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs font-semibold">
+                <CheckCircle2 size={15} className="text-emerald-600 dark:text-emerald-400" />
+                <span>Google Connected</span>
+              </div>
+            )}
+
             <button
               onClick={() => setIsModalOpen(true)}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer"
@@ -482,12 +533,24 @@ export default function GoogleFormsPage() {
                 </div>
 
                 <div className="flex items-center gap-2 pt-2">
-                  <button
-                    onClick={() => handleOpenRespond(form)}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
-                  >
-                    <span>Fill Survey</span>
-                  </button>
+                  {form.responderUri ? (
+                    <a
+                      href={form.responderUri}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+                    >
+                      <ExternalLink size={13} />
+                      <span>Open Google Form</span>
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => handleOpenRespond(form)}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+                    >
+                      <span>Fill Survey</span>
+                    </button>
+                  )}
                   <button
                     onClick={() => handleViewResponses(form)}
                     className="inline-flex items-center justify-center gap-1 py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold transition-colors cursor-pointer"

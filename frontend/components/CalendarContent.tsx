@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   Calendar as CalendarIcon,
   Plus,
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { db } from "@/lib/firebase";
+import { createCalendarEvent, listCalendarEvents } from "@/lib/google-workspace";
 import {
   collection,
   addDoc,
@@ -78,7 +80,7 @@ const DEFAULT_EVENTS: CalendarEventItem[] = [
 ];
 
 export function CalendarContent() {
-  const { user } = useAuth();
+  const { user, googleAccessToken, connectGoogleWorkspace } = useAuth();
   const [events, setEvents] = useState<CalendarEventItem[]>(DEFAULT_EVENTS);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{
@@ -172,6 +174,26 @@ export function CalendarContent() {
         createdAt: new Date().toISOString(),
       };
 
+      // 1. Sync to real Google Calendar if connected
+      let googleEventCreated = false;
+      if (googleAccessToken) {
+        try {
+          await createCalendarEvent({
+            token: googleAccessToken,
+            summary: summary.trim(),
+            description: description.trim(),
+            location: location.trim() || "Online",
+            startDateTime: startISO,
+            endDateTime: endISO,
+            attendees,
+          });
+          googleEventCreated = true;
+        } catch (gErr) {
+          console.warn("Google Calendar API sync note:", gErr);
+        }
+      }
+
+      // 2. Persist to Firestore / local state
       try {
         const docRef = await addDoc(collection(db, "calendar_events"), newEventData);
         const created: CalendarEventItem = { id: docRef.id, ...newEventData };
@@ -184,7 +206,9 @@ export function CalendarContent() {
 
       setStatusMsg({
         type: "success",
-        text: `Event "${summary}" successfully scheduled and saved to your calendar!`,
+        text: googleEventCreated
+          ? `Event "${summary}" synced to your Google Calendar & saved!`
+          : `Event "${summary}" successfully scheduled!`
       });
       setIsModalOpen(false);
       setSummary("");
@@ -293,6 +317,29 @@ END:VCALENDAR`;
         </div>
 
         <div className="flex items-center gap-3">
+          {!googleAccessToken ? (
+            <button
+              type="button"
+              onClick={() => connectGoogleWorkspace()}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            >
+              <Image
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google"
+                width={16}
+                height={16}
+                unoptimized
+                className="w-4 h-4"
+              />
+              <span>Connect Google Calendar</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs font-semibold">
+              <CheckCircle2 size={15} className="text-emerald-600 dark:text-emerald-400" />
+              <span>Google Synced</span>
+            </div>
+          )}
+
           <button
             onClick={() => setIsModalOpen(true)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-all shadow-sm cursor-pointer"
@@ -306,11 +353,10 @@ END:VCALENDAR`;
       {/* Status Message */}
       {statusMsg && (
         <div
-          className={`p-4 rounded-xl flex items-center justify-between gap-3 text-sm ${
-            statusMsg.type === "success"
+          className={`p-4 rounded-xl flex items-center justify-between gap-3 text-sm ${statusMsg.type === "success"
               ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
               : "bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200 dark:border-red-800"
-          }`}
+            }`}
         >
           <div className="flex items-center gap-2.5">
             {statusMsg.type === "success" ? (
@@ -375,10 +421,10 @@ END:VCALENDAR`;
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                         {startDateObj
                           ? startDateObj.toLocaleDateString("en-US", {
-                              weekday: "short",
-                              month: "short",
-                              day: "numeric",
-                            })
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                          })
                           : "Scheduled"}
                       </span>
                       <button
@@ -411,9 +457,9 @@ END:VCALENDAR`;
                             })}
                             {endDateObj
                               ? ` - ${endDateObj.toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}`
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}`
                               : ""}
                           </span>
                         </div>
