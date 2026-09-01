@@ -54,7 +54,7 @@ export function HelpContent({ userSession }: { userSession: any }) {
   };
 
   return (
-    <RoleShell userRole={userSession.role}>
+    <RoleShell role={userSession.role}>
       <div className="max-w-4xl mx-auto py-12 px-6">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center p-3 bg-blue-500/10 rounded-2xl mb-4">

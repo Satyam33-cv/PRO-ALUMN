@@ -107,7 +107,7 @@ export function JobDetailContent({ id }: { id: string }) {
 
   if (!job) return null;
 
-  const isStudent = user?.role === "student" || user?.role === "STUDENT";
+  const isStudent = user?.role === "student" || (user?.role as string) === "STUDENT";
 
   return (
     <div className="relative mx-auto max-w-4xl py-6 px-4 sm:px-6 lg:px-8 pb-32">

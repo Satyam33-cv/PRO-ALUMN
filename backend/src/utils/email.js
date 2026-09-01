@@ -1,12 +1,13 @@
 const { Resend } = require('resend');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Only initialize Resend if the API key is present so the server doesn't crash on startup
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const SENDER_EMAIL = 'support@proalumn.dpdns.org'; // Updated to your new domain
 
 const sendEmail = async (to, subject, html) => {
   try {
-    if (!process.env.RESEND_API_KEY) {
+    if (!resend) {
       console.warn('RESEND_API_KEY is not set. Skipping email send.');
       return;
     }
