@@ -97,6 +97,9 @@ model User {
   lastProfileUpdate   DateTime @default(now())
   lastJobUpdate       DateTime @default(now())
   lastEducationUpdate DateTime @default(now())
+
+  // Relations
+  supportTickets SupportTicket[]
   lastProjectUpdate   DateTime @default(now())
   profileCompleteness Int      @default(0)
 
@@ -623,4 +626,28 @@ model Certificate {
   issuedAt       DateTime @default(now())
 
   @@unique([userId, videoId]) // Only 1 certificate per video per user
+}
+
+// =================== SUPPORT TICKETS ===================
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model SupportTicket {
+  id        String       @id @default(uuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category  String
+  subject   String
+  message   String       @db.Text
+  status    TicketStatus @default(OPEN)
+
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }

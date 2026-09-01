@@ -69,15 +69,43 @@ export const apiClient = {
         params.filter = options.filter;
         params.filterValue = options.value;
       }
-      const res = await apiFetch<{ alumni: Alumni[] }>({
+      const res = await apiFetch<{ alumni: User[] }>({
         method: "GET",
         url: "/users/alumni",
         params: Object.keys(params).length > 0 ? params : undefined,
       });
-      return res.alumni;
+      return (res.alumni || []).map((u) => ({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        batch: String(u.batchYear || ""),
+        company: u.currentCompany || "",
+        role: u.jobTitle || u.role || "Alumni",
+        location: u.location || "",
+        initials: (u.name || "").split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase(),
+        department: u.department,
+        bio: u.bio,
+        avatarUrl: u.avatarUrl,
+        linkedinUrl: u.linkedinUrl,
+      }));
     },
     get: async (id: string): Promise<Alumni> => {
-      return await apiFetch<Alumni>({ method: "GET", url: `/users/${id}` });
+      const res = await apiFetch<{ user: User }>({ method: "GET", url: `/users/${id}` });
+      const u = res.user;
+      return {
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        batch: String(u.batchYear || ""),
+        company: u.currentCompany || "",
+        role: u.jobTitle || u.role || "Alumni",
+        location: u.location || "",
+        initials: (u.name || "").split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase(),
+        department: u.department,
+        bio: u.bio,
+        avatarUrl: u.avatarUrl,
+        linkedinUrl: u.linkedinUrl,
+      };
     },
   },
   jobs: {

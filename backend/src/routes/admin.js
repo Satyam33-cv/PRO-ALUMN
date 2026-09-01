@@ -183,6 +183,11 @@ router.patch('/users/:id/verify', async (req, res) => {
       select: { id: true, name: true, email: true, role: true, isVerified: true },
     });
 
+    if (verified) {
+      const { sendProfileApprovalEmail } = require('../utils/email');
+      await sendProfileApprovalEmail(updated.email, updated.name);
+    }
+
     res.json({ user: updated });
   } catch (err) {
     console.error('PATCH /admin/users/:id/verify error:', err);
@@ -297,7 +302,13 @@ router.patch('/stories/:id/status', async (req, res) => {
     const updated = await prisma.successStory.update({
       where: { id: req.params.id },
       data,
+      include: { alumni: true },
     });
+
+    if (isApproved === true && updated.alumni) {
+      const { sendAchievementApprovalEmail } = require('../utils/email');
+      await sendAchievementApprovalEmail(updated.alumni.email, updated.title);
+    }
 
     res.json({ story: updated, message: 'Story status updated' });
   } catch (err) {

@@ -328,11 +328,6 @@ export const HomeContent = memo(function HomeContent() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {userRole === "student" && (
                 <>
-                  <Link href="/referrals" className="p-4 rounded-2xl border border-ink/10 hover:border-indigo-500 hover:bg-indigo-500/5 transition-all text-center group">
-                    <Target size={24} className="mx-auto text-indigo-600 group-hover:scale-110 transition-transform mb-2" />
-                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Referral Tracker</p>
-                    <p className="text-[10px] text-slate-500">Kanban & outreach</p>
-                  </Link>
                   <Link href="/jobs" className="p-4 rounded-2xl border border-ink/10 hover:border-blue-500 hover:bg-blue-500/5 transition-all text-center group">
                     <BriefcaseBusiness size={24} className="mx-auto text-blue-600 group-hover:scale-110 transition-transform mb-2" />
                     <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Job Finder</p>
@@ -665,68 +660,6 @@ export const HomeContent = memo(function HomeContent() {
             </div>
           )}
 
-          {/* ================= STUDENT ACTIVE REFERRAL PIPELINE ================= */}
-          {userRole === "student" && (
-            <ScrollReveal direction="up">
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-600 dark:bg-indigo-400/10 dark:text-indigo-400">
-                      <Target size={20} />
-                    </div>
-                    <div>
-                      <h2 className="font-heading text-2xl font-bold">Referral Request Tracking Pipeline</h2>
-                      <p className="text-xs text-slate-500">Live 4-stage tracking from internal submission to hiring</p>
-                    </div>
-                  </div>
-                  <Link
-                    href="/referrals"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition-all self-start sm:self-auto"
-                  >
-                    Open Kanban Board <ArrowRight size={13} />
-                  </Link>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <Link href="/referrals" className="p-3.5 rounded-2xl border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-all">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider font-mono">1. Pending</span>
-                      <Clock size={15} className="text-amber-500" />
-                    </div>
-                    <p className="text-xl font-extrabold mt-1 text-slate-900 dark:text-slate-100 font-mono">3 Requests</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Awaiting alumni review</p>
-                  </Link>
-
-                  <Link href="/referrals" className="p-3.5 rounded-2xl border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition-all">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider font-mono">2. Accepted</span>
-                      <CheckCircle2 size={15} className="text-indigo-500" />
-                    </div>
-                    <p className="text-xl font-extrabold mt-1 text-slate-900 dark:text-slate-100 font-mono">2 Ready</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Send Job ID & highlights</p>
-                  </Link>
-
-                  <Link href="/referrals" className="p-3.5 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 hover:bg-cyan-500/10 transition-all">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider font-mono">3. Referred</span>
-                      <Send size={15} className="text-cyan-500" />
-                    </div>
-                    <p className="text-xl font-extrabold mt-1 text-slate-900 dark:text-slate-100 font-mono">2 Active</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Submitted to recruiter</p>
-                  </Link>
-
-                  <Link href="/referrals" className="p-3.5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition-all">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-mono">4. Hired</span>
-                      <Award size={15} className="text-emerald-500" />
-                    </div>
-                    <p className="text-xl font-extrabold mt-1 text-slate-900 dark:text-slate-100 font-mono">2 Offers</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Offer accepted (+100 pts)</p>
-                  </Link>
-                </div>
-              </div>
-            </ScrollReveal>
-          )}
 
           {/* ================= STUDENT: TOP AI ALUMNI MATCHES ================= */}
           {userRole === "student" && recommendedAlumni.length > 0 && (

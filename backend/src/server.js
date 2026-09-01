@@ -110,6 +110,7 @@ app.use('/api/newsletters', require('./routes/newsletters'));
 app.use('/api/pages', require('./routes/pages'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/video', require('./routes/video'));
+app.use('/api/support', require('./routes/support'));
 // --- Local file uploads (auth-protected) ---
 const { authenticate } = require('./middleware/auth');
 app.use('/uploads', authenticate, express.static(path.join(__dirname, 'uploads')));

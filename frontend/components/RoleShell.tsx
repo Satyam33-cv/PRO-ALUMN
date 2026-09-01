@@ -28,6 +28,7 @@ import {
   Flame,
   Coins,
   Trophy,
+  HelpCircle,
   Target,
   Sparkles,
   MonitorCheck,
@@ -73,7 +74,6 @@ const navConfig: NavItemConfig[] = [
     icon: BriefcaseBusiness,
     subItems: [
       { title: 'Job Board', href: '/jobs', icon: BriefcaseBusiness },
-      { title: 'Referral Tracker', href: '/referrals', icon: Target },
       { title: 'AI Match', href: '/matching', icon: Sparkles },
     ],
   },
@@ -88,6 +88,7 @@ const navConfig: NavItemConfig[] = [
       { title: 'Spotlight Stories', href: '/stories', icon: BookOpen },
       { title: 'Events & RSVPs', href: '/events', icon: Calendar },
       { title: 'Rewards & Streaks', href: '/rewards', icon: Trophy },
+      { title: 'Help & Support', href: '/help', icon: HelpCircle },
     ],
   },
   {
