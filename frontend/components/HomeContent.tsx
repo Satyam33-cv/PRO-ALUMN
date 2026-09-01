@@ -31,6 +31,7 @@ import {
   Download,
   Check,
   BookOpen,
+  HelpCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { apiClient } from "@/lib/api/client";
@@ -353,6 +354,11 @@ export const HomeContent = memo(function HomeContent() {
                     <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Success Stories</p>
                     <p className="text-[10px] text-slate-500">Alumni journeys</p>
                   </Link>
+                  <Link href="/help" className="p-4 rounded-2xl border border-ink/10 hover:border-cyan-500 hover:bg-cyan-500/5 transition-all text-center group">
+                    <HelpCircle size={24} className="mx-auto text-cyan-600 group-hover:scale-110 transition-transform mb-2" />
+                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Help & Support</p>
+                    <p className="text-[10px] text-slate-500">Contact admin</p>
+                  </Link>
                 </>
               )}
 
@@ -422,6 +428,11 @@ export const HomeContent = memo(function HomeContent() {
                     <Users size={24} className="mx-auto text-emerald-600 group-hover:scale-110 transition-transform mb-2" />
                     <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Batch Directory</p>
                     <p className="text-[10px] text-slate-500">Find classmates</p>
+                  </Link>
+                  <Link href="/help" className="p-4 rounded-2xl border border-ink/10 hover:border-cyan-500 hover:bg-cyan-500/5 transition-all text-center group">
+                    <HelpCircle size={24} className="mx-auto text-cyan-600 group-hover:scale-110 transition-transform mb-2" />
+                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Help & Support</p>
+                    <p className="text-[10px] text-slate-500">Contact admin</p>
                   </Link>
                 </>
               )}

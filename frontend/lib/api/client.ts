@@ -464,5 +464,19 @@ export const apiClient = {
     getProgress: async (videoId: string): Promise<{ maxWatchedTimestamp: number; status: string; hasCertificate: boolean; certificateUrl?: string }> => {
       return await apiFetch<{ maxWatchedTimestamp: number; status: string; hasCertificate: boolean; certificateUrl?: string }>({ method: "GET", url: `/video/${videoId}/progress` });
     }
+  },
+  support: {
+    create: async (data: { subject: string; category: string; message: string }): Promise<{ ticket: Record<string, unknown>; message: string }> => {
+      return await apiFetch<{ ticket: Record<string, unknown>; message: string }>({ method: "POST", url: "/support", data });
+    },
+    myTickets: async (): Promise<{ tickets: Record<string, unknown>[] }> => {
+      return await apiFetch<{ tickets: Record<string, unknown>[] }>({ method: "GET", url: "/support" });
+    },
+    allTickets: async (params?: { status?: string; category?: string }): Promise<{ tickets: Record<string, unknown>[] }> => {
+      return await apiFetch<{ tickets: Record<string, unknown>[] }>({ method: "GET", url: "/support/admin/all", params: params ? Object.fromEntries(Object.entries(params).filter(([, v]) => v && v !== "ALL")) : undefined });
+    },
+    updateStatus: async (id: string, status: string): Promise<{ ticket: Record<string, unknown>; message: string }> => {
+      return await apiFetch<{ ticket: Record<string, unknown>; message: string }>({ method: "PATCH", url: `/support/${id}/status`, data: { status } });
+    }
   }
 };

@@ -556,6 +556,17 @@ export function RoleShell({
             )}
           </Link>
 
+          <Link
+            href="/help"
+            className={`flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${compact
+                ? "justify-center px-0 text-slate-400 hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-200"
+                : "px-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200"
+              }`}
+          >
+            <HelpCircle size={18} className="shrink-0 opacity-75" />
+            {!compact && "Help & Support"}
+          </Link>
+
           <button
             type="button"
             onClick={handleSignOut}
