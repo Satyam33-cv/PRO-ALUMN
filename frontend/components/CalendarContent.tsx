@@ -152,10 +152,22 @@ export function CalendarContent() {
   }, []);
 
   const handleCreateEvent = async () => {
-    if (!summary.trim() || !startDate || !startTime) return;
+    if (!summary.trim()) return;
 
-    const startISO = new Date(`${startDate}T${startTime}:00`).toISOString();
-    const endISO = new Date(`${endDate}T${endTime}:00`).toISOString();
+    const sDate = startDate || new Date().toISOString().slice(0, 10);
+    const sTime = startTime || "10:00";
+    const eDate = endDate || sDate;
+    const eTime = endTime || "11:00";
+    let startISO: string;
+    let endISO: string;
+    try {
+      startISO = new Date(`${sDate}T${sTime}:00`).toISOString();
+      endISO = new Date(`${eDate}T${eTime}:00`).toISOString();
+    } catch {
+      setStatusMsg({ type: "error", text: "Invalid start or end date/time format." });
+      return;
+    }
+
     const attendees = attendeeEmail.trim()
       ? attendeeEmail.split(",").map((e) => e.trim()).filter(Boolean)
       : [];

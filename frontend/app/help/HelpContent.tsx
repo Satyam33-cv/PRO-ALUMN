@@ -305,7 +305,7 @@ export function HelpContent({ userSession }: { userSession?: any }) {
                   <h3 className="font-bold text-sm">Automated Email Dispatch</h3>
                 </div>
                 <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-                  Every submitted ticket is instantly assigned a tracking ID and dispatches confirmation emails to both you and our support administrators.
+                  Every submitted ticket is instantly assigned a tracking ID and dispatches confirmation emails to both you and our support administrators at <a href="mailto:proalumn@yahoo.com" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">proalumn@yahoo.com</a>.
                 </p>
               </div>
             </div>

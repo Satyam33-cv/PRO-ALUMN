@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs');
 const prisma = require('../db');
 const { authenticate, requireRole } = require('../middleware/auth');
 const email = require('../services/email');
+const { sendProfileApprovalEmail, sendAchievementApprovalEmail } = require('../utils/email');
 const { deleteFromStorage } = require('../services/supabase');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
@@ -183,8 +184,7 @@ router.patch('/users/:id/verify', async (req, res) => {
       select: { id: true, name: true, email: true, role: true, isVerified: true },
     });
 
-    if (verified) {
-      const { sendProfileApprovalEmail } = require('../utils/email');
+    if (verified && updated.email) {
       await sendProfileApprovalEmail(updated.email, updated.name);
     }
 
@@ -305,8 +305,7 @@ router.patch('/stories/:id/status', async (req, res) => {
       include: { alumni: true },
     });
 
-    if (isApproved === true && updated.alumni) {
-      const { sendAchievementApprovalEmail } = require('../utils/email');
+    if (isApproved === true && updated.alumni && updated.alumni.email) {
       await sendAchievementApprovalEmail(updated.alumni.email, updated.title);
     }
 

@@ -112,14 +112,18 @@ export interface GoogleKeepNote {
   trashed?: boolean;
 }
 
-// Helper to encode base64url for Gmail
-function encodeBase64Url(str: string): string {
+function encodeBase64Utf8(str: string): string {
   const utf8Bytes = new TextEncoder().encode(str);
   let binary = "";
   for (let i = 0; i < utf8Bytes.byteLength; i++) {
     binary += String.fromCharCode(utf8Bytes[i]);
   }
-  return btoa(binary)
+  return btoa(binary);
+}
+
+// Helper to encode base64url for Gmail
+function encodeBase64Url(str: string): string {
+  return encodeBase64Utf8(str)
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
@@ -151,9 +155,10 @@ export async function sendGmailMessage({
   subject: string;
   body: string;
 }): Promise<{ id: string; threadId: string }> {
+  if (!token) throw new Error("Google access token is required to send email.");
   const emailLines = [
     `To: ${to}`,
-    `Subject: =?utf-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`,
+    `Subject: =?utf-8?B?${encodeBase64Utf8(subject)}?=`,
     "MIME-Version: 1.0",
     "Content-Type: text/plain; charset=UTF-8",
     "Content-Transfer-Encoding: 8bit",

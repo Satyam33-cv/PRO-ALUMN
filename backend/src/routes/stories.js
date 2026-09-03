@@ -128,7 +128,7 @@ router.post('/:id/approve', authenticate, requireRole('ADMIN'), async (req, res)
     const { isFeatured } = req.body;
     const story = await prisma.successStory.findUnique({
       where: { id: req.params.id },
-      include: { alumni: { select: { id: true, name: true } } },
+      include: { alumni: { select: { id: true, name: true, email: true } } },
     });
     if (!story) return res.status(404).json({ error: 'Story not found' });
 
@@ -150,6 +150,11 @@ router.post('/:id/approve', authenticate, requireRole('ADMIN'), async (req, res)
         data: { storyTitle: story.title },
       },
     });
+
+    if (story.alumni && story.alumni.email) {
+      const { sendAchievementApprovalEmail } = require('../utils/email');
+      await sendAchievementApprovalEmail(story.alumni.email, story.title);
+    }
 
     res.json({ story: updated });
   } catch (err) {

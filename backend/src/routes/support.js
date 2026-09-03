@@ -33,7 +33,7 @@ router.post('/', authMiddleware, async (req, res) => {
     }
     
     // Send notification email to Admin
-    const adminEmail = process.env.ADMIN_EMAIL || 'support@proalumn.dpdns.org';
+    const adminEmail = process.env.ADMIN_EMAIL || 'proalumn@yahoo.com';
     if (adminEmail) {
       await sendAdminTicketNotification(adminEmail, ticket);
     }

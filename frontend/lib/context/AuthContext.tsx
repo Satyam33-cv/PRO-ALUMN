@@ -182,7 +182,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
       return token;
-    } catch (error) {
+    } catch (error: unknown) {
+      const code = (error as { code?: string })?.code;
+      if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+        console.warn("Google Workspace connection was closed by the user.");
+        return null;
+      }
       console.error("Failed to connect Google Workspace:", error);
       throw error;
     }
@@ -208,6 +213,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setGoogleAccessToken(null);
     if (typeof window !== "undefined") {
       localStorage.removeItem("google_access_token");
+      sessionStorage.removeItem("google_access_token");
     }
     clearSession();
     try {
@@ -224,6 +230,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     function handleWorkspaceTokenExpired() {
       setGoogleAccessToken(null);
       if (typeof window !== "undefined") {
+        localStorage.removeItem("google_access_token");
         sessionStorage.removeItem("google_access_token");
       }
     }
