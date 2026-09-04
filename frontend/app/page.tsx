@@ -1,23 +1,10 @@
-import prisma from "@/lib/prisma";
 import LandingPage from "@/components/LandingPage";
 
 export const metadata = {
-  title: "PRO ALUMN | AI-Powered Alumni Ecosystem",
-  description: "Join the next-generation alumni network featuring AI matching, dynamic mentorship, and a premium video marketplace.",
+  title: "PRO ALUMN | Verified Higher-Ed Alumni Ecosystem",
+  description: "Join the next-generation alumni network featuring verified directories, internal referrals, 1-on-1 mentorship, and reunion scheduling.",
 };
 
-export default async function Page() {
-  // Fetch up to 6 published videos for the preview section
-  const previewVideos = await prisma.video.findMany({
-    where: { status: "PUBLISHED" },
-    include: {
-      uploader: {
-        select: { name: true, avatarUrl: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 6,
-  });
-
-  return <LandingPage previewVideos={previewVideos} />;
+export default function Page() {
+  return <LandingPage />;
 }

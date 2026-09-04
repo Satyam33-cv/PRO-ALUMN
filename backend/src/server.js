@@ -24,13 +24,17 @@ app.use(helmet({
 // --- Request Logging ---
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-// --- Rate Limiting ---
+// --- Rate Limiting (Commandment 07) ---
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later' },
+  message: {
+    success: false,
+    code: 'RATE_LIMIT_EXCEEDED',
+    message: 'Too many requests, please try again later',
+  },
 });
 
 const authLimiter = rateLimit({
@@ -38,7 +42,11 @@ const authLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Too many authentication attempts, please try again later' },
+  message: {
+    success: false,
+    code: 'AUTH_RATE_LIMIT_EXCEEDED',
+    message: 'Too many authentication attempts, please try again later',
+  },
 });
 
 // --- CORS ---
@@ -117,14 +125,26 @@ app.use('/uploads', authenticate, express.static(path.join(__dirname, 'uploads')
 
 // --- 404 handler ---
 app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found', path: req.path });
+  res.status(404).json({
+    success: false,
+    code: 'ROUTE_NOT_FOUND',
+    message: `Cannot ${req.method} ${req.path}`,
+  });
 });
 
-// --- Error handler ---
+// --- Global Centralized Error Handler (Commandment 04) ---
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({
-    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
+  const statusCode = err.status || err.statusCode || 500;
+  const errorCode = err.code || (statusCode === 500 ? 'INTERNAL_SERVER_ERROR' : 'REQUEST_ERROR');
+  console.error(`🚨 [${new Date().toISOString()}] Error on ${req.method} ${req.path}:`, err.message || err);
+
+  res.status(statusCode).json({
+    success: false,
+    code: errorCode,
+    message: process.env.NODE_ENV === 'production' && statusCode === 500
+      ? 'Internal server error occurred'
+      : (err.message || 'An unexpected error occurred'),
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
   });
 });
 

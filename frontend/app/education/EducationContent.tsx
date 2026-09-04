@@ -5,7 +5,7 @@ import { Card } from "@/components/ui";
 import { Video, Plus, CheckCircle2, Lock, Play, Flame, User as UserIcon, Coins, X, ShieldCheck } from "lucide-react";
 import { useState, useTransition } from "react";
 import { WatchVideoPlayer } from "@/components/WatchVideoPlayer";
-import { submitVideoAction, unlockVideoAction } from "../actions/market";
+import { apiClient } from "@/lib/api/client";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 
@@ -85,11 +85,14 @@ export function EducationContent({
           .from('videos')
           .getPublicUrl(filePath);
 
-        // 3. Submit to our Backend Action
-        formData.delete("videoFile"); // Remove file from formData to save payload size
-        formData.append("videoUrl", publicUrl);
-
-        await submitVideoAction(formData);
+        // 3. Submit to our Backend API
+        const title = (formData.get("title") as string) || "Untitled Video";
+        const description = (formData.get("description") as string) || "";
+        await apiClient.video.submit({
+          title,
+          description,
+          videoUrl: publicUrl,
+        });
         
         setSuccessMsg("Video uploaded successfully and is pending admin approval!");
         setShowForm(false);
@@ -106,7 +109,7 @@ export function EducationContent({
     
     startTransition(async () => {
       try {
-        await unlockVideoAction(videoId);
+        await apiClient.video.unlock(videoId);
         setSuccessMsg("Premium video unlocked successfully! Let's start learning.");
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Failed to unlock video";

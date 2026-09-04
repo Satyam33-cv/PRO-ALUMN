@@ -9,7 +9,6 @@ import { useState, useMemo } from "react";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
 import { useAuth } from "@/lib/context/AuthContext";
-import { sendGmailMessage } from "@/lib/google-workspace";
 import { Card } from "@/components/ui";
 import { MatchRing } from "@/components/MatchRing";
 import {
@@ -49,7 +48,7 @@ function RequestModal({
   onClose: () => void;
   onSuccess?: () => void;
 }) {
-  const { user, googleAccessToken } = useAuth();
+  const { user } = useAuth();
   const [area, setArea] = useState("");
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
@@ -68,20 +67,6 @@ function RequestModal({
         area,
         message: message.trim(),
       });
-
-      // 2. Best-effort Gmail notification if connected
-      if (googleAccessToken && mentorEmail) {
-        try {
-          await sendGmailMessage({
-            token: googleAccessToken,
-            to: mentorEmail,
-            subject: `PRO ALUMN Mentorship Request: ${area}`,
-            body: `Hi ${name},\n\nI'm ${user?.name || "a student"} from the PRO ALUMN platform. I'm reaching out to request mentorship in the area of "${area}".\n\n${message}\n\nLooking forward to hearing from you!\n\nBest regards,\n${user?.name || "Student"}\n${user?.email || ""}\nPRO ALUMN Platform`,
-          });
-        } catch (err: unknown) {
-          console.warn("Gmail notification failed (request still recorded):", err);
-        }
-      }
 
       setSent(true);
       if (onSuccess) onSuccess();
@@ -117,8 +102,8 @@ function RequestModal({
               <Check size={28} className="text-sage" />
             </div>
             <p className="font-display text-xl text-ink">Request sent!</p>
-            {googleAccessToken && mentorEmail && !error && (
-              <p className="text-xs text-ink/50">An email was sent to {mentorEmail}</p>
+            {mentorEmail && !error && (
+              <p className="text-xs text-ink/50">An email notification was sent to {mentorEmail}</p>
             )}
             {error && (
               <div className="flex items-center gap-1.5 text-xs text-red-600">

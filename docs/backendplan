@@ -1,0 +1,145 @@
+# Pro-Alumn: Master Product Engineering & UI/UX Blueprint
+*(Synthesizing UX Research + Information Architecture + UI Design Principles + Prototyping + 10 Backend Commandments + 5 Essential Pillars + 100% Free Stack)*
+
+---
+
+## 1. Executive Summary & Vision
+
+This platform combines world-class design with rock-solid engineering:
+* **Product Persona**: *"LinkedIn meets University Alumni Portal"* — professional, trustworthy, warm, and community-driven.
+* **UI/UX Standard**: UX Research $\to$ Information Architecture $\to$ UI Design Principles (8pt grid, WCAG accessibility, 2-3 accent colors) $\to$ Microinteractions & Framer Motion.
+* **Backend Standard**: 100% Free-Tier, Zero-Crash, Rate-Limited, In-Memory Cached, Asynchronous, and Database-Indexed.
+
+---
+
+## 2. UI/UX Design Lifecycle (From Your Reference Cards)
+
+```mermaid
+flowchart LR
+  R03["03. UX Research<br/>(Personas, Journeys, Benchmarking)"] --> R04["04. Wireframing & IA<br/>(Sitemap, Flows, Mobile-First)"]
+  R04 --> R05["05. UI Design Principles<br/>(Design System, 8pt Grids, A11y)"]
+  R05 --> R06["06. Prototyping & Motion<br/>(Microinteractions, Hover/Press States)"]
+```
+
+---
+
+### Card 03: UX Research (User Personas & Journey Mapping) 👥
+* **Student Persona (The Seeker)**: Needs high-trust job referrals without getting ghosted, 15-minute resume reviews, and career roadmaps from seniors.
+* **Alumni Persona (The Giver / Recruiter)**: Wants to give back without a massive time commitment, hire vetted talent from their alma mater, and stay connected with batchmates.
+* **Admin Persona (The Institution)**: Needs NAAC/NIRF accreditation analytics, automated user verification, and bulk graduate onboarding.
+* **Competitor Grounding**: Benchmarked directly against **Vaave** (India's premier college alumni network) and **Graduway** (US/UK higher ed).
+
+---
+
+### Card 04: Information Architecture & Sitemap 🏗️
+* **Core Principle**: *"Plan the structure before designing the visuals. Focus on structure, not appearance."*
+* **Sitemap & Route Separation**:
+  ```
+  PRO-ALUMN SITEMAP
+  ├── (public) Unauthenticated Surface
+  │   ├── / (Landing Page: Hero, Live Stats, Alumni Spotlight, Benefits, Footer)
+  │   ├── /login (Direct JWT Auth)
+  │   └── /register (Role selection: Student vs Alumni)
+  │
+  └── (portal) Authenticated App Shell (Sidebar + Topbar + Notifications)
+      ├── /dashboard (Bento Grid Overview: Welcome, Events, Jobs, Announcements)
+      ├── /directory (Pillar 1: Search, Batch/Dept Filters, Leaflet World Map)
+      ├── /jobs (Pillar 2: Referral Vault, Job Cards, Resume Apply)
+      ├── /mentorship (Pillar 3: Flash 15-min Sessions, 1-Click Booking)
+      ├── /events (Pillar 4: Reunions, Capacity RSVPs, Attendee Rosters)
+      ├── /stories (Pillar 5: Success Stories, Milestone Feed)
+      ├── /chat (Real-time Socket.io 1-on-1 Messaging)
+      ├── /profile (Digital Holographic Alumni ID Card & Experience)
+      └── /admin (User Verification Queue, Moderation, CSV Import)
+  ```
+
+---
+
+### Card 05: UI Design Principles & Design System 🎨
+* **Core Principle**: *"Consistency builds trust and great user experiences."*
+* **Color Palette (Strict 3-Accent Rule)**:
+  - **Academic Navy (Background & Structure)**: `#0F172A` (Slate 900) / `#1E293B` (Slate 800).
+  - **Trust Cobalt (Brand & Primary Action)**: `#2563EB` (Blue 600) / `#4F46E5` (Indigo 600).
+  - **Growth Emerald (Status & Success)**: `#10B981` (Emerald 500) for verified checkmarks ($\checkmark$) and accepted referrals.
+* **Typography**: Clean, geometric sans-serif (**Inter** / **Plus Jakarta Sans**). High contrast, tight headline tracking (`-0.02em`), comfortable body reading (`1.6` line height).
+* **Spacing & Grids**: Strict **8pt grid system** (`p-2`, `p-4`, `p-6`, `gap-4`, `rounded-xl`).
+* **Accessibility (WCAG 2.2 AA)**: Minimum 4.5:1 text contrast ratio, keyboard focus rings (`focus:ring-2 focus:ring-blue-500`), and semantic HTML elements (`<main>`, `<nav>`, `<article>`).
+* **Iconography**: Clean, consistent 20px vector icons via **Lucide React**.
+
+---
+
+### Card 06: Prototyping, Interactions & Motion ⚡
+* **Core Principle**: *"Bring your designs to life with interactions and motion. Prototype early."*
+* **Microinteractions**:
+  - Buttons: Subtle active press scale (`active:scale-95 transition-transform duration-150`).
+  - Cards: Elevating hover glow (`hover:-translate-y-1 hover:shadow-lg transition-all duration-200`).
+  - Digital ID Card: 3D parallax tilt on mouse move (`perspective: 1000px`).
+* **Page & Modal Transitions**: Smooth layout animations powered by **Framer Motion** (`opacity: 0, y: 10` $\to$ `opacity: 1, y: 0`).
+* **Skeleton Loaders**: Polished shimmer placeholders while data loads, preventing jarring layout shifts.
+
+---
+
+## 3. The 10 Backend Engineering Commandments (Summary)
+
+```mermaid
+flowchart LR
+  Req["Request"] --> RL["07. Rate Limiter"] --> Sec["13. Helmet / Security"] --> Val["03. Input Validation"] --> Auth["02. Auth & RBAC"]
+  Auth --> Cache{"06. Cache?"}
+  Cache -->|Hit| Fast["⚡ <5ms Response"]
+  Cache -->|Miss| DB["05. Indexed PostgreSQL DB"]
+  DB --> BG["08. Async Background Queue"]
+  DB -.->|Error| Err["04. Global Error Handler"]
+  DB --> Log["10. Structured Logger"]
+```
+
+| # | Principle | Production Implementation |
+|---|---|---|
+| **02** | **Auth & Authorization 🔐** | `bcryptjs` password hashing, HMAC-SHA256 JWTs, strict RBAC (`STUDENT`, `ALUMNI`, `FACULTY`, `ADMIN`). |
+| **03** | **Validate Every Request ⚠️** | Strict schema validation on request body, query params, and file MIME types/sizes (resumes $\le$ 5MB). |
+| **04** | **Centralized Error Handling 🚨** | Global Express error middleware returning uniform `{ success, data/message, code }` envelope. |
+| **05** | **Database Design Matters 🗄️** | Prisma B-Tree indexes on `batchYear`, `department`, `company`; pagination (`limit=20`); and `Serializable` transactions. |
+| **06** | **Don't Hit DB Every Time ⚡** | In-memory LRU cache (`node-cache`) for dashboard stats and directory filter lists. |
+| **07** | **Add Rate Limiting 🚦** | 100 req/min global limit; 5 req/min on `/api/auth/login` to prevent brute-force attacks. |
+| **08** | **Use Queues for Heavy Tasks ✉️** | Non-blocking async background workers for emails and uploads (<50ms API response time). |
+| **09** | **Don't Deploy Untested Code 🧪** | Automated pre-deploy test suites verifying cloud storage, emails, RSVPs, and search queries. |
+| **10** | **Structured Logging 📝** | Morgan/Pino JSON logger tracking response times, status codes, and slow queries (>500ms). |
+| **13** | **Secure Your Production Env 🛡️** | Zero leaked credentials in git, Helmet.js headers, strict CORS, and XSS sanitization. |
+
+---
+
+## 4. The 5 Essential Pillars (Core Scope)
+
+1. **Pillar 1: Verified Alumni Directory & Smart Search** (Batch/Dept/Company/City filters + Free Leaflet Geo-Map).
+2. **Pillar 2: Career & Referral Hub** (Job board + quota-capped referral applications + private Supabase resume storage).
+3. **Pillar 3: Mentorship & Flash 1-on-1 Sessions** (15–30 min micro-slots + automated Socket.io chat rooms).
+4. **Pillar 4: Events, Reunions & Capacity RSVPs** (Capacity-gated RSVPs + "Who's Going" rosters).
+5. **Pillar 5: Community Feed & Success Stories** (Alumni achievements + Admin moderation queue).
+
+---
+
+## 5. Execution Roadmap
+
+### Phase 1: Backend Lockdown & Engineering Hardening (Immediate)
+- [ ] Fix `prisma.story` $\to$ `prisma.successStory` crash in `backend/src/routes/search.js`.
+- [ ] Implement Centralized Error Handler Middleware (Commandment 04).
+- [ ] Implement Rate Limiting on Global & Auth Routes (Commandment 07).
+- [ ] Add Input Validation Middleware (Commandment 03).
+- [ ] Move Email Triggers to Asynchronous Non-blocking Tasks (Commandment 08).
+- [ ] Add In-Memory Caching on Dashboard Stats (Commandment 06).
+- [ ] Add Helmet Security Headers and CORS lockdown (Commandment 13).
+- [ ] Consolidate email into `backend/src/services/email.js` with Resend/Nodemailer fallback.
+- [ ] Uninstall dead packages (`@sendgrid/mail`, `cloudinary`, `firebase`).
+- [ ] Run backend automated verification test suite (Commandment 09) to ensure 100% green pass.
+
+### Phase 2: Route Pruning & App Shell Division
+- [ ] Prune fake Google Workspace routes (`/forms`, `/keep`, `/docs`, `/communications`).
+- [ ] Disconnect Firebase client queries from `CalendarContent.tsx` and `GlobalSearch.tsx`.
+- [ ] Separate Public Landing Page layout from the Authenticated Portal App Shell.
+
+### Phase 3: Screen Implementations (Matching Notion Specs)
+- [ ] 1. Landing Page (Hero, Stats, Spotlight, Features, Benefits, Footer).
+- [ ] 2. Dashboard (Bento Grid: Welcome, Events, Announcements, Jobs, Activity).
+- [ ] 3. Directory (Search, Batch/Dept/City Filters, Leaflet World Map).
+- [ ] 4. Jobs & Referrals (Cards, Filter Chips, Quota-gated Application).
+- [ ] 5. Events & Reunions (Event Cards, RSVP, Calendar View).
+- [ ] 6. Admin Command Center (User Verification, Moderation, CSV Import).

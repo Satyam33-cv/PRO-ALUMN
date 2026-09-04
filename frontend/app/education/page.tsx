@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { verifyJwt } from "@/lib/jwt";
-import prisma from "@/lib/prisma";
+import { getApiBaseUrl } from "@/lib/api";
 import { EducationContent } from "./EducationContent";
 
 export const metadata = {
@@ -23,7 +23,7 @@ async function getUserSession() {
   try {
     const decoded = verifyJwt(token, JWT_SECRET);
     if (!decoded || !decoded.id) return null;
-    return decoded;
+    return { ...decoded, token };
   } catch {
     return null;
   }
@@ -36,31 +36,33 @@ export default async function EducationPage() {
     redirect("/login");
   }
 
-  const videos = await prisma.video.findMany({
-    where: { status: "PUBLISHED" },
-    include: {
-      uploader: {
-        select: { name: true, avatarUrl: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const baseUrl = getApiBaseUrl();
+  let videos: any[] = [];
+  let balance = 0;
+  const unlockedIds: string[] = [];
 
-  const wallet = await prisma.wallet.findUnique({
-    where: { userId: session.id },
-    select: { balance: true },
-  });
+  try {
+    const [videoRes, walletRes] = await Promise.all([
+      fetch(`${baseUrl}/video`, {
+        headers: { Authorization: `Bearer ${session.token}` },
+        cache: "no-store",
+      }).then((r) => (r.ok ? r.json() : { videos: [] })),
+      fetch(`${baseUrl}/gamification/wallet`, {
+        headers: { Authorization: `Bearer ${session.token}` },
+        cache: "no-store",
+      }).then((r) => (r.ok ? r.json() : { wallet: { balance: 0 } })),
+    ]);
 
-  const unlocked = await prisma.unlockedVideo.findMany({
-    where: { userId: session.id },
-    select: { videoId: true },
-  });
-  const unlockedIds = unlocked.map((u: any) => u.videoId);
+    videos = videoRes.videos || [];
+    balance = walletRes.wallet?.balance || 0;
+  } catch {
+    // Graceful fallback
+  }
 
   return (
     <EducationContent 
       initialVideos={videos.map((v: any) => ({ ...v, description: v.description || "" }))} 
-      balance={wallet?.balance || 0} 
+      balance={balance} 
       unlockedIds={unlockedIds}
     />
   );

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   User, Briefcase, HeartHandshake, Bell, Shield, Check, Loader2,
 } from "lucide-react";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { RoleShell } from "@/components/RoleShell";
 import { apiClient } from "@/lib/api/client";
 import { useAuth } from "@/lib/context/AuthContext";
 
@@ -109,7 +109,7 @@ export default function SettingsPage() {
     "w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-900 dark:text-slate-100 transition-colors";
 
   return (
-    <DashboardShell>
+    <RoleShell>
       <div className="max-w-4xl space-y-8">
         {/* Page Header */}
         <div>
@@ -314,6 +314,6 @@ export default function SettingsPage() {
           </div>
         </form>
       </div>
-    </DashboardShell>
+    </RoleShell>
   );
 }

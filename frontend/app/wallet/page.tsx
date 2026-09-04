@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { verifyJwt } from "@/lib/jwt";
-import prisma from "@/lib/prisma";
+import { getApiBaseUrl } from "@/lib/api";
 import { WalletContent } from "./WalletContent";
 
 export const metadata = {
@@ -23,7 +23,7 @@ async function getUserSession() {
   try {
     const decoded = verifyJwt(token, JWT_SECRET);
     if (!decoded || !decoded.id) return null;
-    return decoded;
+    return { ...decoded, token };
   } catch {
     return null;
   }
@@ -36,14 +36,21 @@ export default async function WalletPage() {
     redirect("/login");
   }
 
-  const wallet = await prisma.wallet.findUnique({
-    where: { userId: session.id },
-    include: {
-      transactions: {
-        orderBy: { createdAt: "desc" },
-      },
-    },
-  });
+  const baseUrl = getApiBaseUrl();
+  let wallet = null;
+
+  try {
+    const res = await fetch(`${baseUrl}/gamification/wallet`, {
+      headers: { Authorization: `Bearer ${session.token}` },
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      wallet = data.wallet || null;
+    }
+  } catch {
+    // Graceful fallback
+  }
 
   return <WalletContent wallet={wallet} />;
 }

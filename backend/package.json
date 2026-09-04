@@ -16,10 +16,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
-    "@sendgrid/mail": "^8.1.6",
     "@supabase/supabase-js": "^2.48.1",
     "bcryptjs": "^3.0.3",
-    "cloudinary": "^2.10.0",
     "cors": "^2.8.5",
     "csv-parse": "^7.0.2",
     "dotenv": "^16.4.5",

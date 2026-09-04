@@ -97,7 +97,21 @@ router.get('/:id', optionalAuthenticate, async (req, res) => {
         createdBy: { select: { id: true, name: true, avatarUrl: true, currentCompany: true, jobTitle: true } },
         rsvps: {
           orderBy: { createdAt: 'asc' },
-          select: { userId: true, user: { select: { id: true, name: true, avatarUrl: true, batchYear: true, department: true } } },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                role: true,
+                avatarUrl: true,
+                batchYear: true,
+                department: true,
+                currentCompany: true,
+                jobTitle: true,
+              },
+            },
+          },
         },
         _count: { select: { rsvps: true } },
       },
@@ -121,6 +135,8 @@ router.post('/:id/rsvp', authenticate, async (req, res) => {
       return res.status(400).json({ error: 'This event has already passed' });
     }
 
+    const attendeeLabel = req.user.name || (req.user.role === 'ALUMNI' ? 'An alumnus' : req.user.role === 'FACULTY' ? 'A faculty member' : 'A student');
+
     if (event.maxCapacity) {
       try {
         const rsvp = await withRetry(() => prisma.$transaction(async (tx) => {
@@ -139,12 +155,12 @@ router.post('/:id/rsvp', authenticate, async (req, res) => {
             userId: event.createdById,
             type: 'GENERAL',
             title: '📅 New RSVP',
-            message: `A student RSVP'd to "${event.title}"`,
+            message: `${attendeeLabel} RSVP'd to "${event.title}"`,
             link: `/events/${event.id}`,
           });
         }
 
-        return res.status(201).json({ rsvp });
+        return res.status(201).json({ rsvp, attending: true, message: 'RSVP confirmed' });
       } catch (err) {
         if (err.message === 'EVENT_FULL') {
           return res.status(400).json({ error: 'Event is full' });
@@ -168,12 +184,12 @@ router.post('/:id/rsvp', authenticate, async (req, res) => {
           userId: event.createdById,
           type: 'GENERAL',
           title: '📅 New RSVP',
-          message: `A student RSVP'd to "${event.title}"`,
+          message: `${attendeeLabel} RSVP'd to "${event.title}"`,
           link: `/events/${event.id}`,
         });
       }
 
-      res.status(201).json({ rsvp });
+      res.status(201).json({ rsvp, attending: true, message: 'RSVP confirmed' });
     } catch (err) {
       // P2002 = unique constraint violation (already RSVP'd)
       if (err.code === 'P2002') {
@@ -194,7 +210,7 @@ router.delete('/:id/rsvp', authenticate, async (req, res) => {
       where: { eventId: req.params.id, userId: req.user.id },
     });
     if (result.count === 0) return res.status(404).json({ error: 'RSVP not found' });
-    res.json({ message: 'RSVP cancelled' });
+    res.json({ attending: false, message: 'RSVP cancelled' });
   } catch (err) {
     console.error('DELETE /events/:id/rsvp error:', err);
     res.status(500).json({ error: 'Failed to cancel RSVP' });

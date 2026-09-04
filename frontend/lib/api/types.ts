@@ -1,4 +1,4 @@
-export type { Alumni, AlumniId, EventItem, Job, Announcement, Story, Notification, ChatThread, MentorshipRequest } from "@/lib/types";
+export type { Alumni, AlumniId, EventItem, EventAttendee, EventDetailItem, Job, Announcement, Story, Notification, ChatThread, MentorshipRequest } from "@/lib/types";
 
 export type PaginationMeta = {
   total: number;
@@ -95,6 +95,12 @@ export type User = {
   lastEducationUpdate?: string;
   lastProjectUpdate?: string;
   profileCompleteness?: number;
+  profileStatus?: "INCOMPLETE" | "PENDING" | "APPROVED" | "REJECTED";
+  verificationMethod?: string;
+  idCardUrl?: string;
+  rejectionReason?: string;
+  referralCode?: string;
+  referredByCode?: string;
   freshness?: ProfileFreshness;
   alumni?: {
     graduationYear?: number;

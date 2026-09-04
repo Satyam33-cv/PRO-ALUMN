@@ -3,6 +3,120 @@ const router = express.Router();
 const prisma = require('../db');
 const { authenticate } = require('../middleware/auth');
 
+// =================== VIDEO MARKETPLACE ENDPOINTS ===================
+
+// GET /api/video
+// List all videos
+router.get('/', async (req, res) => {
+  try {
+    const videos = await prisma.video.findMany({
+      include: {
+        uploader: {
+          select: {
+            id: true,
+            name: true,
+            avatarUrl: true,
+            currentCompany: true,
+            batchYear: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+    res.json({ videos });
+  } catch (error) {
+    console.error('[Video List Error]', error);
+    res.status(500).json({ error: 'Failed to fetch videos' });
+  }
+});
+
+// POST /api/video
+// Upload/submit new education video
+router.post('/', authenticate, async (req, res) => {
+  try {
+    const { title, description, videoUrl, priceInCredits } = req.body;
+    if (!title || !description || !videoUrl) {
+      return res.status(400).json({ error: 'Missing required fields: title, description, videoUrl' });
+    }
+
+    const video = await prisma.video.create({
+      data: {
+        title,
+        description,
+        videoUrl,
+        priceInCredits: typeof priceInCredits === 'number' ? priceInCredits : 0,
+        status: 'PROCESSING',
+        uploaderId: req.user.id,
+      },
+    });
+
+    res.status(201).json({ success: true, video });
+  } catch (error) {
+    console.error('[Video Submit Error]', error);
+    res.status(500).json({ error: 'Failed to submit video' });
+  }
+});
+
+// POST /api/video/:id/unlock
+// Unlock video using wallet credits
+router.post('/:id/unlock', authenticate, async (req, res) => {
+  try {
+    const videoId = req.params.id;
+    const video = await prisma.video.findUnique({ where: { id: videoId } });
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+
+    if (video.priceInCredits === 0) {
+      await prisma.unlockedVideo.upsert({
+        where: { userId_videoId: { userId: req.user.id, videoId } },
+        create: { userId: req.user.id, videoId },
+        update: {},
+      });
+      return res.json({ success: true });
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      let wallet = await tx.wallet.findUnique({ where: { userId: req.user.id } });
+      if (!wallet) {
+        wallet = await tx.wallet.create({ data: { userId: req.user.id, balance: 0 } });
+      }
+
+      if (wallet.balance < video.priceInCredits) {
+        throw new Error('Insufficient points to unlock this video.');
+      }
+
+      await tx.wallet.update({
+        where: { id: wallet.id },
+        data: { balance: { decrement: video.priceInCredits } },
+      });
+
+      await tx.walletTransaction.create({
+        data: {
+          walletId: wallet.id,
+          userId: req.user.id,
+          amount: video.priceInCredits,
+          type: 'DEBIT',
+          reason: 'VIDEO_UNLOCK',
+          description: `Unlocked premium video: ${video.title}`,
+        },
+      });
+
+      await tx.unlockedVideo.upsert({
+        where: { userId_videoId: { userId: req.user.id, videoId } },
+        create: { userId: req.user.id, videoId },
+        update: {},
+      });
+
+      return { success: true };
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('[Video Unlock Error]', error);
+    res.status(400).json({ error: error.message || 'Failed to unlock video' });
+  }
+});
+
 // POST /api/video/heartbeat
 // Anti-cheat heartbeat tracker for Watch-to-Earn
 router.post('/heartbeat', authenticate, async (req, res) => {

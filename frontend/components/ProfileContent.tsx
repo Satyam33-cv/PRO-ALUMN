@@ -35,7 +35,6 @@ import { Card, Badge, ProfileEditModal } from "@/components/ui";
 import { fadeIn, slideUp, staggerContainer } from "@/lib/motion";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
-import { createCalendarEvent } from "@/lib/google-workspace";
 
 const timelineEntries: any[] = [];
 
@@ -141,7 +140,7 @@ function TimelineModal({
 
 
 export function ProfileContent() {
-  const { user, signOut, setSession, session, googleAccessToken } = useAuth();
+  const { user, signOut, setSession, session } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -202,7 +201,7 @@ export function ProfileContent() {
   const [scheduleStatus, setScheduleStatus] = useState<"idle" | "success" | "error">("idle");
 
   const handleScheduleMeet = async () => {
-    if (!meetTopic.trim() || !googleAccessToken) {
+    if (!meetTopic.trim()) {
       setScheduleStatus("error");
       return;
     }
@@ -214,14 +213,15 @@ export function ProfileContent() {
       endDate.setHours(endDate.getHours() + 1);
       const endISO = endDate.toISOString();
 
-      await createCalendarEvent({
-        token: googleAccessToken,
-        summary: meetTopic,
-        description: `PRO ALUMN Meeting scheduled by ${user?.name || "Member"}`,
-        startDateTime: startISO,
-        endDateTime: endISO,
-        attendees: user?.email ? [user.email] : [],
-      });
+      const formatGCalDate = (d: string) => d.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+      const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+        meetTopic
+      )}&dates=${formatGCalDate(startISO)}/${formatGCalDate(endISO)}&details=${encodeURIComponent(
+        `PRO ALUMN Meeting scheduled by ${user?.name || "Member"}`
+      )}${user?.email ? `&add=${encodeURIComponent(user.email)}` : ""}`;
+
+      window.open(gcalUrl, "_blank");
+
       setScheduleStatus("success");
       setTimeout(() => {
         setScheduleOpen(false);
@@ -229,7 +229,7 @@ export function ProfileContent() {
         setMeetTopic("");
       }, 2500);
     } catch (err) {
-      console.error("Calendar event creation failed:", err);
+      console.error("Calendar event scheduling failed:", err);
       setScheduleStatus("error");
     } finally {
       setSchedulingMeet(false);
@@ -623,7 +623,7 @@ export function ProfileContent() {
                   <div className="flex flex-col items-center gap-3 py-6">
                     <CheckCircle2 size={40} className="text-sage" />
                     <p className="font-display text-lg text-ink">Meeting Scheduled!</p>
-                    <p className="text-xs text-ink/50">A Google Calendar invite has been sent to {user.email}</p>
+                    <p className="text-xs text-ink/50">Google Calendar invite opened for {user?.email || "your calendar"}</p>
                   </div>
                 ) : (
                   <>
@@ -660,7 +660,7 @@ export function ProfileContent() {
                     {scheduleStatus === "error" && (
                       <div className="flex items-center gap-1.5 text-xs text-red-600">
                         <AlertCircle size={14} />
-                        <span>Failed to schedule. Please ensure you are signed in with Google.</span>
+                        <span>Failed to schedule. Please check the meeting details.</span>
                       </div>
                     )}
                     <button

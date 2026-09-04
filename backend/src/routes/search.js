@@ -2,85 +2,120 @@ const express = require('express');
 const router = express.Router();
 const prisma = require('../db');
 const { optionalAuthenticate } = require('../middleware/auth');
+const { resolveCoordinates } = require('../utils/geo');
 
+// =================== GET /api/search ===================
+// Token-based multi-token search across alumni, jobs, events, stories, and announcements
 router.get('/', optionalAuthenticate, async (req, res) => {
   try {
     const { q, type, limit = 20 } = req.query;
-    if (!q || q.length < 2) return res.json({ results: [] });
+    if (!q || q.trim().length < 2) return res.json({ results: {} });
 
-    const searchTerm = String(q);
+    const rawQuery = String(q).trim();
+    const tokens = rawQuery.split(/\s+/).filter((t) => t.length > 0);
     const types = type ? [type] : ['alumni', 'jobs', 'events', 'stories', 'announcements'];
     const results = {};
+    const take = Math.min(Math.max(parseInt(limit) || 20, 1), 100);
 
     if (types.includes('alumni')) {
-      results.alumni = await prisma.user.findMany({
-        where: { 
-          role: 'ALUMNI', 
+      const rawAlumni = await prisma.user.findMany({
+        where: {
+          role: 'ALUMNI',
           isActive: true,
-          OR: [
-            { name: { contains: searchTerm, mode: 'insensitive' } },
-            { currentCompany: { contains: searchTerm, mode: 'insensitive' } },
-            { jobTitle: { contains: searchTerm, mode: 'insensitive' } },
-            { skills: { contains: searchTerm, mode: 'insensitive' } },
-          ]
+          AND: tokens.map((t) => ({
+            OR: [
+              { name: { contains: t, mode: 'insensitive' } },
+              { currentCompany: { contains: t, mode: 'insensitive' } },
+              { jobTitle: { contains: t, mode: 'insensitive' } },
+              { skills: { contains: t, mode: 'insensitive' } },
+              { department: { contains: t, mode: 'insensitive' } },
+              { location: { contains: t, mode: 'insensitive' } },
+            ],
+          })),
         },
-        take: parseInt(limit),
-        select: { id: true, name: true, avatarUrl: true, currentCompany: true, jobTitle: true, batchYear: true, department: true }
+        take,
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          currentCompany: true,
+          jobTitle: true,
+          batchYear: true,
+          department: true,
+          location: true,
+        },
       });
+
+      results.alumni = rawAlumni.map((u) => ({
+        ...u,
+        coordinates: resolveCoordinates(u.location),
+      }));
     }
 
     if (types.includes('jobs')) {
       results.jobs = await prisma.jobPosting.findMany({
-        where: { 
+        where: {
           status: 'OPEN',
-          OR: [
-            { title: { contains: searchTerm, mode: 'insensitive' } },
-            { company: { contains: searchTerm, mode: 'insensitive' } },
-            { description: { contains: searchTerm, mode: 'insensitive' } },
-            { skills: { contains: searchTerm, mode: 'insensitive' } },
-          ]
+          AND: tokens.map((t) => ({
+            OR: [
+              { title: { contains: t, mode: 'insensitive' } },
+              { company: { contains: t, mode: 'insensitive' } },
+              { description: { contains: t, mode: 'insensitive' } },
+              { skills: { contains: t, mode: 'insensitive' } },
+              { location: { contains: t, mode: 'insensitive' } },
+            ],
+          })),
         },
-        take: parseInt(limit),
-        include: { postedBy: { select: { name: true, avatarUrl: true } } }
+        take,
+        include: { postedBy: { select: { name: true, avatarUrl: true } } },
       });
     }
 
     if (types.includes('events')) {
       results.events = await prisma.event.findMany({
         where: {
-          OR: [
-            { title: { contains: searchTerm, mode: 'insensitive' } },
-            { description: { contains: searchTerm, mode: 'insensitive' } },
-            { location: { contains: searchTerm, mode: 'insensitive' } },
-          ]
+          AND: tokens.map((t) => ({
+            OR: [
+              { title: { contains: t, mode: 'insensitive' } },
+              { description: { contains: t, mode: 'insensitive' } },
+              { location: { contains: t, mode: 'insensitive' } },
+            ],
+          })),
         },
-        take: parseInt(limit)
+        take,
       });
     }
 
     if (types.includes('stories')) {
-      results.stories = await prisma.story.findMany({
+      results.stories = await prisma.successStory.findMany({
         where: {
-          status: 'APPROVED',
-          OR: [
-            { title: { contains: searchTerm, mode: 'insensitive' } },
-            { content: { contains: searchTerm, mode: 'insensitive' } },
-          ]
+          isApproved: true,
+          AND: tokens.map((t) => ({
+            OR: [
+              { title: { contains: t, mode: 'insensitive' } },
+              { story: { contains: t, mode: 'insensitive' } },
+              { company: { contains: t, mode: 'insensitive' } },
+              { role: { contains: t, mode: 'insensitive' } },
+            ],
+          })),
         },
-        take: parseInt(limit),
-        include: { author: { select: { name: true, avatarUrl: true } } }
+        take,
+        include: { alumni: { select: { name: true, avatarUrl: true } } },
       });
     }
 
     if (types.includes('announcements')) {
       results.announcements = await prisma.announcement.findMany({
         where: {
-          OR: [
-            { title: { contains: searchTerm, mode: 'insensitive' } },
-            { content: { contains: searchTerm, mode: 'insensitive' } },
-          ]
+          AND: tokens.map((t) => ({
+            OR: [
+              { title: { contains: t, mode: 'insensitive' } },
+              { body: { contains: t, mode: 'insensitive' } },
+            ],
+          })),
         },
-        take: parseInt(limit)
+        take,
+        include: { createdBy: { select: { name: true, avatarUrl: true } } },
       });
     }
 

@@ -151,10 +151,6 @@ router.post('/:id/approve', authenticate, requireRole('ADMIN'), async (req, res)
       },
     });
 
-    if (story.alumni && story.alumni.email) {
-      const { sendAchievementApprovalEmail } = require('../utils/email');
-      await sendAchievementApprovalEmail(story.alumni.email, story.title);
-    }
 
     res.json({ story: updated });
   } catch (err) {

@@ -27,16 +27,20 @@ router.post('/', authMiddleware, async (req, res) => {
       },
     });
 
-    // Send confirmation email to User
-    if (ticket.user && ticket.user.email) {
-      await sendSupportTicketConfirmation(ticket.user.email, ticket.id, ticket.subject);
-    }
-    
-    // Send notification email to Admin
-    const adminEmail = process.env.ADMIN_EMAIL || 'proalumn@yahoo.com';
-    if (adminEmail) {
-      await sendAdminTicketNotification(adminEmail, ticket);
-    }
+    // Dispatch emails asynchronously (non-blocking async execution - Commandment 08)
+    setImmediate(async () => {
+      try {
+        if (ticket.user && ticket.user.email) {
+          await sendSupportTicketConfirmation(ticket.user.email, ticket.id, ticket.subject);
+        }
+        const adminEmail = process.env.ADMIN_EMAIL || 'proalumn@yahoo.com';
+        if (adminEmail) {
+          await sendAdminTicketNotification(adminEmail, ticket);
+        }
+      } catch (emailErr) {
+        console.error('[Support:Email] Non-blocking delivery error:', emailErr.message || emailErr);
+      }
+    });
 
     res.status(201).json({ ticket, message: 'Support ticket submitted successfully' });
   } catch (err) {

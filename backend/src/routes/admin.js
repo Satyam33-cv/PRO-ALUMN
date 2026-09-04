@@ -185,13 +185,143 @@ router.patch('/users/:id/verify', async (req, res) => {
     });
 
     if (verified && updated.email) {
-      await sendProfileApprovalEmail(updated.email, updated.name);
+      setImmediate(async () => {
+        try {
+          await sendProfileApprovalEmail(updated.email, updated.name);
+        } catch (emailErr) {
+          console.error('[Admin:Verify] Email delivery error:', emailErr.message || emailErr);
+        }
+      });
     }
 
     res.json({ user: updated });
   } catch (err) {
     console.error('PATCH /admin/users/:id/verify error:', err);
     res.status(500).json({ error: 'Failed to update verification' });
+  }
+});
+
+// =================== POST /api/admin/users/:id/approve-profile ===================
+router.post('/users/:id/approve-profile', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const result = await prisma.$transaction(async (tx) => {
+      const existingUser = await tx.user.findUnique({
+        where: { id: userId },
+        include: { wallet: true },
+      });
+
+      if (!existingUser) {
+        throw new Error('User account not found');
+      }
+
+      if (existingUser.profileStatus === 'APPROVED' && existingUser.isVerified) {
+        return { alreadyApproved: true, user: existingUser };
+      }
+
+      const updatedUser = await tx.user.update({
+        where: { id: userId },
+        data: {
+          profileStatus: 'APPROVED',
+          isVerified: true,
+          rejectionReason: null,
+        },
+      });
+
+      const userWallet = await tx.wallet.upsert({
+        where: { userId: updatedUser.id },
+        update: { balance: { increment: 50 } },
+        create: { userId: updatedUser.id, balance: 50 },
+      });
+
+      await tx.walletTransaction.create({
+        data: {
+          walletId: userWallet.id,
+          userId: updatedUser.id,
+          amount: 50,
+          type: 'CREDIT',
+          reason: 'PROFILE_APPROVAL_BONUS',
+          description: 'Profile Approval Bonus (+50 pts)',
+        },
+      });
+
+      let referralCredited = false;
+      if (updatedUser.referredByCode) {
+        const referrer = await tx.user.findUnique({
+          where: { referralCode: updatedUser.referredByCode },
+        });
+
+        if (referrer && referrer.isActive) {
+          const referrerWallet = await tx.wallet.upsert({
+            where: { userId: referrer.id },
+            update: { balance: { increment: 100 } },
+            create: { userId: referrer.id, balance: 100 },
+          });
+
+          await tx.walletTransaction.create({
+            data: {
+              walletId: referrerWallet.id,
+              userId: referrer.id,
+              amount: 100,
+              type: 'CREDIT',
+              reason: 'REFERRAL_BONUS',
+              description: `Referral Bonus for inviting ${updatedUser.email} (+100 pts)`,
+            },
+          });
+          referralCredited = true;
+        }
+      }
+
+      return { alreadyApproved: false, user: updatedUser, referralCredited };
+    });
+
+    if (result.user.email) {
+      setImmediate(async () => {
+        try {
+          await sendProfileApprovalEmail(result.user.email, result.user.name);
+        } catch (emailErr) {
+          console.error('[Admin:Approve] Email delivery error:', emailErr.message || emailErr);
+        }
+      });
+    }
+
+    const referralMsg = result.referralCredited ? ' and referrer credited (+100 pts)' : '';
+    res.json({
+      success: true,
+      message: result.alreadyApproved
+        ? 'Profile was already approved.'
+        : `Profile approved! Member wallet credited (+50 pts)${referralMsg}.`,
+      user: result.user,
+    });
+  } catch (err) {
+    console.error('POST /admin/users/:id/approve-profile error:', err);
+    res.status(500).json({ success: false, error: err.message || 'Failed to approve profile' });
+  }
+});
+
+// =================== POST /api/admin/users/:id/reject-profile ===================
+router.post('/users/:id/reject-profile', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { reason } = req.body;
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        profileStatus: 'REJECTED',
+        rejectionReason: reason || 'Credentials could not be verified with institutional records. Please update your details and resubmit.',
+        isVerified: false,
+      },
+    });
+
+    res.json({
+      success: true,
+      message: 'Profile rejected and feedback recorded.',
+      user: updated,
+    });
+  } catch (err) {
+    console.error('POST /admin/users/:id/reject-profile error:', err);
+    res.status(500).json({ success: false, error: err.message || 'Failed to reject profile' });
   }
 });
 
@@ -306,7 +436,13 @@ router.patch('/stories/:id/status', async (req, res) => {
     });
 
     if (isApproved === true && updated.alumni && updated.alumni.email) {
-      await sendAchievementApprovalEmail(updated.alumni.email, updated.title);
+      setImmediate(async () => {
+        try {
+          await sendAchievementApprovalEmail(updated.alumni.email, updated.title);
+        } catch (emailErr) {
+          console.error('[Admin:Story] Email delivery error:', emailErr.message || emailErr);
+        }
+      });
     }
 
     res.json({ story: updated, message: 'Story status updated' });
@@ -567,8 +703,14 @@ router.post('/import-csv', csvImportLimiter, upload.single('file'), async (req, 
     }
 
     if (importedForEmail.length > 0) {
-      console.log(`📧 Sending ${importedForEmail.length} welcome email(s)`);
-      await Promise.all(importedForEmail.map((u) => email.sendWelcomeEmail({ to: u.email, name: u.name, tempPassword: u.tempPassword })).catch(() => { }));
+      console.log(`📧 Enqueued ${importedForEmail.length} welcome email(s) for async background dispatch`);
+      setImmediate(async () => {
+        try {
+          await Promise.all(importedForEmail.map((u) => email.sendWelcomeEmail({ to: u.email, name: u.name, tempPassword: u.tempPassword })));
+        } catch (batchErr) {
+          console.error('[Admin:CSVImport] Welcome email batch error:', batchErr.message || batchErr);
+        }
+      });
     }
 
     res.status(201).json({

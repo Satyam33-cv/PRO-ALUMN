@@ -151,4 +151,31 @@ router.post('/claim-action', authenticate, async (req, res) => {
   }
 });
 
+// =================== GET /api/gamification/wallet ===================
+router.get('/wallet', authenticate, async (req, res) => {
+  try {
+    let wallet = await prisma.wallet.findUnique({
+      where: { userId: req.user.id },
+      include: {
+        transactions: {
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+        },
+      },
+    });
+
+    if (!wallet) {
+      wallet = await prisma.wallet.create({
+        data: { userId: req.user.id, balance: 0 },
+        include: { transactions: true },
+      });
+    }
+
+    res.json({ wallet });
+  } catch (err) {
+    console.error('GET /gamification/wallet error:', err);
+    res.status(500).json({ error: 'Failed to fetch wallet' });
+  }
+});
+
 module.exports = router;

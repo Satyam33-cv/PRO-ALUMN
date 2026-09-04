@@ -26,28 +26,39 @@ async function notify({ userId, type, title, message, link, sendEmail = false, s
     select: { id: true, name: true, email: true, phone: true },
   });
 
-  const results = {};
+  // Fan out external notifications asynchronously (non-blocking - Commandment 08)
+  if ((sendEmail && user?.email) || (sendWhatsApp && user?.phone)) {
+    setImmediate(async () => {
+      if (sendEmail && user?.email) {
+        try {
+          if (emailTemplate && typeof emailTemplate.fn === 'function') {
+            await emailTemplate.fn({ to: user.email, name: user.name, ...emailTemplate.data });
+          } else {
+            await email.send({
+              to: user.email,
+              subject: title,
+              text: `${message}\n\nLink: ${process.env.WEB_URL || 'http://localhost:3000'}${link || ''}`,
+            });
+          }
+        } catch (e) {
+          console.error('[Notify:Email] Async delivery error:', e.message || e);
+        }
+      }
 
-  if (sendEmail && user?.email) {
-    if (emailTemplate && typeof emailTemplate.fn === 'function') {
-      results.email = await emailTemplate.fn({ to: user.email, name: user.name, ...emailTemplate.data });
-    } else {
-      results.email = await email.send({
-        to: user.email,
-        subject: title,
-        text: `${message}\n\nLink: ${process.env.WEB_URL || 'http://localhost:3000'}${link || ''}`,
-      });
-    }
-  }
-
-  if (sendWhatsApp && user?.phone) {
-    results.whatsapp = await whatsapp.sendWhatsApp({
-      to: user.phone,
-      message: `🎓 PRO ALUMN\n${title}\n${message}`,
+      if (sendWhatsApp && user?.phone) {
+        try {
+          await whatsapp.sendWhatsApp({
+            to: user.phone,
+            message: `🎓 PRO ALUMN\n${title}\n${message}`,
+          });
+        } catch (e) {
+          console.error('[Notify:WhatsApp] Async delivery error:', e.message || e);
+        }
+      }
     });
   }
 
-  return { notification, results };
+  return { notification };
 }
 
 module.exports = { notify };

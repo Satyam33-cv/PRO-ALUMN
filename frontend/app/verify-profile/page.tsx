@@ -13,7 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Card } from "@/components/ui";
-import { getCurrentUserVerificationStatusAction } from "@/app/actions/verification";
+import { apiClient } from "@/lib/api/client";
 import Link from "next/link";
 
 interface VerificationUser {
@@ -38,14 +38,14 @@ export default function VerifyProfileHoldingPage() {
   const checkStatus = useCallback(async (showSpinner = false) => {
     if (showSpinner) setChecking(true);
     try {
-      const res = await getCurrentUserVerificationStatusAction();
-      if (res.success && res.user) {
-        setUser(res.user as unknown as VerificationUser);
+      const currentUser = await apiClient.auth.me();
+      if (currentUser && currentUser.id) {
+        setUser(currentUser as unknown as VerificationUser);
         setLastChecked(new Date());
 
-        if (res.user.profileStatus === "APPROVED") {
+        if (currentUser.profileStatus === "APPROVED") {
           router.push("/home");
-        } else if (res.user.profileStatus === "INCOMPLETE" || res.user.profileStatus === "REJECTED") {
+        } else if (currentUser.profileStatus === "INCOMPLETE" || currentUser.profileStatus === "REJECTED") {
           router.push("/complete-profile");
         }
       }

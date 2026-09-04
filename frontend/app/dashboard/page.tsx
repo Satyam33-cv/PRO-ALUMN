@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { RoleShell } from "@/components/RoleShell";
 import { DashboardContent } from "@/components/dashboard/DashboardContent";
 import { useAuth } from "@/lib/context/AuthContext";
 
@@ -25,8 +25,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <DashboardShell>
+    <RoleShell>
       <DashboardContent />
-    </DashboardShell>
+    </RoleShell>
   );
 }

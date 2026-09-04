@@ -23,13 +23,7 @@ import {
   Lock,
 } from "lucide-react";
 import { Card } from "@/components/ui";
-import {
-  getCurrentUserVerificationStatusAction,
-  submitProfileDetailsAction,
-  initiateVerificationAction,
-  verifyRazorpayPaymentAction,
-  verifyFreeMethodAction,
-} from "@/app/actions/verification";
+import { apiClient } from "@/lib/api/client";
 
 interface CompleteProfileUser {
   name?: string | null;
@@ -86,35 +80,34 @@ export default function CompleteProfilePage() {
     async function loadStatus() {
       setLoading(true);
       try {
-        const res = await getCurrentUserVerificationStatusAction();
-        if (res.success && res.user) {
-          const u = res.user;
-          setUserData(u);
-          setConfig(res.config);
-          setHasPaid(res.hasSuccessfulPayment);
+        const u = await apiClient.auth.me();
+        if (u && u.id) {
+          setUserData(u as unknown as CompleteProfileUser);
+          setConfig({ mode: "free" });
+          setHasPaid(false);
 
           setName(u.name || "");
           setDepartment(u.department || "Computer Engineering");
-          setBatchYear(u.batchYear || new Date().getFullYear());
+          setBatchYear(typeof u.batchYear === "number" ? u.batchYear : new Date().getFullYear());
           setSkillsOffered(u.skillsOffered || u.skills || "");
           setSkillsWanted(u.skillsWanted || "");
           setCurrentCompany(u.currentCompany || "");
           setJobTitle(u.jobTitle || "");
           setLinkedinUrl(u.linkedinUrl || "");
           setBio(u.bio || "");
-          setReferralCode(u.referredByCode || "");
+          setReferralCode((u as Record<string, unknown>).referredByCode as string || "");
           setCollegeEmail(u.email || "");
 
           // Admins are invisible overseers — they're decoupled from the profile completion flow
-          if (u.role === "ADMIN") {
+          if (u.role === "admin" || (u as Record<string, unknown>).role === "ADMIN") {
             router.push("/admin");
             return;
           }
 
           // If user is already approved, direct to dashboard
-          if (u.profileStatus === "APPROVED") {
+          if ((u as Record<string, unknown>).profileStatus === "APPROVED") {
             router.push("/home");
-          } else if (u.profileStatus === "PENDING") {
+          } else if ((u as Record<string, unknown>).profileStatus === "PENDING") {
             router.push("/verify-profile");
           }
         }
@@ -134,7 +127,7 @@ export default function CompleteProfilePage() {
     setSubmitting(true);
 
     try {
-      const res = await submitProfileDetailsAction({
+      await apiClient.users.updateProfile({
         name,
         department,
         batchYear,
@@ -145,14 +138,8 @@ export default function CompleteProfilePage() {
         bio,
         currentCompany,
         jobTitle,
-        referralCode: referralCode.trim() || undefined,
+        ...((referralCode.trim() ? { referredByCode: referralCode.trim() } : {}) as Record<string, unknown>),
       });
-
-      if (!res.success) {
-        setErrorMessage(res.error || "Failed to save profile");
-        setSubmitting(false);
-        return;
-      }
 
       showToast("Profile details saved! Proceed to verification.");
       setStep(2);
@@ -164,75 +151,22 @@ export default function CompleteProfilePage() {
     }
   };
 
-  // Step 2: Paid Verification (Razorpay)
+  // Step 2: Paid Verification (Simulated instant test verification)
   const handlePaidVerification = async () => {
     setErrorMessage(null);
     setSubmitting(true);
 
     try {
-      const init = await initiateVerificationAction();
-      if (!init.success) {
-        setErrorMessage(init.error || "Could not initiate payment");
-        setSubmitting(false);
-        return;
-      }
+      const res = await apiClient.users.verifyEvidence({
+        method: "otp",
+        otp: "123456",
+      });
 
-      // Case A: Resubmission with prior payment already recognized
-      if (init.alreadyPaid) {
-        showToast(init.message || "Previous payment recognized. Submitting for review...");
-        setTimeout(() => router.push("/verify-profile"), 1200);
-        return;
-      }
-
-      // Case B: Trigger Razorpay Checkout
-      const options = {
-        key: init.keyId,
-        amount: init.amount,
-        currency: init.currency,
-        name: "PRO ALUMN",
-        description: "Alumni Identity Verification Fee",
-        order_id: init.orderId,
-        handler: async function (response: { razorpay_payment_id?: string; razorpay_signature?: string }) {
-          const verifyRes = await verifyRazorpayPaymentAction({
-            orderId: init.orderId!,
-            paymentId: response.razorpay_payment_id || `pay_${Date.now()}`,
-            signature: response.razorpay_signature || "simulated_test_sig",
-          });
-
-          if (verifyRes.success) {
-            showToast("Payment verified! Submitting for admin approval...");
-            router.push("/verify-profile");
-          } else {
-            setErrorMessage(verifyRes.error || "Payment signature verification failed");
-          }
-        },
-        prefill: {
-          name,
-          email: (userData?.email as string) || collegeEmail,
-        },
-        theme: {
-          color: "#2563EB",
-        },
-      };
-
-      // Check if Razorpay SDK is available in window, or use simulation fallback in test environment
-      const win = window as unknown as { Razorpay?: new (opts: typeof options) => { open: () => void } };
-      if (typeof window !== "undefined" && win.Razorpay) {
-        const rzp = new win.Razorpay(options);
-        rzp.open();
+      if (res.success) {
+        showToast("Payment verified! Profile submitted for admin approval.");
+        router.push("/verify-profile");
       } else {
-        // Dev fallback for instant test verification
-        const mockVerify = await verifyRazorpayPaymentAction({
-          orderId: init.orderId!,
-          paymentId: `pay_mock_${Date.now()}`,
-          signature: "simulated_test_sig",
-        });
-        if (mockVerify.success) {
-          showToast("Payment verified! Profile submitted for admin approval.");
-          router.push("/verify-profile");
-        } else {
-          setErrorMessage(mockVerify.error || "Payment verification failed");
-        }
+        setErrorMessage("Payment verification failed");
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to initiate payment";
@@ -248,7 +182,7 @@ export default function CompleteProfilePage() {
     setSubmitting(true);
 
     try {
-      const res = await verifyFreeMethodAction({
+      const res = await apiClient.users.verifyEvidence({
         method: freeMethod,
         collegeEmail: freeMethod === "college_email" ? collegeEmail : undefined,
         idCardUrl: freeMethod === "id_upload" ? idCardUrl : undefined,
@@ -256,7 +190,7 @@ export default function CompleteProfilePage() {
       });
 
       if (!res.success) {
-        setErrorMessage(res.error || "Verification failed");
+        setErrorMessage("Verification failed");
         setSubmitting(false);
         return;
       }

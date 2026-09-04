@@ -61,7 +61,7 @@ type NavItemConfig = {
 const navConfig: NavItemConfig[] = [
   {
     title: 'Dashboard',
-    href: '/home',
+    href: '/dashboard',
     icon: LayoutDashboard
   },
   {
@@ -81,25 +81,15 @@ const navConfig: NavItemConfig[] = [
     title: 'Engage',
     icon: Compass,
     subItems: [
-      { title: 'Education Centre', href: '/education', icon: Video },
+      { title: 'Mentorship Hub', href: '/mentorship', icon: GraduationCap },
+      { title: 'Events & Reunions', href: '/events', icon: Calendar },
+      { title: 'Calendar Schedule', href: '/calendar', icon: Calendar },
+      { title: 'Spotlight Stories', href: '/stories', icon: BookOpen },
       { title: 'Announcements', href: '/announcements', icon: Megaphone },
       { title: 'Messages & Chat', href: '/chat', icon: MessageCircle },
-      { title: 'Mentorship Hub', href: '/mentorship', icon: GraduationCap },
-      { title: 'Spotlight Stories', href: '/stories', icon: BookOpen },
-      { title: 'Events & RSVPs', href: '/events', icon: Calendar },
+      { title: 'Education Centre', href: '/education', icon: Video },
       { title: 'Rewards & Streaks', href: '/rewards', icon: Trophy },
       { title: 'Help & Support', href: '/help', icon: HelpCircle },
-    ],
-  },
-  {
-    title: 'Workspace',
-    icon: MonitorCheck,
-    subItems: [
-      { title: 'Gmail', href: '/communications', icon: Mail },
-      { title: 'Google Docs', href: '/docs', icon: FileText },
-      { title: 'Google Keep', href: '/keep', icon: StickyNote },
-      { title: 'Forms & Surveys', href: '/forms', icon: FileQuestion },
-      { title: 'Calendar', href: '/calendar', icon: Calendar },
     ],
   },
 ];

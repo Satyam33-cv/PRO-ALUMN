@@ -1,0 +1,286 @@
+# Comprehensive Codebase Audit & Production System Design Blueprint
+
+This document provides:
+1. **Full-Stack Codebase Audit & Ponytail Scorecard**: Analysis of which components are production-ready, which are broken/redundant, and what should be pruned.
+2. **Production-Grade System Design Architecture**: Clean three-tier architecture eliminating the split-brain (Firebase vs PostgreSQL) and unifying services.
+3. **Backend Flow & Algorithms for Every Feature**: Step-by-step logic, state machines, transactions, and mathematical algorithms for all 12 platform modules.
+4. **Step-by-Step Execution Plan & Verification Suite**: Roadmap to transition the platform into an enterprise-ready, robust production system.
+
+---
+
+## Part 1: Codebase Audit & Ponytail Scorecard
+
+### 1.1 What is Solid & Production-Ready (KEEP & PRESERVE)
+The following core subsystems are functional, well-structured, and should be kept as the foundation:
+
+| Subsystem | File Location | Verdict | Key Strengths |
+|---|---|---|---|
+| **Prisma PostgreSQL Schema** | [backend/prisma/schema.prisma](file:///c:/Users/vishw/Documents/GitHub/SIH-Alumnia/Alumnia/backend/prisma/schema.prisma) | **Keep** | 19 rich domain models, clean cascading deletes, `@unique` composite keys, and pgvector extension support. |
+| **Supabase Cloud Storage** | [backend/src/services/supabase.js](file:///c:/Users/vishw/Documents/GitHub/SIH-Alumnia/Alumnia/backend/src/services/supabase.js) | **Keep** | Automated bucket creation, public vs private bucket isolation, 5-min signed URLs, verified by automated test suite. |
+| **Referrals Transaction Engine** | [backend/src/routes/referrals.js](file:///c:/Users/vishw/Documents/GitHub/SIH-Alumnia/Alumnia/backend/src/routes/referrals.js) | **Keep** | Serializable isolation transactions with retry logic preventing referral slot over-allocation. |
+| **Events & RSVPs Engine** | [backend/src/routes/events.js](file:///c:/Users/vishw/Documents/GitHub/SIH-Alumnia/Alumnia/backend/src/routes/events.js) | **Keep** | Capacity checking, dual-role attendee inclusion (`STUDENT`, `ALUMNI`, `FACULTY`), verified by automated test suite. |
+| **Gamification Engine** | [backend/src/services/gamification.js](file:///c:/Users/vishw/Documents/GitHub/SIH-Alumnia/Alumnia/backend/src/services/gamification.js) | **Keep** | Streak calculation, profile freshness analysis, atomic points awarding, and badge criteria checking. |
+| **Centralized Email System** | [backend/src/utils/email.js](file:///c:/Users/vishw/Documents/GitHub/SIH-Alumnia/Alumnia/backend/src/utils/email.js) | **Keep** | Dual dispatch (Resend for domain verification + Nodemailer fallback), HTML escaping, verified by automated test suite. |
+| **Real-time Socket.io Hub** | [backend/src/socket.js](file:///c:/Users/vishw/Documents/GitHub/SIH-Alumnia/Alumnia/backend/src/socket.js) | **Keep** | In-memory presence map, room isolation, JWT socket authentication, and activity throttling. |
+
+---
+
+### 1.2 What is Waste, Redundant, or Broken (PRUNE & REFACTOR)
+
+> [!CAUTION]
+> The biggest source of production failures is the **Split-Brain Architecture** between Firebase Firestore and PostgreSQL, along with duplicate email services and dead dependencies.
+
+1. **Split-Brain Architecture (Firebase Firestore vs PostgreSQL)**:
+   - **Finding**: Pages like `/forms`, `/communications`, `/keep`, `/docs`, `/calendar`, and `GlobalSearch.tsx` query client-side Firebase Firestore directly, bypassing the PostgreSQL backend and bypassing user RBAC.
+   - **Fix**: Consolidate `Calendar` with backend `Event` model. Consolidate `Docs/Keep` into `SitePage` or personal user notes. Replace Firestore in `GlobalSearch` with PostgreSQL `GET /api/search` so users search real alumni, jobs, and events.
+2. **Duplicate & Conflicting Email Modules**:
+   - **Finding**: `backend/src/services/email.js` (SendGrid) conflicts with `backend/src/utils/email.js` (Resend/Nodemailer). `admin.js`, `referrals.js`, and `stories.js` import the unconfigured SendGrid service.
+   - **Fix**: Merge all email sending into `backend/src/services/email.js` using the verified Resend + Nodemailer engine, and remove `@sendgrid/mail`.
+3. **Dead NPM Dependencies & Unused Packages**:
+   - `cloudinary` in `backend/package.json`: Never used anywhere (Supabase Storage is used).
+   - `@sendgrid/mail` in `backend/package.json`: Dead code, replaced by Resend & Nodemailer.
+   - `firebase` in `frontend/package.json`: Zero imports in the entire TypeScript codebase.
+   - **Ponytail Gain**: Deleting these eliminates over 75MB of dead `node_modules` and eliminates supply chain risk.
+4. **Runtime Crash Bug in `backend/src/routes/search.js`**:
+   - **Finding**: Line 62 calls `prisma.story.findMany`, but the Prisma model is named `SuccessStory`. Calling search for stories throws an unhandled `TypeError`.
+   - **Fix**: Fix call to `prisma.successStory.findMany`.
+5. **Role Casing Inconsistency**:
+   - **Finding**: Frontend TypeScript definitions in some files use `"student" | "alumni"`, whereas the database enum requires `"STUDENT" | "ALUMNI" | "FACULTY" | "ADMIN"`.
+   - **Fix**: Unify on uppercase string literals matching Prisma enum across all client API contracts.
+
+---
+
+## Part 2: Production-Grade System Architecture
+
+```mermaid
+flowchart TD
+  subgraph Client ["Frontend: Next.js 16 (React 18 + Tailwind)"]
+    UI["Pages & Components (/dashboard, /directory, /events, etc.)"]
+    APIClient["Unified API Client (lib/api/client.ts)"]
+    SocketClient["Socket.io Client (Real-time presence & chat)"]
+  end
+
+  subgraph Gateway ["Backend: Node.js + Express 4 Gateway"]
+    AuthMW["Auth Middleware (JWT verification + Active Check)"]
+    RateLimiter["Rate Limiters (Global + CSV bulk import)"]
+    Routes["18 Domain Routers (/auth, /users, /jobs, /events, etc.)"]
+  end
+
+  subgraph ServiceLayer ["Modular Service Layer"]
+    EmailSvc["Email Service (Resend + Nodemailer)"]
+    StorageSvc["Storage Service (Supabase S3 Compatible)"]
+    GamifySvc["Gamification Service (Streaks, Badges, Points)"]
+    MatchingSvc["Vector Embedding Service (pgvector + 384-dim)"]
+    NotifySvc["Notification Fan-Out (In-App + Email + WhatsApp)"]
+  end
+
+  subgraph DataLayer ["Data & Storage Layer"]
+    PG[("PostgreSQL Database (Prisma ORM)")]
+    VectorIdx[("HNSW Vector Index (cosine)")]
+    CloudBuckets[("Supabase Cloud Storage (Public & Private Buckets)")]
+  end
+
+  UI --> APIClient
+  UI --> SocketClient
+  APIClient -->|HTTPS REST| AuthMW --> Routes
+  SocketClient -->|WebSocket| Routes
+  Routes --> ServiceLayer
+  ServiceLayer --> DataLayer
+  Routes --> PG
+```
+
+### Architectural Guarantees & Invariants
+1. **Single Source of Truth**: All domain entities live in PostgreSQL via Prisma. No secondary database (Firestore) for core entities.
+2. **Strict RBAC & Tenant Isolation**: Every mutating endpoint enforces `authenticate` and `requireRole(...)`. Private documents (resumes, ID cards) are protected behind 5-minute signed URLs.
+3. **Database Consistency**: Concurrent operations (e.g. referral slot claiming, event capacity gating, credit transactions) execute in Prisma `Serializable` transactions with retry logic.
+4. **Resilient Third-Party Integrations**: All external service calls (Email, WhatsApp, Supabase, OpenAI) have local fallbacks or non-blocking async execution so a 3rd-party outage never brings down user flows.
+
+---
+
+## Part 3: Feature-by-Feature Backend Flow & Algorithms
+
+### 3.1 Authentication & RBAC Engine
+- **Endpoint**: `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/users/me`
+- **Role Hierarchy**:
+  - `STUDENT`: Can apply for referrals, book mentorship, RSVP to events, watch videos.
+  - `ALUMNI`: Can post jobs, review referrals, offer mentorship, share success stories.
+  - `FACULTY`: Can publish official announcements, coordinate departments.
+  - `ADMIN`: Full moderation, user verification, bulk CSV imports, system telemetry.
+- **Workflow**:
+  ```mermaid
+  sequenceDiagram
+    User ->> Backend: POST /api/auth/login { email, password }
+    Backend ->> DB: findUnique({ email })
+    Backend ->> Backend: bcrypt.compare(password, passwordHash)
+    Backend ->> Backend: Check if user.isActive === true
+    Backend ->> Backend: jwt.sign({ id, email, role }, JWT_SECRET, { expiresIn: '7d' })
+    Backend ->> User: HTTP 200 { token, user }
+  ```
+
+---
+
+### 3.2 AI Smart Matching (Top 5 Alumni Algorithm)
+- **Endpoint**: `GET /api/matching/top-alumni`
+- **Algorithm**: Cosine Similarity over 384-dimensional dense vectors using PostgreSQL pgvector.
+- **Mathematical Formula**:
+  $$\text{Similarity}(S, A) = 1 - (V_S \cdot V_A)$$
+  $$\text{Match Percentage} = \max\left(0, \operatorname{round}\left((1 - (V_S \Leftrightarrow V_A)) \times 100\right)\right)$$
+- **Text Embedding Formulation**:
+  $$T_{\text{profile}} = \text{Skills} + \text{Interests} + \text{Department} + \text{Bio} + \text{Company/JobTitle}$$
+- **Fallback Logic**: If pgvector extension or OpenAI key is unconfigured, a deterministic hash-based bag-of-tokens L2-normalized vector generates embeddings locally with zero network dependencies.
+
+---
+
+### 3.3 Job Postings & Referral Quota Pipeline
+- **Endpoint**: `POST /api/referrals`, `PATCH /api/referrals/:id/status`
+- **State Machine**:
+  ```
+  [STUDENT APPLIES] ──> PENDING ──> ACCEPTED ──> REFERRED ──> HIRED
+                            │                          │
+                            └──> REJECTED              └──> NOT_HIRED
+  ```
+- **Concurrency Algorithm**:
+  ```javascript
+  // Serializable transaction to eliminate race conditions on slots
+  prisma.$transaction(async (tx) => {
+    const acceptedCount = await tx.referralRequest.count({
+      where: { jobId, status: { in: ['ACCEPTED', 'REFERRED', 'HIRED'] } }
+    });
+    if (acceptedCount >= job.referralSlots) throw new Error('SLOTS_FULL');
+    return tx.referralRequest.create({ ... });
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  ```
+- **Security**: Resume URLs stored as `supabase://resumes/{userId}/...` are accessed only via `GET /api/uploads/resume/signed-url` with ownership verification (Applicant or Job Poster).
+
+---
+
+### 3.4 Mentorship & 1-on-1 Dual-Handshake Scheduling
+- **Endpoint**: `POST /api/mentorship/book`, `PATCH /api/mentorship/:id/confirm`
+- **Dual-Handshake Completion Algorithm**:
+  - A session is marked `COMPLETED` and escrowed points/credits are released to the mentor only when:
+    $$\text{studentConfirmed} = \text{true} \quad \text{AND} \quad \text{mentorConfirmed} = \text{true}$$
+  - If either disputes, status transitions to `DISPUTED` for admin mediation.
+- **Chat Room Provisioning**: Automatically initializes a linked `ChatThread` between the student and mentor upon booking acceptance.
+
+---
+
+### 3.5 Events & Capacity-Controlled Attendance
+- **Endpoint**: `GET /api/events/:id`, `POST /api/events/:id/rsvp`, `DELETE /api/events/:id/rsvp`
+- **Algorithm**:
+  - Enforces atomic `maxCapacity` count in serializable transaction.
+  - Returns `{ rsvp, attending: true }` on POST and `{ attending: false }` on DELETE.
+  - Aggregates attendees with role badges (`ALUMNI`, `STUDENT`, `FACULTY`) and graduation years.
+
+---
+
+### 3.6 Gamification, Daily Streaks, & Badge Engine
+- **Streak Calculation Algorithm**:
+  ```javascript
+  const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
+  const today = startOfDay(new Date());
+  const diffDays = lastActive ? differenceInCalendarDays(today, startOfDay(lastActive)) : null;
+
+  if (diffDays === 0) {
+    // Already logged in today -> streak remains unchanged
+  } else if (diffDays === 1) {
+    // Consecutive day -> streak + 1, update longestStreak
+    newStreak = user.currentStreak + 1;
+  } else {
+    // Missed a day -> reset to 1
+    newStreak = 1;
+  }
+  ```
+- **Badge Auto-Awarding**:
+  - Automatically queries `Badge` definitions where `user.totalPoints >= requiredPts` and inserts missing `UserBadge` records.
+
+---
+
+### 3.7 Watch-to-Earn Video Streaming & Anti-Cheat Heartbeat
+- **Endpoint**: `POST /api/video/heartbeat`, `POST /api/video/claim-certificate`
+- **Anti-Cheat Mathematical Guard**:
+  $$\Delta t_{\text{client}} = t_{\text{current}} - t_{\text{last\_max}}$$
+  $$\Delta t_{\text{server}} = \text{Now} - \text{lastHeartbeatTime}$$
+  $$\text{If } \Delta t_{\text{client}} > 10 \text{ AND } \Delta t_{\text{client}} > (\Delta t_{\text{server}} + 5) \implies \text{Cheat Flag (Rate-Limit HTTP 429)}$$
+- **Certificate Verification**: When `watchedSeconds / totalSeconds >= 0.90`, issues a Certificate with a tamper-proof SHA-256 validation hash.
+
+---
+
+### 3.8 Success Story & Achievement Moderation
+- **Endpoint**: `POST /api/stories`, `PATCH /api/admin/stories/:id/status`
+- **Flow**:
+  - Alumni submits story & achievement photo.
+  - Admin reviews in `/admin/approvals`.
+  - Upon approval, dispatches celebratory email to alumni via `sendAchievementApprovalEmail(...)` and broadcasts to community feed.
+
+---
+
+### 3.9 Real-Time Chat & Socket.io Presence
+- **Protocol**: WebSocket (Socket.io)
+- **Room Isolation**:
+  - 1-on-1: `join_room(threadId)`
+  - Broadcast: `admin_broadcast` room
+- **Presence Map**: In-memory `Map<userId, { socketCount, user, connectedAt }>` emits `presence_change` events on connect/disconnect.
+
+---
+
+### 3.10 Centralized Notification & Dual-Dispatch Email
+- **Primary Engine**: Resend REST API (domain verified: `proalumn.dpdns.org`).
+- **Secondary Engine**: Nodemailer (authenticated institutional SMTP).
+- **Graceful Fallback**: If credentials are missing in local development, outputs formatted mock log without throwing unhandled exceptions.
+
+---
+
+### 3.11 Cloud Media & Bucket Isolation Pipeline
+- **Public Buckets**: `avatars`, `stories`, `documents`, `videos` (Returns permanent CDN URL).
+- **Private Buckets**: `resumes`, `certificates`, `id_cards` (Returns `supabase://{bucket}/{path}` with 300-second signed URLs).
+- **Directory Structure**:
+  ```
+  [bucket]/
+    └── [userId]/
+          └── [timestamp]-[randomHash].[ext]
+  ```
+
+---
+
+### 3.12 Super Admin Command Center & Bulk CSV Engine
+- **Telemetry**: Live PostgreSQL latency probe (`SELECT 1`), Node.js heap/RSS memory telemetry, table row counts.
+- **Bulk Import**: Streams CSV rows using `csv-parse` in batches of 100 to prevent memory spikes, hashing passwords with `bcryptjs` and auto-generating college credentials.
+
+---
+
+## Part 4: Step-by-Step Implementation Roadmap
+
+### Phase 1: Dead Code & Dependency Elimination
+1. Remove dead dependencies: `npm uninstall cloudinary @sendgrid/mail` in `backend`.
+2. Consolidate email into `backend/src/services/email.js`, redirecting all imports away from SendGrid.
+3. Fix `prisma.story` bug in `backend/src/routes/search.js`.
+
+### Phase 2: Split-Brain Elimination (Firestore -> PostgreSQL)
+1. Redirect `CalendarContent.tsx` to consume PostgreSQL events from `GET /api/events`.
+2. Connect `GlobalSearch.tsx` to `GET /api/search`.
+3. Eliminate unneeded Firebase client listeners on core data pages.
+
+### Phase 3: Contract Hardening & Type Synchronization
+1. Standardize role enums to uppercase (`STUDENT`, `ALUMNI`, `FACULTY`, `ADMIN`).
+2. Add comprehensive automated integration tests for each of the 12 features.
+
+---
+
+## Verification Plan
+
+### Automated Tests
+- Run existing and new test suites:
+  ```bash
+  cd backend
+  node tests/verify_email_system.js
+  node tests/verify_cloud_storage.js
+  node tests/verify_event_rsvps.js
+  ```
+- Type check:
+  ```bash
+  cd frontend
+  npx tsc --noEmit
+  ```
+
+### Manual Verification
+- Verify that directory search, events RSVP, referral application, and admin dashboards operate with zero console errors and clean response contracts.

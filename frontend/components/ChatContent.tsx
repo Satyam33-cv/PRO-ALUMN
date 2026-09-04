@@ -20,20 +20,12 @@ import {
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { useAuth } from "@/lib/context/AuthContext";
+import { getToken } from "@/lib/auth";
 import { getSocket } from "@/lib/socket";
 import type { Alumni } from "@/lib/api/types";
 import { ReferralThread } from "@/components/ReferralThread";
 import { Card } from "@/components/ui";
-import {
-  listChatSpaces,
-  listChatMessages,
-  sendChatMessage,
-  createChatSpace,
-  GoogleChatSpace,
-  GoogleChatMessage,
-} from "@/lib/google-workspace";
-
-type Tab = "1:1" | "Groups" | "GoogleChat";
+type Tab = "1:1" | "Groups";
 
 type MockMessage = {
   id: string;
@@ -84,7 +76,7 @@ const roleBadges = {
 };
 
 export function ChatContent() {
-  const { user, accessToken, signInWithGoogle } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("1:1");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -97,17 +89,6 @@ export function ChatContent() {
   const replyEndRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Google Chat States
-  const [googleSpaces, setGoogleSpaces] = useState<GoogleChatSpace[]>([]);
-  const [loadingSpaces, setLoadingSpaces] = useState(false);
-  const [selectedSpace, setSelectedSpace] = useState<GoogleChatSpace | null>(null);
-  const [spaceMessages, setSpaceMessages] = useState<GoogleChatMessage[]>([]);
-  const [loadingMessages, setLoadingMessages] = useState(false);
-  const [chatMessageInput, setChatMessageInput] = useState("");
-  const [sendingChatMessage, setSendingChatMessage] = useState(false);
-  const [newSpaceOpen, setNewSpaceOpen] = useState(false);
-  const [newSpaceName, setNewSpaceName] = useState("");
-  const [creatingSpace, setCreatingSpace] = useState(false);
 
   const { data: recommendedAlumniData } = useApi("chat:alumni", () =>
     apiClient.alumni.list(undefined, { filter: "role", value: "ALUMNI" })
@@ -148,96 +129,6 @@ export function ChatContent() {
     }
   }, []);
 
-  // Fetch Google Chat Spaces
-  const fetchGoogleSpaces = async () => {
-    if (!accessToken) return;
-    setLoadingSpaces(true);
-    try {
-      const spaces = await listChatSpaces({ token: accessToken });
-      setGoogleSpaces(spaces);
-      if (spaces.length > 0 && !selectedSpace) {
-        setSelectedSpace(spaces[0]);
-      }
-    } catch (err) {
-      console.warn("Could not fetch Google Chat spaces:", err);
-    } finally {
-      setLoadingSpaces(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === "GoogleChat" && accessToken) {
-      fetchGoogleSpaces();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, accessToken]);
-
-  // Fetch Google Chat Messages when a space is selected
-  useEffect(() => {
-    if (!selectedSpace || !accessToken) return;
-    let isActive = true;
-
-    const fetchMsgs = async () => {
-      setLoadingMessages(true);
-      try {
-        const msgs = await listChatMessages({
-          token: accessToken,
-          spaceName: selectedSpace.name,
-        });
-        if (isActive) setSpaceMessages(msgs);
-      } catch (err) {
-        console.warn("Could not fetch space messages:", err);
-      } finally {
-        if (isActive) setLoadingMessages(false);
-      }
-    };
-
-    fetchMsgs();
-    const interval = setInterval(fetchMsgs, 6000);
-    return () => {
-      isActive = false;
-      clearInterval(interval);
-    };
-  }, [selectedSpace, accessToken]);
-
-  const handleSendGoogleChatMessage = async () => {
-    if (!selectedSpace || !chatMessageInput.trim() || !accessToken) return;
-    const textToSend = chatMessageInput.trim();
-    setChatMessageInput("");
-    setSendingChatMessage(true);
-
-    try {
-      const sentMsg = await sendChatMessage({
-        token: accessToken,
-        spaceName: selectedSpace.name,
-        text: textToSend,
-      });
-      setSpaceMessages((prev) => [...prev, sentMsg]);
-    } catch (err) {
-      console.error("Failed to send chat message:", err);
-    } finally {
-      setSendingChatMessage(false);
-    }
-  };
-
-  const handleCreateSpaceSubmit = async () => {
-    if (!newSpaceName.trim() || !accessToken) return;
-    setCreatingSpace(true);
-    try {
-      const created = await createChatSpace({
-        token: accessToken,
-        displayName: newSpaceName.trim(),
-      });
-      setGoogleSpaces((prev) => [created, ...prev]);
-      setSelectedSpace(created);
-      setNewSpaceOpen(false);
-      setNewSpaceName("");
-    } catch (err) {
-      console.error("Failed to create Google Chat space:", err);
-    } finally {
-      setCreatingSpace(false);
-    }
-  };
 
   const filtered = useMemo(() => {
     let result = chatThreads.filter((t) =>
@@ -273,7 +164,8 @@ export function ChatContent() {
     
     // Connect to server and join the specific chat room
     socket.connect();
-    if (accessToken) socket.emit("authenticate", accessToken);
+    const token = getToken();
+    if (token) socket.emit("authenticate", token);
     socket.emit("join_room", selectedId);
 
     // Listen for incoming messages
@@ -324,7 +216,7 @@ export function ChatContent() {
     return () => {
       socket.off("receive_message", handleReceiveMessage);
     };
-  }, [selectedId, user, accessToken]);
+  }, [selectedId, user]);
 
   const handleSendReply = async (threadId: string) => {
     const text = replyInputs[threadId]?.trim();
@@ -414,17 +306,6 @@ export function ChatContent() {
           >
             Student Cohorts
           </button>
-          <button
-            onClick={() => setActiveTab("GoogleChat")}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activeTab === "GoogleChat"
-                ? "bg-blue-600 text-white shadow-xs"
-                : "text-blue-600 hover:bg-blue-50"
-            }`}
-          >
-            <MessageSquare size={13} />
-            Google Chat Spaces
-          </button>
         </div>
 
         <div className="relative max-w-xs w-full sm:w-auto">
@@ -443,229 +324,8 @@ export function ChatContent() {
         </div>
       </div>
 
-      {/* Main Content Area */}
-      {activeTab === "GoogleChat" ? (
-        /* Google Chat Spaces View */
-        <div className="mt-6 space-y-6">
-          {!accessToken && (
-            <div className="p-6 rounded-2xl border border-blue-500/20 bg-blue-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-blue-500/10 text-blue-600">
-                  <MessageSquare size={24} />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-ink text-base">
-                    Connect with Google Chat
-                  </h3>
-                  <p className="text-sm text-ink/60">
-                    Sign in with Google to chat in your organization&apos;s
-                    spaces and alumni channels in real time.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={signInWithGoogle}
-                className="px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-sm cursor-pointer"
-              >
-                Sign in with Google
-              </button>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left: Spaces List */}
-            <div className="lg:col-span-4 bg-white rounded-2xl border border-ink/10 p-5 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="font-display text-lg font-bold text-ink flex items-center gap-2">
-                  <Hash size={18} className="text-blue-600" />
-                  Google Chat Spaces
-                </h2>
-                {accessToken && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={fetchGoogleSpaces}
-                      disabled={loadingSpaces}
-                      className="p-1 text-ink/40 hover:text-ink"
-                      title="Refresh spaces"
-                    >
-                      <RefreshCw
-                        size={14}
-                        className={loadingSpaces ? "animate-spin" : ""}
-                      />
-                    </button>
-                    <button
-                      onClick={() => setNewSpaceOpen(true)}
-                      className="p-1 text-blue-600 hover:bg-blue-50 rounded"
-                      title="Create Space"
-                    >
-                      <Plus size={16} />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {loadingSpaces ? (
-                <div className="py-12 text-center text-xs text-ink/40">
-                  Loading Google Chat spaces...
-                </div>
-              ) : googleSpaces.length === 0 ? (
-                <div className="py-10 text-center space-y-3 rounded-xl border border-dashed border-ink/10 bg-paper/20">
-                  <MessageSquare size={28} className="mx-auto text-ink/30" />
-                  <p className="text-xs font-semibold text-ink/70">
-                    No Google Chat Spaces
-                  </p>
-                  <p className="text-[11px] text-ink/50 max-w-xs mx-auto">
-                    Create a new space for your alumni cohort or topic.
-                  </p>
-                  {accessToken && (
-                    <button
-                      onClick={() => setNewSpaceOpen(true)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700"
-                    >
-                      <Plus size={13} />
-                      Create Space
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-1.5 max-h-[500px] overflow-y-auto">
-                  {googleSpaces.map((space) => (
-                    <button
-                      key={space.name}
-                      onClick={() => setSelectedSpace(space)}
-                      className={`w-full p-3 rounded-xl text-left transition-colors flex items-center justify-between gap-2 ${
-                        selectedSpace?.name === space.name
-                          ? "bg-blue-50/80 border border-blue-500/30 text-blue-900"
-                          : "hover:bg-paper/60 border border-transparent text-ink"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 truncate">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-semibold text-xs">
-                          #
-                        </div>
-                        <div className="truncate">
-                          <p className="font-semibold text-xs truncate">
-                            {space.displayName || "General Space"}
-                          </p>
-                          <p className="text-[10px] text-ink/40 capitalize">
-                            {space.spaceType?.toLowerCase() || "Space"}
-                          </p>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Right: Space Chat Stream */}
-            <div className="lg:col-span-8 bg-white rounded-2xl border border-ink/10 p-5 shadow-sm flex flex-col justify-between min-h-[520px]">
-              {selectedSpace ? (
-                <div className="flex flex-col h-full justify-between space-y-4">
-                  {/* Space Header */}
-                  <div className="flex items-center justify-between border-b border-ink/10 pb-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
-                        <Hash size={18} />
-                      </div>
-                      <div>
-                        <h3 className="font-display text-lg font-bold text-ink">
-                          {selectedSpace.displayName || "Google Chat Space"}
-                        </h3>
-                        <span className="text-[10px] text-emerald-600 font-medium">
-                          ● Connected via Google Chat API
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Messages Feed */}
-                  <div className="flex-1 overflow-y-auto space-y-3 max-h-[360px] p-2">
-                    {loadingMessages ? (
-                      <div className="py-16 text-center text-xs text-ink/40">
-                        Loading messages...
-                      </div>
-                    ) : spaceMessages.length === 0 ? (
-                      <div className="py-16 text-center text-xs text-ink/40 space-y-2">
-                        <MessageSquare size={24} className="mx-auto text-ink/20" />
-                        <p>No messages yet in this space.</p>
-                        <p className="text-[10px]">Send the first message below!</p>
-                      </div>
-                    ) : (
-                      spaceMessages.map((msg, idx) => (
-                        <div key={msg.name || idx} className="flex gap-2.5 items-start">
-                          <div className="h-7 w-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-semibold shrink-0">
-                            {msg.sender?.displayName
-                              ? msg.sender.displayName[0].toUpperCase()
-                              : "U"}
-                          </div>
-                          <div className="flex-1 min-w-0 bg-paper/40 p-3 rounded-xl border border-ink/5">
-                            <div className="flex items-center justify-between gap-2 mb-1">
-                              <span className="font-semibold text-xs text-ink">
-                                {msg.sender?.displayName || "Member"}
-                              </span>
-                              <span className="text-[10px] text-ink/40">
-                                {msg.createTime
-                                  ? new Date(msg.createTime).toLocaleTimeString(
-                                      [],
-                                      { hour: "2-digit", minute: "2-digit" }
-                                    )
-                                  : ""}
-                              </span>
-                            </div>
-                            <p className="text-xs text-ink/85 leading-relaxed">
-                              {msg.text}
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-
-                  {/* Input Box */}
-                  {accessToken && (
-                    <div className="pt-3 border-t border-ink/10 flex items-center gap-2">
-                      <input
-                        type="text"
-                        placeholder={`Message #${
-                          selectedSpace.displayName || "space"
-                        }...`}
-                        value={chatMessageInput}
-                        onChange={(e) => setChatMessageInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSendGoogleChatMessage();
-                          }
-                        }}
-                        className="flex-1 px-4 py-2.5 rounded-full border border-ink/15 text-xs outline-none focus:border-blue-600"
-                      />
-                      <button
-                        onClick={handleSendGoogleChatMessage}
-                        disabled={
-                          sendingChatMessage || !chatMessageInput.trim()
-                        }
-                        className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 transition-colors cursor-pointer"
-                      >
-                        <Send size={15} />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="my-auto py-16 text-center space-y-3">
-                  <MessageSquare size={36} className="mx-auto text-ink/20" />
-                  <p className="text-sm font-semibold text-ink/60">
-                    Select a Google Chat Space
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* Split-Pane UI for Active Mentorships & Direct Messages */
-        <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-0 bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden h-[calc(100vh-14rem)]">
+      {/* Main Content Area: Direct Messages & Cohort Chats */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-0 bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden h-[calc(100vh-14rem)]">
           
           {/* LEFT SIDEBAR: Threads List */}
           <div className="lg:col-span-4 lg:col-span-3 border-r border-ink/10 flex flex-col h-full bg-paper/20">
@@ -825,7 +485,6 @@ export function ChatContent() {
             )}
           </div>
         </div>
-      )}
 
       {/* Floating compose button */}
       <button
@@ -835,55 +494,6 @@ export function ChatContent() {
       >
         <Plus size={22} />
       </button>
-
-      {/* Create Google Chat Space Modal */}
-      {newSpaceOpen && (
-        <div className="fixed inset-0 z-50 bg-ink/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-ink/10 pb-3">
-              <h3 className="font-display text-lg font-bold text-ink flex items-center gap-2">
-                <MessageSquare size={18} className="text-blue-600" />
-                New Google Chat Space
-              </h3>
-              <button
-                onClick={() => setNewSpaceOpen(false)}
-                className="text-ink/40 hover:text-ink text-sm font-semibold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              <label className="block text-xs font-semibold text-ink/70">
-                Space Name / Topic *
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. AI & Tech Founders Circle"
-                value={newSpaceName}
-                onChange={(e) => setNewSpaceName(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-ink/15 outline-none focus:border-blue-600"
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 pt-3 border-t border-ink/10">
-              <button
-                onClick={() => setNewSpaceOpen(false)}
-                className="px-4 py-2 rounded-full border border-ink/15 text-xs font-semibold text-ink hover:bg-paper"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCreateSpaceSubmit}
-                disabled={creatingSpace || !newSpaceName.trim()}
-                className="px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors disabled:opacity-40"
-              >
-                {creatingSpace ? "Creating..." : "Create Space"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Compose Direct Message Modal */}
       <AnimatePresence>

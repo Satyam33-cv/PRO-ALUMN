@@ -52,12 +52,7 @@ import { useApi } from "@/lib/hooks/useApi";
 import { getSocket } from "@/lib/socket";
 import { getToken } from "@/lib/auth";
 import { Card } from "@/components/ui";
-import {
-  approveProfileAction,
-  rejectProfileAction,
-  approveVideoAction,
-  rejectVideoAction,
-} from "@/app/actions/admin";
+
 
 type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools" | "broadcasts" | "events" | "newsletters" | "analytics";
 type CmsSubTab = "broadcasts" | "events" | "newsletters" | "pages";
@@ -385,15 +380,15 @@ export function AdminContent() {
     [usersData?.users]
   );
 
-  // =================== PROFILE APPROVAL & REJECTION (SERVER ACTIONS) ===================
+  // =================== PROFILE APPROVAL & REJECTION (REST API) ===================
   const handleApproveProfile = async (userId: string) => {
     setModeratingId(userId);
     try {
-      const res = await approveProfileAction(userId);
+      const res = await apiClient.admin.approveProfile(userId);
       if (res.success) {
         showToast(res.message || "Profile approved!");
       } else {
-        showToast(res.error || "Approval failed");
+        showToast("Approval failed");
       }
       reloadUsers();
       reloadApprovals();
@@ -409,11 +404,11 @@ export function AdminContent() {
   const handleRejectProfile = async (userId: string, reason?: string) => {
     setModeratingId(userId);
     try {
-      const res = await rejectProfileAction({ userId, reason });
+      const res = await apiClient.admin.rejectProfile(userId, reason);
       if (res.success) {
         showToast(res.message || "Profile rejected");
       } else {
-        showToast(res.error || "Rejection failed");
+        showToast("Rejection failed");
       }
       setRejectProfileModal(null);
       reloadUsers();
@@ -427,15 +422,15 @@ export function AdminContent() {
     }
   };
 
-  // =================== VIDEO APPROVAL & REJECTION (SERVER ACTIONS) ===================
+  // =================== VIDEO APPROVAL & REJECTION (REST API) ===================
   const handleApproveVideo = async (videoId: string) => {
     setModeratingId(videoId);
     try {
-      const res = await approveVideoAction(videoId);
+      const res = await apiClient.admin.approveVideo(videoId);
       if (res.success) {
         showToast(res.message || "Video approved!");
       } else {
-        showToast(res.error || "Failed to approve video");
+        showToast("Failed to approve video");
       }
       reloadVideos();
       reloadApprovals();
@@ -451,11 +446,11 @@ export function AdminContent() {
   const handleRejectVideo = async (videoId: string) => {
     setModeratingId(videoId);
     try {
-      const res = await rejectVideoAction(videoId);
+      const res = await apiClient.admin.rejectVideo(videoId);
       if (res.success) {
         showToast(res.message || "Video rejected");
       } else {
-        showToast(res.error || "Failed to reject video");
+        showToast("Failed to reject video");
       }
       reloadVideos();
       reloadApprovals();

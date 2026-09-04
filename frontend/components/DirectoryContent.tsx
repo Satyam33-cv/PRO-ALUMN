@@ -14,15 +14,22 @@ import {
   MapPin,
   LayoutGrid,
   List,
+  Map,
   Loader2,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { Card, EmptyState, ErrorState, Skeleton } from "@/components/ui";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { useSearchFilter } from "@/lib/hooks/useSearchFilter";
 import { staggerContainer, slideUp } from "@/lib/motion";
 import type { Alumni } from "@/lib/api/types";
+
+const DirectoryMap = dynamic(() => import("@/components/DirectoryMap"), {
+  ssr: false,
+  loading: () => <Skeleton variant="card" className="h-[460px] w-full" />,
+});
 
 type FilterType = "batch" | "department" | "location" | "mentors";
 
@@ -40,7 +47,7 @@ type DirectoryAlumni = {
   isVerified?: boolean;
 };
 
-type ViewMode = "grid" | "list";
+type ViewMode = "grid" | "list" | "map";
 
 function DirectoryGridCard({
   alumni,
@@ -229,6 +236,11 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
   const { data: allAlumni, error, isLoading, refresh } = useApi(
     "alumni:all",
     () => apiClient.alumni.list()
+  );
+
+  const { data: geoData } = useApi(
+    "alumni:geo",
+    () => apiClient.alumni.geoDistribution()
   );
 
   const alumniList = (allAlumni || []) as Alumni[];
@@ -429,6 +441,20 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
           >
             <List size={14} />
           </button>
+          <button
+            onClick={() => setViewMode("map")}
+            aria-label="Map view"
+            aria-pressed={viewMode === "map"}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              viewMode === "map"
+                ? "bg-brass text-canvas"
+                : "text-ink-900/60 hover:text-ink-900"
+            }`}
+            title="Interactive OpenStreetMap World View"
+          >
+            <Map size={14} />
+            <span className="hidden sm:inline">Map</span>
+          </button>
         </div>
       </div>
 
@@ -578,7 +604,17 @@ export function DirectoryContent({ initialQuery = "" }: { initialQuery?: string 
             }
           />
         ) : null}
-        {!isLoading && !error && filteredData.length > 0 ? (
+        {viewMode === "map" ? (
+          <div className="mt-4">
+            <DirectoryMap
+              clusters={geoData?.clusters || []}
+              onSelectCity={(city) => {
+                setQuery(city);
+                setViewMode("grid");
+              }}
+            />
+          </div>
+        ) : !isLoading && !error && filteredData.length > 0 ? (
           <motion.div
             variants={staggerContainer}
             initial="initial"

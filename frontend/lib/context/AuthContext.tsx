@@ -3,14 +3,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getSession, saveSession, clearSession, getToken } from "@/lib/auth";
 import type { AuthSession } from "@/lib/api/types";
-import {
-  signInWithPopup,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  type User as FirebaseUser,
-} from "firebase/auth";
-import { auth, googleWorkspaceAuthProvider } from "@/lib/firebase";
 import { apiClient } from "@/lib/api/client";
 
 export type UserRole = "student" | "alumni" | "admin" | "faculty";
@@ -23,7 +15,6 @@ export type AuthUser = {
   initials: string;
   classYear: string;
   department: string;
-  firebaseUid?: string;
   photoURL?: string;
   avatarUrl?: string;
   profileCompleteness?: number;
@@ -110,41 +101,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const initialUser = loadSessionUser();
     setUserState(initialUser);
 
-    // Restore Google Access Token if available
-    if (typeof window !== "undefined") {
-      const storedToken = localStorage.getItem("google_access_token");
-      if (storedToken) {
-        setGoogleAccessToken(storedToken);
-      }
-    }
-
-    // Listen to Firebase Auth state
-    const unsubscribe = onAuthStateChanged(auth, async (fbUser: FirebaseUser | null) => {
-      if (fbUser) {
-        try {
-          const name = fbUser.displayName || fbUser.email?.split("@")[0] || "User";
-          
-          // Profiles are managed via our Postgres Backend (apiClient.auth.me),
-          // so we bypass Firestore completely here to avoid configuration errors.
-          
-          setUserState({
-            name,
-            email: fbUser.email || "",
-            role: "student", // Default until backend syncs
-            initials: getInitials(name),
-            classYear: "2025",
-            department: "Computer Science",
-            firebaseUid: fbUser.uid,
-            photoURL: fbUser.photoURL || undefined,
-          });
-        } catch (e) {
-          console.warn("Auth sync error:", e);
-        }
-      }
+    // Sync user with backend API if token exists
+    const token = getToken();
+    if (token) {
+      apiClient.auth
+        .me()
+        .then((user) => {
+          if (user && user.id) {
+            const currentSession = getSession() || { token, user };
+            currentSession.user = user;
+            saveSession(currentSession);
+            setSessionState(currentSession);
+            setUserState(userFromSession(currentSession));
+          }
+        })
+        .catch(() => {
+          // Token may be invalid or expired
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
       setLoading(false);
-    });
-
-    return () => unsubscribe();
+    }
   }, []);
 
   useEffect(() => {
@@ -152,11 +131,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         await apiClient.gamification.getStatus();
       } catch (e) {
-        console.debug('Streak recording failed:', e);
+        console.debug("Streak recording failed:", e);
       }
     };
-    // Admins are invisible overseers — they don't participate in the gamification economy
-    if (user && !loading && user.role !== 'admin') recordLoginStreak();
+    if (user && !loading && user.role !== "admin") recordLoginStreak();
   }, [user, loading]);
 
   const signInWithGoogle = useCallback(async () => {
@@ -171,33 +149,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const connectGoogleWorkspace = useCallback(async () => {
-    try {
-      const result = await signInWithPopup(auth, googleWorkspaceAuthProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken || null;
-      if (token) {
-        setGoogleAccessToken(token);
-        if (typeof window !== "undefined") {
-          localStorage.setItem("google_access_token", token);
-        }
-      }
-      return token;
-    } catch (error: unknown) {
-      const code = (error as { code?: string })?.code;
-      if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
-        console.warn("Google Workspace connection was closed by the user.");
-        return null;
-      }
-      console.error("Failed to connect Google Workspace:", error);
-      throw error;
-    }
+    console.info("Google Workspace SSO connection is managed directly via backend OAuth.");
+    return null;
   }, []);
 
   const setUser = useCallback((next: AuthUser) => {
     setUserState(next);
-    const session = getSession();
-    if (session) {
-      saveSession({ ...session, user: { ...session.user, name: next.name, email: next.email } });
+    const s = getSession();
+    if (s) {
+      saveSession({ ...s, user: { ...s.user, name: next.name, email: next.email } });
     }
   }, []);
 
@@ -207,7 +167,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserState(userFromSession(nextSession));
   }, []);
 
-  const signOut = useCallback(async () => {
+  const signOut = useCallback(() => {
     setUserState(null);
     setSessionState(null);
     setGoogleAccessToken(null);
@@ -216,29 +176,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       sessionStorage.removeItem("google_access_token");
     }
     clearSession();
-    try {
-      await firebaseSignOut(auth);
-    } catch {
-      // ignore
-    }
   }, []);
 
   useEffect(() => {
     function handleAuthExpired() {
       signOut();
     }
-    function handleWorkspaceTokenExpired() {
-      setGoogleAccessToken(null);
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("google_access_token");
-        sessionStorage.removeItem("google_access_token");
-      }
-    }
     window.addEventListener("auth-expired", handleAuthExpired);
-    window.addEventListener("workspace-token-expired", handleWorkspaceTokenExpired);
     return () => {
       window.removeEventListener("auth-expired", handleAuthExpired);
-      window.removeEventListener("workspace-token-expired", handleWorkspaceTokenExpired);
     };
   }, [signOut]);
 
@@ -260,7 +206,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut,
       loading,
     }),
-    [user, role, googleAccessToken, accessToken, session, setUser, setSession, signInWithGoogle, connectGoogleWorkspace, signOut, loading],
+    [user, role, googleAccessToken, accessToken, session, setUser, setSession, signInWithGoogle, connectGoogleWorkspace, signOut, loading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,0 +1,270 @@
+# Production System Design: The 5 Essential Pillars (100% Free Stack)
+
+---
+
+## 1. Architectural Guardrails & 100% Free Resource Stack
+
+This platform is strictly designed to run on **zero-cost, production-grade open-source tiers**:
+
+```mermaid
+flowchart TD
+  subgraph Client ["Client Tier (Zero-Cost Web & Mobile)"]
+    Web["Next.js 16 + React 18 + Tailwind CSS (Vercel Free Tier)"]
+    MapClient["Leaflet.js + OpenStreetMap (100% Free, No API Key Required)"]
+    RealtimeClient["Socket.io Client (Zero-Cost WebSockets)"]
+  end
+
+  subgraph Gateway ["Application Gateway (Zero-Cost Hosting)"]
+    Express["Node.js + Express 4 Gateway (Railway / Render / Local Free Tier)"]
+    AuthMW["JWT Auth Middleware (HMAC-SHA256, Zero-Cost)"]
+    RateLimit["Express Rate Limit (In-Memory IP Bucket)"]
+  end
+
+  subgraph Services ["Service Layer (100% Free Services)"]
+    Storage["Supabase Storage (Free 1GB S3-Compatible Tier)"]
+    Email["Resend (Free 3,000 emails/mo) + Gmail SMTP Fallback"]
+    RealtimeHub["Socket.io Hub (In-Memory Presence Map)"]
+    EmbeddingEng["Deterministic TF-IDF Bag-of-Tokens / Local Ollama (Zero API Costs)"]
+  end
+
+  subgraph DataTier ["Data Tier (Single Source of Truth)"]
+    Postgres[("PostgreSQL via Prisma ORM (Supabase Free / Neon / Local)")]
+  end
+
+  Web -->|HTTPS REST| Express
+  RealtimeClient -->|WSS| Express
+  MapClient --> Web
+  Express --> AuthMW --> RateLimit
+  RateLimit --> Services
+  Services --> Postgres
+  Storage --> Postgres
+```
+
+| Infrastructure Component | Free Tool / Provider | Why It's 100% Free & Unlimited |
+|---|---|---|
+| **Primary Database** | PostgreSQL via Prisma ORM | Supabase Free Tier (500MB DB) / Neon / Local Docker |
+| **Media & Resume Storage** | Supabase Storage (S3 API) | 1GB free storage, unlimited signed URLs for private resumes |
+| **Interactive Map** | **Leaflet.js + OpenStreetMap** | Completely open-source. **No Google Maps or Mapbox API bill!** |
+| **Email Dispatch** | Resend + Nodemailer (Gmail SMTP) | 3,000 free emails/mo (Resend) or free Gmail App Password |
+| **Real-time Engine** | Socket.io | Runs on existing Node server (in-memory rooms, no Pusher fees) |
+| **AI Matchmaker** | Deterministic TF-IDF / Local Ollama | 100% local mathematical computation, zero OpenAI API charges |
+
+---
+
+## 2. Elimination Checklist (What We Cut to Zero)
+
+To free up developer cognitive load and eliminate bugs, the following items are scheduled for immediate removal:
+
+- [x] **Delete `/forms`, `/keep`, `/docs`, `/communications`**: 100% fake AI clones with no database persistence.
+- [x] **Remove Google Firebase**: Eliminates the split-brain architecture. All data moves strictly through PostgreSQL.
+- [x] **Uninstall Dead Packages**: `@sendgrid/mail`, `cloudinary`, `firebase` (removes ~75MB dead weight).
+- [x] **Delete Direct Prisma on Frontend (`@/lib/prisma.ts`)**: All data fetching routes cleanly through `/api/*`.
+
+---
+
+## 3. The 5 Essential Pillars: Logic, Flows & Algorithms
+
+```mermaid
+stateDiagram-v2
+    [*] --> Pillar1_Directory: Find Alumni
+    Pillar1_Directory --> Pillar2_Referrals: Request Referral
+    Pillar1_Directory --> Pillar3_Mentorship: Book 1-on-1 Chat
+    [*] --> Pillar4_Events: RSVP to Reunion
+    [*] --> Pillar5_Stories: Read/Post Achievement
+```
+
+---
+
+### Pillar 1: Verified Alumni Directory & Smart Search
+
+#### Flow & Data Model
+- **Endpoint**: `GET /api/users`, `GET /api/search`
+- **Data Model**: `User` table (`batchYear`, `department`, `currentCompany`, `jobTitle`, `skills`, `isVerified`).
+- **Access Control**: Public directory visible to logged-in users; verified badge ($\checkmark$) rendered only if `isVerified === true`.
+
+#### Algorithm: Multi-Attribute Token Matching
+When a student types `"CSE 2022 Google React"`, the query parser executes a tokenized weighted search:
+$$\text{Query Tokens} = T = \{t_1, t_2, \dots, t_n\}$$
+$$\text{Score}(User) = 5 \cdot \mathbb{I}(\text{Company} \in T) + 4 \cdot \mathbb{I}(\text{Role} \in T) + 3 \cdot \mathbb{I}(\text{Batch} \in T) + 2 \cdot \mathbb{I}(\text{Dept} \in T) + 1 \cdot \sum \mathbb{I}(\text{Skill}_i \in T)$$
+*Results are sorted by `isVerified DESC, Score DESC, totalPoints DESC`.*
+
+#### Map Visualization (Leaflet.js + OpenStreetMap)
+- Users with a `location` field (e.g. `"Bangalore, India"`, `"San Francisco, USA"`) are geocoded using free OpenStreetMap Nominatim.
+- Clusters are rendered client-side via Leaflet MarkerCluster with zero external tile subscription fees.
+
+---
+
+### Pillar 2: Career & Referral Hub
+
+#### State Machine
+```
+[STUDENT APPLIES] ──> PENDING ──> ACCEPTED ──> REFERRED ──> HIRED / NOT_HIRED
+                            │
+                            └──> REJECTED (With Quick Feedback)
+```
+
+#### Concurrency Algorithm: Quota-Gated Referral Slot Allocation
+To prevent race conditions where multiple students claim the last referral slot simultaneously, the transaction uses Prisma Serializable isolation:
+```javascript
+// backend/src/routes/referrals.js
+const result = await prisma.$transaction(async (tx) => {
+  // 1. Lock and read job referral slots
+  const job = await tx.jobPosting.findUnique({
+    where: { id: jobId },
+    select: { id: true, referralSlots: true, status: true }
+  });
+  if (job.status !== 'OPEN') throw new Error('JOB_CLOSED');
+
+  // 2. Count active referrals
+  const activeReferrals = await tx.referralRequest.count({
+    where: {
+      jobId,
+      status: { in: ['ACCEPTED', 'REFERRED', 'HIRED'] }
+    }
+  });
+
+  if (activeReferrals >= job.referralSlots) {
+    throw new Error('REFERRAL_SLOTS_EXHAUSTED');
+  }
+
+  // 3. Create the referral request
+  return tx.referralRequest.create({
+    data: {
+      jobId,
+      requestedById: studentId,
+      referredById: job.postedById,
+      resumeUrl: studentResumeUrl,
+      studentNote: pitchText,
+      status: 'PENDING'
+    }
+  });
+}, {
+  isolationLevel: Prisma.TransactionIsolationLevel.Serializable
+});
+```
+
+#### Resume Security
+- Resumes are stored in a **Private Supabase Bucket** (`resumes`).
+- Files are named `resumes/{studentId}/{timestamp}-{randomHash}.pdf`.
+- Access is gated behind a temporary 300-second signed URL (`GET /api/uploads/resume/signed-url`) only accessible by the applicant and the referring alumni.
+
+---
+
+### Pillar 3: Mentorship & Flash 1-on-1 Sessions
+
+#### Flow & Booking Architecture
+1. **Alumni Availability**: Alumni set slots (e.g. `Saturday, 4:00 PM - 4:30 PM`, max 1 mentee).
+2. **Student Booking**: Student books the slot with their target agenda (e.g. *"Mock Interview for Frontend Engineer"*).
+3. **Automatic Chat Provisioning**: Upon booking confirmation, the system initializes a linked `ChatThread` and sends an invite email.
+4. **Real-time Session**: Student and Alumni communicate in real-time via **Socket.io** (`join_room(threadId)`).
+
+#### Real-time Socket.io Message Architecture
+```javascript
+// Zero-cost real-time message handler in backend/src/socket.js
+socket.on('send_message', async ({ threadId, content }) => {
+  const message = await prisma.chatMessage.create({
+    data: { threadId, senderId: socket.userId, content },
+    include: { sender: { select: { id: true, name: true, avatarUrl: true } } }
+  });
+  io.to(threadId).emit('new_message', message);
+});
+```
+
+---
+
+### Pillar 4: Events, Reunions & Capacity RSVPs
+
+#### Flow & Algorithm
+- **Endpoint**: `GET /api/events`, `POST /api/events/:id/rsvp`, `DELETE /api/events/:id/rsvp`
+- **Data Model**: `Event` (`title`, `date`, `location`, `isVirtual`, `maxCapacity`) $\longleftrightarrow$ `EventRSVP` (`eventId`, `userId`).
+- **Capacity Algorithm**:
+  ```javascript
+  const rsvp = await prisma.$transaction(async (tx) => {
+    const event = await tx.event.findUnique({
+      where: { id: eventId },
+      include: { _count: { select: { rsvps: true } } }
+    });
+    if (event.maxCapacity && event._count.rsvps >= event.maxCapacity) {
+      throw new Error('EVENT_CAPACITY_REACHED');
+    }
+    return tx.eventRSVP.create({ data: { eventId, userId } });
+  });
+  ```
+- **"Who's Going" Roster**: Aggregates verified attendees by category (`ALUMNI` vs `STUDENT`), allowing students to see which alumni will be at the reunion.
+
+---
+
+### Pillar 5: Community Feed & Success Stories
+
+#### Moderation & Gamification Flow
+```mermaid
+sequenceDiagram
+  actor Alumni
+  participant Backend
+  actor Admin
+  participant Community
+
+  Alumni ->> Backend: POST /api/stories (Title, Story, Image)
+  Backend ->> Backend: Set isApproved = false
+  Backend ->> Admin: Notification: New story pending review
+  Admin ->> Backend: PATCH /api/admin/stories/:id/status { isApproved: true }
+  Backend ->> Backend: Award +50 TotalPoints to Alumni
+  Backend ->> Alumni: Dispatch Email: "Your achievement is live!"
+  Backend ->> Community: Broadcast story to Community Feed
+```
+
+---
+
+## 4. Frontend Architecture: Clean Division (Landing vs. Portal)
+
+```
+frontend/
+├── app/
+│   ├── (public)/                 <-- UNRESTRICTED PUBLIC SURFACE
+│   │   ├── page.tsx              <-- Public Landing Page (Hero, Stats, Testimonials, CTA)
+│   │   ├── login/                <-- Email/Password + Token Storage
+│   │   └── register/             <-- Student / Alumni Registration
+│   │
+│   ├── (portal)/                 <-- AUTHENTICATED PORTAL (App Shell Layout)
+│   │   ├── layout.tsx            <-- Protected Shell: Modern Sidebar, Topbar, User Menu
+│   │   ├── dashboard/            <-- Bento Grid: Quick stats, upcoming chats, alerts
+│   │   ├── directory/            <-- Pillar 1: Search & Leaflet World Map
+│   │   ├── jobs/                 <-- Pillar 2: Job Board & Referral Vault
+│   │   ├── mentorship/           <-- Pillar 3: Flash Mentorship & Booking
+│   │   ├── events/               <-- Pillar 4: Reunions & RSVP Roster
+│   │   ├── stories/              <-- Pillar 5: Success Stories & Feed
+│   │   ├── chat/                 <-- Real-time Socket.io Chat
+│   │   ├── profile/              <-- Digital Alumni ID Card & Profile Editor
+│   │   └── admin/                <-- Super Admin User Verification & Moderation
+```
+
+---
+
+## 5. Mobile App Synergy (React Native / Expo Ready)
+
+Because our backend is a pure, decoupled Express REST + Socket.io server:
+1. **Zero Backend Rewrite**: The mobile app will use the exact same URLs (`https://.../api/users`, `/api/jobs`, etc.).
+2. **Shared Types**: Frontend TypeScript types in `lib/types.ts` are 100% copy-pasteable into the React Native project.
+3. **Expo Push Notifications**: The backend notification service can dispatch to Expo Push API (`https://exp.host/--/api/v2/push/send`) at zero cost.
+
+---
+
+## 6. Execution Roadmap
+
+### Step 1: Backend Cleanup & Pruning (Immediate)
+- Fix `prisma.story` $\to$ `prisma.successStory` in `backend/src/routes/search.js`.
+- Unify email service in `backend/src/services/email.js` with Resend / Nodemailer fallback.
+- Uninstall dead packages (`@sendgrid/mail`, `cloudinary`).
+- Run backend automated verification tests to ensure 100% green pass.
+
+### Step 2: Frontend Route Pruning & Shell Separation
+- Delete fake Google Workspace routes (`/forms`, `/keep`, `/docs`, `/communications`).
+- Remove Firebase client queries from `CalendarContent.tsx` and `GlobalSearch.tsx`.
+- Create clean layout boundaries: Public Landing (`/`) vs Authenticated Portal (`/dashboard`).
+
+### Step 3: Connect Frontend to Backend (Pillar by Pillar)
+- Connect Directory to `GET /api/search` with Leaflet OpenStreetMap view.
+- Connect Job Postings & Referral Vault with Supabase resume upload.
+- Connect Flash Mentorship & Socket.io chat.
+- Connect Events & RSVPs.
+- Connect Stories & Admin Moderation.

@@ -63,16 +63,21 @@ export function EventListContent() {
       ? events
       : events.filter((e) => e.category === activeTab);
 
-  function handleFeaturedRegister() {
+  async function handleFeaturedRegister() {
     if (!featured || featuredIsFull || featuredRegistered) return;
     setRegisteredEvents((prev) => ({ ...prev, [featured.id]: true }));
     setAttendingCounts((prev) => ({
       ...prev,
       [featured.id]: (prev[featured.id] ?? featured.attending ?? 0) + 1,
     }));
+    try {
+      await apiClient.events.rsvp(featured.id);
+    } catch (err) {
+      console.error("Failed to RSVP for featured event:", err);
+    }
   }
 
-  function handleRsvp(eventId: string, currentAttending: number, capacity: number) {
+  async function handleRsvp(eventId: string, currentAttending: number, capacity: number) {
     if (registeredEvents[eventId]) return;
     if (currentAttending >= capacity) return;
     setRegisteredEvents((prev) => ({ ...prev, [eventId]: true }));
@@ -80,6 +85,11 @@ export function EventListContent() {
       ...prev,
       [eventId]: currentAttending + 1,
     }));
+    try {
+      await apiClient.events.rsvp(eventId);
+    } catch (err) {
+      console.error("Failed to RSVP for event:", err);
+    }
   }
 
   return (

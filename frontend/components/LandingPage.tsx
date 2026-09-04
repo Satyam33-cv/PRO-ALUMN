@@ -201,27 +201,27 @@ const productSurfaces = [
 const technicalArchitecture = [
   {
     icon: Cpu,
-    title: "Google Gemini AI & pgvector",
-    desc: "Gemini embedding model generates 384-dimensional dense vectors indexed with PostgreSQL pgvector and HNSW cosine distance for sub-10ms similarity queries.",
-    badge: "AI & Vector DB",
+    title: "AI Embeddings & Smart Match Engine",
+    desc: "Cosine similarity matching and TF-IDF semantic embeddings powering student-to-alumni mentor discovery and referral candidate matching.",
+    badge: "AI & Smart Match",
   },
   {
     icon: Lock,
-    title: "Google OAuth 2.0 & Firebase",
-    desc: "Enterprise Single Sign-On via Google OAuth 2.0, Firebase Authentication, and Firestore real-time profile replication for seamless authentication.",
-    badge: "Auth & Identity",
+    title: "Role-Based Auth & Google OAuth 2.0",
+    desc: "Single Sign-On via Google OAuth 2.0 and cryptographically signed JWT tokens with strict multi-role RBAC for Students, Alumni, and Admins.",
+    badge: "Auth & Security",
   },
   {
     icon: Layers,
-    title: "Google Workspace Integration",
-    desc: "Native ecosystem integration with Google Docs, Google Keep, Gmail API, Google Forms surveys, and Google Calendar event scheduling.",
-    badge: "Productivity",
+    title: "100% Free-Tier Cloud Architecture",
+    desc: "PostgreSQL with Prisma ORM, Supabase Cloud Storage (free S3 API for resumes and media), Resend & Nodemailer dispatch, and Leaflet OpenStreetMap.",
+    badge: "Zero-Cost Cloud",
   },
   {
     icon: Database,
-    title: "Enterprise Full-Stack Architecture",
-    desc: "Next.js 14 App Router, Express API on Railway, PostgreSQL database with Prisma ORM, and resilient local mock fallbacks for zero downtime.",
-    badge: "Cloud Infrastructure",
+    title: "Realtime & High-Performance Core",
+    desc: "Next.js App Router, Express REST API with in-memory caching, Socket.io bidirectional chat, and serializable transactions for referral quotas.",
+    badge: "Core Engine",
   },
 ];
 

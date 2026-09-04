@@ -7,6 +7,7 @@ const {
   checkProfileFreshness,
   awardPoints,
 } = require('../services/gamification');
+const { resolveCoordinates } = require('../utils/geo');
 
 // =================== GET /api/users/me ===================
 router.get('/me', authenticate, async (req, res) => {
@@ -19,6 +20,7 @@ router.get('/me', authenticate, async (req, res) => {
         currentCompany: true, jobTitle: true, location: true, linkedinUrl: true, bio: true,
         skills: true, skillsOffered: true, skillsWanted: true, interests: true, timeline: true, resumeUrl: true,
         isVerified: true, isActive: true, createdAt: true,
+        profileStatus: true, verificationMethod: true, rejectionReason: true, idCardUrl: true, referralCode: true, referredByCode: true,
         currentStreak: true, longestStreak: true, totalPoints: true, lastActiveDate: true,
         lastProfileUpdate: true, lastJobUpdate: true, lastEducationUpdate: true, lastProjectUpdate: true,
         profileCompleteness: true,
@@ -41,7 +43,7 @@ router.patch('/me', authenticate, async (req, res) => {
     const allowed = [
       'name', 'phone', 'avatarUrl', 'batchYear', 'department', 'rollNumber',
       'currentCompany', 'jobTitle', 'location', 'linkedinUrl', 'bio', 'resumeUrl',
-      'skills', 'skillsOffered', 'skillsWanted', 'interests', 'timeline',
+      'skills', 'skillsOffered', 'skillsWanted', 'interests', 'timeline', 'referredByCode',
     ];
     const data = {};
     for (const key of allowed) {
@@ -95,6 +97,55 @@ router.patch('/me', authenticate, async (req, res) => {
   } catch (err) {
     console.error('PATCH /users/me error:', err);
     res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+// =================== POST /api/users/verify-evidence ===================
+router.post('/verify-evidence', authenticate, async (req, res) => {
+  try {
+    const { method, collegeEmail, idCardUrl, otp } = req.body;
+    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    if (method === 'college_email') {
+      const emailToCheck = (collegeEmail || user.email).toLowerCase().trim();
+      const allowedPatterns = [/@somaiya\.edu$/, /@alumni\.somaiya\.edu$/, /\.edu$/, /\.ac\.in$/];
+      const isCollegeDomain = allowedPatterns.some((p) => p.test(emailToCheck));
+      if (!isCollegeDomain) {
+        return res.status(400).json({
+          error: `Email "${emailToCheck}" does not match an accredited institutional domain (@somaiya.edu, .edu, .ac.in). Please use your college email or upload an ID card.`,
+        });
+      }
+    } else if (method === 'id_upload') {
+      if (!idCardUrl || !idCardUrl.startsWith('http')) {
+        return res.status(400).json({ error: 'Please provide a valid uploaded ID card document URL.' });
+      }
+    } else if (method === 'otp') {
+      if (!otp || otp.trim().length !== 6) {
+        return res.status(400).json({ error: 'Please enter a valid 6-digit verification OTP.' });
+      }
+    } else {
+      return res.status(400).json({ error: 'Invalid verification method selected.' });
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        profileStatus: 'PENDING',
+        verificationMethod: method,
+        idCardUrl: idCardUrl || user.idCardUrl,
+        rejectionReason: null,
+      },
+    });
+
+    res.json({
+      success: true,
+      message: 'Verification evidence submitted. Your profile is now under campus admin review.',
+      user: updated,
+    });
+  } catch (err) {
+    console.error('POST /users/verify-evidence error:', err);
+    res.status(500).json({ error: 'Failed to submit verification evidence' });
   }
 });
 
@@ -160,13 +211,75 @@ router.get('/alumni', async (req, res) => {
       prisma.user.count({ where }),
     ]);
 
+    const enrichedAlumni = alumni.map((u) => ({
+      ...u,
+      coordinates: resolveCoordinates(u.location),
+    }));
+
     res.json({
-      alumni,
+      alumni: enrichedAlumni,
       pagination: { total, page: pageNum, limit: take, pages: Math.ceil(total / take) },
     });
   } catch (err) {
     console.error('GET /users/alumni error:', err);
     res.status(500).json({ error: 'Failed to fetch alumni' });
+  }
+});
+
+// =================== GET /api/users/geo-distribution ===================
+// Aggregated geo coordinates for Leaflet OpenStreetMap
+router.get('/geo-distribution', async (req, res) => {
+  try {
+    const alumni = await prisma.user.findMany({
+      where: { role: 'ALUMNI', isActive: true, location: { not: null } },
+      select: {
+        id: true,
+        name: true,
+        avatarUrl: true,
+        currentCompany: true,
+        jobTitle: true,
+        batchYear: true,
+        location: true,
+      },
+    });
+
+    const clustersMap = new Map();
+
+    for (const a of alumni) {
+      const coords = resolveCoordinates(a.location);
+      if (!coords) continue;
+
+      const clusterKey = `${coords.city}, ${coords.country}`;
+      if (!clustersMap.has(clusterKey)) {
+        clustersMap.set(clusterKey, {
+          city: coords.city,
+          country: coords.country,
+          lat: coords.lat,
+          lng: coords.lng,
+          count: 0,
+          alumni: [],
+        });
+      }
+
+      const cluster = clustersMap.get(clusterKey);
+      cluster.count += 1;
+      if (cluster.alumni.length < 5) {
+        cluster.alumni.push({
+          id: a.id,
+          name: a.name,
+          currentCompany: a.currentCompany,
+          jobTitle: a.jobTitle,
+          avatarUrl: a.avatarUrl,
+        });
+      }
+    }
+
+    res.json({
+      clusters: Array.from(clustersMap.values()),
+    });
+  } catch (err) {
+    console.error('GET /users/geo-distribution error:', err);
+    res.status(500).json({ error: 'Failed to fetch geo distribution' });
   }
 });
 

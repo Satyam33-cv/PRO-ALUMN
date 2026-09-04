@@ -40,17 +40,51 @@ export type Job = {
 
 export type EventItem = {
   id: string;
-  month: string;
-  day: string;
+  month?: string;
+  day?: string;
   title: string;
-  detail: string;
-  place: string;
+  detail?: string;
+  place?: string;
+  description?: string;
+  location?: string;
   startsAt?: string;
   capacity?: number;
+  maxCapacity?: number | null;
   attending?: number;
   category?: "reunion" | "meetup" | "webinar" | "career";
   date?: string;
   mode?: string;
+  hasRsvp?: boolean;
+  isRegistered?: boolean;
+};
+
+export type EventAttendee = {
+  id: string;
+  name: string;
+  role?: string;
+  avatarUrl?: string | null;
+  batchYear?: number | null;
+  department?: string | null;
+  currentCompany?: string | null;
+  jobTitle?: string | null;
+};
+
+export type EventDetailItem = EventItem & {
+  coverImage?: string | null;
+  createdBy?: {
+    id: string;
+    name: string;
+    avatarUrl?: string | null;
+    currentCompany?: string | null;
+    jobTitle?: string | null;
+  };
+  rsvps?: Array<{
+    userId: string;
+    user: EventAttendee;
+  }>;
+  _count?: {
+    rsvps: number;
+  };
 };
 
 export type Announcement = {

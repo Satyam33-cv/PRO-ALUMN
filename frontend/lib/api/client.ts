@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import type { Alumni, AuthSession, EventItem, Job, LoginInput, ReferralRequest, RegisterInput, User } from "./types";
+import type { Alumni, AuthSession, EventItem, EventDetailItem, Job, LoginInput, ReferralRequest, RegisterInput, User } from "./types";
 
 export const apiClient = {
   auth: {
@@ -16,6 +16,9 @@ export const apiClient = {
   users: {
     updateProfile: async (data: Partial<User>) => {
       return await apiFetch<{ user: User }>({ method: "PATCH", url: "/users/me", data }).then((res) => res.user);
+    },
+    verifyEvidence: async (data: { method: "college_email" | "id_upload" | "otp"; collegeEmail?: string; idCardUrl?: string; otp?: string }) => {
+      return await apiFetch<{ success: boolean; message: string; user: User }>({ method: "POST", url: "/users/verify-evidence", data });
     },
   },
   uploads: {
@@ -107,6 +110,18 @@ export const apiClient = {
         linkedinUrl: u.linkedinUrl,
       };
     },
+    geoDistribution: async () => {
+      return await apiFetch<{
+        clusters: Array<{
+          city: string;
+          country: string;
+          lat: number;
+          lng: number;
+          count: number;
+          alumni: Array<{ id: string; name: string; currentCompany?: string; jobTitle?: string; avatarUrl?: string }>;
+        }>;
+      }>({ method: "GET", url: "/users/geo-distribution" });
+    },
   },
   jobs: {
     list: async (): Promise<Job[]> => {
@@ -142,8 +157,9 @@ export const apiClient = {
     list: async (): Promise<EventItem[]> => {
       return await apiFetch<{ events: EventItem[] }>({ method: "GET", url: "/events" }).then((res) => res.events);
     },
-    get: async (id: string): Promise<EventItem> => {
-      return await apiFetch<EventItem>({ method: "GET", url: `/events/${id}` });
+    get: async (id: string): Promise<EventDetailItem> => {
+      return await apiFetch<{ event: EventDetailItem }>({ method: "GET", url: `/events/${id}` })
+        .then((res) => res.event || (res as unknown as EventDetailItem));
     },
     create: async (data: {
       title: string;
@@ -158,8 +174,17 @@ export const apiClient = {
     }): Promise<{ event: EventItem }> => {
       return await apiFetch<{ event: EventItem }>({ method: "POST", url: "/events", data });
     },
-    rsvp: async (id: string): Promise<{ attending: boolean }> => {
-      return await apiFetch<{ attending: boolean }>({ method: "POST", url: `/events/${id}/rsvp` });
+    rsvp: async (id: string): Promise<{ attending: boolean; rsvp?: unknown; message?: string }> => {
+      return await apiFetch<{ attending: boolean; rsvp?: unknown; message?: string }>({
+        method: "POST",
+        url: `/events/${id}/rsvp`,
+      });
+    },
+    cancelRsvp: async (id: string): Promise<{ attending: boolean; message?: string }> => {
+      return await apiFetch<{ attending: boolean; message?: string }>({
+        method: "DELETE",
+        url: `/events/${id}/rsvp`,
+      });
     },
   },
   referrals: {
@@ -216,6 +241,18 @@ export const apiClient = {
     },
     updateUserVerify: async (id: string, verified: boolean): Promise<{ success: boolean; user?: User }> => {
       return await apiFetch<{ success: boolean; user?: User }>({ method: "PATCH", url: `/admin/users/${id}/verify`, data: { verified } });
+    },
+    approveProfile: async (id: string): Promise<{ success: boolean; message?: string; user?: User }> => {
+      return await apiFetch<{ success: boolean; message?: string; user?: User }>({ method: "POST", url: `/admin/users/${id}/approve-profile` });
+    },
+    rejectProfile: async (id: string, reason?: string): Promise<{ success: boolean; message?: string; user?: User }> => {
+      return await apiFetch<{ success: boolean; message?: string; user?: User }>({ method: "POST", url: `/admin/users/${id}/reject-profile`, data: { reason } });
+    },
+    approveVideo: async (id: string): Promise<{ success: boolean; message?: string }> => {
+      return await apiFetch<{ success: boolean; message?: string }>({ method: "PATCH", url: `/admin/videos/${id}/status`, data: { status: "PUBLISHED" } });
+    },
+    rejectVideo: async (id: string): Promise<{ success: boolean; message?: string }> => {
+      return await apiFetch<{ success: boolean; message?: string }>({ method: "PATCH", url: `/admin/videos/${id}/status`, data: { status: "REJECTED" } });
     },
     updateUserRole: async (id: string, role: string): Promise<{ success: boolean; user?: User }> => {
       return await apiFetch<{ success: boolean; user?: User }>({ method: "PATCH", url: `/admin/users/${id}/role`, data: { role } });
@@ -413,6 +450,9 @@ export const apiClient = {
         data: { actionType },
       });
     },
+    getWallet: async () => {
+      return await apiFetch<{ wallet: Record<string, unknown> }>({ method: "GET", url: "/gamification/wallet" });
+    },
   },
   newsletters: {
     list: async (year?: string, search?: string) => {
@@ -455,6 +495,15 @@ export const apiClient = {
     }
   },
   video: {
+    list: async (): Promise<{ videos: unknown[] }> => {
+      return await apiFetch<{ videos: unknown[] }>({ method: "GET", url: "/video" });
+    },
+    submit: async (data: { title: string; description: string; videoUrl: string; priceInCredits?: number }): Promise<{ success: boolean; video: unknown }> => {
+      return await apiFetch<{ success: boolean; video: unknown }>({ method: "POST", url: "/video", data });
+    },
+    unlock: async (videoId: string): Promise<{ success: boolean }> => {
+      return await apiFetch<{ success: boolean }>({ method: "POST", url: `/video/${videoId}/unlock` });
+    },
     heartbeat: async (videoId: string, currentTimestamp: number): Promise<{ message: string; isCompleted: boolean; watchPercentage: number }> => {
       return await apiFetch<{ message: string; isCompleted: boolean; watchPercentage: number }>({ method: "POST", url: "/video/heartbeat", data: { videoId, currentTimestamp } });
     },
