@@ -571,7 +571,7 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setActiveFilter("ALL")}
-                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap transition-all ${
+                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                   activeFilter === "ALL"
                     ? "bg-black text-white"
                     : "bg-white text-[#1A1A1A] hover:bg-[#e5e2dc]"
@@ -582,7 +582,7 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setActiveFilter("1:1")}
-                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap transition-all ${
+                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                   activeFilter === "1:1"
                     ? "bg-black text-white"
                     : "bg-white text-[#1A1A1A] hover:bg-[#e5e2dc]"
@@ -593,7 +593,7 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setActiveFilter("ESCROW")}
-                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap transition-all ${
+                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                   activeFilter === "ESCROW"
                     ? "bg-[#FF5500] text-white"
                     : "bg-white text-[#FF5500] hover:bg-[#e5e2dc]"
@@ -897,7 +897,7 @@ export function ChatContent() {
                 <button
                   type="button"
                   onClick={() => setPatchModalOpen(true)}
-                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 transition-colors"
+                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 >
                   <Paperclip size={13} />
                   <span>ATTACH PATCH/DIFF</span>
@@ -905,7 +905,7 @@ export function ChatContent() {
                 <button
                   type="button"
                   onClick={() => setCodeModalOpen(true)}
-                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 transition-colors"
+                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 >
                   <Code2 size={13} />
                   <span>SHARE BENCHMARK CODE</span>
@@ -913,7 +913,7 @@ export function ChatContent() {
                 <button
                   type="button"
                   onClick={() => alert("Voice telemetry memo stream ready (RAW mono 16kHz)")}
-                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 transition-colors"
+                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 >
                   <Mic size={13} />
                   <span>VOICE MEMO (RAW)</span>
@@ -1010,7 +1010,7 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setCodeModalOpen(false)}
-                className="w-7 h-7 flex items-center justify-center bg-white border border-[#1A1A1A] hover:bg-black hover:text-white"
+                className="w-7 h-7 flex items-center justify-center bg-white border border-[#1A1A1A] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 <X size={16} />
               </button>
@@ -1046,14 +1046,14 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setCodeModalOpen(false)}
-                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc]"
+                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 CANCEL
               </button>
               <button
                 type="button"
                 onClick={handleInsertCode}
-                className="px-4 py-2 bg-black text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-[#1c1b1b]"
+                className="px-4 py-2 bg-black text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-[#1c1b1b] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 INJECT INTO ADVISORY CONDUIT →
               </button>
@@ -1074,7 +1074,7 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setPatchModalOpen(false)}
-                className="w-7 h-7 flex items-center justify-center bg-white border border-[#1A1A1A] hover:bg-black hover:text-white"
+                className="w-7 h-7 flex items-center justify-center bg-white border border-[#1A1A1A] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 <X size={16} />
               </button>
@@ -1110,14 +1110,14 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setPatchModalOpen(false)}
-                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc]"
+                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 CANCEL
               </button>
               <button
                 type="button"
                 onClick={handleInsertPatch}
-                className="px-4 py-2 bg-[#1D4ED8] text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-blue-800"
+                className="px-4 py-2 bg-[#1D4ED8] text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-blue-800 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 ATTACH DIFF ARTIFACT →
               </button>
@@ -1157,7 +1157,7 @@ export function ChatContent() {
               <button
                 type="button"
                 onClick={() => setEscrowConfirmOpen(false)}
-                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc]"
+                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 KEEP IN ESCROW
               </button>
@@ -1165,7 +1165,7 @@ export function ChatContent() {
                 type="button"
                 onClick={handleReleaseEscrow}
                 disabled={isReleasing}
-                className="px-5 py-2 bg-[#FF5500] text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-[#d04400] flex items-center gap-1.5"
+                className="px-5 py-2 bg-[#FF5500] text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-[#d04400] flex items-center gap-1.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 {isReleasing ? (
                   <span>DISBURSING CREDITS...</span>

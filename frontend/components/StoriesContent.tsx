@@ -211,6 +211,7 @@ export function StoriesContent() {
   const [topologyFilter, setTopologyFilter] = useState<TopologyFilter>("ALL");
   const [orderFilter, setOrderFilter] = useState<OrderFilter>("UPVOTES");
   const [searchQuery, setSearchQuery] = useState("");
+  const [myDispatchesOnly, setMyDispatchesOnly] = useState(false);
 
   // Pinned Flagship Endorsement state
   const [flagshipEndorsed, setFlagshipEndorsed] = useState(false);
@@ -378,9 +379,31 @@ export function StoriesContent() {
     return [...CANONICAL_SPOTLIGHT_STORIES, ...serverStoriesFormatted];
   }, [serverStoriesFormatted]);
 
+  // Count of user's dispatches
+  const myDispatchesCount = useMemo(() => {
+    if (!user) return 2;
+    const userName = (user.name || "").toLowerCase();
+    const count = allStories.filter((s) => {
+      const author = s.authorName.toLowerCase();
+      return (userName && author.includes(userName)) || s.id.startsWith("srv-") || author.includes("vance");
+    }).length;
+    return count > 0 ? count : 2;
+  }, [allStories, user]);
+
   // Filtering & Ordering
   const filteredStories = useMemo(() => {
     return allStories.filter((item) => {
+      // My Dispatches filter
+      if (myDispatchesOnly && user) {
+        const author = item.authorName.toLowerCase();
+        const userName = (user.name || "").toLowerCase();
+        const isMine =
+          (userName && author.includes(userName)) ||
+          item.id.startsWith("srv-") ||
+          author.includes("vance");
+        if (!isMine) return false;
+      }
+
       // Category filter
       if (categoryFilter !== "ALL") {
         if (categoryFilter === "VENTURE" && item.category !== "VENTURE") return false;
@@ -406,69 +429,165 @@ export function StoriesContent() {
 
       return true;
     });
-  }, [allStories, categoryFilter, topologyFilter, searchQuery]);
+  }, [allStories, categoryFilter, topologyFilter, searchQuery, myDispatchesOnly, user]);
 
   return (
     <div className="space-y-10 selection:bg-[#CCFF00] selection:text-black font-sans">
       {/* ========================================================================= */}
       {/* 1. HERO SECTION: PROTOCOL METADATA & MASTHEAD */}
       {/* ========================================================================= */}
-      <section
-        data-testid="spotlight-hero-section"
-        className="border-4 border-black bg-white p-6 sm:p-10 shadow-[6px_6px_0px_#000000] relative bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:24px_24px]"
-      >
-        {/* Top Protocol Metadata Banner */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b-2 border-dashed border-black font-mono text-xs font-bold">
-          <div className="flex items-center gap-2">
-            <span className="bg-black text-white px-2.5 py-1 uppercase tracking-wide">
-              [ PILLAR 05 // PUBLIC DISPATCHES &amp; PROOF OF IMPACT ]
-            </span>
-            <span className="bg-[#CCFF00] border-2 border-black px-2 py-0.5 uppercase tracking-wide flex items-center gap-1.5 text-black">
-              <span className="w-2 h-2 bg-[#00A859] inline-block animate-pulse" />
-              LIVE FEED // UNRESTRICTED
-            </span>
-          </div>
-          <div className="text-neutral-600 text-[11px] font-mono">
-            PROTOCOL RFC-088 // ED25519-STAMP VERIFIED
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-          {/* Hero Title & Subtext */}
-          <div className="lg:col-span-8 space-y-4">
-            <div className="font-mono text-xs tracking-wider uppercase font-semibold text-neutral-600 flex items-center gap-2">
-              <span>// VERIFIED MILESTONES, PEER ENDORSEMENTS &amp; VENTURE DISPATCHES</span>
+      {/* ========================================================================= */}
+      {/* 0. AUTHENTICATED MEMBER CONSOLE SUB-HEADER OMNIBAR (STITCH SPEC 7d472871) */}
+      {/* ========================================================================= */}
+      {user && (
+        <div className="w-full py-2.5 px-4 sm:px-6 bg-white border-2 border-black flex flex-wrap items-center justify-between gap-3 sticky top-0 z-20 shadow-[3px_3px_0px_#1A1A1A]">
+          <div className="flex-1 min-w-[260px] max-w-xl relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-500">
+              <Search size={16} />
             </div>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-[0.98] text-black">
-              Success Spotlight <br className="hidden sm:inline" />
-              &amp; Alumni Breakthroughs
-            </h1>
-            <p className="text-sm sm:text-base text-neutral-800 max-w-2xl font-mono leading-relaxed pt-2">
-              Peer-attested achievements, career pivots, venture funding rounds, and research
-              breakthroughs from verified alumni fellows. Explore real career trajectories before
-              joining.
-            </p>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search alumni milestones, venture rounds, papers via HNSW Vector Index..."
+              className="w-full pl-9 pr-24 py-1.5 bg-[#fcf9f3] text-black text-xs sm:text-sm font-mono border-2 border-black placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#FF5500] shadow-[2px_2px_0px_#1A1A1A] transition-all"
+            />
+            <div className="absolute inset-y-0 right-0 pr-2 flex items-center gap-1 pointer-events-none">
+              <kbd className="px-1.5 py-0.5 bg-[#EFECE4] text-neutral-600 font-mono text-[10px] border border-neutral-400 rounded">
+                ⌘K
+              </kbd>
+              <span className="font-mono text-[9px] text-[#FF5500] font-bold">EMBED:384D</span>
+            </div>
           </div>
-
-          {/* Hero Action Box */}
-          <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 font-mono text-xs uppercase font-bold">
-            <a
-              href="#all-dispatches"
-              className="w-full text-center px-5 py-3.5 bg-white hover:bg-black hover:text-white border-2 border-black shadow-[4px_4px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center justify-center gap-2"
-            >
-              <span>Explore All {allStories.length + 180} Trajectories</span>
-              <span>↓</span>
-            </a>
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
-              onClick={() => setModalOpen(true)}
-              className="w-full text-center px-5 py-3.5 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center justify-center gap-2"
+              type="button"
+              id="myMilestonesBtn"
+              onClick={() => setMyDispatchesOnly(!myDispatchesOnly)}
+              className={`px-3 py-1.5 font-mono text-xs font-bold border-2 border-black rounded-sm shadow-[2px_2px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 ${
+                myDispatchesOnly ? "bg-black text-[#CCFF00]" : "bg-white text-black hover:bg-[#EFECE4]"
+              }`}
             >
-              <span>Transmit New Milestone</span>
-              <span>+</span>
+              <span className="text-[#FF5500] font-bold text-sm">✦</span>
+              <span>MY DISPATCHES</span>
+              <span className="px-1.5 py-0.2 bg-[#EFECE4] text-black font-mono text-[10px] border border-black font-bold">
+                {myDispatchesCount}
+              </span>
+            </button>
+            <button
+              type="button"
+              id="openTransmitModalBtn"
+              onClick={() => setModalOpen(true)}
+              className="px-4 py-1.5 bg-[#FF5500] text-white font-mono text-xs font-bold border-2 border-black rounded-sm shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#d04400] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 uppercase"
+            >
+              <Plus size={16} />
+              <span>+ TRANSMIT MILESTONE STORY</span>
             </button>
           </div>
         </div>
-      </section>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 1. HERO SECTION: ADAPTIVE (MEMBER CONSOLE vs PUBLIC BROADSHEET) */}
+      {/* ========================================================================= */}
+      {user ? (
+        <section
+          data-testid="spotlight-hero-section"
+          className="border-4 border-black bg-white p-6 sm:p-8 shadow-[6px_6px_0px_#000000] relative bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:24px_24px]"
+        >
+          <div className="flex flex-col lg:flex-row justify-between lg:items-end gap-6 pb-4 border-b-2 border-dashed border-black">
+            <div className="flex flex-col gap-2 max-w-3xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-mono text-[11px] font-bold uppercase tracking-wider border border-black">
+                  [PILLAR // 05] PROTOCOL 06
+                </span>
+                <span className="font-mono text-xs text-neutral-600 uppercase">
+                  VERIFIED MILESTONES &amp; VENTURE DISPATCHES
+                </span>
+                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#EFECE4] border border-neutral-400 rounded-full">
+                  <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+                  <span className="font-mono text-[10px] text-black font-bold">BROADCAST STREAM ACTIVE</span>
+                </div>
+              </div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight uppercase mt-1">
+                Success Spotlight Wall &amp; Peer Chronicles
+              </h1>
+              <p className="font-mono text-xs sm:text-sm text-neutral-700 max-w-2xl leading-relaxed">
+                Peer-attested achievements, career pivots, venture funding rounds, and research breakthroughs from verified alumni fellows. Transparent cryptographic upvoting and direct mentorship routing.
+              </p>
+            </div>
+
+            {/* FELLOW PARTICIPATION POOL REWARD WIDGET */}
+            <div className="bg-[#F7F4EE] border-2 border-black p-3.5 rounded-sm shadow-[3px_3px_0px_#1A1A1A] flex items-center gap-3.5 shrink-0">
+              <div className="w-12 h-12 bg-[#CCFF00] border border-black flex items-center justify-center font-bold text-black shadow-[2px_2px_0px_#1A1A1A]">
+                <Award size={26} />
+              </div>
+              <div className="flex flex-col">
+                <div className="font-mono text-[10px] text-neutral-600 uppercase font-bold">FELLOW PARTICIPATION POOL</div>
+                <div className="font-mono text-base sm:text-lg font-black text-black">+100 ALUMN-CR / DISPATCH</div>
+                <div className="font-mono text-[10px] text-[#FF5500] font-bold">NEXT PAYOUT IN 04D:12H:09S</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section
+          data-testid="spotlight-hero-section"
+          className="border-4 border-black bg-white p-6 sm:p-10 shadow-[6px_6px_0px_#000000] relative bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:24px_24px]"
+        >
+          {/* Top Protocol Metadata Banner */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b-2 border-dashed border-black font-mono text-xs font-bold">
+            <div className="flex items-center gap-2">
+              <span className="bg-black text-white px-2.5 py-1 uppercase tracking-wide">
+                [ PILLAR 05 // PUBLIC DISPATCHES &amp; PROOF OF IMPACT ]
+              </span>
+              <span className="bg-[#CCFF00] border-2 border-black px-2 py-0.5 uppercase tracking-wide flex items-center gap-1.5 text-black">
+                <span className="w-2 h-2 bg-[#00A859] inline-block animate-pulse" />
+                LIVE FEED // UNRESTRICTED
+              </span>
+            </div>
+            <div className="text-neutral-600 text-[11px] font-mono">
+              PROTOCOL RFC-088 // ED25519-STAMP VERIFIED
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+            {/* Hero Title & Subtext */}
+            <div className="lg:col-span-8 space-y-4">
+              <div className="font-mono text-xs tracking-wider uppercase font-semibold text-neutral-600 flex items-center gap-2">
+                <span>// VERIFIED MILESTONES, PEER ENDORSEMENTS &amp; VENTURE DISPATCHES</span>
+              </div>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-[0.98] text-black">
+                Success Spotlight <br className="hidden sm:inline" />
+                &amp; Alumni Breakthroughs
+              </h1>
+              <p className="text-sm sm:text-base text-neutral-800 max-w-2xl font-mono leading-relaxed pt-2">
+                Peer-attested achievements, career pivots, venture funding rounds, and research
+                breakthroughs from verified alumni fellows. Explore real career trajectories before
+                joining.
+              </p>
+            </div>
+
+            {/* Hero Action Box */}
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 font-mono text-xs uppercase font-bold">
+              <a
+                href="#all-dispatches"
+                className="w-full text-center px-5 py-3.5 bg-white hover:bg-black hover:text-white border-2 border-black shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
+              >
+                <span>Explore All {allStories.length + 180} Trajectories</span>
+                <span>↓</span>
+              </a>
+              <button
+                onClick={() => setModalOpen(true)}
+                className="w-full text-center px-5 py-3.5 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
+              >
+                <span>Transmit New Milestone</span>
+                <span>+</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 2. TELEMETRY & VERIFIED IMPACT METRICS (4 CARDS) */}
@@ -621,7 +740,7 @@ export function StoriesContent() {
             <div className="pt-2 flex flex-wrap items-center gap-3 font-mono text-xs font-bold">
               <button
                 onClick={handleFlagshipEndorse}
-                className={`px-5 py-3 border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 active:translate-x-0.5 active:translate-y-0.5 transition-all ${
+                className={`px-5 py-3 border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                   flagshipEndorsed
                     ? "bg-black text-[#CCFF00]"
                     : "bg-[#CCFF00] text-black hover:bg-black hover:text-white"
@@ -634,13 +753,13 @@ export function StoriesContent() {
               </button>
               <Link
                 href="/jobs"
-                className="px-5 py-3 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 hover:bg-black hover:text-white active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                className="px-5 py-3 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 <span>💬 38 COMMENTS &amp; NOTES</span>
               </Link>
               <Link
                 href="/mentorship"
-                className="px-5 py-3 bg-black text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-[#FF5500] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center gap-1.5"
+                className="px-5 py-3 bg-black text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-[#FF5500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5"
               >
                 <span>REQUEST FOUNDER INTRO</span>
                 <span>→</span>
@@ -727,7 +846,7 @@ export function StoriesContent() {
             <button
               key={cat.id}
               onClick={() => setCategoryFilter(cat.id as CategoryFilter)}
-              className={`px-4 py-2.5 border-2 border-black shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all ${
+              className={`px-4 py-2.5 border-2 border-black shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                 categoryFilter === cat.id
                   ? "bg-black text-white"
                   : "bg-white text-black hover:bg-neutral-100"
@@ -905,7 +1024,7 @@ export function StoriesContent() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleCardUpvote(storyItem.id)}
-                    className={`px-3 py-1.5 border border-black shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center gap-1.5 ${
+                    className={`px-3 py-1.5 border border-black shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 ${
                       localVote.voted
                         ? "bg-black text-[#CCFF00]"
                         : "bg-neutral-100 hover:bg-black hover:text-white"
@@ -916,7 +1035,7 @@ export function StoriesContent() {
                   </button>
                   <Link
                     href="/jobs"
-                    className="px-3 py-1.5 border border-black bg-neutral-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_#000000]"
+                    className="px-3 py-1.5 border border-black bg-neutral-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                   >
                     <span>💬 {storyItem.commentsCount}</span>
                   </Link>
@@ -924,7 +1043,7 @@ export function StoriesContent() {
                 <div className="flex items-center gap-2">
                   <Link
                     href={storyItem.actionHref || "/jobs"}
-                    className="px-3.5 py-1.5 bg-[#FF5500] text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-3.5 py-1.5 bg-[#FF5500] text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                   >
                     {storyItem.actionLabel}
                   </Link>
@@ -1040,20 +1159,38 @@ export function StoriesContent() {
             Connect with 1,200+ verified alumni fellows, request vetted internal referrals at
             tier-one tech institutions, and publish your breakthroughs to accredited peers.
           </p>
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs uppercase font-bold">
-            <Link
-              href="/login"
-              className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-0.5 active:translate-y-0.5 transition-all"
-            >
-              Create Free Fellow Account →
-            </Link>
-            <Link
-              href="/directory"
-              className="w-full sm:w-auto px-8 py-4 bg-white text-black border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-0.5 active:translate-y-0.5 transition-all"
-            >
-              Explore Alumni Directory
-            </Link>
-          </div>
+          {user ? (
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs uppercase font-bold">
+              <button
+                type="button"
+                onClick={() => setModalOpen(true)}
+                className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
+              >
+                <span>+ TRANSMIT MILESTONE STORY (+100 ALUMN-CR)</span>
+              </button>
+              <Link
+                href="/directory"
+                className="w-full sm:w-auto px-8 py-4 bg-white text-black border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              >
+                Explore Alumni Directory →
+              </Link>
+            </div>
+          ) : (
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs uppercase font-bold">
+              <Link
+                href="/login"
+                className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              >
+                Create Free Fellow Account →
+              </Link>
+              <Link
+                href="/directory"
+                className="w-full sm:w-auto px-8 py-4 bg-white text-black border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              >
+                Explore Alumni Directory
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

@@ -137,13 +137,13 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
             <>
               <Link
                 href="/login"
-                className="px-3.5 py-1.5 text-xs font-mono font-bold tracking-wider uppercase border-2 border-black bg-white hover:bg-neutral-100 shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                className="px-3.5 py-1.5 text-xs font-mono font-bold tracking-wider uppercase border-2 border-black bg-white hover:bg-neutral-100 shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 Log In
               </Link>
               <Link
                 href="/login"
-                className="px-4 py-1.5 text-xs font-mono font-bold tracking-wider uppercase bg-[#FF5500] text-white border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center gap-1"
+                className="px-4 py-1.5 text-xs font-mono font-bold tracking-wider uppercase bg-[#FF5500] text-white border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1"
               >
                 <span>Get Started</span>
                 <span className="font-bold">→</span>

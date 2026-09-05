@@ -340,7 +340,7 @@ export default function DirectoryMap({
           <button
             type="button"
             onClick={resetBounds}
-            className="px-2.5 py-1 bg-white border border-black text-[11px] font-bold hover:bg-neutral-100 active:translate-x-0.5 active:translate-y-0.5 transition-all"
+            className="px-2.5 py-1 bg-white border border-black text-[11px] font-bold hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
           >
             [ RESET BOUNDS ]
           </button>
@@ -412,7 +412,7 @@ export default function DirectoryMap({
           <button
             type="button"
             onClick={handleZoomIn}
-            className="w-9 h-9 bg-white border-2 border-black font-mono font-bold text-lg flex items-center justify-center hover:bg-neutral-100 shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5"
+            className="w-9 h-9 bg-white border-2 border-black font-mono font-bold text-lg flex items-center justify-center hover:bg-neutral-100 shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             aria-label="Zoom in"
           >
             +
@@ -420,7 +420,7 @@ export default function DirectoryMap({
           <button
             type="button"
             onClick={handleZoomOut}
-            className="w-9 h-9 bg-white border-2 border-black font-mono font-bold text-lg flex items-center justify-center hover:bg-neutral-100 shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5"
+            className="w-9 h-9 bg-white border-2 border-black font-mono font-bold text-lg flex items-center justify-center hover:bg-neutral-100 shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             aria-label="Zoom out"
           >
             −

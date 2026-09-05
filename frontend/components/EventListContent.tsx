@@ -447,7 +447,7 @@ export function EventListContent() {
           <div className="flex items-center gap-2 shrink-0 font-mono text-xs">
             <button
               onClick={() => setIsGCalModalOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#F7F4EE] text-black border-2 border-black font-bold shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer uppercase transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#F7F4EE] text-black border-2 border-black font-bold shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer uppercase transition-all"
               type="button"
             >
               <Calendar size={15} className="text-[#2E5BFF]" />
@@ -462,7 +462,7 @@ export function EventListContent() {
                   setIsVaultDrawerOpen(true);
                 }
               }}
-              className="flex items-center gap-1.5 px-4 py-2 bg-black text-[#CCFF00] border-2 border-black font-bold shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black active:translate-x-0.5 active:translate-y-0.5 cursor-pointer uppercase transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 bg-black text-[#CCFF00] border-2 border-black font-bold shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer uppercase transition-all"
               type="button"
             >
               <Ticket size={15} />
@@ -689,7 +689,7 @@ export function EventListContent() {
 
               <button
                 onClick={() => setSelectedPassForQr(flagshipGala)}
-                className="w-full py-3 px-4 bg-black text-white border-2 border-black font-black uppercase text-sm flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-[#CCFF00] hover:text-black cursor-pointer active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                className="w-full py-3 px-4 bg-black text-white border-2 border-black font-black uppercase text-sm flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-[#CCFF00] hover:text-black cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 type="button"
               >
                 <CheckCircle2 size={18} className="text-[#00E676]" />

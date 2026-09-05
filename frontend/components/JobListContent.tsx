@@ -327,7 +327,7 @@ export function JobListContent() {
             {isAlumniOrAdmin && (
               <Link
                 href="/jobs/new"
-                className="px-4 py-2.5 bg-white text-black font-bold uppercase border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-100 active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center space-x-1.5"
+                className="px-4 py-2.5 bg-white text-black font-bold uppercase border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center space-x-1.5"
               >
                 <span>+</span>
                 <span>Post Alumni Requisition</span>
@@ -336,7 +336,7 @@ export function JobListContent() {
             <button
               type="button"
               onClick={() => setShowKeyModal(true)}
-              className="px-4 py-2.5 bg-black text-white font-bold uppercase border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-800 active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center space-x-1.5"
+              className="px-4 py-2.5 bg-black text-white font-bold uppercase border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center space-x-1.5"
             >
               <span>⚡</span>
               <span>Update Portfolio Key</span>
@@ -714,7 +714,7 @@ export function JobListContent() {
                       <button
                         type="button"
                         onClick={() => handleOpenReferral(job)}
-                        className="px-4 py-2 bg-black text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-800 transition-all active:translate-x-0.5 active:translate-y-0.5 flex items-center space-x-1.5"
+                        className="px-4 py-2 bg-black text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-800 transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center space-x-1.5"
                       >
                         <span>Request Warm Referral (1-Click)</span>
                         <span>→</span>
@@ -873,7 +873,7 @@ export function JobListContent() {
                 setToastMessage("✓ Enclave attestation generated with RSA-4096 signature.");
                 setTimeout(() => setToastMessage(null), 2500);
               }}
-              className="w-full py-2 bg-[#fcf9f3] hover:bg-neutral-100 text-black font-bold text-xs border-2 border-black shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all text-center"
+              className="w-full py-2 bg-[#fcf9f3] hover:bg-neutral-100 text-black font-bold text-xs border-2 border-black shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-center"
             >
               ↓ EXPORT ENCLAVE ATTESTATION (PKI-SIGNED)
             </button>

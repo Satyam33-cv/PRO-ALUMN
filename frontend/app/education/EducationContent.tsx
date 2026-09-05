@@ -280,14 +280,14 @@ export function EducationContent({
           <div className="flex items-center gap-2.5 shrink-0 font-mono text-xs flex-wrap">
             <button
               onClick={() => setIsSyllabusModalOpen(true)}
-              className="px-4 py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#F7F4EE] font-bold uppercase transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+              className="px-4 py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#F7F4EE] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
               type="button"
             >
               Protocol Archive
             </button>
             <button
               onClick={handleSyncRunbook}
-              className="px-4 py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#F7F4EE] font-bold uppercase transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#F7F4EE] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer flex items-center gap-1.5"
               type="button"
             >
               <RefreshCw size={13} />
@@ -301,7 +301,7 @@ export function EducationContent({
                   setShowVideoModal(true);
                 }
               }}
-              className="px-4 py-2.5 bg-black text-white border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#FF5500] font-bold uppercase transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2.5 bg-black text-white border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#FF5500] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer flex items-center gap-1.5"
               type="button"
             >
               <Plus size={14} />

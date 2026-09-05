@@ -1,0 +1,931 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-tertiary-container": "#547aff",
+          "inverse-on-surface": "#f3f0ea",
+          "accent-cobalt": "#1D4ED8",
+          "primary-fixed": "#e5e2e1",
+          "primary-fixed-dim": "#c8c6c5",
+          "inverse-primary": "#c8c6c5",
+          "text-primary": "#1A1A1A",
+          "on-tertiary-fixed": "#001551",
+          "tertiary-fixed-dim": "#b7c4ff",
+          "on-surface": "#1c1c18",
+          "surface-card": "#FFFFFF",
+          "on-surface-variant": "#444748",
+          "on-primary-container": "#858383",
+          "on-tertiary": "#ffffff",
+          "surface-container-high": "#ebe8e2",
+          "surface-container-low": "#f6f3ed",
+          "error": "#ba1a1a",
+          "surface-container-lowest": "#ffffff",
+          "secondary-fixed-dim": "#ffb59c",
+          "background": "#fcf9f3",
+          "on-primary-fixed": "#1c1b1b",
+          "text-muted": "#8F8A7E",
+          "on-secondary": "#ffffff",
+          "surface-cream-subtle": "#EFECE4",
+          "outline-variant": "#c4c7c7",
+          "on-secondary-container": "#fffbff",
+          "surface-bright": "#fcf9f3",
+          "on-secondary-fixed-variant": "#822700",
+          "on-error-container": "#93000a",
+          "secondary": "#a63500",
+          "primary": "#000000",
+          "tertiary-fixed": "#dce1ff",
+          "text-secondary": "#635F57",
+          "tertiary": "#000000",
+          "surface-dim": "#dcdad4",
+          "surface-variant": "#e5e2dc",
+          "border-muted": "#D5CEBF",
+          "surface-tint": "#5f5e5e",
+          "accent-citron": "#D9E021",
+          "secondary-fixed": "#ffdbcf",
+          "inverse-surface": "#31312d",
+          "led-active": "#00E676",
+          "tertiary-container": "#001551",
+          "on-secondary-fixed": "#390c00",
+          "outline": "#747878",
+          "primary-container": "#1c1b1b",
+          "surface-container-highest": "#e5e2dc",
+          "surface": "#fcf9f3",
+          "accent-persimmon": "#FF5500",
+          "surface-container": "#f0eee8",
+          "on-primary-fixed-variant": "#474746",
+          "on-primary": "#ffffff",
+          "surface-cream": "#F7F4EE",
+          "secondary-container": "#d04400",
+          "on-background": "#1c1c18",
+          "error-container": "#ffdad6",
+          "on-tertiary-fixed-variant": "#0039b5",
+          "border-charcoal": "#1A1A1A",
+          "on-error": "#ffffff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "2xl": "3rem",
+          "sm": "0.75rem",
+          "3xl": "4rem",
+          "md": "1rem",
+          "grid-margin-desktop": "2.5rem",
+          "xs": "0.5rem",
+          "grid-margin-mobile": "1rem",
+          "lg": "1.5rem",
+          "2xs": "0.25rem",
+          "xl": "2rem",
+          "grid-gutter": "1.25rem"
+        },
+        "fontFamily": {
+          "body-md": [
+            "Space Grotesk"
+          ],
+          "tag-index": [
+            "Space Mono"
+          ],
+          "headline-sm": [
+            "Space Grotesk"
+          ],
+          "body-sm": [
+            "Space Grotesk"
+          ],
+          "label-caps": [
+            "Space Grotesk"
+          ],
+          "display-hero-mobile": [
+            "Space Grotesk"
+          ],
+          "headline-lg-mobile": [
+            "Space Grotesk"
+          ],
+          "headline-md": [
+            "Space Grotesk"
+          ],
+          "body-lg": [
+            "Space Grotesk"
+          ],
+          "display-hero": [
+            "Space Grotesk"
+          ],
+          "headline-lg": [
+            "Space Grotesk"
+          ],
+          "label-mono": [
+            "Space Mono"
+          ]
+        },
+        "fontSize": {
+          "body-md": [
+            "15px",
+            {
+              "lineHeight": "22px",
+              "fontWeight": "400"
+            }
+          ],
+          "tag-index": [
+            "11px",
+            {
+              "lineHeight": "11px",
+              "letterSpacing": "0.06em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-sm": [
+            "18px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-sm": [
+            "13px",
+            {
+              "lineHeight": "18px",
+              "fontWeight": "400"
+            }
+          ],
+          "label-caps": [
+            "11px",
+            {
+              "lineHeight": "14px",
+              "letterSpacing": "0.08em",
+              "fontWeight": "700"
+            }
+          ],
+          "display-hero-mobile": [
+            "38px",
+            {
+              "lineHeight": "42px",
+              "letterSpacing": "-0.03em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-lg-mobile": [
+            "26px",
+            {
+              "lineHeight": "32px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-md": [
+            "24px",
+            {
+              "lineHeight": "30px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-lg": [
+            "18px",
+            {
+              "lineHeight": "28px",
+              "fontWeight": "400"
+            }
+          ],
+          "display-hero": [
+            "64px",
+            {
+              "lineHeight": "68px",
+              "letterSpacing": "-0.04em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-lg": [
+            "36px",
+            {
+              "lineHeight": "42px",
+              "letterSpacing": "-0.03em",
+              "fontWeight": "700"
+            }
+          ],
+          "label-mono": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.02em",
+              "fontWeight": "500"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col justify-between selection:bg-accent-persimmon selection:text-surface-card"><header class="fixed top-0 w-full z-50 bg-surface-cream/95 backdrop-blur-md border-b-[1.5px] border-border-charcoal"><div class="h-16 w-full px-grid-margin-desktop flex items-center justify-between"><div class="flex items-center gap-lg"><div class="flex items-center gap-xs"><span class="text-accent-persimmon font-tag-index text-tag-index tracking-tighter">/////</span><span class="font-headline-sm text-headline-sm uppercase tracking-tight text-text-primary font-bold">PRO-ALUMN</span><span class="bg-border-charcoal text-surface px-xs py-2xs font-tag-index text-tag-index ml-xs">SYS.PUB</span></div><div class="h-4 w-[1.5px] bg-border-muted hidden lg:block"></div><span class="font-label-mono text-label-mono text-text-secondary hidden lg:inline-block tracking-wide">SYS.SPEC.01 // PCM 48KHZ // HNSW-384D</span></div><div class="flex items-center gap-xl"><a class="font-label-mono text-label-mono text-text-secondary hover:text-accent-persimmon transition-colors flex items-center gap-2xs tracking-wider" data-path="landing" href="#">← Back to Landing Page</a><nav class="hidden md:flex items-center gap-md" data-active-classes="text-text-primary font-bold border-b-2 border-border-charcoal"><a aria-current="page" class="uppercase transition-colors py-xs text-text-primary font-bold border-b-2 border-border-charcoal" data-path="login" href="#">01 // Gate</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-xs" data-path="directory-registry" href="#">02 // Registry</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-xs" data-path="network-telemetry" href="#">03 // Telemetry</a></nav><div class="flex items-center pl-sm border-l border-border-muted"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-surface flex-1 flex flex-col"><div class="flex flex-col w-full">
+<!-- AUTHENTICATED SYSTEM SUB-BAR -->
+<section class="w-full bg-surface-cream border-b-[1.5px] border-border-charcoal px-grid-margin-desktop py-2xs flex flex-wrap items-center justify-between gap-sm">
+<div class="flex items-center gap-md flex-1 min-w-[280px]">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-text-secondary text-[18px]">search</span>
+<input class="w-full bg-surface-card border-[1.5px] border-border-charcoal pl-9 pr-sm py-1.5 font-label-mono text-label-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-persimmon/50 shadow-[2px_2px_0px_#1A1A1A] transition-all" id="omniSearch" placeholder="[⌘K // HNSW Vector Search: e.g. 'Distributed consensus raft Go']" type="text">
+</div>
+<div class="hidden sm:flex items-center gap-xs px-xs py-1 bg-surface-cream-subtle border-[1.5px] border-border-charcoal font-tag-index text-tag-index text-text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-led-active animate-pulse"></span>
+<span>LATENCY: 11.8MS</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="w-8 h-8 flex items-center justify-center bg-surface-card border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] hover:bg-surface-cream active:translate-x-[1px] active:translate-y-[1px] transition-all relative">
+<span class="material-symbols-outlined text-[18px] text-text-primary">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-accent-persimmon rounded-full"></span>
+</button>
+<div class="flex items-center gap-xs px-sm py-1 bg-primary text-on-primary border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A]">
+<span class="w-2 h-2 rounded-full bg-accent-citron inline-block"></span>
+<span class="font-label-mono text-label-mono tracking-tight font-bold">DR. ELENA VANCE, PH.D.</span>
+<span class="text-text-muted hidden md:inline">//</span>
+<span class="font-tag-index text-tag-index text-accent-citron hidden md:inline">FELLOW '22</span>
+</div>
+</div>
+</section>
+<!-- MAIN POST-LOGIN CONSOLE WORKSPACE (SPLIT RAIL + DESK) -->
+<div class="w-full flex-1 flex flex-col lg:flex-row">
+<!-- LEFT RAIL: PROTOCOL INDEX -->
+<aside class="w-full lg:w-72 bg-surface-cream border-b-[1.5px] lg:border-b-0 lg:border-r-[1.5px] border-border-charcoal flex flex-col justify-between shrink-0">
+<div class="p-md flex flex-col gap-md">
+<!-- SYSTEM NODE BADGE -->
+<div class="p-sm bg-surface-card border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A]">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index text-text-secondary tracking-widest">NETWORK CORE</span>
+<span class="font-tag-index text-tag-index px-1 bg-led-active/20 text-text-primary border border-border-charcoal">SYS.OK</span>
+</div>
+<div class="font-headline-sm text-headline-sm tracking-tight text-text-primary mt-1">v2.4 TELEMETRY</div>
+<div class="mt-xs pt-xs border-t border-border-muted flex items-center justify-between font-label-mono text-label-mono text-text-secondary">
+<span>INDEX ENGINE</span>
+<span class="text-accent-persimmon font-bold">HNSW-384D</span>
+</div>
+</div>
+<!-- PROTOCOL INDEX DIRECTORY -->
+<div>
+<div class="px-xs py-1 text-text-muted font-label-caps text-label-caps uppercase tracking-wider">PROTOCOL SUITE</div>
+<nav class="flex flex-col gap-1.5 mt-xs">
+<a class="flex items-center justify-between px-sm py-2 bg-surface-card hover:bg-surface-cream-subtle border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] font-body-sm text-body-sm font-semibold transition-all group" href="#">
+<span class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-text-muted group-hover:text-text-primary">01</span>
+<span>Dashboard Hub</span>
+</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">chevron_right</span>
+</a>
+<a class="flex items-center justify-between px-sm py-2 bg-primary text-on-primary border-[1.5px] border-border-charcoal shadow-[3px_3px_0px_#FF5500] font-body-sm text-body-sm font-bold transition-all" href="#">
+<span class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-accent-citron">02</span>
+<span>Alumni Directory</span>
+</span>
+<span class="w-2 h-2 rounded-full bg-led-active animate-ping"></span>
+</a>
+<a class="flex items-center justify-between px-sm py-2 bg-surface-card hover:bg-surface-cream-subtle border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] font-body-sm text-body-sm font-semibold transition-all group" href="#">
+<span class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-text-muted group-hover:text-text-primary">03</span>
+<span>Jobs &amp; Referrals</span>
+</span>
+<span class="font-tag-index text-tag-index bg-surface-cream-subtle px-1 border border-border-muted text-text-secondary">42 LIVE</span>
+</a>
+<a class="flex items-center justify-between px-sm py-2 bg-surface-card hover:bg-surface-cream-subtle border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] font-body-sm text-body-sm font-semibold transition-all group" href="#">
+<span class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-text-muted group-hover:text-text-primary">04</span>
+<span>Mentorship Hub</span>
+</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">chevron_right</span>
+</a>
+<a class="flex items-center justify-between px-sm py-2 bg-surface-card hover:bg-surface-cream-subtle border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] font-body-sm text-body-sm font-semibold transition-all group" href="#">
+<span class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-text-muted group-hover:text-text-primary">05</span>
+<span>Events &amp; RSVPs</span>
+</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">chevron_right</span>
+</a>
+<a class="flex items-center justify-between px-sm py-2 bg-surface-card hover:bg-surface-cream-subtle border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] font-body-sm text-body-sm font-semibold transition-all group" href="#">
+<span class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-text-muted group-hover:text-text-primary">06</span>
+<span>Success Stories</span>
+</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">chevron_right</span>
+</a>
+<a class="flex items-center justify-between px-sm py-2 bg-surface-card hover:bg-surface-cream-subtle border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] font-body-sm text-body-sm font-semibold transition-all group" href="#">
+<span class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-text-muted group-hover:text-text-primary">07</span>
+<span>Learning &amp; Certs</span>
+</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">chevron_right</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- RAIL FOOTER QUICK STATUS -->
+<div class="p-md border-t border-border-muted bg-surface-cream-subtle/70">
+<div class="text-text-muted font-tag-index text-tag-index tracking-wider uppercase mb-1">NODE VERIFICATION</div>
+<div class="font-label-mono text-label-mono text-text-secondary flex items-center justify-between">
+<span>ENCLAVE PRIVACY:</span>
+<span class="font-bold text-text-primary">ZERO ADMIN</span>
+</div>
+<div class="font-label-mono text-label-mono text-text-secondary flex items-center justify-between mt-1">
+<span>COHORT QUORUM:</span>
+<span class="text-accent-persimmon font-bold">100% OK</span>
+</div>
+</div>
+</aside>
+<!-- RIGHT CONSOLE: TALENT TOPOLOGY & DIRECTORY WORKSPACE -->
+<section class="flex-1 p-md md:p-xl flex flex-col gap-xl bg-surface">
+<!-- HEADER DOSSIER -->
+<div class="border-[1.5px] border-border-charcoal bg-surface-card p-lg md:p-xl shadow-[4px_4px_0px_#1A1A1A] relative">
+<div class="flex flex-wrap items-center justify-between gap-sm mb-xs">
+<div class="flex items-center gap-xs">
+<span class="bg-accent-persimmon text-surface-card px-2 py-0.5 font-tag-index text-tag-index font-bold">PILLAR 01</span>
+<span class="font-label-mono text-label-mono text-text-secondary uppercase">PROTOCOL 02 // 384-DIM PGVECTOR TOPOLOGY</span>
+</div>
+<div class="flex items-center gap-xs px-2 py-1 bg-surface-cream border-[1.5px] border-border-charcoal font-tag-index text-tag-index">
+<span class="w-2 h-2 rounded-full bg-led-active inline-block"></span>
+<span class="font-bold">LIVE DIRECTORY // ACCREDITED</span>
+</div>
+</div>
+<h1 class="font-headline-lg text-headline-lg uppercase tracking-tight text-text-primary font-bold mt-1">
+          Verified Alumni Directory &amp; Talent Topology
+        </h1>
+<p class="font-body-md text-body-md text-text-secondary max-w-4xl mt-xs">
+          Browse 1,200+ vetted alumni fellows across frontier engineering, research laboratories, and venture-backed institutions. Query by cosine embeddings, corporate affiliation, research specialization, or cohort graduation epoch.
+        </p>
+<!-- 4 TELEMETRY TILES -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md mt-lg pt-md border-t border-border-muted">
+<div class="p-sm bg-surface-cream border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A]">
+<div class="font-tag-index text-tag-index text-text-muted">INDEX CAPACITY</div>
+<div class="font-headline-md text-headline-md font-bold text-text-primary mt-1">1,248</div>
+<div class="font-label-mono text-label-mono text-text-secondary mt-1">Verified Fellows ('14-'25)</div>
+</div>
+<div class="p-sm bg-surface-cream border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A]">
+<div class="font-tag-index text-tag-index text-text-muted">REACH DENSITY</div>
+<div class="font-headline-md text-headline-md font-bold text-text-primary mt-1">42+</div>
+<div class="font-label-mono text-label-mono text-text-secondary mt-1">Tier-1 Tech &amp; Research Labs</div>
+</div>
+<div class="p-sm bg-surface-cream border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A]">
+<div class="font-tag-index text-tag-index text-text-muted">REFERRAL LIQUIDITY</div>
+<div class="font-headline-md text-headline-md font-bold text-accent-persimmon mt-1">88.4%</div>
+<div class="font-label-mono text-label-mono text-text-secondary mt-1">Verified Vouchers Active</div>
+</div>
+<div class="p-sm bg-surface-cream border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A]">
+<div class="font-tag-index text-tag-index text-text-muted">SEARCH SPEED</div>
+<div class="font-headline-md text-headline-md font-bold text-text-primary mt-1">11.8ms</div>
+<div class="font-label-mono text-label-mono text-text-secondary mt-1">HNSW Cosine Sweep</div>
+</div>
+</div>
+</div>
+<!-- FILTER & CONTROL INTERFACE -->
+<div class="flex flex-col gap-md bg-surface-cream-subtle border-[1.5px] border-border-charcoal p-md shadow-[3px_3px_0px_#1A1A1A]">
+<!-- TOP ROW: DOMAIN TABS -->
+<div class="flex flex-wrap items-center justify-between gap-sm">
+<div class="flex flex-wrap items-center gap-1.5" id="domainFilterGroup">
+<button class="domain-tab active px-sm py-1 bg-primary text-on-primary border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase transition-all shadow-[2px_2px_0px_#1A1A1A]" data-category="all">
+              ALL FELLOWS (1,248)
+            </button>
+<button class="domain-tab px-sm py-1 bg-surface-card text-text-primary hover:bg-surface-card/80 border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase transition-all shadow-[2px_2px_0px_#1A1A1A]" data-category="systems">
+              SYSTEMS &amp; INFRA (412)
+            </button>
+<button class="domain-tab px-sm py-1 bg-surface-card text-text-primary hover:bg-surface-card/80 border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase transition-all shadow-[2px_2px_0px_#1A1A1A]" data-category="ai">
+              AI &amp; KERNELS (326)
+            </button>
+<button class="domain-tab px-sm py-1 bg-surface-card text-text-primary hover:bg-surface-card/80 border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase transition-all shadow-[2px_2px_0px_#1A1A1A]" data-category="robotics">
+              HARDWARE &amp; ROBOTICS (184)
+            </button>
+<button class="domain-tab px-sm py-1 bg-surface-card text-text-primary hover:bg-surface-card/80 border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase transition-all shadow-[2px_2px_0px_#1A1A1A]" data-category="fintech">
+              FINTECH &amp; CRYPTO (162)
+            </button>
+</div>
+<!-- VIEW SWITCHER BUTTONS -->
+<div class="flex items-center gap-1">
+<button class="px-sm py-1.5 bg-primary text-on-primary border-[1.5px] border-border-charcoal font-label-mono text-label-mono font-bold flex items-center gap-1 shadow-[2px_2px_0px_#1A1A1A]" id="viewGridBtn">
+<span class="material-symbols-outlined text-[16px]">grid_view</span>
+<span>GRID VIEW</span>
+</button>
+<button class="px-sm py-1.5 bg-surface-card text-text-primary hover:bg-surface-cream border-[1.5px] border-border-charcoal font-label-mono text-label-mono font-bold flex items-center gap-1 shadow-[2px_2px_0px_#1A1A1A]" id="viewMapBtn">
+<span class="material-symbols-outlined text-[16px]">map</span>
+<span>LEAFLET GEO-MAP (142 NODES)</span>
+</button>
+</div>
+</div>
+<!-- BOTTOM ROW: BATCH TOGGLE + ATTRIBUTES -->
+<div class="flex flex-wrap items-center justify-between gap-md pt-sm border-t border-border-muted">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-tag-index text-text-secondary uppercase">COHORT EPOCH:</span>
+<div class="flex items-center gap-1">
+<button class="cohort-btn px-2 py-0.5 text-tag-index font-tag-index bg-primary text-on-primary border border-border-charcoal">ALL</button>
+<button class="cohort-btn px-2 py-0.5 text-tag-index font-tag-index bg-surface-card text-text-primary hover:bg-surface-cream border border-border-charcoal">'24</button>
+<button class="cohort-btn px-2 py-0.5 text-tag-index font-tag-index bg-surface-card text-text-primary hover:bg-surface-cream border border-border-charcoal">'23</button>
+<button class="cohort-btn px-2 py-0.5 text-tag-index font-tag-index bg-surface-card text-text-primary hover:bg-surface-cream border border-border-charcoal">'22</button>
+<button class="cohort-btn px-2 py-0.5 text-tag-index font-tag-index bg-surface-card text-text-primary hover:bg-surface-cream border border-border-charcoal">'21</button>
+<button class="cohort-btn px-2 py-0.5 text-tag-index font-tag-index bg-surface-card text-text-primary hover:bg-surface-cream border border-border-charcoal">'20+'</button>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-md">
+<label class="flex items-center gap-xs font-label-mono text-label-mono cursor-pointer select-none">
+<input checked="" class="accent-accent-persimmon w-4 h-4 border-border-charcoal" id="filterMentorship" type="checkbox">
+<span class="text-text-primary">Accepting Mentees</span>
+</label>
+<label class="flex items-center gap-xs font-label-mono text-label-mono cursor-pointer select-none">
+<input checked="" class="accent-accent-persimmon w-4 h-4 border-border-charcoal" id="filterReferral" type="checkbox">
+<span class="text-text-primary">Provides Direct Referrals</span>
+</label>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE LEAFLET GEO-MAP SECTION (CANVAS SIMULATION WITH SPATIAL JUMP PINS) -->
+<div class="border-[1.5px] border-border-charcoal bg-surface-card p-md shadow-[4px_4px_0px_#1A1A1A] flex flex-col gap-sm" id="leafletMapContainer">
+<div class="flex flex-wrap items-center justify-between gap-xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 bg-accent-cobalt text-on-primary font-bold">SPATIAL INDEX</span>
+<span class="font-headline-sm text-headline-sm uppercase font-bold text-text-primary">Global Fellow Cluster Deployment</span>
+</div>
+<!-- CLUSTER QUICK-JUMPS -->
+<div class="flex flex-wrap items-center gap-1 font-label-mono text-label-mono">
+<span class="text-text-muted mr-1">CLUSTER JUMP:</span>
+<button class="cluster-chip px-2 py-0.5 bg-primary text-on-primary border border-border-charcoal hover:bg-border-charcoal" onclick="setClusterCenter('Global', '0.00N, 0.00E', 1248)">Global (1,248)</button>
+<button class="cluster-chip px-2 py-0.5 bg-surface-cream text-text-primary border border-border-charcoal hover:bg-surface-cream-subtle" onclick="setClusterCenter('Bengaluru', '12.9716° N, 77.5946° E', 142)">Bengaluru (142)</button>
+<button class="cluster-chip px-2 py-0.5 bg-surface-cream text-text-primary border border-border-charcoal hover:bg-surface-cream-subtle" onclick="setClusterCenter('San Francisco', '37.7749° N, 122.4194° W', 88)">San Francisco (88)</button>
+<button class="cluster-chip px-2 py-0.5 bg-surface-cream text-text-primary border border-border-charcoal hover:bg-surface-cream-subtle" onclick="setClusterCenter('New York', '40.7128° N, 74.0060° W', 64)">New York (64)</button>
+<button class="cluster-chip px-2 py-0.5 bg-surface-cream text-text-primary border border-border-charcoal hover:bg-surface-cream-subtle" onclick="setClusterCenter('Seattle', '47.6062° N, 122.3321° W', 42)">Seattle (42)</button>
+<button class="cluster-chip px-2 py-0.5 bg-surface-cream text-text-primary border border-border-charcoal hover:bg-surface-cream-subtle" onclick="setClusterCenter('London', '51.5074° N, 0.1278° W', 35)">London (35)</button>
+<button class="cluster-chip px-2 py-0.5 bg-surface-cream text-text-primary border border-border-charcoal hover:bg-surface-cream-subtle" onclick="setClusterCenter('Tokyo', '35.6762° N, 139.6503° E', 18)">Tokyo (18)</button>
+</div>
+</div>
+<!-- SIMULATED BRUTALIST MAP CANVAS -->
+<div class="relative w-full h-80 bg-surface-cream border-[1.5px] border-border-charcoal overflow-hidden group">
+<!-- MAP GRID PATTERN SVG -->
+<svg class="absolute inset-0 w-full h-full stroke-border-muted/50 [stroke-dasharray:4,4]" height="100%" width="100%">
+<defs>
+<pattern height="40" id="grid" patternUnits="userSpaceOnUse" width="40">
+<line stroke="currentColor" stroke-width="0.75" x1="0" x2="40" y1="0" y2="0"></line>
+<line stroke="currentColor" stroke-width="0.75" x1="0" x2="0" y1="0" y2="40"></line>
+</pattern>
+</defs>
+<rect fill="url(#grid)" height="100%" width="100%"></rect>
+</svg>
+<!-- ACTIVE CLUSTER OVERLAY HUD -->
+<div class="absolute top-3 left-3 bg-surface-card/95 border-[1.5px] border-border-charcoal p-xs shadow-[2px_2px_0px_#1A1A1A] font-label-mono text-label-mono z-10">
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-accent-persimmon"></span>
+<span class="font-bold text-text-primary" id="mapTargetLabel">FOCUSED NODE: GLOBAL (1,248)</span>
+</div>
+<div class="text-tag-index font-tag-index text-text-muted mt-0.5" id="mapCoordsLabel">COORDS: 0.00° N, 0.00° E</div>
+</div>
+<!-- MAP NODES PINPOINTED (DYNAMICALLY POSITIONED REPRESENTATION) -->
+<!-- Node: SF -->
+<div class="absolute top-[35%] left-[20%] group/node cursor-pointer z-10" onclick="setClusterCenter('San Francisco', '37.7749° N, 122.4194° W', 88)">
+<div class="relative flex items-center justify-center">
+<span class="w-7 h-7 rounded-full bg-accent-persimmon/20 animate-ping absolute"></span>
+<div class="w-6 h-6 rounded-full bg-accent-persimmon border-[1.5px] border-border-charcoal text-surface-card font-tag-index text-[10px] font-bold flex items-center justify-center shadow-[1px_1px_0px_#1A1A1A]">88</div>
+</div>
+<div class="absolute top-7 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-primary text-on-primary font-tag-index text-[9px] whitespace-nowrap shadow-[1px_1px_0px_#1A1A1A]">SF BAY AREA</div>
+</div>
+<!-- Node: NYC -->
+<div class="absolute top-[33%] left-[30%] group/node cursor-pointer z-10" onclick="setClusterCenter('New York', '40.7128° N, 74.0060° W', 64)">
+<div class="w-5 h-5 rounded-full bg-accent-cobalt border-[1.5px] border-border-charcoal text-surface-card font-tag-index text-[9px] font-bold flex items-center justify-center shadow-[1px_1px_0px_#1A1A1A]">64</div>
+<div class="absolute top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-primary text-on-primary font-tag-index text-[9px] whitespace-nowrap shadow-[1px_1px_0px_#1A1A1A]">NEW YORK</div>
+</div>
+<!-- Node: London -->
+<div class="absolute top-[28%] left-[50%] group/node cursor-pointer z-10" onclick="setClusterCenter('London', '51.5074° N, 0.1278° W', 35)">
+<div class="w-5 h-5 rounded-full bg-primary border-[1.5px] border-border-charcoal text-accent-citron font-tag-index text-[9px] font-bold flex items-center justify-center shadow-[1px_1px_0px_#1A1A1A]">35</div>
+<div class="absolute top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-primary text-on-primary font-tag-index text-[9px] whitespace-nowrap shadow-[1px_1px_0px_#1A1A1A]">LONDON UK</div>
+</div>
+<!-- Node: Bengaluru (Highlighted) -->
+<div class="absolute top-[52%] left-[70%] group/node cursor-pointer z-10" onclick="setClusterCenter('Bengaluru', '12.9716° N, 77.5946° E', 142)">
+<div class="relative flex items-center justify-center">
+<span class="w-9 h-9 rounded-full bg-led-active/30 animate-pulse absolute"></span>
+<div class="w-8 h-8 rounded-full bg-primary border-[2px] border-led-active text-led-active font-tag-index text-[11px] font-bold flex items-center justify-center shadow-[2px_2px_0px_#1A1A1A]">142</div>
+</div>
+<div class="absolute top-9 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-border-charcoal text-accent-citron font-tag-index text-[9px] whitespace-nowrap font-bold shadow-[1px_1px_0px_#1A1A1A]">BENGALURU HUB</div>
+</div>
+<!-- Node: Tokyo -->
+<div class="absolute top-[38%] left-[84%] group/node cursor-pointer z-10" onclick="setClusterCenter('Tokyo', '35.6762° N, 139.6503° E', 18)">
+<div class="w-4 h-4 rounded-full bg-accent-persimmon border-[1.5px] border-border-charcoal text-surface-card font-tag-index text-[9px] font-bold flex items-center justify-center shadow-[1px_1px_0px_#1A1A1A]">18</div>
+<div class="absolute top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-primary text-on-primary font-tag-index text-[9px] whitespace-nowrap shadow-[1px_1px_0px_#1A1A1A]">TOKYO</div>
+</div>
+<!-- BOTTOM CONTROLS DOCK IN MAP -->
+<div class="absolute bottom-3 right-3 bg-surface-card border-[1.5px] border-border-charcoal flex items-center shadow-[2px_2px_0px_#1A1A1A] z-10">
+<button class="p-1.5 hover:bg-surface-cream border-r border-border-charcoal" title="Zoom In">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+<button class="p-1.5 hover:bg-surface-cream border-r border-border-charcoal" title="Zoom Out">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<button class="p-1.5 hover:bg-surface-cream" onclick="resetMapView()" title="Recenter Topology">
+<span class="material-symbols-outlined text-[18px]">my_location</span>
+</button>
+</div>
+</div>
+</div>
+<!-- TALENT DOSSIER ROSTER (CARDS GRID) -->
+<div>
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-xs">
+<span class="text-accent-persimmon font-tag-index text-tag-index font-bold">////</span>
+<h2 class="font-headline-sm text-headline-sm uppercase font-bold text-text-primary tracking-tight">ACCREDITED FELLOW PROFILES (TOP MATCHES)</h2>
+</div>
+<span class="font-label-mono text-label-mono text-text-secondary">SORTED BY: COSINE SIMILARITY (DESC)</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-md" id="fellowGrid">
+<!-- CARD 01: VIKRAM ADITYA -->
+<div class="fellow-card bg-surface-card border-[1.5px] border-border-charcoal shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[5px_5px_0px_#1A1A1A] transition-all" data-category="systems">
+<div class="p-md">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 border border-border-charcoal bg-surface-cream text-text-primary font-bold">01 // FELLOW</span>
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 bg-led-active/20 text-text-primary border border-border-charcoal font-bold">98.4% COSINE</span>
+</div>
+<div class="flex items-start gap-sm mt-md">
+<div class="w-12 h-12 shrink-0 bg-primary text-on-primary border-[1.5px] border-border-charcoal flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-[2px_2px_0px_#FF5500]">
+                  VA
+                </div>
+<div class="min-w-0">
+<h3 class="font-headline-sm text-headline-sm font-bold text-text-primary truncate">Vikram Aditya</h3>
+<div class="font-label-mono text-label-mono text-accent-persimmon font-bold mt-0.5">Staff Eng (L5) @ Google Cloud</div>
+<div class="font-tag-index text-tag-index text-text-secondary mt-0.5">Bengaluru, IN • Cohort '19</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary mt-sm line-clamp-2">
+                Distributed storage engine lead, Spanner/Bigtable kernel optimization, and Paxos consensus replication systems.
+              </p>
+<div class="flex flex-wrap gap-1 mt-md">
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Spanner</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Raft/Paxos</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Rust/C++</span>
+</div>
+</div>
+<div class="p-md pt-0 border-t border-border-muted bg-surface-cream-subtle/50 flex flex-col gap-1.5 mt-sm">
+<div class="flex items-center justify-between text-tag-index font-tag-index text-text-secondary py-1">
+<span>VOUCHER: <strong class="text-text-primary">UNRESTRICTED</strong></span>
+<span class="text-led-active font-bold">● 2 REFERRALS LEFT</span>
+</div>
+<div class="grid grid-cols-2 gap-1.5">
+<button class="px-2 py-1.5 bg-primary text-on-primary border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-border-charcoal active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openReferralModal('Vikram Aditya', 'Google Cloud')">
+                  Request Ref
+                </button>
+<button class="px-2 py-1.5 bg-surface-card text-text-primary hover:bg-surface-cream border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openMentorshipModal('Vikram Aditya')">
+                  Book 1:1
+                </button>
+</div>
+</div>
+</div>
+<!-- CARD 02: SARAH JENKINS -->
+<div class="fellow-card bg-surface-card border-[1.5px] border-border-charcoal shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[5px_5px_0px_#1A1A1A] transition-all" data-category="systems">
+<div class="p-md">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 border border-border-charcoal bg-surface-cream text-text-primary font-bold">02 // FELLOW</span>
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 bg-led-active/20 text-text-primary border border-border-charcoal font-bold">96.7% COSINE</span>
+</div>
+<div class="flex items-start gap-sm mt-md">
+<div class="w-12 h-12 shrink-0 bg-accent-cobalt text-on-primary border-[1.5px] border-border-charcoal flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-[2px_2px_0px_#1A1A1A]">
+                  SJ
+                </div>
+<div class="min-w-0">
+<h3 class="font-headline-sm text-headline-sm font-bold text-text-primary truncate">Sarah Jenkins</h3>
+<div class="font-label-mono text-label-mono text-accent-cobalt font-bold mt-0.5">Principal Architect @ Snowflake</div>
+<div class="font-tag-index text-tag-index text-text-secondary mt-0.5">San Francisco, CA • Cohort '17</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary mt-sm line-clamp-2">
+                Serverless SQL query execution, metadata caching layers, and vector pipeline integration for high-throughput lakes.
+              </p>
+<div class="flex flex-wrap gap-1 mt-md">
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Snowpark</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Query Opt</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Go / C++</span>
+</div>
+</div>
+<div class="p-md pt-0 border-t border-border-muted bg-surface-cream-subtle/50 flex flex-col gap-1.5 mt-sm">
+<div class="flex items-center justify-between text-tag-index font-tag-index text-text-secondary py-1">
+<span>STATUS: <strong class="text-text-primary">MENTORING</strong></span>
+<span class="text-accent-persimmon font-bold">1 SLOT OPEN</span>
+</div>
+<div class="grid grid-cols-2 gap-1.5">
+<button class="px-2 py-1.5 bg-primary text-on-primary border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-border-charcoal active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openReferralModal('Sarah Jenkins', 'Snowflake')">
+                  Request Ref
+                </button>
+<button class="px-2 py-1.5 bg-surface-card text-text-primary hover:bg-surface-cream border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openMentorshipModal('Sarah Jenkins')">
+                  Book 1:1
+                </button>
+</div>
+</div>
+</div>
+<!-- CARD 03: PRATEEK SHAH -->
+<div class="fellow-card bg-surface-card border-[1.5px] border-border-charcoal shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[5px_5px_0px_#1A1A1A] transition-all" data-category="fintech">
+<div class="p-md">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 border border-border-charcoal bg-surface-cream text-text-primary font-bold">03 // FELLOW</span>
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 bg-led-active/20 text-text-primary border border-border-charcoal font-bold">95.2% COSINE</span>
+</div>
+<div class="flex items-start gap-sm mt-md">
+<div class="w-12 h-12 shrink-0 bg-surface-cream text-text-primary border-[1.5px] border-border-charcoal flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-[2px_2px_0px_#1A1A1A]">
+                  PS
+                </div>
+<div class="min-w-0">
+<h3 class="font-headline-sm text-headline-sm font-bold text-text-primary truncate">Prateek Shah</h3>
+<div class="font-label-mono text-label-mono text-text-primary font-bold mt-0.5">Staff Infra Eng @ Stripe</div>
+<div class="font-tag-index text-tag-index text-text-secondary mt-0.5">Seattle, WA • Cohort '20</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary mt-sm line-clamp-2">
+                Idempotent ledger processing at scale, distributed transactions, zero-trust banking APIs, and disaster failovers.
+              </p>
+<div class="flex flex-wrap gap-1 mt-md">
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Ledger</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Kafka</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Sorbet / Ruby</span>
+</div>
+</div>
+<div class="p-md pt-0 border-t border-border-muted bg-surface-cream-subtle/50 flex flex-col gap-1.5 mt-sm">
+<div class="flex items-center justify-between text-tag-index font-tag-index text-text-secondary py-1">
+<span>COHORT: <strong class="text-text-primary">'20 ACCREDITED</strong></span>
+<span class="text-led-active font-bold">DIRECT LINK</span>
+</div>
+<div class="grid grid-cols-2 gap-1.5">
+<button class="px-2 py-1.5 bg-primary text-on-primary border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-border-charcoal active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openReferralModal('Prateek Shah', 'Stripe')">
+                  Request Ref
+                </button>
+<button class="px-2 py-1.5 bg-surface-card text-text-primary hover:bg-surface-cream border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openMentorshipModal('Prateek Shah')">
+                  Book 1:1
+                </button>
+</div>
+</div>
+</div>
+<!-- CARD 04: ELENA ROSTOVA -->
+<div class="fellow-card bg-surface-card border-[1.5px] border-border-charcoal shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[5px_5px_0px_#1A1A1A] transition-all" data-category="ai">
+<div class="p-md">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 border border-border-charcoal bg-surface-cream text-text-primary font-bold">04 // FELLOW</span>
+<span class="font-tag-index text-tag-index px-1.5 py-0.5 bg-led-active/20 text-text-primary border border-border-charcoal font-bold">94.1% COSINE</span>
+</div>
+<div class="flex items-start gap-sm mt-md">
+<div class="w-12 h-12 shrink-0 bg-accent-persimmon text-surface-card border-[1.5px] border-border-charcoal flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-[2px_2px_0px_#1A1A1A]">
+                  ER
+                </div>
+<div class="min-w-0">
+<h3 class="font-headline-sm text-headline-sm font-bold text-text-primary truncate">Elena Rostova</h3>
+<div class="font-label-mono text-label-mono text-accent-persimmon font-bold mt-0.5">Applied Scientist @ AWS AI</div>
+<div class="font-tag-index text-tag-index text-text-secondary mt-0.5">New York, NY • Cohort '21</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary mt-sm line-clamp-2">
+                Quantization of 70B parameter foundations, FlashAttention-3 Triton kernels, and low-latency inference routing.
+              </p>
+<div class="flex flex-wrap gap-1 mt-md">
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">Triton</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">PyTorch</span>
+<span class="font-tag-index text-tag-index px-1 bg-surface-cream-subtle border border-border-muted text-text-primary">vLLM Engine</span>
+</div>
+</div>
+<div class="p-md pt-0 border-t border-border-muted bg-surface-cream-subtle/50 flex flex-col gap-1.5 mt-sm">
+<div class="flex items-center justify-between text-tag-index font-tag-index text-text-secondary py-1">
+<span>ENCLAVE: <strong class="text-text-primary">VERIFIED LAB</strong></span>
+<span class="text-accent-cobalt font-bold">PRIORITY QUEUE</span>
+</div>
+<div class="grid grid-cols-2 gap-1.5">
+<button class="px-2 py-1.5 bg-primary text-on-primary border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-border-charcoal active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openReferralModal('Elena Rostova', 'Amazon AWS AI')">
+                  Request Ref
+                </button>
+<button class="px-2 py-1.5 bg-surface-card text-text-primary hover:bg-surface-cream border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#1A1A1A] transition-all" onclick="openMentorshipModal('Elena Rostova')">
+                  Book 1:1
+                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM TELEMETRY SECURITY STRIP -->
+<div class="p-sm bg-surface-cream border-[1.5px] border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] flex flex-col md:flex-row items-center justify-between gap-sm font-label-mono text-label-mono text-text-secondary">
+<div class="flex items-center gap-sm">
+<span class="px-1.5 py-0.5 bg-border-charcoal text-surface-card font-tag-index text-tag-index">NODE: SECURE ENCLAVE 0x48F2A</span>
+<span>FIPS 140-3 LEVEL 4 HARDWARE ROOT</span>
+</div>
+<div class="flex items-center gap-md">
+<span>CLUSTER REPLICATION: 3/3 NODES OPTIMAL</span>
+<span class="text-accent-persimmon font-bold">ALL PROTOCOLS ENFORCED</span>
+</div>
+</div>
+</section>
+</div>
+<!-- INTERACTIVE MODAL 1: REQUEST REFERRAL DIALOG -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-xs hidden items-center justify-center p-md z-50" id="referralModal">
+<div class="bg-surface-card border-[2px] border-border-charcoal w-full max-w-lg shadow-[6px_6px_0px_#1A1A1A] p-lg flex flex-col gap-md">
+<div class="flex items-center justify-between pb-xs border-b border-border-muted">
+<div class="flex items-center gap-xs">
+<span class="px-1.5 py-0.5 bg-accent-persimmon text-surface-card font-tag-index text-tag-index font-bold">ENCLAVE DISPATCH</span>
+<span class="font-headline-sm text-headline-sm font-bold uppercase text-text-primary">Warm Referral Voucher</span>
+</div>
+<button class="w-7 h-7 flex items-center justify-center border border-border-charcoal hover:bg-surface-cream text-text-primary" onclick="closeModal('referralModal')">✕</button>
+</div>
+<div class="font-body-sm text-body-sm text-text-secondary">
+        Dispatching directly to <strong class="text-text-primary" id="modalFellowName">Fellow</strong> at <strong class="text-text-primary" id="modalCompanyName">Company</strong> via verified alumni mutual key.
+      </div>
+<div class="flex flex-col gap-sm">
+<div>
+<label class="font-tag-index text-tag-index text-text-secondary uppercase">TARGET ROLE / REQUISITION ID</label>
+<input class="w-full bg-surface-cream border-[1.5px] border-border-charcoal p-1.5 font-label-mono text-label-mono text-text-primary mt-1 focus:ring-1 focus:ring-accent-persimmon outline-none" id="refRoleInput" type="text" value="Senior Distributed Systems Engineer (REQ-48210)">
+</div>
+<div>
+<label class="font-tag-index text-tag-index text-text-secondary uppercase">PORTFOLIO / GITHUB / RFC DOSSIER URL</label>
+<input class="w-full bg-surface-cream border-[1.5px] border-border-charcoal p-1.5 font-label-mono text-label-mono text-text-primary mt-1 focus:ring-1 focus:ring-accent-persimmon outline-none" id="refUrlInput" type="text" value="https://pro-alumn.internal/fellow/elena-vance/rfcs/raft-vector">
+</div>
+<div>
+<label class="font-tag-index text-tag-index text-text-secondary uppercase">BRIEF PITCH NOTE (MAX 140 CHARS)</label>
+<textarea class="w-full bg-surface-cream border-[1.5px] border-border-charcoal p-1.5 font-body-sm text-body-sm text-text-primary mt-1 focus:ring-1 focus:ring-accent-persimmon outline-none" id="refNoteInput" rows="2">Fellow Elena Vance (Cohort '22). Maintained consensus engine benchmarks matching Google Cloud Spanner paper specifications.</textarea>
+</div>
+</div>
+<div class="flex items-center justify-end gap-sm pt-sm border-t border-border-muted">
+<button class="px-md py-1.5 bg-surface-cream border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-surface-cream-subtle text-text-primary" onclick="closeModal('referralModal')">Cancel</button>
+<button class="px-md py-1.5 bg-accent-persimmon text-surface-card border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-secondary-container shadow-[2px_2px_0px_#1A1A1A] active:translate-x-[1px] active:translate-y-[1px]" onclick="submitReferral()">Transmit Voucher Packet</button>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE MODAL 2: BOOK FLASH 1:1 DIALOG -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-xs hidden items-center justify-center p-md z-50" id="mentorshipModal">
+<div class="bg-surface-card border-[2px] border-border-charcoal w-full max-w-md shadow-[6px_6px_0px_#1A1A1A] p-lg flex flex-col gap-md">
+<div class="flex items-center justify-between pb-xs border-b border-border-muted">
+<div class="flex items-center gap-xs">
+<span class="px-1.5 py-0.5 bg-accent-cobalt text-on-primary font-tag-index text-tag-index font-bold">CALENDAR SYNC</span>
+<span class="font-headline-sm text-headline-sm font-bold uppercase text-text-primary">Flash Mentorship 1:1</span>
+</div>
+<button class="w-7 h-7 flex items-center justify-center border border-border-charcoal hover:bg-surface-cream text-text-primary" onclick="closeModal('mentorshipModal')">✕</button>
+</div>
+<div class="font-body-sm text-body-sm text-text-secondary">
+        Locking 15-minute high-bandwidth architectural advisory with <strong class="text-text-primary" id="mentorNameSpan">Fellow</strong>.
+      </div>
+<div class="flex flex-col gap-sm">
+<label class="font-tag-index text-tag-index text-text-secondary uppercase">CHOOSE FLASH WINDOW</label>
+<div class="grid grid-cols-1 gap-1 font-label-mono text-label-mono">
+<label class="flex items-center justify-between p-2 bg-surface-cream border border-border-charcoal cursor-pointer hover:bg-surface-cream-subtle">
+<span class="flex items-center gap-2">
+<input checked="" class="accent-accent-persimmon" name="slot" type="radio">
+<span>Thursday, 18:30 IST / 09:00 EST</span>
+</span>
+<span class="text-tag-index font-tag-index px-1 bg-led-active/20 text-text-primary border border-border-charcoal">AVAILABLE</span>
+</label>
+<label class="flex items-center justify-between p-2 bg-surface-cream border border-border-charcoal cursor-pointer hover:bg-surface-cream-subtle">
+<span class="flex items-center gap-2">
+<input class="accent-accent-persimmon" name="slot" type="radio">
+<span>Friday, 19:15 IST / 09:45 EST</span>
+</span>
+<span class="text-tag-index font-tag-index px-1 bg-led-active/20 text-text-primary border border-border-charcoal">AVAILABLE</span>
+</label>
+</div>
+<div>
+<label class="font-tag-index text-tag-index text-text-secondary uppercase">TECHNICAL AGENDA</label>
+<input class="w-full bg-surface-cream border-[1.5px] border-border-charcoal p-1.5 font-label-mono text-label-mono text-text-primary mt-1 focus:ring-1 focus:ring-accent-cobalt outline-none" id="agendaInput" type="text" value="System trade-offs in multi-tenant Raft consensus log compaction">
+</div>
+</div>
+<div class="flex items-center justify-end gap-sm pt-sm border-t border-border-muted">
+<button class="px-md py-1.5 bg-surface-cream border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-surface-cream-subtle text-text-primary" onclick="closeModal('mentorshipModal')">Dismiss</button>
+<button class="px-md py-1.5 bg-primary text-on-primary border-[1.5px] border-border-charcoal font-label-caps text-label-caps uppercase hover:bg-border-charcoal shadow-[2px_2px_0px_#1A1A1A] active:translate-x-[1px] active:translate-y-[1px]" onclick="submitMentorship()">Confirm Slot</button>
+</div>
+</div>
+</div>
+<!-- FLOATING NOTIFICATION TOAST -->
+<div class="fixed bottom-6 right-6 bg-primary text-on-primary border-[2px] border-border-charcoal p-md shadow-[4px_4px_0px_#FF5500] hidden flex-items-center gap-sm z-50 max-w-sm" id="toastNotification">
+<span class="material-symbols-outlined text-accent-citron text-[24px]">verified</span>
+<div>
+<div class="font-headline-sm text-[14px] font-bold" id="toastTitle">ENCLAVE TRANSACTION CONFIRMED</div>
+<div class="font-label-mono text-[11px] text-primary-fixed" id="toastMessage">Packet dispatched via pgvector mutual authentication mesh.</div>
+</div>
+</div>
+</div>
+<script>
+  // DOMAIN FILTER SWITCHER
+  const domainTabs = document.querySelectorAll('.domain-tab');
+  const cards = document.querySelectorAll('.fellow-card');
+
+  domainTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      domainTabs.forEach(t => {
+        t.classList.remove('bg-primary', 'text-on-primary');
+        t.classList.add('bg-surface-card', 'text-text-primary');
+      });
+      tab.classList.remove('bg-surface-card', 'text-text-primary');
+      tab.classList.add('bg-primary', 'text-on-primary');
+
+      const category = tab.getAttribute('data-category');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // COHORT TOGGLE
+  const cohortButtons = document.querySelectorAll('.cohort-btn');
+  cohortButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      cohortButtons.forEach(b => {
+        b.classList.remove('bg-primary', 'text-on-primary');
+        b.classList.add('bg-surface-card', 'text-text-primary');
+      });
+      btn.classList.remove('bg-surface-card', 'text-text-primary');
+      btn.classList.add('bg-primary', 'text-on-primary');
+    });
+  });
+
+  // VIEW TOGGLE
+  const viewGridBtn = document.getElementById('viewGridBtn');
+  const viewMapBtn = document.getElementById('viewMapBtn');
+  const mapContainer = document.getElementById('leafletMapContainer');
+
+  viewGridBtn.addEventListener('click', () => {
+    viewGridBtn.classList.remove('bg-surface-card', 'text-text-primary');
+    viewGridBtn.classList.add('bg-primary', 'text-on-primary');
+    viewMapBtn.classList.remove('bg-primary', 'text-on-primary');
+    viewMapBtn.classList.add('bg-surface-card', 'text-text-primary');
+    mapContainer.classList.remove('hidden');
+    window.scrollTo({ top: mapContainer.offsetTop - 80, behavior: 'smooth' });
+  });
+
+  viewMapBtn.addEventListener('click', () => {
+    viewMapBtn.classList.remove('bg-surface-card', 'text-text-primary');
+    viewMapBtn.classList.add('bg-primary', 'text-on-primary');
+    viewGridBtn.classList.remove('bg-primary', 'text-on-primary');
+    viewGridBtn.classList.add('bg-surface-card', 'text-text-primary');
+    mapContainer.classList.remove('hidden');
+    mapContainer.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // OMNIBOX COSINE SEARCH FILTER SIMULATION
+  const omniSearch = document.getElementById('omniSearch');
+  omniSearch.addEventListener('input', (e) => {
+    const val = e.target.value.toLowerCase();
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      if (text.includes(val)) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+
+  // INTERACTIVE MAP CLUSTER NAVIGATION
+  function setClusterCenter(name, coords, count) {
+    document.getElementById('mapTargetLabel').innerText = `FOCUSED NODE: ${name.toUpperCase()} (${count})`;
+    document.getElementById('mapCoordsLabel').innerText = `COORDS: ${coords}`;
+    
+    // Highlight matching cluster chip
+    document.querySelectorAll('.cluster-chip').forEach(btn => {
+      if (btn.innerText.includes(name)) {
+        btn.classList.remove('bg-surface-cream', 'text-text-primary');
+        btn.classList.add('bg-primary', 'text-on-primary');
+      } else {
+        btn.classList.remove('bg-primary', 'text-on-primary');
+        btn.classList.add('bg-surface-cream', 'text-text-primary');
+      }
+    });
+    showToast(`SPATIAL TOPOLOGY: Focused on ${name} cluster (${count} verified nodes).`);
+  }
+
+  function resetMapView() {
+    setClusterCenter('Global', '0.00N, 0.00E', 1248);
+  }
+
+  // MODAL LOGIC
+  function openReferralModal(name, company) {
+    document.getElementById('modalFellowName').innerText = name;
+    document.getElementById('modalCompanyName').innerText = company;
+    document.getElementById('referralModal').classList.remove('hidden');
+    document.getElementById('referralModal').classList.add('flex');
+  }
+
+  function openMentorshipModal(name) {
+    document.getElementById('mentorNameSpan').innerText = name;
+    document.getElementById('mentorshipModal').classList.remove('hidden');
+    document.getElementById('mentorshipModal').classList.add('flex');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+    document.getElementById(id).classList.remove('flex');
+  }
+
+  function submitReferral() {
+    closeModal('referralModal');
+    showToast("VOUCHER DISPATCHED: Candidate credentials sent to verified hiring partner.");
+  }
+
+  function submitMentorship() {
+    closeModal('mentorshipModal');
+    showToast("SLOT RESERVED: Mutual calendar invite encrypted and dispatched.");
+  }
+
+  // TOAST EMITTER
+  function showToast(msg) {
+    const toast = document.getElementById('toastNotification');
+    const toastMsg = document.getElementById('toastMessage');
+    toastMsg.innerText = msg;
+    toast.classList.remove('hidden');
+    toast.classList.add('flex');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+      toast.classList.remove('flex');
+    }, 4500);
+  }
+</script></main><footer class="w-full bg-surface-cream border-t-[1.5px] border-border-charcoal py-md"><div class="w-full px-grid-margin-desktop flex flex-col md:flex-row items-center justify-between gap-sm font-label-mono text-label-mono text-text-secondary"><div class="flex items-center gap-md"><div class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-led-active inline-block animate-pulse"></span><span class="text-text-primary font-bold">TELEMETRY LIVE</span></div><span class="text-border-muted">|</span><span>POSTGRES 16.2 / PGVECTOR 0.6.0</span><span class="text-border-muted hidden sm:inline">|</span><span class="hidden sm:inline">LATENCY &lt;14MS</span></div><div class="flex items-center gap-lg text-text-muted"><span>SECURE ENCLAVE NODE // 0x48F2A</span><span>© 2024 PRO-ALUMN FOUNDATION // ALL RIGHTS RESERVED</span></div></div></footer></body></html>

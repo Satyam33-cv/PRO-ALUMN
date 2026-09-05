@@ -300,7 +300,7 @@ export function DashboardContent() {
               </span>
               <button
                 onClick={handleRecompute}
-                className="p-1 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] transition-colors cursor-pointer"
+                className="p-1 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                 title="Recompute vector matches"
                 type="button"
                 aria-label="Recompute vector matches"
@@ -372,7 +372,7 @@ export function DashboardContent() {
                       </span>
                       <Link
                         href={`/directory?search=${encodeURIComponent(match.name)}`}
-                        className="px-3 py-1.5 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all cursor-pointer"
+                        className="px-3 py-1.5 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                       >
                         Profile
                       </Link>
@@ -381,13 +381,13 @@ export function DashboardContent() {
                     <>
                       <Link
                         href="/mentorship"
-                        className="px-3 py-1.5 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
+                        className="px-3 py-1.5 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                       >
                         Flash 15m
                       </Link>
                       <Link
                         href="/jobs"
-                        className="px-3 py-1.5 bg-black text-white dark:bg-white dark:text-black border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs uppercase font-bold transition-all active:translate-x-[1px] active:translate-y-[1px] flex items-center gap-1 cursor-pointer"
+                        className="px-3 py-1.5 bg-black text-white dark:bg-white dark:text-black border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center gap-1 cursor-pointer"
                       >
                         <span>Request Referral</span>
                         <ArrowRight size={13} />
@@ -513,7 +513,7 @@ export function DashboardContent() {
           <div className="p-4 sm:p-5 pt-0">
             <Link
               href="/jobs"
-              className="block w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all cursor-pointer"
+              className="block w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
             >
               + Generate New Referral Escrow
             </Link>
@@ -587,14 +587,14 @@ export function DashboardContent() {
               href="https://meet.google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-2 bg-black text-white dark:bg-white dark:text-black border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs font-bold uppercase text-center flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              className="flex-1 py-2 bg-black text-white dark:bg-white dark:text-black border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs font-bold uppercase text-center flex items-center justify-center gap-1.5 transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
             >
               <Video size={14} />
               <span>Launch G-Meet</span>
             </a>
             <Link
               href="/mentorship"
-              className="px-3 py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all flex items-center justify-center cursor-pointer"
+              className="px-3 py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer"
             >
               Reschedule
             </Link>
@@ -668,7 +668,7 @@ export function DashboardContent() {
           <div className="p-4 sm:p-5 pt-0">
             <button
               onClick={handleToggleRsvp}
-              className={`w-full py-2 border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] font-headline text-xs font-bold uppercase text-center transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`w-full py-2 border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer ${
                 rsvpConfirmed
                   ? "bg-[#00E676] text-black"
                   : "bg-black text-white dark:bg-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200"
@@ -777,7 +777,7 @@ export function DashboardContent() {
             <button
               onClick={handleSyncVector}
               disabled={syncingVector}
-              className="w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+              className="w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
               type="button"
             >
               <RefreshCw size={13} className={syncingVector ? "animate-spin text-[#FF5500]" : ""} />
@@ -801,7 +801,7 @@ export function DashboardContent() {
             </div>
             <Link
               href="/stories"
-              className="font-headline text-xs font-bold px-3 py-1 bg-white dark:bg-[#181a20] border border-[#1A1A1A] dark:border-neutral-700 hover:bg-[#F7F4EE] dark:hover:bg-[#252932] uppercase transition-colors"
+              className="font-headline text-xs font-bold px-3 py-1 bg-white dark:bg-[#181a20] border border-[#1A1A1A] dark:border-neutral-700 hover:bg-[#F7F4EE] dark:hover:bg-[#252932] shadow-[1px_1px_0_#1A1A1A] uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             >
               + Transmit Story
             </Link>
@@ -822,7 +822,7 @@ export function DashboardContent() {
                 <button
                   type="button"
                   onClick={() => handleUpvote("story1")}
-                  className={`flex items-center gap-1 px-2 py-0.5 border border-[#1A1A1A] text-xs font-mono font-bold transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1 px-2 py-0.5 border border-[#1A1A1A] text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
                     hasUpvoted.story1
                       ? "bg-[#D9E021] text-black"
                       : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#D9E021] hover:text-black"
@@ -862,7 +862,7 @@ export function DashboardContent() {
                 <button
                   type="button"
                   onClick={() => handleUpvote("story2")}
-                  className={`flex items-center gap-1 px-2 py-0.5 border border-[#1A1A1A] text-xs font-mono font-bold transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1 px-2 py-0.5 border border-[#1A1A1A] text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
                     hasUpvoted.story2
                       ? "bg-[#D9E021] text-black"
                       : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#D9E021] hover:text-black"

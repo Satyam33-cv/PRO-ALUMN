@@ -307,7 +307,7 @@ END:VCALENDAR`;
           <button
             onClick={loadAnnouncements}
             disabled={isSyncing}
-            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5"
+            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center gap-1.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             type="button"
           >
             <RefreshCw size={13} className={isSyncing ? "animate-spin" : ""} />
@@ -353,7 +353,7 @@ END:VCALENDAR`;
                   setIsCreateModalOpen(true);
                 }
               }}
-              className="inline-flex items-center justify-center gap-2 border-2 border-black bg-[#CCFF00] text-black px-4 py-2.5 text-xs font-mono font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-0.5 active:translate-y-0.5 transition-all shrink-0 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border-2 border-black bg-[#CCFF00] text-black px-4 py-2.5 text-xs font-mono font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all shrink-0 cursor-pointer"
             >
               <Plus size={15} />
               <span>Broadcast Dispatch</span>
@@ -391,7 +391,7 @@ END:VCALENDAR`;
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`font-mono text-xs px-3 py-1.5 border-2 border-black flex items-center gap-2 font-bold uppercase transition-all shadow-[2px_2px_0px_#000000] cursor-pointer active:translate-x-0.5 active:translate-y-0.5 ${
+                className={`font-mono text-xs px-3 py-1.5 border-2 border-black flex items-center gap-2 font-bold uppercase transition-all shadow-[2px_2px_0px_#000000] cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${
                   isActive
                     ? "bg-black text-[#CCFF00]"
                     : "bg-white text-black hover:bg-neutral-100"
@@ -501,7 +501,7 @@ END:VCALENDAR`;
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 onClick={() => setIsBlueprintModalOpen(true)}
-                className="bg-black text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center gap-2 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+                className="bg-black text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                 type="button"
               >
                 <span>READ FULL DISPATCH &amp; BLUEPRINT</span>
@@ -510,7 +510,7 @@ END:VCALENDAR`;
 
               <button
                 onClick={() => setIsRsvpModalOpen(true)}
-                className="bg-[#FF5500] text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 transition-all flex items-center gap-2 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+                className="bg-[#FF5500] text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 transition-all flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                 type="button"
               >
                 <Calendar size={14} />
@@ -671,7 +671,7 @@ END:VCALENDAR`;
                         <div className="flex items-center gap-2 w-full md:w-auto justify-end">
                           <button
                             onClick={() => setIsReferralModalOpen(true)}
-                            className="bg-black text-white font-mono text-xs font-bold px-4 py-2 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+                            className="bg-black text-white font-mono text-xs font-bold px-4 py-2 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                             type="button"
                           >
                             SUBMIT FOR REFERRAL
@@ -947,7 +947,7 @@ END:VCALENDAR`;
 
               <button
                 type="submit"
-                className="w-full bg-black text-white font-mono text-xs font-bold py-2 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+                className="w-full bg-black text-white font-mono text-xs font-bold py-2 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               >
                 <span>AUTHENTICATE &amp; SUBSCRIBE</span>
                 <Radio size={14} />

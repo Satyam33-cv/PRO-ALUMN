@@ -45,15 +45,15 @@ jest.mock("@/lib/api/client", () => ({
 }));
 
 describe("StoriesContent (Stitch Screen 10 Success Spotlight Wall)", () => {
-  it("renders the protocol masthead and telemetry counters", () => {
+  it("renders the Member Console protocol masthead, omnibar, and telemetry counters", () => {
     render(<StoriesContent />);
 
-    expect(
-      screen.getByText(/PILLAR 05 \/\/ PUBLIC DISPATCHES & PROOF OF IMPACT/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Success Spotlight/i)
-    ).toBeInTheDocument();
+    // Member Console Sub-Header Omnibar & Hero
+    expect(screen.getByText(/MY DISPATCHES/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/\+ TRANSMIT MILESTONE STORY/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/FELLOW PARTICIPATION POOL/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+100 ALUMN-CR \/ DISPATCH/i)).toBeInTheDocument();
+    expect(screen.getByText(/Success Spotlight Wall & Peer Chronicles/i)).toBeInTheDocument();
 
     // Telemetry Counters
     expect(screen.getByText("184")).toBeInTheDocument();
@@ -125,12 +125,23 @@ describe("StoriesContent (Stitch Screen 10 Success Spotlight Wall)", () => {
   it("opens the milestone transmission modal", () => {
     render(<StoriesContent />);
 
-    const transmitBtn = screen.getByText(/Transmit New Milestone/i);
+    const transmitBtn = screen.getAllByRole("button", { name: /\+ TRANSMIT MILESTONE STORY/i })[0];
     fireEvent.click(transmitBtn);
 
     expect(screen.getByText(/Broadcast Peer Milestone/i)).toBeInTheDocument();
     expect(
       screen.getByPlaceholderText(/e\.g\. Promoted to Staff Infrastructure Architect @ DeepMind/i)
     ).toBeInTheDocument();
+  });
+
+  it("filters feed when clicking MY DISPATCHES", () => {
+    render(<StoriesContent />);
+
+    const myDispatchesBtn = screen.getByRole("button", { name: /MY DISPATCHES/i });
+    expect(myDispatchesBtn).toBeInTheDocument();
+
+    fireEvent.click(myDispatchesBtn);
+    // Button toggles active styling
+    expect(myDispatchesBtn).toHaveClass("bg-black");
   });
 });

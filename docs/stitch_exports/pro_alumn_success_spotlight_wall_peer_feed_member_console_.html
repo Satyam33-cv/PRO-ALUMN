@@ -1,0 +1,1172 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-tertiary-container": "#547aff",
+          "inverse-on-surface": "#f3f0ea",
+          "accent-cobalt": "#1D4ED8",
+          "primary-fixed": "#e5e2e1",
+          "primary-fixed-dim": "#c8c6c5",
+          "inverse-primary": "#c8c6c5",
+          "text-primary": "#1A1A1A",
+          "on-tertiary-fixed": "#001551",
+          "tertiary-fixed-dim": "#b7c4ff",
+          "on-surface": "#1c1c18",
+          "surface-card": "#FFFFFF",
+          "on-surface-variant": "#444748",
+          "on-primary-container": "#858383",
+          "on-tertiary": "#ffffff",
+          "surface-container-high": "#ebe8e2",
+          "surface-container-low": "#f6f3ed",
+          "error": "#ba1a1a",
+          "surface-container-lowest": "#ffffff",
+          "secondary-fixed-dim": "#ffb59c",
+          "background": "#fcf9f3",
+          "on-primary-fixed": "#1c1b1b",
+          "text-muted": "#8F8A7E",
+          "on-secondary": "#ffffff",
+          "surface-cream-subtle": "#EFECE4",
+          "outline-variant": "#c4c7c7",
+          "on-secondary-container": "#fffbff",
+          "surface-bright": "#fcf9f3",
+          "on-secondary-fixed-variant": "#822700",
+          "on-error-container": "#93000a",
+          "secondary": "#a63500",
+          "primary": "#000000",
+          "tertiary-fixed": "#dce1ff",
+          "text-secondary": "#635F57",
+          "tertiary": "#000000",
+          "surface-dim": "#dcdad4",
+          "surface-variant": "#e5e2dc",
+          "border-muted": "#D5CEBF",
+          "surface-tint": "#5f5e5e",
+          "accent-citron": "#D9E021",
+          "secondary-fixed": "#ffdbcf",
+          "inverse-surface": "#31312d",
+          "led-active": "#00E676",
+          "tertiary-container": "#001551",
+          "on-secondary-fixed": "#390c00",
+          "outline": "#747878",
+          "primary-container": "#1c1b1b",
+          "surface-container-highest": "#e5e2dc",
+          "surface": "#fcf9f3",
+          "accent-persimmon": "#FF5500",
+          "surface-container": "#f0eee8",
+          "on-primary-fixed-variant": "#474746",
+          "on-primary": "#ffffff",
+          "surface-cream": "#F7F4EE",
+          "secondary-container": "#d04400",
+          "on-background": "#1c1c18",
+          "error-container": "#ffdad6",
+          "on-tertiary-fixed-variant": "#0039b5",
+          "border-charcoal": "#1A1A1A",
+          "on-error": "#ffffff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "2xl": "3rem",
+          "sm": "0.75rem",
+          "3xl": "4rem",
+          "md": "1rem",
+          "grid-margin-desktop": "2.5rem",
+          "xs": "0.5rem",
+          "grid-margin-mobile": "1rem",
+          "lg": "1.5rem",
+          "2xs": "0.25rem",
+          "xl": "2rem",
+          "grid-gutter": "1.25rem"
+        },
+        "fontFamily": {
+          "body-md": [
+            "Space Grotesk"
+          ],
+          "tag-index": [
+            "Space Mono"
+          ],
+          "headline-sm": [
+            "Space Grotesk"
+          ],
+          "body-sm": [
+            "Space Grotesk"
+          ],
+          "label-caps": [
+            "Space Grotesk"
+          ],
+          "display-hero-mobile": [
+            "Space Grotesk"
+          ],
+          "headline-lg-mobile": [
+            "Space Grotesk"
+          ],
+          "headline-md": [
+            "Space Grotesk"
+          ],
+          "body-lg": [
+            "Space Grotesk"
+          ],
+          "display-hero": [
+            "Space Grotesk"
+          ],
+          "headline-lg": [
+            "Space Grotesk"
+          ],
+          "label-mono": [
+            "Space Mono"
+          ]
+        },
+        "fontSize": {
+          "body-md": [
+            "15px",
+            {
+              "lineHeight": "22px",
+              "fontWeight": "400"
+            }
+          ],
+          "tag-index": [
+            "11px",
+            {
+              "lineHeight": "11px",
+              "letterSpacing": "0.06em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-sm": [
+            "18px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-sm": [
+            "13px",
+            {
+              "lineHeight": "18px",
+              "fontWeight": "400"
+            }
+          ],
+          "label-caps": [
+            "11px",
+            {
+              "lineHeight": "14px",
+              "letterSpacing": "0.08em",
+              "fontWeight": "700"
+            }
+          ],
+          "display-hero-mobile": [
+            "38px",
+            {
+              "lineHeight": "42px",
+              "letterSpacing": "-0.03em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-lg-mobile": [
+            "26px",
+            {
+              "lineHeight": "32px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-md": [
+            "24px",
+            {
+              "lineHeight": "30px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-lg": [
+            "18px",
+            {
+              "lineHeight": "28px",
+              "fontWeight": "400"
+            }
+          ],
+          "display-hero": [
+            "64px",
+            {
+              "lineHeight": "68px",
+              "letterSpacing": "-0.04em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-lg": [
+            "36px",
+            {
+              "lineHeight": "42px",
+              "letterSpacing": "-0.03em",
+              "fontWeight": "700"
+            }
+          ],
+          "label-mono": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.02em",
+              "fontWeight": "500"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col justify-between selection:bg-accent-persimmon selection:text-surface-card"><header class="fixed top-0 w-full z-50 bg-surface-cream/95 backdrop-blur-md border-b-[1.5px] border-border-charcoal"><div class="h-16 w-full px-grid-margin-desktop flex items-center justify-between"><div class="flex items-center gap-lg"><div class="flex items-center gap-xs"><span class="text-accent-persimmon font-tag-index text-tag-index tracking-tighter">/////</span><span class="font-headline-sm text-headline-sm uppercase tracking-tight text-text-primary font-bold">PRO-ALUMN</span><span class="bg-border-charcoal text-surface px-xs py-2xs font-tag-index text-tag-index ml-xs">SYS.PUB</span></div><div class="h-4 w-[1.5px] bg-border-muted hidden lg:block"></div><span class="font-label-mono text-label-mono text-text-secondary hidden lg:inline-block tracking-wide">SYS.SPEC.01 // PCM 48KHZ // HNSW-384D</span></div><div class="flex items-center gap-xl"><a class="font-label-mono text-label-mono text-text-secondary hover:text-accent-persimmon transition-colors flex items-center gap-2xs tracking-wider" data-path="landing" href="#">← Back to Landing Page</a><nav class="hidden md:flex items-center gap-md" data-active-classes="text-text-primary font-bold border-b-2 border-border-charcoal"><a aria-current="page" class="uppercase transition-colors py-xs text-text-primary font-bold border-b-2 border-border-charcoal" data-path="login" href="#">01 // Gate</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-xs" data-path="directory-registry" href="#">02 // Registry</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-xs" data-path="network-telemetry" href="#">03 // Telemetry</a></nav><div class="flex items-center pl-sm border-l border-border-muted"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-surface flex-1 flex flex-col"><div class="flex flex-col w-full">
+<!-- AUTHENTICATED INNER CONSOLE WRAPPER WITH SUB-NAV & LEFT RAIL -->
+<div class="w-full flex flex-col xl:flex-row min-h-[calc(100vh-4rem)]">
+<!-- PERSISTENT LEFT TELEMETRY RAIL -->
+<aside class="w-full xl:w-72 bg-surface-cream border-r-[1.5px] border-border-charcoal flex flex-col justify-between shrink-0 select-none">
+<div class="flex flex-col">
+<!-- SYSTEM NODE IDENTIFIER -->
+<div class="p-md border-b-[1.5px] border-border-charcoal bg-surface-cream-subtle flex flex-col gap-2xs">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index uppercase tracking-wider text-text-secondary">PRO-ALUMN // NET.CORE</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-led-active/20 text-text-primary text-[10px] font-tag-index font-bold border border-border-charcoal rounded-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-led-active animate-pulse"></span>
+              SYS.OK
+            </span>
+</div>
+<div class="font-label-mono text-[11px] text-text-muted flex items-center justify-between mt-1">
+<span>HNSW RUNTIME v2.4</span>
+<span class="text-text-primary font-bold">14MS</span>
+</div>
+</div>
+<!-- AUTHENTICATED FELLOW PROFILE SUMMARY PILL -->
+<div class="p-md border-b-[1.5px] border-border-charcoal bg-surface">
+<div class="flex items-start gap-sm">
+<div class="w-10 h-10 rounded-sm bg-border-charcoal text-surface flex items-center justify-center font-tag-index text-body-md font-bold shrink-0 border border-border-charcoal shadow-[2px_2px_0px_#1A1A1A]">
+              EV
+            </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<span class="font-headline-sm text-[13px] font-bold text-text-primary truncate">Dr. Elena Vance</span>
+<span class="material-symbols-outlined text-accent-persimmon text-[15px]" title="Peer-Attested Verified Fellow">verified</span>
+</div>
+<span class="font-label-mono text-[10px] text-text-muted truncate">COHORT '22 // SYS.COMPUTE</span>
+<div class="flex items-center gap-xs mt-1">
+<span class="px-1.5 py-0.5 bg-accent-citron/40 text-text-primary text-[9px] font-tag-index uppercase tracking-wider font-bold border border-border-charcoal">FELLOW</span>
+<span class="font-tag-index text-[10px] text-text-secondary">940 CR</span>
+</div>
+</div>
+</div>
+</div>
+<!-- PROTOCOL INDEX NAVIGATION -->
+<nav class="p-sm flex flex-col gap-1">
+<div class="px-2 py-1 font-tag-index text-[10px] text-text-muted uppercase tracking-widest">PROTOCOLS // DIRECTORY</div>
+<a class="flex items-center justify-between px-3 py-2 rounded-sm text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-all font-headline-sm text-body-sm" href="#">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-[11px] text-text-muted">01</span>
+<span>Dashboard Core</span>
+</div>
+<span class="material-symbols-outlined text-[16px] opacity-40">dashboard</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-sm text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-all font-headline-sm text-body-sm" href="#">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-[11px] text-text-muted">02</span>
+<span>Alumni Registry</span>
+</div>
+<span class="material-symbols-outlined text-[16px] opacity-40">group</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-sm text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-all font-headline-sm text-body-sm" href="#">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-[11px] text-text-muted">03</span>
+<span>Jobs &amp; Referrals</span>
+</div>
+<span class="px-1 bg-accent-persimmon text-surface text-[9px] font-tag-index font-bold">14 OPEN</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-sm text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-all font-headline-sm text-body-sm" href="#">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-[11px] text-text-muted">04</span>
+<span>Mentorship Hub</span>
+</div>
+<span class="material-symbols-outlined text-[16px] opacity-40">psychology</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-sm text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-all font-headline-sm text-body-sm" href="#">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-[11px] text-text-muted">05</span>
+<span>Events &amp; RSVPs</span>
+</div>
+<span class="material-symbols-outlined text-[16px] opacity-40">event</span>
+</a>
+<!-- ACTIVE PROTOCOL ITEM -->
+<div class="flex items-center justify-between px-3 py-2 rounded-sm bg-border-charcoal text-surface shadow-[3px_3px_0px_#FF5500] font-headline-sm text-body-sm font-bold my-0.5 transition-transform translate-x-1">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-[11px] text-accent-citron">06</span>
+<span class="tracking-tight">Success Spotlight</span>
+</div>
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-citron opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-accent-citron"></span>
+</span>
+</div>
+<a class="flex items-center justify-between px-3 py-2 rounded-sm text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-all font-headline-sm text-body-sm" href="#">
+<div class="flex items-center gap-2">
+<span class="font-tag-index text-[11px] text-text-muted">07</span>
+<span>Learning &amp; Certs</span>
+</div>
+<span class="material-symbols-outlined text-[16px] opacity-40">school</span>
+</a>
+</nav>
+</div>
+<!-- RAIL FOOTER: CRYPTO ATTESTATION STATUS -->
+<div class="p-md border-t-[1.5px] border-border-charcoal bg-surface-cream-subtle">
+<div class="flex items-center justify-between mb-2">
+<span class="font-tag-index text-[10px] text-text-muted uppercase">ATTESTATION ENGINE</span>
+<span class="font-tag-index text-[10px] text-accent-persimmon font-bold">PGVECTOR 0.6</span>
+</div>
+<div class="w-full bg-surface-variant h-1.5 rounded-full overflow-hidden border border-border-charcoal">
+<div class="bg-border-charcoal h-full w-4/5"></div>
+</div>
+<div class="flex justify-between items-center mt-2 text-[10px] font-label-mono text-text-secondary">
+<span>CONSENSUS SYNC</span>
+<span class="font-bold text-text-primary">100% SECURE</span>
+</div>
+</div>
+</aside>
+<!-- MAIN INTERACTIVE WORKSPACE -->
+<div class="flex-1 flex flex-col bg-surface min-w-0">
+<!-- SUB-HEADER CONSOLE OMNIBAR -->
+<div class="w-full px-grid-margin-desktop py-sm bg-surface-card border-b-[1.5px] border-border-charcoal flex flex-wrap items-center justify-between gap-md sticky top-16 z-30 shadow-[0_2px_0px_rgba(26,26,26,0.04)]">
+<!-- OMNISEARCH VECTOR INPUT -->
+<div class="flex-1 min-w-[280px] max-w-xl relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-muted text-[18px]">search</span>
+</div>
+<input class="w-full pl-9 pr-24 py-1.5 bg-surface text-text-primary text-body-sm font-body-md border-[1.5px] border-border-charcoal rounded-sm placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-persimmon focus:border-border-charcoal shadow-[2px_2px_0px_#1A1A1A] transition-all" placeholder="Search alumni milestones, venture rounds, papers via HNSW Vector Index..." type="text">
+<div class="absolute inset-y-0 right-0 pr-2 flex items-center gap-1 pointer-events-none">
+<kbd class="px-1.5 py-0.5 bg-surface-cream text-text-secondary font-label-mono text-[10px] border border-border-muted rounded">⌘K</kbd>
+<span class="font-tag-index text-[9px] text-accent-persimmon font-bold">EMBED:384D</span>
+</div>
+</div>
+<!-- RIGHT WORKSPACE TOGGLES & ACTIONS -->
+<div class="flex items-center gap-sm">
+<button class="px-3 py-1.5 bg-surface text-text-primary font-headline-sm text-body-sm font-semibold border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1.5" id="myMilestonesBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-accent-persimmon">history_edu</span>
+<span>MY DISPATCHES</span>
+<span class="px-1 bg-surface-variant font-tag-index text-[10px] border border-border-charcoal font-bold">2</span>
+</button>
+<button class="px-4 py-1.5 bg-accent-persimmon text-surface font-headline-sm text-body-sm font-bold border-[1.5px] border-border-charcoal rounded-sm shadow-[3px_3px_0px_#1A1A1A] hover:bg-secondary-container active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2" id="openTransmitModalBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span class="tracking-tight uppercase">+ TRANSMIT MILESTONE STORY</span>
+</button>
+</div>
+</div>
+<!-- MAIN FEED VIEWPORT -->
+<div class="p-grid-margin-desktop flex flex-col gap-xl">
+<!-- INTRO HERO BLOCK // WARM BRUTALIST INDEX HEADER -->
+<div class="flex flex-col lg:flex-row justify-between lg:items-end gap-lg pb-md border-b-[1.5px] border-border-charcoal">
+<div class="flex flex-col gap-xs max-w-3xl">
+<div class="flex items-center gap-xs">
+<span class="px-2 py-0.5 bg-border-charcoal text-accent-citron font-tag-index text-[11px] font-bold uppercase tracking-wider border border-border-charcoal">
+                [PILLAR // 05] PROTOCOL 06
+              </span>
+<span class="font-label-mono text-label-mono text-text-secondary uppercase">
+                VERIFIED MILESTONES &amp; VENTURE DISPATCHES
+              </span>
+<div class="flex items-center gap-1 ml-2 px-2 py-0.5 bg-surface-cream-subtle border border-border-muted rounded-full">
+<span class="w-2 h-2 rounded-full bg-led-active animate-pulse"></span>
+<span class="font-tag-index text-[10px] text-text-primary font-bold">BROADCAST STREAM ACTIVE</span>
+</div>
+</div>
+<h1 class="font-display-hero text-headline-lg lg:text-[44px] lg:line-height-[48px] text-text-primary tracking-tight font-bold uppercase mt-1">
+              Success Spotlight Wall &amp; Peer Chronicles
+            </h1>
+<p class="font-body-md text-text-secondary max-w-2xl text-[15px] leading-relaxed">
+              Peer-attested achievements, career pivots, venture funding rounds, and research breakthroughs from verified alumni fellows. Transparent cryptographic upvoting and direct mentorship routing.
+            </p>
+</div>
+<!-- REWARD BADGE WIDGET -->
+<div class="bg-surface-cream border-[1.5px] border-border-charcoal p-sm rounded-sm shadow-[3px_3px_0px_#1A1A1A] flex items-center gap-md shrink-0">
+<div class="w-12 h-12 bg-accent-citron border border-border-charcoal flex items-center justify-center">
+<span class="material-symbols-outlined text-text-primary text-[28px]">award_star</span>
+</div>
+<div class="flex flex-col">
+<div class="font-tag-index text-[10px] text-text-muted uppercase">FELLOW PARTICIPATION POOL</div>
+<div class="font-display-hero text-[20px] font-bold text-text-primary">+100 ALUMN-CR / DISPATCH</div>
+<div class="font-label-mono text-[10px] text-accent-persimmon font-bold">NEXT PAYOUT IN 04D:12H:09S</div>
+</div>
+</div>
+</div>
+<!-- TELEMETRY METRICS ROW (4 KEYSTONES) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-grid-gutter">
+<!-- METRIC 01 -->
+<div class="p-md bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 transition-transform">
+<div class="flex items-center justify-between font-tag-index text-tag-index text-text-muted mb-2">
+<span>STAT.01 // REPUTATION</span>
+<span class="text-accent-persimmon font-bold">● LIVE</span>
+</div>
+<div class="font-display-hero text-headline-lg font-bold text-text-primary tracking-tight">184</div>
+<div class="flex items-center justify-between mt-2 pt-2 border-t border-border-muted text-[11px] font-label-mono text-text-secondary">
+<span>Verified Milestones</span>
+<span class="font-bold text-text-primary">Cohorts '14–'25</span>
+</div>
+</div>
+<!-- METRIC 02 -->
+<div class="p-md bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 transition-transform">
+<div class="flex items-center justify-between font-tag-index text-tag-index text-text-muted mb-2">
+<span>STAT.02 // CAPITAL</span>
+<span class="text-led-active font-bold">▲ +38% YoY</span>
+</div>
+<div class="font-display-hero text-headline-lg font-bold text-text-primary tracking-tight">$48.2M</div>
+<div class="flex items-center justify-between mt-2 pt-2 border-t border-border-muted text-[11px] font-label-mono text-text-secondary">
+<span>Venture Aggregate</span>
+<span class="font-bold text-text-primary">2024–2026 Audit</span>
+</div>
+</div>
+<!-- METRIC 03 -->
+<div class="p-md bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 transition-transform">
+<div class="flex items-center justify-between font-tag-index text-tag-index text-text-muted mb-2">
+<span>STAT.03 // ATTESTATIONS</span>
+<span class="text-text-primary font-bold">100% AUDITED</span>
+</div>
+<div class="font-display-hero text-headline-lg font-bold text-text-primary tracking-tight">1,420</div>
+<div class="flex items-center justify-between mt-2 pt-2 border-t border-border-muted text-[11px] font-label-mono text-text-secondary">
+<span>Crypto Peer Vouchers</span>
+<span class="font-bold text-text-primary">On-Chain Zero-Knowledge</span>
+</div>
+</div>
+<!-- METRIC 04 -->
+<div class="p-md bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 transition-transform">
+<div class="flex items-center justify-between font-tag-index text-tag-index text-text-muted mb-2">
+<span>STAT.04 // PLACEMENT</span>
+<span class="text-accent-persimmon font-bold">HIGH DEMAND</span>
+</div>
+<div class="font-display-hero text-headline-lg font-bold text-text-primary tracking-tight">94.2%</div>
+<div class="flex items-center justify-between mt-2 pt-2 border-t border-border-muted text-[11px] font-label-mono text-text-secondary">
+<span>Referral Conversion</span>
+<span class="font-bold text-text-primary">&lt;18d Avg Routing</span>
+</div>
+</div>
+</div>
+<!-- PINNED ANNUAL FLAGSHIP SPOTLIGHT CARD (ARCHITECTURAL HERO ITEM) -->
+<div class="w-full bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[4px_4px_0px_#1A1A1A] overflow-hidden">
+<!-- TOP FLAG STRIP -->
+<div class="bg-surface-cream px-md py-xs border-b-[1.5px] border-border-charcoal flex flex-wrap items-center justify-between gap-sm">
+<div class="flex items-center gap-sm">
+<span class="px-2 py-0.5 bg-accent-persimmon text-surface font-tag-index text-tag-index font-bold uppercase tracking-wider">
+                FEATURED DISPATCH // VENTURE SEED
+              </span>
+<span class="font-tag-index text-tag-index text-text-secondary">DISPATCH ID #KNTX-8819</span>
+</div>
+<div class="flex items-center gap-md font-label-mono text-[11px] text-text-secondary">
+<span>SYNDICATE: FOUNDERS FUND + SEQUOIA</span>
+<span class="text-border-muted">|</span>
+<span class="text-text-primary font-bold">VALUATION: $45M POST</span>
+</div>
+</div>
+<div class="p-md lg:p-xl grid grid-cols-1 lg:grid-cols-12 gap-lg items-center">
+<!-- LEFT CONTENT COLUMN (7 COLS) -->
+<div class="lg:col-span-7 flex flex-col gap-sm">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-accent-persimmon font-bold">COHORT '18 &amp; '20 CO-FOUNDERS</span>
+<span class="text-text-muted font-label-mono text-xs">•</span>
+<span class="font-label-mono text-[11px] text-text-muted">TRANSMITTED 6 HOURS AGO</span>
+</div>
+<h2 class="font-display-hero text-headline-md lg:text-[28px] lg:leading-[34px] font-bold text-text-primary uppercase tracking-tight">
+                Kinetix Robotics raises $10M Seed for distributed actuator firmwares
+              </h2>
+<p class="font-body-md text-text-secondary text-[14px] leading-relaxed">
+                Founders Marcus Brody ('18, CEO) and Tara Vance ('20, CTO) closed their Series Seed syndicate led by Founders Fund with participation from Alumni Syndicate 03. The architecture replaces heavy centralized CAN-bus stacks with deterministic sub-millisecond Ethernet time-sensitive networks for humanoid bipedal locomotion.
+              </p>
+<!-- LEAD ARCHITECTS META PILLS -->
+<div class="flex flex-wrap items-center gap-xs pt-xs">
+<span class="px-2 py-1 bg-surface-cream border border-border-charcoal rounded-sm text-[11px] font-tag-index text-text-primary font-bold">
+                  LEAD: Marcus Brody ('18)
+                </span>
+<span class="px-2 py-1 bg-surface-cream border border-border-charcoal rounded-sm text-[11px] font-tag-index text-text-primary font-bold">
+                  CTO: Tara Vance ('20)
+                </span>
+<span class="px-2 py-1 bg-accent-citron/30 border border-border-charcoal rounded-sm text-[11px] font-tag-index text-text-primary font-bold">
+                  HIRING: 4 FIRMWARE FELLOWS
+                </span>
+</div>
+<!-- ACTION BAR -->
+<div class="flex flex-wrap items-center gap-sm mt-sm pt-md border-t border-border-muted">
+<button class="upvote-btn px-3 py-1.5 bg-surface border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-2 font-headline-sm text-body-sm font-bold text-text-primary" data-count="142" type="button">
+<span class="material-symbols-outlined text-[16px] text-accent-persimmon">thumb_up</span>
+<span>ENDORSE DISPATCH</span>
+<span class="count-badge px-1.5 py-0.2 bg-border-charcoal text-surface font-tag-index text-[10px] rounded-xs font-bold">+142</span>
+</button>
+<button class="px-3 py-1.5 bg-surface border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-2 font-headline-sm text-body-sm font-medium text-text-primary" onclick="alert('Dispatch thread loaded: 38 cryptographic notes from Cohorts 15 through 23.')" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-muted">chat_bubble</span>
+<span>38 COMMENTS &amp; NOTES</span>
+</button>
+<button class="founder-intro-btn px-3 py-1.5 bg-border-charcoal text-surface border-[1.5px] border-border-charcoal rounded-sm shadow-[2px_2px_0px_#FF5500] hover:bg-primary-container active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center gap-2 font-headline-sm text-body-sm font-bold" data-org="Kinetix Robotics" data-recipient="Marcus Brody &amp; Tara Vance" type="button">
+<span class="material-symbols-outlined text-[16px] text-accent-citron">send</span>
+<span>REQUEST FOUNDER INTRO</span>
+</button>
+<button class="px-3 py-1.5 text-accent-persimmon font-tag-index text-[11px] font-bold hover:underline ml-auto flex items-center gap-1" onclick="alert('Direct routing to Kinetix Robotics careers portal for verified fellows.')" type="button">
+<span>VIEW 4 REQUISITIONS</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- RIGHT SYSTEM SCHEMATIC VISUALIZATION (5 COLS) -->
+<div class="lg:col-span-5 bg-surface-cream border-[1.5px] border-border-charcoal p-md rounded-sm flex flex-col gap-sm shadow-[2px_2px_0px_#1A1A1A]">
+<div class="flex items-center justify-between border-b border-border-charcoal pb-xs font-tag-index text-[10px] text-text-secondary">
+<span>SYSTEM ARCHITECTURE DIAGRAM // KNTX-OS</span>
+<span class="text-accent-persimmon font-bold">LATENCY &lt;0.8MS</span>
+</div>
+<!-- SVG KINETIC WIREFRAME SCHEMATIC -->
+<div class="w-full h-44 bg-surface-card border border-border-muted relative flex items-center justify-center overflow-hidden p-2">
+<svg class="w-full h-full text-border-charcoal" fill="none" stroke="currentColor" viewBox="0 0 400 160">
+<!-- Grid backdrop -->
+<defs>
+<pattern height="16" id="grid" patternUnits="userSpaceOnUse" width="16">
+<path d="M 16 0 L 0 0 0 16" fill="none" stroke="#EFECE4" stroke-width="1"></path>
+</pattern>
+</defs>
+<rect fill="url(#grid)" height="160" width="400"></rect>
+<!-- Central Node -->
+<rect fill="#F7F4EE" height="70" rx="3" stroke="#1A1A1A" stroke-width="1.5" width="100" x="150" y="45"></rect>
+<text fill="#1A1A1A" font-family="Space Grotesk" font-size="10" font-weight="700" text-anchor="middle" x="200" y="75">KNTX-CORE</text>
+<text fill="#FF5500" font-family="Space Mono" font-size="8" text-anchor="middle" x="200" y="90">IEEE 802.1Qbv</text>
+<circle cx="160" cy="55" fill="#00E676" r="2.5"></circle>
+<!-- Satellite Nodes -->
+<!-- Actuator 01 -->
+<rect fill="#FFFFFF" height="35" rx="2" stroke="#1A1A1A" stroke-width="1.2" width="70" x="20" y="20"></rect>
+<text fill="#1A1A1A" font-family="Space Mono" font-size="8" text-anchor="middle" x="55" y="38">HIP_ACT_01</text>
+<path d="M 90 38 L 150 60" stroke="#1A1A1A" stroke-dasharray="3,3" stroke-width="1.2"></path>
+<!-- Actuator 02 -->
+<rect fill="#FFFFFF" height="35" rx="2" stroke="#1A1A1A" stroke-width="1.2" width="70" x="20" y="105"></rect>
+<text fill="#1A1A1A" font-family="Space Mono" font-size="8" text-anchor="middle" x="55" y="123">KNEE_ACT_02</text>
+<path d="M 90 120 L 150 100" stroke="#1A1A1A" stroke-dasharray="3,3" stroke-width="1.2"></path>
+<!-- Telemetry Ingest -->
+<rect fill="#FFFFFF" height="35" rx="2" stroke="#1A1A1A" stroke-width="1.2" width="70" x="310" y="20"></rect>
+<text fill="#1A1A1A" font-family="Space Mono" font-size="8" text-anchor="middle" x="345" y="38">IMU_ARRAY</text>
+<path d="M 310 38 L 250 60" stroke="#1A1A1A" stroke-width="1.2"></path>
+<!-- Vector Feedback -->
+<rect fill="#FFFFFF" height="35" rx="2" stroke="#1A1A1A" stroke-width="1.2" width="70" x="310" y="105"></rect>
+<text fill="#1A1A1A" font-family="Space Mono" font-size="8" text-anchor="middle" x="345" y="123">HNSW_MAP</text>
+<path d="M 310 120 L 250 100" stroke="#1A1A1A" stroke-width="1.2"></path>
+<!-- Animated pulse glyph -->
+<circle cx="200" cy="100" fill="#D9E021" r="3">
+<animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="1;0.2;1"></animate>
+</circle>
+</svg>
+</div>
+<!-- DIAGNOSTIC FOOTER -->
+<div class="flex items-center justify-between text-[11px] font-label-mono text-text-secondary">
+<span>PEER ATTESTORS: 14 SENIOR FELLOWS</span>
+<span class="text-text-primary font-bold">100% REPRODUCIBLE</span>
+</div>
+</div>
+</div>
+</div>
+<!-- FILTER, SORTER & TOPOLOGY CONTROLS BAR (PHYSICAL CONSOLE SWITCHER) -->
+<div class="w-full bg-surface-cream border-[1.5px] border-border-charcoal p-sm rounded-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-sm shadow-[2px_2px_0px_#1A1A1A]">
+<!-- CATEGORY SEGMENTED TABS -->
+<div class="flex items-center overflow-x-auto gap-1 no-scrollbar pb-1 md:pb-0" id="filterTabs">
+<button class="filter-tab active px-3 py-1 bg-border-charcoal text-surface text-body-sm font-headline-sm font-bold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] whitespace-nowrap" data-category="ALL">
+              ALL DISPATCHES (184)
+            </button>
+<button class="filter-tab px-3 py-1 bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-card text-body-sm font-headline-sm font-semibold border border-border-charcoal rounded-sm whitespace-nowrap transition-colors" data-category="VENTURE">
+              VENTURE &amp; STARTUPS (42)
+            </button>
+<button class="filter-tab px-3 py-1 bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-card text-body-sm font-headline-sm font-semibold border border-border-charcoal rounded-sm whitespace-nowrap transition-colors" data-category="CAREER">
+              CAREER PIVOTS &amp; PROMOTIONS (68)
+            </button>
+<button class="filter-tab px-3 py-1 bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-card text-body-sm font-headline-sm font-semibold border border-border-charcoal rounded-sm whitespace-nowrap transition-colors" data-category="RESEARCH">
+              RESEARCH &amp; PAPERS (34)
+            </button>
+<button class="filter-tab px-3 py-1 bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-card text-body-sm font-headline-sm font-semibold border border-border-charcoal rounded-sm whitespace-nowrap transition-colors" data-category="PATENT">
+              PATENTS &amp; ARCHITECTURE (24)
+            </button>
+</div>
+<!-- TOPOLOGY & ORDER CONTROLS -->
+<div class="flex items-center gap-xs shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-border-muted">
+<!-- TOPOLOGY HUBS -->
+<div class="flex items-center bg-surface border border-border-charcoal p-0.5 rounded-sm">
+<span class="px-2 py-0.5 text-[10px] font-tag-index text-text-muted uppercase">GEO:</span>
+<button class="px-1.5 py-0.5 text-[11px] font-tag-index font-bold bg-border-charcoal text-surface">ALL</button>
+<button class="px-1.5 py-0.5 text-[11px] font-tag-index text-text-secondary hover:text-text-primary">SF</button>
+<button class="px-1.5 py-0.5 text-[11px] font-tag-index text-text-secondary hover:text-text-primary">NYC</button>
+<button class="px-1.5 py-0.5 text-[11px] font-tag-index text-text-secondary hover:text-text-primary">BLR</button>
+<button class="px-1.5 py-0.5 text-[11px] font-tag-index text-text-secondary hover:text-text-primary">REMOTE</button>
+</div>
+<!-- ORDER BY SELECT -->
+<select class="px-2 py-1 bg-surface text-text-primary text-[12px] font-headline-sm font-semibold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] focus:outline-none">
+<option>MOST UPVOTED</option>
+<option>LATEST DISPATCHES</option>
+<option>HIGHEST IMPACT SCORE</option>
+</select>
+</div>
+</div>
+<!-- 4-COLUMN MODULAR STORY CARDS GRID -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-grid-gutter" id="storiesGrid">
+<!-- STORY CARD 01: SARAH JENKINS (CAREER) -->
+<article class="story-card bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[4px_4px_0px_#1A1A1A] transition-all" data-category="CAREER">
+<div>
+<!-- TOP NUMBERED INDEX BAR -->
+<div class="p-xs bg-surface-cream border-b-[1.5px] border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-surface border border-border-charcoal font-tag-index text-[10px] font-bold">01</span>
+<span class="font-tag-index text-[10px] text-text-secondary uppercase">PROMOTION // ARCHITECTURE</span>
+</div>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-accent-citron/30 text-text-primary font-tag-index text-[10px] font-bold border border-border-charcoal">
+                  ★ IMPACT 98
+                </span>
+</div>
+<!-- CARD CONTENT CHAMBER -->
+<div class="p-md flex flex-col gap-xs">
+<div class="flex items-start justify-between gap-sm">
+<div class="flex flex-col">
+<h3 class="font-headline-sm text-body-lg font-bold text-text-primary tracking-tight leading-snug">
+                      Sarah Jenkins ('16)
+                    </h3>
+<span class="font-label-mono text-[11px] text-accent-persimmon font-semibold">Elevated to Principal Architect at Snowflake Compute</span>
+</div>
+<div class="w-10 h-10 rounded-sm bg-surface-cream border border-border-charcoal flex items-center justify-center font-tag-index font-bold text-text-primary shrink-0 shadow-[1px_1px_0px_#1A1A1A]">
+                    SJ
+                  </div>
+</div>
+<p class="font-body-sm text-text-secondary text-body-sm mt-1 leading-normal">
+                  Heading core query vector execution engines across hybrid warehouse nodes. Overseeing 40+ staff engineers and open-sourcing Apache Arrow memory-mapping patches.
+                </p>
+<!-- REFERRAL SLOTS BADGE -->
+<div class="mt-2 p-2 bg-surface-cream-subtle border border-border-muted rounded-sm flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-accent-persimmon"></span>
+<span class="font-tag-index text-[10px] text-text-primary font-bold">5 OPEN REFERRAL SLOTS</span>
+</div>
+<span class="font-label-mono text-[10px] text-text-muted">SAN MATEO / REM</span>
+</div>
+</div>
+</div>
+<!-- FOOTER ACTIONS -->
+<div class="p-xs bg-surface border-t-[1.5px] border-border-charcoal flex flex-col gap-xs">
+<div class="grid grid-cols-2 gap-xs">
+<button class="referral-modal-btn w-full py-1.5 bg-border-charcoal text-surface font-headline-sm text-[11px] font-bold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-primary-container active:translate-y-0.5" data-company="Snowflake Compute" data-peer="Sarah Jenkins ('16)" data-role="Principal Architect" type="button">
+                  ASK FOR REFERRAL
+                </button>
+<button class="w-full py-1.5 bg-surface text-text-primary font-headline-sm text-[11px] font-semibold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-y-0.5" onclick="alert('Peer Kudos Sent: Dr. Elena Vance transmitted +50 ALUMN-CR endorsement to Sarah Jenkins.')" type="button">
+                  SEND KUDOS
+                </button>
+</div>
+<div class="flex items-center justify-between pt-1 border-t border-border-muted px-1">
+<button class="upvote-btn flex items-center gap-1 font-tag-index text-[11px] text-text-primary font-bold hover:text-accent-persimmon" data-count="89" type="button">
+<span class="material-symbols-outlined text-[15px] text-accent-persimmon">thumb_up</span>
+<span>UPVOTE</span>
+<span class="count-badge font-label-mono text-text-secondary">(89)</span>
+</button>
+<span class="font-label-mono text-[10px] text-text-muted">3 PEER ATTESTS</span>
+</div>
+</div>
+</article>
+<!-- STORY CARD 02: DAVID CHEN (STARTUP / VENTURE) -->
+<article class="story-card bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[4px_4px_0px_#1A1A1A] transition-all" data-category="VENTURE">
+<div>
+<!-- TOP NUMBERED INDEX BAR -->
+<div class="p-xs bg-surface-cream border-b-[1.5px] border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-surface border border-border-charcoal font-tag-index text-[10px] font-bold">02</span>
+<span class="font-tag-index text-[10px] text-accent-persimmon uppercase font-bold">VENTURE // PRE-SEED</span>
+</div>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-accent-citron/30 text-text-primary font-tag-index text-[10px] font-bold border border-border-charcoal">
+                  ★ IMPACT 95
+                </span>
+</div>
+<!-- CARD CONTENT CHAMBER -->
+<div class="p-md flex flex-col gap-xs">
+<div class="flex items-start justify-between gap-sm">
+<div class="flex flex-col">
+<h3 class="font-headline-sm text-body-lg font-bold text-text-primary tracking-tight leading-snug">
+                      David Chen ('17)
+                    </h3>
+<span class="font-label-mono text-[11px] text-accent-persimmon font-semibold">Co-Founds Neuromorphic Labs (YC W26)</span>
+</div>
+<div class="w-10 h-10 rounded-sm bg-surface-cream border border-border-charcoal flex items-center justify-center font-tag-index font-bold text-text-primary shrink-0 shadow-[1px_1px_0px_#1A1A1A]">
+                    DC
+                  </div>
+</div>
+<p class="font-body-sm text-text-secondary text-body-sm mt-1 leading-normal">
+                  Secured $3.2M Pre-Seed from Khosla Ventures &amp; Root Ventures. Fabricating sub-milliwatt analog spiking neural network chips for edge robotics and drone audio sensors.
+                </p>
+<!-- METRICS BLOCK -->
+<div class="mt-2 p-2 bg-surface-cream-subtle border border-border-muted rounded-sm flex items-center justify-between">
+<div class="flex items-center gap-1">
+<span class="font-tag-index text-[10px] text-text-primary font-bold">VALUATION: $22M POST</span>
+</div>
+<span class="font-label-mono text-[10px] text-accent-persimmon font-bold">HIRING: 2 ASIC ENGRS</span>
+</div>
+</div>
+</div>
+<!-- FOOTER ACTIONS -->
+<div class="p-xs bg-surface border-t-[1.5px] border-border-charcoal flex flex-col gap-xs">
+<div class="grid grid-cols-2 gap-xs">
+<button class="founder-intro-btn w-full py-1.5 bg-accent-persimmon text-surface font-headline-sm text-[11px] font-bold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-secondary-container active:translate-y-0.5" data-org="Neuromorphic Labs" data-recipient="David Chen ('17)" type="button">
+                  BOOK FLASH INTRO
+                </button>
+<button class="w-full py-1.5 bg-surface text-text-primary font-headline-sm text-[11px] font-semibold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-y-0.5" onclick="alert('Vouch Protocol: Cryptographic endorsement voucher added to David Chen Neuromorphic Labs on-chain ledger.')" type="button">
+                  VOUCH / ENDORSE
+                </button>
+</div>
+<div class="flex items-center justify-between pt-1 border-t border-border-muted px-1">
+<button class="upvote-btn flex items-center gap-1 font-tag-index text-[11px] text-text-primary font-bold hover:text-accent-persimmon" data-count="114" type="button">
+<span class="material-symbols-outlined text-[15px] text-accent-persimmon">thumb_up</span>
+<span>UPVOTE</span>
+<span class="count-badge font-label-mono text-text-secondary">(114)</span>
+</button>
+<span class="font-label-mono text-[10px] text-text-muted">YC W26 // BATCH VERIFIED</span>
+</div>
+</div>
+</article>
+<!-- STORY CARD 03: ELENA ROSTOVA (RESEARCH / PAPERS) -->
+<article class="story-card bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[4px_4px_0px_#1A1A1A] transition-all" data-category="RESEARCH">
+<div>
+<!-- TOP NUMBERED INDEX BAR -->
+<div class="p-xs bg-surface-cream border-b-[1.5px] border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-surface border border-border-charcoal font-tag-index text-[10px] font-bold">03</span>
+<span class="font-tag-index text-[10px] text-text-secondary uppercase">RESEARCH // CRYPTOGRAPHY</span>
+</div>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-accent-citron/30 text-text-primary font-tag-index text-[10px] font-bold border border-border-charcoal">
+                  ★ IMPACT 94
+                </span>
+</div>
+<!-- CARD CONTENT CHAMBER -->
+<div class="p-md flex flex-col gap-xs">
+<div class="flex items-start justify-between gap-sm">
+<div class="flex flex-col">
+<h3 class="font-headline-sm text-body-lg font-bold text-text-primary tracking-tight leading-snug">
+                      Elena Rostova ('21)
+                    </h3>
+<span class="font-label-mono text-[11px] text-accent-persimmon font-semibold">Publishes FIPS 140-3 Post-Quantum Cryptography Paper</span>
+</div>
+<div class="w-10 h-10 rounded-sm bg-surface-cream border border-border-charcoal flex items-center justify-center font-tag-index font-bold text-text-primary shrink-0 shadow-[1px_1px_0px_#1A1A1A]">
+                    ER
+                  </div>
+</div>
+<p class="font-body-sm text-text-secondary text-body-sm mt-1 leading-normal">
+                  Presented at IEEE S&amp;P Oakland: "Deterministic Kyber Lattice Enclaves for Decentralized RPC Nodes". Accepted by NIST standards committee for level 5 hardware compliance.
+                </p>
+<!-- CITATION BLOCK -->
+<div class="mt-2 p-2 bg-surface-cream-subtle border border-border-muted rounded-sm flex items-center justify-between">
+<span class="font-tag-index text-[10px] text-text-primary font-bold">IEEE S&amp;P '25 // BEST PAPER</span>
+<span class="font-label-mono text-[10px] text-text-muted">DOI: 10.1109/SP.2025</span>
+</div>
+</div>
+</div>
+<!-- FOOTER ACTIONS -->
+<div class="p-xs bg-surface border-t-[1.5px] border-border-charcoal flex flex-col gap-xs">
+<div class="grid grid-cols-2 gap-xs">
+<button class="w-full py-1.5 bg-surface text-text-primary font-headline-sm text-[11px] font-bold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-y-0.5" onclick="alert('Opening Peer-Reviewed PDF Archive via ArXiv Enclave Node (1.4MB)')" type="button">
+                  READ PAPER PDF
+                </button>
+<button class="w-full py-1.5 bg-surface text-text-primary font-headline-sm text-[11px] font-semibold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-y-0.5" onclick="alert('Peer Review notes: 18 Fellow remarks annotated in cryptographic ledger.')" type="button">
+                  PEER NOTES
+                </button>
+</div>
+<div class="flex items-center justify-between pt-1 border-t border-border-muted px-1">
+<button class="upvote-btn flex items-center gap-1 font-tag-index text-[11px] text-text-primary font-bold hover:text-accent-persimmon" data-count="76" type="button">
+<span class="material-symbols-outlined text-[15px] text-accent-persimmon">thumb_up</span>
+<span>UPVOTE</span>
+<span class="count-badge font-label-mono text-text-secondary">(76)</span>
+</button>
+<span class="font-label-mono text-[10px] text-text-muted">CAMBRIDGE LABS</span>
+</div>
+</div>
+</article>
+<!-- STORY CARD 04: PRATEEK SHAH (INFRA / ARCHITECTURE) -->
+<article class="story-card bg-surface-card border-[1.5px] border-border-charcoal rounded-sm shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between hover:-translate-y-1 hover:shadow-[4px_4px_0px_#1A1A1A] transition-all" data-category="PATENT">
+<div>
+<!-- TOP NUMBERED INDEX BAR -->
+<div class="p-xs bg-surface-cream border-b-[1.5px] border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-surface border border-border-charcoal font-tag-index text-[10px] font-bold">04</span>
+<span class="font-tag-index text-[10px] text-text-secondary uppercase">INFRA // DATABASE CORE</span>
+</div>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-accent-citron/30 text-text-primary font-tag-index text-[10px] font-bold border border-border-charcoal">
+                  ★ IMPACT 96
+                </span>
+</div>
+<!-- CARD CONTENT CHAMBER -->
+<div class="p-md flex flex-col gap-xs">
+<div class="flex items-start justify-between gap-sm">
+<div class="flex flex-col">
+<h3 class="font-headline-sm text-body-lg font-bold text-text-primary tracking-tight leading-snug">
+                      Prateek Shah ('19)
+                    </h3>
+<span class="font-label-mono text-[11px] text-accent-persimmon font-semibold">Leads Stripe Core Ledger Migration to Spanner</span>
+</div>
+<div class="w-10 h-10 rounded-sm bg-surface-cream border border-border-charcoal flex items-center justify-center font-tag-index font-bold text-text-primary shrink-0 shadow-[1px_1px_0px_#1A1A1A]">
+                    PS
+                  </div>
+</div>
+<p class="font-body-sm text-text-secondary text-body-sm mt-1 leading-normal">
+                  Architected zero-downtime cutover of $1.2T annual gross transaction ledger from monolithic PostgreSQL clusters to Google Cloud Spanner distributed consensus instances.
+                </p>
+<!-- MENTORSHIP AVAILABILITY BADGE -->
+<div class="mt-2 p-2 bg-surface-cream-subtle border border-border-muted rounded-sm flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-led-active"></span>
+<span class="font-tag-index text-[10px] text-text-primary font-bold">MENTOR HOURS: 2 SLOTS</span>
+</div>
+<span class="font-label-mono text-[10px] text-text-muted">DISTRIBUTED CONSENSUS</span>
+</div>
+</div>
+</div>
+<!-- FOOTER ACTIONS -->
+<div class="p-xs bg-surface border-t-[1.5px] border-border-charcoal flex flex-col gap-xs">
+<div class="grid grid-cols-2 gap-xs">
+<button class="referral-modal-btn w-full py-1.5 bg-border-charcoal text-surface font-headline-sm text-[11px] font-bold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-primary-container active:translate-y-0.5" data-company="Stripe" data-peer="Prateek Shah ('19)" data-role="Staff Staff Infrastructure Engineer" type="button">
+                  REQUEST 1:1 MENTOR
+                </button>
+<button class="w-full py-1.5 bg-surface text-text-primary font-headline-sm text-[11px] font-semibold border border-border-charcoal rounded-sm shadow-[1px_1px_0px_#1A1A1A] hover:bg-surface-cream-subtle active:translate-y-0.5" onclick="alert('Viewing 3-Year Technical Architecture Evolution &amp; Migration Timeline for Prateek Shah.')" type="button">
+                  VIEW TIMELINE
+                </button>
+</div>
+<div class="flex items-center justify-between pt-1 border-t border-border-muted px-1">
+<button class="upvote-btn flex items-center gap-1 font-tag-index text-[11px] text-text-primary font-bold hover:text-accent-persimmon" data-count="102" type="button">
+<span class="material-symbols-outlined text-[15px] text-accent-persimmon">thumb_up</span>
+<span>UPVOTE</span>
+<span class="count-badge font-label-mono text-text-secondary">(102)</span>
+</button>
+<span class="font-label-mono text-[10px] text-text-muted">DUBLIN / SFO NODE</span>
+</div>
+</div>
+</article>
+</div>
+<!-- REAL-TIME DISPATCH BROADCAST TICKER -->
+<div class="w-full bg-surface-cream border-[1.5px] border-border-charcoal p-sm rounded-sm flex items-center justify-between gap-md overflow-hidden">
+<div class="flex items-center gap-sm shrink-0">
+<span class="px-2 py-0.5 bg-accent-persimmon text-surface font-tag-index text-[10px] font-bold uppercase">
+              WIRE STREAM
+            </span>
+<span class="font-tag-index text-[11px] text-text-primary font-bold">COHORT ATTESTATION LEDGER:</span>
+</div>
+<div class="marquee-track flex-1 overflow-hidden whitespace-nowrap text-text-secondary font-label-mono text-[11px]">
+<span class="inline-block animate-pulse text-accent-persimmon mr-2">●</span>
+<span class="font-bold text-text-primary">Kavita Rao ('23)</span> filed USPTO patent for zero-copy IPC mempools &nbsp;///&nbsp;
+            <span class="font-bold text-text-primary">Julian Mercer ('15)</span> promoted to VP Engineering at Databricks Core &nbsp;///&nbsp;
+            <span class="font-bold text-text-primary">Zackary Bloom ('20)</span> closed $4.1M for Quantum Circuit Compiler &nbsp;///&nbsp;
+            <span class="font-bold text-text-primary">Mei-Ling Zhou ('18)</span> awarded ACM SIGCOMM Distinguished Paper
+          </div>
+<div class="shrink-0 font-tag-index text-[10px] text-text-muted hidden md:inline">
+            UPDATED: JUST NOW
+          </div>
+</div>
+<!-- PROTOCOL GOVERNANCE & CRYPTOGRAPHIC ATTESTATION SPECS PANEL -->
+<div class="p-md lg:p-lg bg-surface-cream border-[1.5px] border-border-charcoal rounded-sm grid grid-cols-1 md:grid-cols-3 gap-md text-text-secondary">
+<div class="flex flex-col gap-xs">
+<div class="flex items-center gap-2 text-text-primary font-headline-sm text-body-sm font-bold">
+<span class="material-symbols-outlined text-[18px] text-accent-persimmon">verified_user</span>
+<span>PEER ATTESTATION PROTOCOL</span>
+</div>
+<p class="text-[12px] font-body-sm leading-relaxed">
+              Every career milestone, promotion, and funding announcement requires 2+ cryptographically signed vouchers from fellow alumni holding verified tenure before graduating to the Network Wall.
+            </p>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex items-center gap-2 text-text-primary font-headline-sm text-body-sm font-bold">
+<span class="material-symbols-outlined text-[18px] text-accent-cobalt">hub</span>
+<span>PGVECTOR SEMANTIC INDEXING</span>
+</div>
+<p class="text-[12px] font-body-sm leading-relaxed">
+              All narrative dispatches are mapped into 384-dimensional dense vectors using HNSW indexing. Querying by role, tech stack, or investment stage provides sub-14ms recall.
+            </p>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex items-center gap-2 text-text-primary font-headline-sm text-body-sm font-bold">
+<span class="material-symbols-outlined text-[18px] text-accent-citron">savings</span>
+<span>ALUMN-CR REWARD POOL</span>
+</div>
+<p class="text-[12px] font-body-sm leading-relaxed">
+              Active fellows transmitting attested milestones receive +100 ALUMN-CR governance tokens redeemable for exclusive retreat passes, angel co-investment syndicates, and hardware grants.
+            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL 01: TRANSMIT MILESTONE STORY MODAL (INTERACTIVE DIALOG) -->
+<div class="fixed inset-0 z-50 bg-border-charcoal/70 backdrop-blur-sm hidden items-center justify-center p-md" id="transmitModal">
+<div class="w-full max-w-xl bg-surface border-[2px] border-border-charcoal rounded-sm shadow-[8px_8px_0px_#1A1A1A] flex flex-col overflow-hidden">
+<!-- MODAL HEADER -->
+<div class="p-md bg-surface-cream border-b-[1.5px] border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-accent-persimmon text-surface font-tag-index text-[10px] font-bold uppercase">
+            PROTOCOL 06 // TRANSMITTER
+          </span>
+<h3 class="font-headline-sm text-body-lg font-bold text-text-primary uppercase tracking-tight">
+            Transmit Milestone Story
+          </h3>
+</div>
+<button class="text-text-secondary hover:text-text-primary p-1" id="closeTransmitModalBtn" type="button">
+<span class="material-symbols-outlined text-[22px]">close</span>
+</button>
+</div>
+<!-- FORM BODY -->
+<form class="p-md lg:p-lg flex flex-col gap-md" id="milestoneForm">
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+            01 // MILESTONE CATEGORY
+          </label>
+<select class="w-full px-3 py-2 bg-surface-card border-[1.5px] border-border-charcoal rounded-sm text-body-sm font-body-md text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-persimmon">
+<option value="VENTURE">Venture Round / Startup Funding (Pre-Seed to Series B)</option>
+<option value="CAREER">Executive Elevation / Principal / Staff Promotion</option>
+<option value="RESEARCH">Peer-Reviewed Paper / IEEE or ACM Publication</option>
+<option value="PATENT">Patent Award / Novel Hardware Architecture</option>
+<option value="ACQUISITION">Company Acquisition / Exit Event</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+            02 // HEADLINE &amp; FELLOW DETAILS
+          </label>
+<input class="w-full px-3 py-2 bg-surface-card border-[1.5px] border-border-charcoal rounded-sm text-body-sm font-body-md text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-persimmon" placeholder="e.g., Elevated to VP Engineering at Anthropic / Closed $4.5M Seed" required="" type="text">
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+              03 // COHORT YEAR
+            </label>
+<input class="w-full px-3 py-2 bg-surface-cream text-text-secondary border border-border-muted rounded-sm text-body-sm font-label-mono text-[12px]" readonly="" type="text" value="2022 (Verified Fellow Elena Vance)">
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+              04 // PRIMARY LOCATION
+            </label>
+<input class="w-full px-3 py-2 bg-surface-card border-[1.5px] border-border-charcoal rounded-sm text-body-sm font-body-md text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-persimmon" placeholder="e.g., San Francisco, CA / Remote" type="text">
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+            05 // STORY NARRATIVE &amp; IMPACT METRICS
+          </label>
+<textarea class="w-full px-3 py-2 bg-surface-card border-[1.5px] border-border-charcoal rounded-sm text-body-sm font-body-md text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-persimmon" placeholder="Explain the technical milestone, the business inflection point, and opportunities for fellow alumni (referral slots, open reqs, syndicate co-investing)..." rows="3"></textarea>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+            06 // PROOF LINK / ATTESTATION URL
+          </label>
+<input class="w-full px-3 py-2 bg-surface-card border-[1.5px] border-border-charcoal rounded-sm text-body-sm font-body-md text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-persimmon" placeholder="https://techcrunch.com/... or https://arxiv.org/abs/..." type="url">
+</div>
+<!-- MODAL ACTIONS -->
+<div class="pt-sm border-t border-border-charcoal flex items-center justify-between gap-sm">
+<span class="font-label-mono text-[11px] text-text-muted">
+            +100 ALUMN-CR ON PEER VERIFY
+          </span>
+<div class="flex items-center gap-sm">
+<button class="px-4 py-2 bg-surface text-text-primary font-headline-sm text-body-sm font-semibold border border-border-charcoal rounded-sm hover:bg-surface-cream" id="cancelTransmitModalBtn" type="button">
+              CANCEL
+            </button>
+<button class="px-5 py-2 bg-accent-persimmon text-surface font-headline-sm text-body-sm font-bold border border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] hover:bg-secondary-container active:translate-y-0.5" type="submit">
+              SUBMIT TO LEDGER
+            </button>
+</div>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL 02: PEER ROUTING / FLASH INTRO MODAL -->
+<div class="fixed inset-0 z-50 bg-border-charcoal/70 backdrop-blur-sm hidden items-center justify-center p-md" id="routingModal">
+<div class="w-full max-w-lg bg-surface border-[2px] border-border-charcoal rounded-sm shadow-[8px_8px_0px_#1A1A1A] flex flex-col overflow-hidden">
+<div class="p-md bg-surface-cream border-b-[1.5px] border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-accent-citron text-text-primary font-tag-index text-[10px] font-bold uppercase border border-border-charcoal">
+            DIRECT FELLOW INTRO
+          </span>
+<h3 class="font-headline-sm text-body-lg font-bold text-text-primary uppercase tracking-tight" id="routingModalTitle">
+            Request Intro
+          </h3>
+</div>
+<button class="text-text-secondary hover:text-text-primary p-1" id="closeRoutingModalBtn" type="button">
+<span class="material-symbols-outlined text-[22px]">close</span>
+</button>
+</div>
+<div class="p-md lg:p-lg flex flex-col gap-md">
+<div class="p-sm bg-surface-cream-subtle border border-border-muted rounded-sm">
+<div class="font-tag-index text-[10px] text-text-muted">RECIPIENT PEER</div>
+<div class="font-headline-sm text-body-md font-bold text-text-primary" id="routingRecipient">Fellow</div>
+<div class="font-label-mono text-[11px] text-text-secondary" id="routingTargetContext">Context</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+            INTRO OBJECTIVE
+          </label>
+<select class="w-full px-3 py-2 bg-surface-card border-[1.5px] border-border-charcoal rounded-sm text-body-sm font-body-md text-text-primary">
+<option>Direct Employee Referral Application</option>
+<option>Technical Advisory &amp; Architecture Deep-Dive</option>
+<option>Angel Co-Investment Syndicate Allocation</option>
+<option>1:1 Mentorship Session (Fellow Protocol 04)</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-tag-index text-[11px] uppercase tracking-wider text-text-primary font-bold">
+            MESSAGE TO FELLOW (ESCROW ROUTED)
+          </label>
+<textarea class="w-full px-3 py-2 bg-surface-card border-[1.5px] border-border-charcoal rounded-sm text-body-sm font-body-md text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-persimmon" placeholder="Introduce your background and specific technical ask..." rows="3">Hi fellow, I saw your milestone dispatch on the PRO-ALUMN Wall. Elena Vance ('22) here—would love 10 minutes to discuss collaboration.</textarea>
+</div>
+<div class="flex items-center justify-between pt-sm border-t border-border-charcoal">
+<span class="font-label-mono text-[10px] text-accent-persimmon font-bold">
+            GUARANTEED PEER SLA: &lt;48 HOURS
+          </span>
+<button class="px-5 py-2 bg-border-charcoal text-surface font-headline-sm text-body-sm font-bold border border-border-charcoal rounded-sm shadow-[2px_2px_0px_#1A1A1A] hover:bg-primary-container active:translate-y-0.5" id="sendRoutingBtn" type="button">
+            DISPATCH REQUEST
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- TOAST NOTIFICATION CONTAINER -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="toastNotification">
+<div class="px-4 py-3 bg-border-charcoal text-surface border-2 border-accent-citron rounded-sm shadow-[4px_4px_0px_#FF5500] flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-citron text-[20px]">check_circle</span>
+<div class="flex flex-col">
+<span class="font-tag-index text-[11px] font-bold text-accent-citron" id="toastTitle">SUCCESS</span>
+<span class="font-label-mono text-[12px] text-surface" id="toastMsg">Action executed on peer ledger.</span>
+</div>
+</div>
+</div>
+<!-- INLINE CLIENT CONTROLLER -->
+<script>
+    // TOAST UTILITY
+    function showToast(title, msg) {
+      const toast = document.getElementById('toastNotification');
+      const toastTitle = document.getElementById('toastTitle');
+      const toastMsg = document.getElementById('toastMsg');
+      toastTitle.innerText = title;
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3500);
+    }
+
+    // MODAL HANDLERS
+    const transmitModal = document.getElementById('transmitModal');
+    const openTransmitBtn = document.getElementById('openTransmitModalBtn');
+    const closeTransmitBtn = document.getElementById('closeTransmitModalBtn');
+    const cancelTransmitBtn = document.getElementById('cancelTransmitModalBtn');
+    const milestoneForm = document.getElementById('milestoneForm');
+
+    function toggleTransmitModal(open) {
+      if (open) {
+        transmitModal.classList.remove('hidden');
+        transmitModal.classList.add('flex');
+      } else {
+        transmitModal.classList.add('hidden');
+        transmitModal.classList.remove('flex');
+      }
+    }
+
+    if (openTransmitBtn) openTransmitBtn.addEventListener('click', () => toggleTransmitModal(true));
+    if (closeTransmitBtn) closeTransmitBtn.addEventListener('click', () => toggleTransmitModal(false));
+    if (cancelTransmitBtn) cancelTransmitBtn.addEventListener('click', () => toggleTransmitModal(false));
+
+    if (milestoneForm) {
+      milestoneForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        toggleTransmitModal(false);
+        showToast('MILESTONE BROADCAST', 'Milestone submitted to Cohort Attestation consensus. +100 ALUMN-CR pending.');
+      });
+    }
+
+    // ROUTING / INTRO MODAL
+    const routingModal = document.getElementById('routingModal');
+    const closeRoutingBtn = document.getElementById('closeRoutingModalBtn');
+    const sendRoutingBtn = document.getElementById('sendRoutingBtn');
+    const routingRecipient = document.getElementById('routingRecipient');
+    const routingTargetContext = document.getElementById('routingTargetContext');
+    const routingModalTitle = document.getElementById('routingModalTitle');
+
+    function openRouting(recipient, context, isReferral = false) {
+      routingModalTitle.innerText = isReferral ? 'Request Direct Referral' : 'Request Flash Intro';
+      routingRecipient.innerText = recipient;
+      routingTargetContext.innerText = context;
+      routingModal.classList.remove('hidden');
+      routingModal.classList.add('flex');
+    }
+
+    if (closeRoutingBtn) {
+      closeRoutingBtn.addEventListener('click', () => {
+        routingModal.classList.add('hidden');
+        routingModal.classList.remove('flex');
+      });
+    }
+
+    if (sendRoutingBtn) {
+      sendRoutingBtn.addEventListener('click', () => {
+        routingModal.classList.add('hidden');
+        routingModal.classList.remove('flex');
+        showToast('REQUEST TRANSMITTED', 'Encrypted peer intro request queued. SLA &lt;48h response.');
+      });
+    }
+
+    // ATTACH INTRO & REFERRAL LISTENERS
+    document.querySelectorAll('.founder-intro-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const recipient = btn.getAttribute('data-recipient') || 'Founder';
+        const org = btn.getAttribute('data-org') || 'Venture';
+        openRouting(recipient, `Direct founder intro via ${org}`, false);
+      });
+    });
+
+    document.querySelectorAll('.referral-modal-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const peer = btn.getAttribute('data-peer') || 'Fellow';
+        const role = btn.getAttribute('data-role') || 'Role';
+        const company = btn.getAttribute('data-company') || 'Company';
+        openRouting(peer, `${role} at ${company} (Internal Fast-Track)`, true);
+      });
+    });
+
+    // DYNAMIC UPVOTE COUNTERS WITH HAPTIC BOUNCE
+    document.querySelectorAll('.upvote-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.dataset.voted === 'true') return;
+        this.dataset.voted = 'true';
+        let count = parseInt(this.getAttribute('data-count') || '0', 10);
+        count += 1;
+        this.setAttribute('data-count', count);
+        
+        const countBadge = this.querySelector('.count-badge');
+        if (countBadge) {
+          countBadge.innerText = `+${count}`;
+        }
+        this.classList.add('bg-accent-citron/30', 'text-border-charcoal');
+        showToast('UPVOTE RECORDED', 'Cryptographic peer endorsement committed to ledger.');
+      });
+    });
+
+    // CATEGORY FILTERING LOGIC
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const storyCards = document.querySelectorAll('.story-card');
+
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => {
+          t.classList.remove('bg-border-charcoal', 'text-surface', 'active');
+          t.classList.add('bg-surface', 'text-text-secondary');
+        });
+        tab.classList.add('bg-border-charcoal', 'text-surface', 'active');
+        tab.classList.remove('bg-surface', 'text-text-secondary');
+
+        const cat = tab.getAttribute('data-category');
+        storyCards.forEach(card => {
+          if (cat === 'ALL' || card.getAttribute('data-category') === cat) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // MY MILESTONES QUICK BUTTON
+    const myMilestonesBtn = document.getElementById('myMilestonesBtn');
+    if (myMilestonesBtn) {
+      myMilestonesBtn.addEventListener('click', () => {
+        showToast('MY DISPATCHES (2)', 'Displaying verified records submitted by Dr. Elena Vance (Cohort 22).');
+      });
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-cream border-t-[1.5px] border-border-charcoal py-md"><div class="w-full px-grid-margin-desktop flex flex-col md:flex-row items-center justify-between gap-sm font-label-mono text-label-mono text-text-secondary"><div class="flex items-center gap-md"><div class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-led-active inline-block animate-pulse"></span><span class="text-text-primary font-bold">TELEMETRY LIVE</span></div><span class="text-border-muted">|</span><span>POSTGRES 16.2 / PGVECTOR 0.6.0</span><span class="text-border-muted hidden sm:inline">|</span><span class="hidden sm:inline">LATENCY &lt;14MS</span></div><div class="flex items-center gap-lg text-text-muted"><span>SECURE ENCLAVE NODE // 0x48F2A</span><span>© 2024 PRO-ALUMN FOUNDATION // ALL RIGHTS RESERVED</span></div></div></footer></body></html>

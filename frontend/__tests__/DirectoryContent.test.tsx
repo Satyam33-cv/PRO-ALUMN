@@ -55,13 +55,13 @@ describe("DirectoryContent", () => {
   it("renders the directory heading after load", () => {
     setupSuccessMocks();
     render(<DirectoryContent />);
-    expect(screen.getByText(/find your people/i)).toBeInTheDocument();
+    expect(screen.getByText(/Verified Alumni Directory & Talent Topology/i)).toBeInTheDocument();
   });
 
   it("renders search input after load", () => {
     setupSuccessMocks();
     render(<DirectoryContent />);
-    expect(screen.getByPlaceholderText(/search name/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/HNSW Vector Search/i)).toBeInTheDocument();
   });
 
   it("renders alumni cards after load", () => {
