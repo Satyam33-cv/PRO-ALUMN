@@ -100,13 +100,60 @@ app.get('/health', (req, res) => {
 });
 
 // --- GraphQL Apollo Server Integration ---
-const { ApolloServer } = require('@apollo/server');
-const { expressMiddleware } = require('@apollo/server/express4');
+const { ApolloServer, HeaderMap } = require('@apollo/server');
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
 const jwt = require('jsonwebtoken');
 const prisma = require('./db');
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+
+let expressMiddleware;
+try {
+  expressMiddleware = require('@apollo/server/express4').expressMiddleware;
+} catch {
+  // Resilient fallback if subpath exports vary across environments
+  const { parse } = require('url');
+  expressMiddleware = (server, options = {}) => {
+    const context = options.context || (async () => ({}));
+    return (req, res, next) => {
+      if (!req.body) {
+        return res.status(500).send('req.body is required for GraphQL requests');
+      }
+      const headers = new HeaderMap();
+      for (const [key, value] of Object.entries(req.headers)) {
+        if (value !== undefined) {
+          headers.set(key, Array.isArray(value) ? value.join(', ') : value);
+        }
+      }
+      const httpGraphQLRequest = {
+        method: req.method.toUpperCase(),
+        headers,
+        search: parse(req.url).search || '',
+        body: req.body,
+      };
+      server
+        .executeHTTPGraphQLRequest({
+          httpGraphQLRequest,
+          context: () => context({ req, res }),
+        })
+        .then(async (httpGraphQLResponse) => {
+          for (const [key, value] of httpGraphQLResponse.headers) {
+            res.setHeader(key, value);
+          }
+          res.statusCode = httpGraphQLResponse.status || 200;
+          if (httpGraphQLResponse.body.kind === 'complete') {
+            res.send(httpGraphQLResponse.body.string);
+            return;
+          }
+          for await (const chunk of httpGraphQLResponse.body.asyncIterator) {
+            res.write(chunk);
+          }
+          res.end();
+        })
+        .catch(next);
+    };
+  };
+}
 
 const apolloServer = new ApolloServer({
   typeDefs,
