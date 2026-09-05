@@ -5,6 +5,7 @@ import { screen } from "@testing-library/dom";
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
   usePathname: () => "/network",
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 jest.mock("next/link", () => {

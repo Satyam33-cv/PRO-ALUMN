@@ -3,6 +3,7 @@
 import React, { useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -205,8 +206,19 @@ type CategoryFilter =
 type TopologyFilter = "ALL" | "SF" | "NYC" | "BLR" | "REMOTE";
 type OrderFilter = "UPVOTES" | "LATEST" | "IMPACT";
 
-export function StoriesContent() {
+export function StoriesContent({
+  viewMode: viewModeProp,
+}: {
+  viewMode?: "showcase" | "member";
+} = {}) {
   const { user } = useAuth();
+  const searchParams = typeof useSearchParams === "function" ? useSearchParams() : null;
+  const queryView = searchParams?.get("view");
+  const isMemberView =
+    viewModeProp === "member" ||
+    queryView === "member" ||
+    (viewModeProp !== "showcase" && queryView !== "showcase" && Boolean(user));
+
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("ALL");
   const [topologyFilter, setTopologyFilter] = useState<TopologyFilter>("ALL");
   const [orderFilter, setOrderFilter] = useState<OrderFilter>("UPVOTES");
@@ -434,12 +446,9 @@ export function StoriesContent() {
   return (
     <div className="space-y-10 selection:bg-[#CCFF00] selection:text-black font-sans">
       {/* ========================================================================= */}
-      {/* 1. HERO SECTION: PROTOCOL METADATA & MASTHEAD */}
-      {/* ========================================================================= */}
-      {/* ========================================================================= */}
       {/* 0. AUTHENTICATED MEMBER CONSOLE SUB-HEADER OMNIBAR (STITCH SPEC 7d472871) */}
       {/* ========================================================================= */}
-      {user && (
+      {isMemberView && (
         <div className="w-full py-2.5 px-4 sm:px-6 bg-white border-2 border-black flex flex-wrap items-center justify-between gap-3 sticky top-0 z-20 shadow-[3px_3px_0px_#1A1A1A]">
           <div className="flex-1 min-w-[260px] max-w-xl relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-500">
@@ -490,7 +499,7 @@ export function StoriesContent() {
       {/* ========================================================================= */}
       {/* 1. HERO SECTION: ADAPTIVE (MEMBER CONSOLE vs PUBLIC BROADSHEET) */}
       {/* ========================================================================= */}
-      {user ? (
+      {isMemberView ? (
         <section
           data-testid="spotlight-hero-section"
           className="border-4 border-black bg-white p-6 sm:p-8 shadow-[6px_6px_0px_#000000] relative bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:24px_24px]"
@@ -1142,57 +1151,73 @@ export function StoriesContent() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 7. CONVERSION CALL-TO-ACTION BANNER */}
+      {/* 7. FOOTER ACTION SECTION: MEMBER PROTOCOL BAR vs PUBLIC CONVERSION CTA */}
       {/* ========================================================================= */}
-      <section
-        data-testid="conversion-cta-banner"
-        className="border-4 border-black bg-[#CCFF00] p-8 sm:p-12 shadow-[8px_8px_0px_#000000] text-black"
-      >
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <div className="inline-block bg-black text-white px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider">
-            UNRESTRICTED MEMBERSHIP ACCESS // ADMISSION ROSTER 2026
-          </div>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight font-sans leading-none">
-            Ready To Accelerate Your Career Trajectory?
-          </h2>
-          <p className="font-mono text-sm sm:text-base max-w-2xl mx-auto font-medium text-black/85 leading-relaxed">
-            Connect with 1,200+ verified alumni fellows, request vetted internal referrals at
-            tier-one tech institutions, and publish your breakthroughs to accredited peers.
-          </p>
-          {user ? (
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs uppercase font-bold">
-              <button
-                type="button"
-                onClick={() => setModalOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
-              >
-                <span>+ TRANSMIT MILESTONE STORY (+100 ALUMN-CR)</span>
-              </button>
-              <Link
-                href="/directory"
-                className="w-full sm:w-auto px-8 py-4 bg-white text-black border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
-              >
-                Explore Alumni Directory →
-              </Link>
+      {isMemberView ? (
+        <div
+          data-testid="member-dispatch-protocol-bar"
+          className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs"
+        >
+          <div className="flex items-center gap-3">
+            <span className="w-3 h-3 rounded-full bg-[#CCFF00] border-2 border-black animate-pulse" />
+            <div>
+              <span className="font-bold text-black uppercase tracking-wider">
+                MEMBER CHRONICLE PROTOCOL ACTIVE // ROLE: {user?.role || "FELLOW"}
+              </span>
+              <p className="text-neutral-600 text-[11px] mt-0.5">
+                Dispatch your milestone breakthrough to earn +100 ALUMN-CR and peer attestations.
+              </p>
             </div>
-          ) : (
+          </div>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <button
+              type="button"
+              onClick={() => setModalOpen(true)}
+              className="flex-1 md:flex-none px-6 py-3 bg-[#FF5500] text-white border-2 border-black font-bold uppercase tracking-wider shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
+            >
+              <span>+ TRANSMIT MILESTONE STORY</span>
+            </button>
+            <Link
+              href="/directory"
+              className="flex-1 md:flex-none px-6 py-3 bg-white text-black border-2 border-black font-bold uppercase tracking-wider shadow-[3px_3px_0px_#000000] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-center"
+            >
+              DIRECTORY TOPOLOGY →
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <section
+          data-testid="conversion-cta-banner"
+          className="border-4 border-black bg-[#CCFF00] p-8 sm:p-12 shadow-[8px_8px_0px_#000000] text-black"
+        >
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="inline-block bg-black text-white px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider">
+              UNRESTRICTED MEMBERSHIP ACCESS // ADMISSION ROSTER 2026
+            </div>
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight font-sans leading-none">
+              Ready To Accelerate Your Career Trajectory?
+            </h2>
+            <p className="font-mono text-sm sm:text-base max-w-2xl mx-auto font-medium text-black/85 leading-relaxed">
+              Connect with 1,200+ verified alumni fellows, request vetted internal referrals at
+              tier-one tech institutions, and publish your breakthroughs to accredited peers.
+            </p>
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs uppercase font-bold">
               <Link
                 href="/login"
-                className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-center"
               >
                 Create Free Fellow Account →
               </Link>
               <Link
                 href="/directory"
-                className="w-full sm:w-auto px-8 py-4 bg-white text-black border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                className="w-full sm:w-auto px-8 py-4 bg-white text-black border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-center"
               >
                 Explore Alumni Directory
               </Link>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 8. TRANSMIT MILESTONE DISPATCH MODAL */}

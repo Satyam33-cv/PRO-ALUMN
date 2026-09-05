@@ -52,6 +52,7 @@ import { useApi } from "@/lib/hooks/useApi";
 import { getSocket } from "@/lib/socket";
 import { getToken } from "@/lib/auth";
 import { Card } from "@/components/ui";
+import { useAuth } from "@/lib/context/AuthContext";
 
 
 type AdminTab = "mission_control" | "users" | "moderation" | "stale_profiles" | "cms" | "data_tools" | "broadcasts" | "events" | "newsletters" | "analytics";
@@ -161,6 +162,7 @@ const RESERVED_SLUGS = new Set([
 ]);
 
 export function AdminContent() {
+  const { user, role, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<AdminTab>("mission_control");
   const [cmsSubTab, setCmsSubTab] = useState<CmsSubTab>("broadcasts");
   const [toast, setToast] = useState<string | null>(null);
@@ -760,6 +762,76 @@ export function AdminContent() {
   const maxFunnel = Math.max(1, ...funnelBars.map((b) => b.count));
 
   const totalPendingModeration = pendingStories.length + unverifiedAlumni.length + pendingVideos.length;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#fcf9f3] text-black flex items-center justify-center font-mono text-xs">
+        <div className="p-8 bg-white border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-black border-t-[#FF5500] animate-spin" />
+          <span className="font-bold tracking-wider">[ VERIFYING ENCLAVE CLEARANCE... ]</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Strict Confidentiality Gate: Only role === "admin" is permitted
+  if (!user || role !== "admin") {
+    return (
+      <div className="min-h-screen bg-[#fcf9f3] text-black flex items-center justify-center p-4 font-mono">
+        <div className="max-w-xl w-full bg-white border-4 border-black shadow-[8px_8px_0px_#000000] p-8 space-y-6">
+          <div className="flex items-center gap-3">
+            <span className="px-2.5 py-1 bg-black text-[#FF5500] font-bold text-xs">
+              403 // RESTRICTED ACCESS
+            </span>
+            <span className="text-xs text-neutral-600 font-bold uppercase">
+              CONFIDENTIAL SUPER-ADMIN PROTOCOL 11
+            </span>
+          </div>
+
+          <div className="space-y-2 border-b-2 border-black pb-4">
+            <h1 className="font-sans text-2xl sm:text-3xl font-black uppercase text-black tracking-tight">
+              Institutional Admin Enclave
+            </h1>
+            <p className="text-xs text-neutral-700 leading-relaxed">
+              This terminal is strictly confidential and reserved exclusively for authorized Super Administrator credentials. Normal member accounts (alumni, student, faculty) and guest visitors possess zero read or write privileges within this security zone.
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#EFECE4] border-2 border-black space-y-2 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-neutral-600 font-bold">CURRENT SESSION:</span>
+              <span className="font-bold text-black">{user ? user.name : "UNAUTHENTICATED"}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-neutral-600 font-bold">IDENTITY ROLE:</span>
+              <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold text-[10px] uppercase">
+                {role || "GUEST"}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-neutral-600 font-bold">ENCLAVE STATUS:</span>
+              <span className="text-[#FF5500] font-bold">ACCESS DENIED (AIR-GAPPED)</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <Link
+              href={user ? "/dashboard" : "/login"}
+              className="flex-1 py-3 px-4 bg-[#FF5500] text-white font-bold uppercase text-center border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+            >
+              {user ? "← Return to Member Console" : "Authenticate Account →"}
+            </Link>
+            <Link
+              href="/"
+              className="py-3 px-4 bg-white text-black font-bold uppercase text-center border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+            >
+              Public Home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-20 font-sans">

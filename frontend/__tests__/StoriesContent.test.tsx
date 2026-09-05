@@ -5,6 +5,7 @@ import { StoriesContent } from "@/components/StoriesContent";
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
   usePathname: () => "/stories",
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 jest.mock("next/link", () => {

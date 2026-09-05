@@ -40,7 +40,11 @@ const PROTOCOLS: NavProtocolItem[] = [
   { id: "mentorship", index: "04", title: "Mentorship Hub", href: "/mentorship" },
   { id: "events", index: "05", title: "Events & RSVPs", href: "/events" },
   { id: "stories", index: "06", title: "Success Stories", href: "/stories" },
-  { id: "admin", index: "07", title: "Admin Command Center", href: "/admin", adminOnly: true },
+  { id: "education", index: "07", title: "Education & Sprints", href: "/education" },
+  { id: "announcements", index: "08", title: "Announcements Wire", href: "/announcements" },
+  { id: "chat", index: "09", title: "Advisory Chat", href: "/chat" },
+  { id: "profile", index: "10", title: "Credential Pass", href: "/profile" },
+  { id: "admin", index: "11", title: "Admin Command Center", href: "/admin", adminOnly: true },
 ];
 
 export interface NotificationShellItem {
@@ -247,8 +251,9 @@ export function RoleShell({
   }
 
   const isProtocolActive = (href: string) => {
-    if (href === "/dashboard") return pathname === "/dashboard" || pathname === "/";
-    return pathname === href || pathname.startsWith(href + "/");
+    const basePath = href.split("?")[0];
+    if (basePath === "/dashboard") return pathname === "/dashboard" || pathname === "/";
+    return pathname === basePath || pathname.startsWith(basePath + "/");
   };
 
   const displayName = user?.name || "Elena Vance, Ph.D.";
@@ -302,11 +307,13 @@ export function RoleShell({
           <span className="font-headline text-[11px] uppercase font-bold text-neutral-500 tracking-wider">
             INDEX PROTOCOLS
           </span>
-          <span className="font-mono text-[11px] text-neutral-500">[07]</span>
+          <span className="font-mono text-[11px] text-neutral-500">
+            [{PROTOCOLS.filter((p) => !p.adminOnly || role === "admin").length.toString().padStart(2, "0")}]
+          </span>
         </div>
 
         {/* Navigation List */}
-        <nav className="flex flex-col px-3 gap-1.5" aria-label="System navigation">
+        <nav className="flex flex-col px-3 gap-1 overflow-y-auto max-h-[calc(100vh-270px)]" aria-label="System navigation">
           {PROTOCOLS.map((p) => {
             const active = isProtocolActive(p.href);
             // If adminOnly, still visible if user is admin or as preview

@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
@@ -103,58 +103,68 @@ const CANONICAL_FELLOWS: FellowItem[] = [
   {
     id: "f-04",
     name: "Dr. Elena Rostova",
-    role: "Postdoc Fellow",
-    company: "Stanford & Lattice Security",
-    department: "Post-Quantum Cryptography",
+    role: "Postdoctoral Research Fellow",
+    company: "Stanford AI Lab",
+    department: "Applied Math & Post-Quantum",
     batch: "2021",
-    location: "Stanford Node",
+    location: "Stanford / SF Node",
     initials: "ER",
-    bio: '"Lead researcher on machine-checked verification of lattice-based key encapsulation mechanisms under zk-SNARK constraints."',
-    skills: ["Cryptography", "Coq / Lean4", "zk-SNARKs", "Formal Verification"],
-    match: 93.8,
+    bio: '"Published 2 IEEE papers on lattice cryptography. Advising alumni on graduate research grants and doctoral program admissions."',
+    skills: ["Post-Quantum", "Lattice Cryptography", "zk-SNARKs", "Rust"],
+    match: 92.8,
     isMentor: true,
     isVerified: true,
     actionType: "research",
-    avatarBg: "#1D4ED8",
+    avatarBg: "#2E5BFF",
     avatarColor: "#FFFFFF",
   },
   {
     id: "f-05",
     name: "Prateek Shah",
     role: "Staff Systems Architect",
-    company: "Stripe Financial Infra",
-    department: "Distributed Databases",
+    company: "Stripe",
+    department: "Core Financial Ledger & Spanner",
     batch: "2019",
-    location: "Seattle Infra Node",
+    location: "Seattle Node",
     initials: "PS",
-    bio: '"Led live migration of core transaction ledger handling 80,000 tx/sec with zero downtime. Mentoring for backend placement loops."',
-    skills: ["High Throughput", "ACID Transactions", "Java", "AWS Infra"],
+    bio: '"Led migration of Stripe multi-region ledger to strict serializability. Happy to conduct mock system architecture rounds."',
+    skills: ["Distributed DBs", "Java", "High-Throughput", "Consensus"],
     match: 91.5,
     referralSlots: 3,
     isMentor: true,
     isVerified: true,
     actionType: "referral",
-    avatarBg: "#1A1A1A",
+    avatarBg: "#000000",
     avatarColor: "#FFFFFF",
   },
   {
     id: "f-06",
     name: "Ananya Deshmukh",
-    role: "Principal TPM",
-    company: "AWS Edge Services",
-    department: "Cloud Infrastructure",
-    batch: "2015",
+    role: "Senior Product Manager",
+    company: "Figma",
+    department: "Collaborative Canvas Engine",
+    batch: "2020",
     location: "New York Node",
     initials: "AD",
-    bio: '"Leading serverless edge computing roadmap across 30+ availability zones. Available for 15-min flash career architecture reviews."',
-    skills: ["Cloud Architecture", "Career Roadmaps", "Distributed Teams", "Edge Compute"],
-    match: 89.9,
+    bio: '"Former engineer turned product lead. Mentoring women in systems and infrastructure tech careers."',
+    skills: ["Product Strategy", "Wasm", "Design Systems", "WebGPU"],
+    match: 89.1,
     isMentor: true,
     isVerified: true,
     actionType: "mentorship",
-    avatarBg: "#000000",
-    avatarColor: "#FFFFFF",
+    avatarBg: "#CCFF00",
+    avatarColor: "#000000",
   },
+];
+
+const PRESET_CLUSTERS = [
+  { label: "ALL INSTITUTIONS", query: "" },
+  { label: "GOOGLE (412)", query: "Google" },
+  { label: "SNOWFLAKE (88)", query: "Snowflake" },
+  { label: "STRIPE (142)", query: "Stripe" },
+  { label: "STANFORD AI (64)", query: "Stanford" },
+  { label: "DISTRIBUTED SYSTEMS", query: "Distributed Systems" },
+  { label: "CRYPTOGRAPHY / ZK", query: "Cryptography" },
 ];
 
 type CategoryFilter =
@@ -167,11 +177,22 @@ type CategoryFilter =
 
 interface DirectoryContentProps {
   initialQuery?: string;
+  viewMode?: "showcase" | "member";
 }
 
-export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
+export function DirectoryContent({
+  initialQuery = "",
+  viewMode: viewModeProp,
+}: DirectoryContentProps) {
   const router = useRouter();
+  const searchParams = typeof useSearchParams === "function" ? useSearchParams() : null;
   const { user } = useAuth();
+
+  const queryView = searchParams?.get("view");
+  const isMemberView =
+    viewModeProp === "member" ||
+    queryView === "member" ||
+    (viewModeProp !== "showcase" && queryView !== "showcase" && Boolean(user));
 
   // Search state
   const [query, setQuery] = useState(initialQuery);
@@ -340,7 +361,7 @@ export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
       {/* ============================================================ */}
       {/* 0. AUTHENTICATED SYSTEM SUB-BAR (STITCH SPEC ac1a09e0) */}
       {/* ============================================================ */}
-      {user && (
+      {isMemberView && (
         <section className="w-full bg-[#f6f3ed] border-2 border-black px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 shadow-[2px_2px_0px_#1A1A1A]">
           <div className="flex items-center gap-3 flex-1 min-w-[260px] max-w-lg">
             <div className="relative w-full">
@@ -363,9 +384,9 @@ export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#1A1A1A] font-mono text-xs">
               <span className="w-2 h-2 rounded-full bg-[#CCFF00] inline-block"></span>
-              <span className="tracking-tight font-bold uppercase">{user.name || "Dr. Elena Vance"}</span>
+              <span className="tracking-tight font-bold uppercase">{user?.name || "Dr. Elena Vance"}</span>
               <span className="text-neutral-500">//</span>
-              <span className="text-[#CCFF00] font-bold">FELLOW '22</span>
+              <span className="text-[#CCFF00] font-bold">FELLOW &apos;22</span>
             </div>
           </div>
         </section>
@@ -374,7 +395,7 @@ export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
       {/* ============================================================ */}
       {/* 1. HERO SECTION: ADAPTIVE (MEMBER CONSOLE vs PUBLIC BROADSHEET) */}
       {/* ============================================================ */}
-      {user ? (
+      {isMemberView ? (
         <div className="border-4 border-black bg-white p-6 sm:p-8 shadow-[5px_5px_0px_#1A1A1A] relative">
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <div className="flex items-center gap-2">
@@ -398,7 +419,7 @@ export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
             <div className="p-3 bg-[#fcf9f3] border-2 border-black shadow-[2px_2px_0px_#1A1A1A]">
               <div className="text-[10px] text-neutral-600 font-bold">INDEX CAPACITY</div>
               <div className="text-2xl font-black text-black mt-1">1,248</div>
-              <div className="text-[11px] text-neutral-700 mt-0.5">Verified Fellows ('14-'25)</div>
+              <div className="text-[11px] text-neutral-700 mt-0.5">Verified Fellows (&apos;14-&apos;25)</div>
             </div>
             <div className="p-3 bg-[#fcf9f3] border-2 border-black shadow-[2px_2px_0px_#1A1A1A]">
               <div className="text-[10px] text-neutral-600 font-bold">REACH DENSITY</div>
@@ -1137,38 +1158,56 @@ export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
       </div>
 
       {/* ============================================================ */}
-      {/* BEGIN: ConversionHeroBanner */}
+      {/* FOOTER CALLOUT: ADAPTIVE (MEMBER CONFIRMATION vs PUBLIC CONVERSION) */}
       {/* ============================================================ */}
-      <section
-        className="bg-[#CCFF00] border-4 border-black p-8 sm:p-10 shadow-[7px_7px_0px_#000000] text-center"
-        data-purpose="conversion-banner"
-      >
-        <div className="max-w-3xl mx-auto space-y-4">
-          <div className="inline-block px-3 py-1 bg-black text-white font-mono text-xs font-bold uppercase tracking-widest">
-            UNRESTRICTED MEMBERSHIP ACCESS // ADMISSION ROSTER 2026
+      {isMemberView ? (
+        <div
+          data-testid="directory-member-status-footer"
+          className="border-2 border-black bg-white dark:bg-[#15181f] p-4 font-mono text-xs shadow-[3px_3px_0px_#1A1A1A] flex flex-col sm:flex-row items-center justify-between gap-3 text-neutral-700 dark:text-neutral-300"
+        >
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#00E676] inline-block animate-pulse"></span>
+            <span className="font-bold text-black dark:text-white uppercase">[ PROTOCOL 02 ACTIVE: TOPOLOGY CONNECTED ]</span>
+            <span className="text-neutral-500">//</span>
+            <span>All {totalCount} verified fellow nodes mapped into HNSW cosine space</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-black leading-tight">
-            WANT DIRECT REFERRALS & UNRESTRICTED ACCESS TO THE FELLOW ROSTER?
-          </h2>
-          <p className="text-xs sm:text-sm font-mono text-neutral-900 max-w-xl mx-auto leading-relaxed">
-            Create a verified student or alumni fellow account to unlock instant 1-click referral dispatches, book flash 1-on-1 mentorship slots, and publish career dispatches to accredited peers.
-          </p>
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 font-mono text-xs">
-            <Link
-              href="/login"
-              className="w-full sm:w-auto px-6 py-3.5 bg-[#FF5500] text-white font-bold uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
-            >
-              CREATE FREE FELLOW ACCOUNT →
-            </Link>
-            <Link
-              href="/stories"
-              className="w-full sm:w-auto px-6 py-3.5 bg-white text-black font-bold uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
-            >
-              EXPLORE SUCCESS STORIES ↓
-            </Link>
+          <div className="flex items-center gap-2 text-[11px]">
+            <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">ED25519-SIGNED</span>
+            <span className="text-neutral-500">PEER DISPATCH ENGINE READY</span>
           </div>
         </div>
-      </section>
+      ) : (
+        <section
+          className="bg-[#CCFF00] border-4 border-black p-8 sm:p-10 shadow-[7px_7px_0px_#000000] text-center"
+          data-purpose="conversion-banner"
+        >
+          <div className="max-w-3xl mx-auto space-y-4">
+            <div className="inline-block px-3 py-1 bg-black text-white font-mono text-xs font-bold uppercase tracking-widest">
+              UNRESTRICTED MEMBERSHIP ACCESS // ADMISSION ROSTER 2026
+            </div>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-black leading-tight">
+              WANT DIRECT REFERRALS &amp; UNRESTRICTED ACCESS TO THE FELLOW ROSTER?
+            </h2>
+            <p className="text-xs sm:text-sm font-mono text-neutral-900 max-w-xl mx-auto leading-relaxed">
+              Create a verified student or alumni fellow account to unlock instant 1-click referral dispatches, book flash 1-on-1 mentorship slots, and publish career dispatches to accredited peers.
+            </p>
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 font-mono text-xs">
+              <Link
+                href="/login"
+                className="w-full sm:w-auto px-6 py-3.5 bg-[#FF5500] text-white font-bold uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              >
+                CREATE FREE FELLOW ACCOUNT →
+              </Link>
+              <Link
+                href="/stories"
+                className="w-full sm:w-auto px-6 py-3.5 bg-white text-black font-bold uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              >
+                EXPLORE SUCCESS STORIES ↓
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ============================================================ */}
       {/* MODAL: QUICK REFERRAL / MENTORSHIP REQUEST */}

@@ -47,10 +47,11 @@ describe("PublicHeader Component", () => {
     expect(screen.getAllByText("AI Matching")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Directory *")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Jobs")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Mentorship")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Events")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Success Spotlight")[0]).toBeInTheDocument();
-    expect(screen.getAllByText("Announcements")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Education")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Announcements")[0]).toBeInTheDocument();
   });
 
   it("strictly leaves out Admin Command Center from public header", () => {

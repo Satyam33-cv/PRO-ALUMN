@@ -7,7 +7,7 @@ import { Menu, X, ArrowRight, ShieldCheck, User } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 
 export interface PublicHeaderProps {
-  activeRoute?: "directory" | "stories" | "announcements" | "education" | "events" | "jobs" | "home";
+  activeRoute?: "directory" | "stories" | "announcements" | "education" | "events" | "jobs" | "home" | "mentorship";
 }
 
 export function PublicHeader({ activeRoute }: PublicHeaderProps) {
@@ -29,6 +29,8 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
       ? "announcements"
       : pathname.startsWith("/education")
       ? "education"
+      : pathname.startsWith("/mentorship")
+      ? "mentorship"
       : "home");
 
   const navItems = [
@@ -47,6 +49,12 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
       active: currentActive === "jobs",
     },
     {
+      label: currentActive === "mentorship" ? "Mentorship *" : "Mentorship",
+      href: "/mentorship",
+      id: "mentorship",
+      active: currentActive === "mentorship",
+    },
+    {
       label: currentActive === "events" ? "Events *" : "Events",
       href: "/events",
       id: "events",
@@ -59,16 +67,16 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
       active: currentActive === "stories",
     },
     {
-      label: currentActive === "announcements" ? "Announcements *" : "Announcements",
-      href: "/announcements",
-      id: "announcements",
-      active: currentActive === "announcements",
-    },
-    {
       label: currentActive === "education" ? "Education *" : "Education",
       href: "/education",
       id: "education",
       active: currentActive === "education",
+    },
+    {
+      label: currentActive === "announcements" ? "Announcements *" : "Announcements",
+      href: "/announcements",
+      id: "announcements",
+      active: currentActive === "announcements",
     },
   ];
 

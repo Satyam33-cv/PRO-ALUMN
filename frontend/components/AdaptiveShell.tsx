@@ -2,13 +2,14 @@
 
 import React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/context/AuthContext";
 import { RoleShell } from "@/components/RoleShell";
 import { PublicHeader } from "@/components/PublicHeader";
 
 export interface AdaptiveShellProps {
   children: React.ReactNode;
-  activeRoute?: "directory" | "stories" | "announcements" | "education" | "events" | "jobs" | "home";
+  activeRoute?: "directory" | "stories" | "announcements" | "education" | "events" | "jobs" | "home" | "mentorship";
   forcePublic?: boolean;
 }
 
@@ -18,6 +19,9 @@ export function AdaptiveShell({
   forcePublic = false,
 }: AdaptiveShellProps) {
   const { user, loading } = useAuth();
+  const searchParams = useSearchParams();
+  const queryView = searchParams?.get("view");
+  const isShowcase = forcePublic || queryView === "showcase";
 
   // If initial auth token is resolving, render minimal clean brutalist loader
   if (loading) {
@@ -35,11 +39,11 @@ export function AdaptiveShell({
   }
 
   // If user is authenticated and not forced to public broadsheet, render inside member console shell
-  if (user && !forcePublic) {
+  if (user && !isShowcase) {
     return <RoleShell>{children}</RoleShell>;
   }
 
-  // Unauthenticated visitor (Public Guest): render full-width broadsheet layout
+  // Unauthenticated visitor or Forced Showcase (Public Guest): render full-width broadsheet layout
   return (
     <div className="min-h-screen bg-[#fcf9f3] text-black flex flex-col justify-between selection:bg-[#CCFF00] selection:text-black">
       {/* 1. Public Global Showcase Header */}
