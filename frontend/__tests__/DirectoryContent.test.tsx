@@ -19,6 +19,15 @@ jest.mock("@/lib/hooks/useApi", () => ({
   useApi: (...args: unknown[]) => mockUseApi(...args),
 }));
 
+jest.mock("@/lib/context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { id: "u-1", name: "Test User", email: "test@somaiya.edu", role: "student" },
+    role: "student",
+    loading: false,
+    signOut: jest.fn(),
+  }),
+}));
+
 import { DirectoryContent } from "@/components/DirectoryContent";
 
 const mockAlumni = [

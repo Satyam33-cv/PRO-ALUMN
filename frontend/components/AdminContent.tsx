@@ -155,7 +155,7 @@ interface LiveActivity {
 
 const RESERVED_SLUGS = new Set([
   "admin", "api", "login", "register", "home", "directory", "jobs", "referrals",
-  "stories", "announcements", "chat", "events", "mentorship", "giving", "education",
+  "stories", "announcements", "chat", "events", "mentorship", "education",
   "docs", "keep", "communications", "forms", "calendar", "profile", "rewards",
   "settings", "newsletter", "newsletters", "matching", "help", "dashboard", "requests"
 ]);

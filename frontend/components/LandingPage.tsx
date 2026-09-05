@@ -157,6 +157,12 @@ export default function LandingPage() {
               </span>
             </Link>
             <Link
+              href="/stories"
+              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
+            >
+              Success Spotlight
+            </Link>
+            <Link
               href="/jobs"
               className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
             >

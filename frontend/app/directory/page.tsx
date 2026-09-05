@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { DirectoryContent } from "@/components/DirectoryContent";
-import { RoleShell } from "@/components/RoleShell";
+import { AdaptiveShell } from "@/components/AdaptiveShell";
 
 export const metadata: Metadata = {
-  title: "Directory | PRO ALUMN",
-  description: "Find alumni by experience, company, role, and location",
+  title: "Alumni Directory & Talent Topology | PRO-ALUMN",
+  description: "Browse 1,200+ vetted alumni fellows across frontier engineering, research laboratories, and venture-backed institutions.",
   openGraph: {
-    title: "Alumni Directory - Find Your People",
-    description: "Search and browse alumni network by experience, company, role, and location",
+    title: "Alumni Directory & Talent Topology | PRO-ALUMN",
+    description: "Search and browse alumni network by 384-D vector embeddings, company, role, and location",
     images: ["https://alumni-connect.example.com/og-directory.png"],
   },
   twitter: {
-    title: "Alumni Directory - Find Your People",
+    title: "Alumni Directory & Talent Topology | PRO-ALUMN",
     description: "Search and browse alumni network",
     card: "summary_large_image",
   },
@@ -25,5 +25,9 @@ export default async function DirectoryPage({
 	const query = Array.isArray(searchParams?.q)
 		? searchParams.q[0]
 		: searchParams?.q ?? "";
-	return <RoleShell><DirectoryContent initialQuery={query} /></RoleShell>;
+	return (
+		<AdaptiveShell activeRoute="directory">
+			<DirectoryContent initialQuery={query} />
+		</AdaptiveShell>
+	);
 }

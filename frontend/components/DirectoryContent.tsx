@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
+import { useAuth } from "@/lib/context/AuthContext";
 import type { Alumni } from "@/lib/api/types";
 import type { HubPreset } from "@/components/DirectoryMap";
 
@@ -170,6 +171,7 @@ interface DirectoryContentProps {
 
 export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
   const router = useRouter();
+  const { user } = useAuth();
 
   // Search state
   const [query, setQuery] = useState(initialQuery);
@@ -314,6 +316,10 @@ export function DirectoryContent({ initialQuery = "" }: DirectoryContentProps) {
   const shownCount = filteredFellows.length;
 
   const handleOpenReferral = (fellow: FellowItem, type: "referral" | "mentorship") => {
+    if (!user) {
+      router.push(`/login?redirect=/directory&target=${encodeURIComponent(fellow.name)}&action=${type}`);
+      return;
+    }
     setActiveModalFellow(fellow);
     setModalType(type);
     setModalNote("");

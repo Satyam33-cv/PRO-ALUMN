@@ -1,13 +1,34 @@
 "use client";
 
-import { RoleShell } from "@/components/RoleShell";
-import { Card } from "@/components/ui";
-import { Video, Plus, CheckCircle2, Lock, Play, Flame, User as UserIcon, Coins, X, ShieldCheck } from "lucide-react";
-import { useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import {
+  Terminal,
+  Activity,
+  Coins,
+  ShieldCheck,
+  Play,
+  Flame,
+  Plus,
+  Lock,
+  CheckCircle2,
+  X,
+  FileText,
+  User as UserIcon,
+  Check,
+  Download,
+  Award,
+  Layers,
+  Cpu,
+  Database,
+  KeyRound,
+  ExternalLink,
+} from "lucide-react";
 import { WatchVideoPlayer } from "@/components/WatchVideoPlayer";
 import { apiClient } from "@/lib/api/client";
 import { supabase } from "@/lib/supabase";
-import Image from "next/image";
+import { useAuth } from "@/lib/context/AuthContext";
 
 export interface MarketVideo {
   id: string;
@@ -27,36 +48,142 @@ export interface MarketVideo {
   createdAt?: string | Date;
 }
 
-export function EducationContent({ 
-  initialVideos, 
-  balance, 
-  unlockedIds 
-}: { 
-  initialVideos: MarketVideo[]; 
-  balance: number; 
+interface SprintItem {
+  id: string;
+  sprintNum: string;
+  durationDays: number;
+  creditsEarned: number;
+  title: string;
+  category: "all" | "cryptography" | "distributed" | "silicon";
+  fellow: string;
+  fellowTitle: string;
+  description: string;
+  tags: string[];
+  passRate: string;
+  seatsRemaining: number;
+  totalSeats: number;
+}
+
+const CURATED_SPRINTS: SprintItem[] = [
+  {
+    id: "sp-02",
+    sprintNum: "SPRINT 02",
+    durationDays: 21,
+    creditsEarned: 180,
+    title: "Post-Quantum Lattice Cryptography & Zero-Knowledge Verification",
+    category: "cryptography",
+    fellow: "Dr. Elena Rostova",
+    fellowTitle: "Stanford Postdoc, '21",
+    description: "21-day deep dive into Kyber/Dilithium algorithms, ring-LWE security parameters, and constructing arithmetic circuit zk-SNARK verifiers in Rust.",
+    tags: ["#LATTICE", "#KYBER", "#ZK-SNARKS", "#CIRCOM"],
+    passRate: "88% VERIFIED PASS",
+    seatsRemaining: 14,
+    totalSeats: 30,
+  },
+  {
+    id: "sp-03",
+    sprintNum: "SPRINT 03",
+    durationDays: 10,
+    creditsEarned: 95,
+    title: "Columnar Database Engine Architecture & SIMD Pushdown",
+    category: "distributed",
+    fellow: "Sarah Jenkins",
+    fellowTitle: "Snowflake Principal Architect, '16",
+    description: "10-day hands-on query engine design, vectorized memory execution, Apache Arrow internals, and custom AVX-512 filter pushdown implementations.",
+    tags: ["#COLUMNAR", "#SIMD", "#VECTORIZED", "#CPP20"],
+    passRate: "94% VERIFIED PASS",
+    seatsRemaining: 4,
+    totalSeats: 25,
+  },
+  {
+    id: "sp-04",
+    sprintNum: "SPRINT 04",
+    durationDays: 7,
+    creditsEarned: 80,
+    title: "Sub-Millisecond Payment Ledger Scalability: 80k tx/sec",
+    category: "distributed",
+    fellow: "Prateek Shah",
+    fellowTitle: "Stripe Core Ledger, '19",
+    description: "7-day intense concurrency sprint tackling strict serializability, two-phase commit optimizations, deterministic state replay, and zero double-entry errors.",
+    tags: ["#FINTECH", "#LEDGER", "#CONCURRENCY", "#DISTRIBUTED"],
+    passRate: "91% VERIFIED PASS",
+    seatsRemaining: 8,
+    totalSeats: 30,
+  },
+  {
+    id: "sp-05",
+    sprintNum: "SPRINT 05",
+    durationDays: 14,
+    creditsEarned: 140,
+    title: "Firmware Co-Design for RISC-V Neural Accelerators",
+    category: "silicon",
+    fellow: "David Chen",
+    fellowTitle: "YC W26 Founder, '17",
+    description: "14-day silicon & hardware-software synthesis. Writing custom microcode instructions for tensor processing units, Verilator testbenches, and bare-metal C.",
+    tags: ["#RISCV", "#SILICON", "#TENSOR", "#VERILOG"],
+    passRate: "82% VERIFIED PASS",
+    seatsRemaining: 2,
+    totalSeats: 20,
+  },
+];
+
+export function EducationContent({
+  initialVideos = [],
+  balance = 350,
+  unlockedIds = [],
+}: {
+  initialVideos: MarketVideo[];
+  balance: number;
   unlockedIds: string[];
 }) {
-  const [showForm, setShowForm] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
+
+  // Video State
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [playingVideo, setPlayingVideo] = useState<MarketVideo | null>(null);
+  const [currentBalance, setCurrentBalance] = useState(balance);
+  const [unlockedVideoIds, setUnlockedVideoIds] = useState<string[]>(unlockedIds);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Sprint Filter & Modals
+  const [selectedSprintCategory, setSelectedSprintCategory] = useState<"all" | "cryptography" | "distributed" | "silicon">("all");
+  const [enrolledSprintId, setEnrolledSprintId] = useState<string | null>(null);
+  const [isSyllabusModalOpen, setIsSyllabusModalOpen] = useState(false);
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
+
+  // Filtered Sprints
+  const filteredSprints = CURATED_SPRINTS.filter((sp) => {
+    if (selectedSprintCategory === "all") return true;
+    return sp.category === selectedSprintCategory;
+  });
+
+  const handleEnroll = (sprintTitle: string) => {
+    if (!user) {
+      router.push(`/login?redirect=/education&target=${encodeURIComponent(sprintTitle)}`);
+      return;
+    }
+    setEnrolledSprintId(sprintTitle);
+    setSuccessMsg(`Enrolled in ${sprintTitle}! Check your dashboard for runtime access keys.`);
+    setTimeout(() => setSuccessMsg(""), 5000);
+  };
+
+  const handleVideoSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg("");
     setSuccessMsg("");
-    
+
     const formElement = e.currentTarget;
     const formData = new FormData(formElement);
     const file = formData.get("videoFile") as File;
-    
+
     if (!file || file.size === 0) {
       setErrorMsg("Please select a video file to upload.");
       return;
     }
-    
-    // Check 150MB limit (150 * 1024 * 1024 bytes)
+
     if (file.size > 150 * 1024 * 1024) {
       setErrorMsg("File size exceeds the 150MB limit. Please compress your video.");
       return;
@@ -64,28 +191,21 @@ export function EducationContent({
 
     startTransition(async () => {
       try {
-        // 1. Upload to Supabase Storage
-        const fileExt = file.name.split('.').pop();
+        const fileExt = file.name.split(".").pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `uploads/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('videos')
-          .upload(filePath, file, {
-            cacheControl: '3600',
-            upsert: false
-          });
+        const { error: uploadError } = await supabase.storage.from("videos").upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
 
         if (uploadError) {
           throw new Error(`Upload failed: ${uploadError.message}`);
         }
 
-        // 2. Get Public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('videos')
-          .getPublicUrl(filePath);
+        const { data: { publicUrl } } = supabase.storage.from("videos").getPublicUrl(filePath);
 
-        // 3. Submit to our Backend API
         const title = (formData.get("title") as string) || "Untitled Video";
         const description = (formData.get("description") as string) || "";
         await apiClient.video.submit({
@@ -93,9 +213,9 @@ export function EducationContent({
           description,
           videoUrl: publicUrl,
         });
-        
-        setSuccessMsg("Video uploaded successfully and is pending admin approval!");
-        setShowForm(false);
+
+        setSuccessMsg("Technical runbook video uploaded successfully! Moderation in progress.");
+        setShowVideoModal(false);
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Failed to submit video";
         setErrorMsg(message);
@@ -103,14 +223,21 @@ export function EducationContent({
     });
   };
 
-  const handleUnlock = (videoId: string) => {
+  const handleUnlock = (videoId: string, cost: number) => {
+    if (!user) {
+      router.push("/login?redirect=/education");
+      return;
+    }
+
     setErrorMsg("");
     setSuccessMsg("");
-    
+
     startTransition(async () => {
       try {
         await apiClient.video.unlock(videoId);
-        setSuccessMsg("Premium video unlocked successfully! Let's start learning.");
+        setUnlockedVideoIds((prev) => [...prev, videoId]);
+        setCurrentBalance((prev) => Math.max(0, prev - cost));
+        setSuccessMsg("Premium video unlocked! Runtime stream activated.");
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : "Failed to unlock video";
         setErrorMsg(message);
@@ -119,290 +246,805 @@ export function EducationContent({
   };
 
   return (
-    <RoleShell>
-      <div className="max-w-7xl mx-auto space-y-8 font-sans pb-16">
-        
-        {/* HERO BANNER */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-8 sm:p-12 text-white flex flex-col sm:flex-row items-center justify-between gap-8 shadow-2xl">
-          <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 bg-blue-500/20 border border-blue-500/30 text-blue-300 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">
-                <Flame size={14} className="text-orange-500" />
-                Premium Library
-              </span>
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight">
-              Master New Skills with Alumni Experts
-            </h1>
-            <p className="text-lg text-slate-300 max-w-xl leading-relaxed">
-              Unlock exclusive tutorials, career insights, and deep-dive technical talks using your earned Gamification Points.
-            </p>
-            <div className="pt-4 flex items-center gap-4">
-              <button
-                onClick={() => setShowForm(!showForm)}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg flex items-center gap-2"
-              >
-                <Plus size={18} />
-                Submit Video
-              </button>
-            </div>
+    <div className="flex flex-col w-full font-sans selection:bg-[#CCFF00] selection:text-black space-y-10">
+      {/* 1. TOP CONTEXT HEADER */}
+      <section className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="bg-black text-[#CCFF00] px-2 py-0.5 font-extrabold shadow-[2px_2px_0px_#000000]">
+              [ PILLAR // 07 ]
+            </span>
+            <span className="uppercase text-[#FF5500] font-bold tracking-wider">
+              ACADEMIC REPOSITORY &amp; SPECIALIZED RUNTIMES
+            </span>
           </div>
-
-          <div className="relative z-10 hidden md:flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm min-w-[200px]">
-            <Coins size={36} className="text-amber-400 mb-2" />
-            <p className="text-xs text-slate-300 font-mono uppercase tracking-widest font-bold mb-1">Your Balance</p>
-            <p className="text-4xl font-extrabold font-mono text-white flex items-baseline gap-1">
-              {balance} <span className="text-base text-slate-400 font-semibold">pts</span>
-            </p>
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-[#F7F4EE] text-black border border-black shadow-[1px_1px_0px_#000000] font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse" />
+              SYS_HASH: 0x89F1..E312
+            </span>
+            <span className="text-neutral-500 font-semibold">EPOCH: 2026.Q2</span>
           </div>
         </div>
 
-        {/* ALERTS */}
-        {successMsg && (
-          <div className="p-4 bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 rounded-xl flex items-center gap-3 font-semibold shadow-sm">
-            <CheckCircle2 size={20} className="text-emerald-500 shrink-0" />
-            {successMsg}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-1">
+          <div>
+            <h1 className="text-3xl sm:text-5xl font-black text-black tracking-tight font-sans">
+              Education &amp; Technical Sprint Center
+            </h1>
+            <p className="text-sm sm:text-base text-neutral-700 max-w-4xl mt-1 leading-relaxed font-sans">
+              High-velocity engineering protocols, tactical interview blueprints, and peer-reviewed architectural case studies verified by alumni fellows.
+            </p>
           </div>
-        )}
-        
-        {errorMsg && (
-          <div className="p-4 bg-rose-500/15 border border-rose-500/30 text-rose-700 dark:text-rose-300 rounded-xl flex items-center gap-3 font-semibold shadow-sm">
-            <Lock size={20} className="text-rose-500 shrink-0" />
-            {errorMsg}
-          </div>
-        )}
 
-        {/* UPLOAD FORM */}
-        {showForm && (
-          <Card padding="lg" className="border border-blue-200 dark:border-blue-900 bg-white/50 dark:bg-slate-900/50 shadow-lg">
-            <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
-              <div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">Submit a Video</h3>
-                <p className="text-sm text-slate-500 mt-1">Share your knowledge with the community.</p>
+          <div className="flex items-center gap-2 shrink-0 font-mono text-xs">
+            <button
+              onClick={() => setIsSyllabusModalOpen(true)}
+              className="px-4 py-2 bg-white text-black border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#F7F4EE] font-bold uppercase transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+              type="button"
+            >
+              Protocol Archive
+            </button>
+            <button
+              onClick={() => {
+                if (!user) {
+                  router.push("/login?redirect=/education&target=upload");
+                } else {
+                  setShowVideoModal(true);
+                }
+              }}
+              className="px-4 py-2 bg-black text-[#CCFF00] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black font-bold uppercase transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer flex items-center gap-1.5"
+              type="button"
+            >
+              <Plus size={14} />
+              <span>Submit Video</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* FEEDBACK BANNERS */}
+      {successMsg && (
+        <div className="p-3 bg-[#CCFF00] border-2 border-black text-black font-mono text-xs font-bold shadow-[3px_3px_0px_#000000] flex items-center gap-2">
+          <CheckCircle2 size={16} />
+          <span>{successMsg}</span>
+        </div>
+      )}
+      {errorMsg && (
+        <div className="p-3 bg-[#FF5500] border-2 border-black text-white font-mono text-xs font-bold shadow-[3px_3px_0px_#000000] flex items-center gap-2">
+          <Lock size={16} />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
+      {/* 2. 4 METRIC BENTO CARDS */}
+      <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 font-mono">
+        <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-neutral-500">
+            <span className="text-[10px] font-bold">METRIC // 01</span>
+            <Terminal size={18} className="text-black" />
+          </div>
+          <div className="my-3">
+            <span className="text-4xl sm:text-5xl font-black text-black font-sans leading-none">48</span>
+            <span className="text-xs font-bold text-neutral-600 block mt-1 uppercase">Active Protocols</span>
+          </div>
+          <div className="flex items-center justify-between pt-1.5 bg-[#F7F4EE] border border-black px-2 py-1 text-[11px]">
+            <span className="text-neutral-600 font-bold uppercase">SYSTEM PIPELINE</span>
+            <span className="text-black font-extrabold">+12 THIS CYCLE</span>
+          </div>
+        </div>
+
+        <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-neutral-500">
+            <span className="text-[10px] font-bold">METRIC // 02</span>
+            <Activity size={18} className="text-black" />
+          </div>
+          <div className="my-3">
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl sm:text-5xl font-black text-black font-sans leading-none">92%</span>
+              <span className="text-xs text-[#00A859] font-black">▲ 4.8%</span>
+            </div>
+            <span className="text-xs font-bold text-neutral-600 block mt-1 uppercase">Completion Velocity</span>
+          </div>
+          <div className="flex items-center justify-between pt-1.5 bg-[#F7F4EE] border border-black px-2 py-1 text-[11px]">
+            <span className="text-neutral-600 font-bold uppercase">MEAN TIME TO MERGE</span>
+            <span className="text-black font-extrabold">11.4 DAYS</span>
+          </div>
+        </div>
+
+        <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-neutral-500">
+            <span className="text-[10px] font-bold">METRIC // 03</span>
+            <Coins size={18} className="text-[#FF5500]" />
+          </div>
+          <div className="my-3">
+            <span className="text-4xl sm:text-5xl font-black text-[#FF5500] font-sans leading-none">
+              {currentBalance}
+            </span>
+            <span className="text-xs font-bold text-neutral-600 block mt-1 uppercase">ALUMN-CR Balance</span>
+          </div>
+          <div className="flex items-center justify-between pt-1.5 bg-[#F7F4EE] border border-black px-2 py-1 text-[11px]">
+            <span className="text-neutral-600 font-bold uppercase">STAKING POOL</span>
+            <span className="text-black font-extrabold">VAL: $42,000 EQ</span>
+          </div>
+        </div>
+
+        <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-[#2E5BFF]">INTEGRITY // V4</span>
+            <ShieldCheck size={18} className="text-[#2E5BFF]" />
+          </div>
+          <div className="my-3">
+            <span className="text-base sm:text-lg font-bold text-black font-sans leading-tight block">
+              Anti-Cheat Watchdog
+            </span>
+            <span className="text-xs text-neutral-600 block mt-1 font-sans leading-relaxed">
+              FIPS 140-3 Cryptographic active process tracing with zero false positives.
+            </span>
+          </div>
+          <div className="flex items-center justify-between pt-1.5 bg-[#F7F4EE] border border-black px-2 py-1 text-[11px]">
+            <span className="text-neutral-600 font-bold uppercase">AUDIT STATUS</span>
+            <span className="inline-flex items-center gap-1.5 text-black font-extrabold">
+              <span className="w-2 h-2 rounded-full bg-[#00E676]" /> ACTIVE
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. FLAGSHIP HERO SPRINT SECTION (SPRINT 01) */}
+      <section className="bg-[#F7F4EE] border-2 border-black p-6 sm:p-8 shadow-[5px_5px_0px_#000000] flex flex-col xl:flex-row gap-8">
+        <div className="flex-1 flex flex-col justify-between gap-6">
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+              <span className="bg-black text-white px-2 py-0.5 font-bold">[ SPRINT 01 ]</span>
+              <span className="bg-white border border-black text-black px-2 py-0.5 font-bold shadow-[1px_1px_0px_#000000]">
+                [ 14 DAYS ]
+              </span>
+              <span className="bg-[#CCFF00] border border-black text-black px-2 py-0.5 font-bold shadow-[1px_1px_0px_#000000]">
+                [ 120 ALUMN-CR EARNED ]
+              </span>
+              <span className="text-neutral-500 font-mono ml-auto hidden sm:inline">
+                VERIFIED RUNTIME ID: #SR-9902
+              </span>
+            </div>
+
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-sans">
+                Zero to Tech Lead: Distributed Systems Transition Protocol
+              </h2>
+              <div className="flex items-center gap-2 mt-1.5 font-mono text-xs">
+                <span className="text-neutral-500 font-bold uppercase">LEAD ARCHITECT:</span>
+                <span className="font-extrabold text-black">Dr. Elias Vance (Quantix Corp, Class of &apos;14)</span>
               </div>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-5">
+
+            <p className="text-sm sm:text-base text-neutral-700 max-w-3xl leading-relaxed font-sans">
+              14-day rigorous pathway with operational engineering templates, Raft consensus algorithm code review, live concurrency benchmarks, and real-time fault-injection architectures deployed against distributed state machines.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white border-2 border-black p-4 shadow-[2px_2px_0px_#000000] font-mono text-xs">
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Video Title</label>
-                <input required name="title" className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="e.g. Master React in 2026" />
+                <span className="text-[10px] text-neutral-500 font-bold uppercase block">SYLLABUS MODULES</span>
+                <span className="font-extrabold text-black text-sm">6 CORE / 2 CAPSTONE</span>
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Description</label>
-                <textarea required name="description" className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 h-28 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none" placeholder="What will students learn from this video?" />
+                <span className="text-[10px] text-neutral-500 font-bold uppercase block">CODE REVIEWS</span>
+                <span className="font-extrabold text-black text-sm">2 PEER VERIFIED</span>
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Video File (.mp4)</label>
-                <input required name="videoFile" type="file" accept="video/mp4,video/x-m4v,video/*" className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:ring-2 focus:ring-blue-500 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-                <p className="text-xs text-slate-500 mt-1.5">Max file size: 150MB.</p>
+                <span className="text-[10px] text-neutral-500 font-bold uppercase block">TARGET CADENCE</span>
+                <span className="font-extrabold text-black text-sm">12 HRS / WEEK</span>
               </div>
-              <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setShowForm(false)} className="px-5 py-2.5 font-bold text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">Cancel</button>
-                <button disabled={isPending} type="submit" className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md disabled:opacity-50 transition-colors flex items-center gap-2">
-                  {isPending ? "Submitting..." : "Submit for Moderation"}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              onClick={() => handleEnroll("Zero to Tech Lead: Distributed Systems Transition Protocol")}
+              className="px-5 py-2.5 bg-[#FF5500] text-white border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 font-mono text-xs font-bold uppercase transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer flex items-center gap-1.5"
+              type="button"
+            >
+              <span>START SPRINT PROTOCOL</span>
+              <span className="font-bold">→</span>
+            </button>
+            <button
+              onClick={() => setIsSyllabusModalOpen(true)}
+              className="px-4 py-2.5 bg-white text-black border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 font-mono text-xs font-bold uppercase transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
+              type="button"
+            >
+              Inspect Syllabus PDF [4.2MB]
+            </button>
+            <div className="flex items-center gap-2 font-mono text-xs text-neutral-600 ml-auto">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse" />
+              <span>CURRENTLY ENROLLED: 64 ALUMNI FELLOWS</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Blueprint chamber */}
+        <div className="w-full xl:w-96 flex flex-col gap-3">
+          <div className="bg-white border-2 border-black p-1 shadow-[3px_3px_0px_#000000]">
+            <div className="w-full h-48 bg-neutral-900 border border-black flex flex-col items-center justify-center p-4 text-center relative overflow-hidden">
+              <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#CCFF00_1px,transparent_1px)] [background-size:14px_14px]" />
+              <Layers size={40} className="text-[#CCFF00] mb-2 z-10" />
+              <span className="font-mono text-xs font-bold text-white z-10">
+                DISTRIBUTED STATE MACHINE
+              </span>
+              <span className="font-mono text-[10px] text-neutral-400 mt-0.5 z-10">
+                TOPOLOGY // FAULT-INJECTION CHAMBER
+              </span>
+            </div>
+            <div className="p-2 bg-[#F7F4EE] border-t border-black mt-1 flex justify-between items-center font-mono text-[11px]">
+              <span className="text-neutral-500 font-bold">CHAMBER // CAPSTONE</span>
+              <span className="font-bold text-black">RAFT-CLUSTER-V2.GO</span>
+            </div>
+          </div>
+
+          <div className="bg-white border-2 border-black p-3 shadow-[2px_2px_0px_#000000] flex flex-col gap-1.5 font-mono text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-neutral-500 font-bold uppercase">SPRINT TIMELINE</span>
+              <span className="text-[#FF5500] font-bold">DAY 01 OF 14</span>
+            </div>
+            <div className="w-full bg-[#e5e2dc] border border-black h-2.5 overflow-hidden">
+              <div className="bg-[#FF5500] h-full w-[14%]" />
+            </div>
+            <div className="flex justify-between text-[10px] text-neutral-500 mt-0.5 font-bold">
+              <span>START: 00h</span>
+              <span>CHECKPOINT 1</span>
+              <span>CERT: 336h</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. CURATED ENGINEERING SPRINTS GRID (INDEX 02) */}
+      <section className="flex flex-col gap-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <span className="bg-black text-[#CCFF00] px-2 py-0.5 font-bold">INDEX // 02</span>
+              <span className="text-neutral-500 uppercase font-bold">ACTIVE REPOSITORY</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-sans mt-1">
+              Curated Engineering Sprints
+            </h2>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+            <button
+              onClick={() => setSelectedSprintCategory("all")}
+              className={`px-3 py-1.5 border-2 border-black font-bold uppercase transition-all shadow-[2px_2px_0px_#000000] ${
+                selectedSprintCategory === "all" ? "bg-black text-[#CCFF00]" : "bg-white text-black hover:bg-neutral-100"
+              }`}
+            >
+              ALL SPRINTS
+            </button>
+            <button
+              onClick={() => setSelectedSprintCategory("cryptography")}
+              className={`px-3 py-1.5 border-2 border-black font-bold uppercase transition-all shadow-[2px_2px_0px_#000000] ${
+                selectedSprintCategory === "cryptography" ? "bg-black text-[#CCFF00]" : "bg-white text-black hover:bg-neutral-100"
+              }`}
+            >
+              CRYPTOGRAPHY
+            </button>
+            <button
+              onClick={() => setSelectedSprintCategory("distributed")}
+              className={`px-3 py-1.5 border-2 border-black font-bold uppercase transition-all shadow-[2px_2px_0px_#000000] ${
+                selectedSprintCategory === "distributed" ? "bg-black text-[#CCFF00]" : "bg-white text-black hover:bg-neutral-100"
+              }`}
+            >
+              DISTRIBUTED ENGINES
+            </button>
+            <button
+              onClick={() => setSelectedSprintCategory("silicon")}
+              className={`px-3 py-1.5 border-2 border-black font-bold uppercase transition-all shadow-[2px_2px_0px_#000000] ${
+                selectedSprintCategory === "silicon" ? "bg-black text-[#CCFF00]" : "bg-white text-black hover:bg-neutral-100"
+              }`}
+            >
+              SILICON &amp; FIRMWARE
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredSprints.map((sprint) => (
+            <div
+              key={sprint.id}
+              className="bg-white border-2 border-black p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between hover:shadow-[6px_6px_0px_#000000] transition-all group"
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between font-mono text-xs">
+                  <span className="bg-[#F7F4EE] border border-black text-black px-2 py-0.5 font-bold shadow-[1px_1px_0px_#000000]">
+                    [ {sprint.sprintNum} // {sprint.durationDays} DAYS ]
+                  </span>
+                  <span className="text-[#FF5500] font-black">+{sprint.creditsEarned} ALUMN-CR</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-extrabold text-black font-sans group-hover:text-[#FF5500] transition-colors leading-snug">
+                    {sprint.title}
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-1 font-mono text-xs">
+                    <span className="text-neutral-500 font-bold uppercase">FELLOW:</span>
+                    <span className="font-extrabold text-black">{sprint.fellow} ({sprint.fellowTitle})</span>
+                  </div>
+                </div>
+
+                <p className="text-sm text-neutral-700 font-sans leading-relaxed">
+                  {sprint.description}
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 font-mono text-xs">
+                  {sprint.tags.map((tag) => (
+                    <span key={tag} className="px-2 py-0.5 bg-[#F7F4EE] border border-black text-neutral-700 text-[11px] font-semibold">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-4 mt-6 bg-[#F7F4EE] border-2 border-black p-4 flex flex-col gap-2 font-mono text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-500 font-bold uppercase">COHORT PROGRESSION</span>
+                  <span className="font-extrabold text-black">{sprint.passRate}</span>
+                </div>
+                <div className="w-full bg-[#e5e2dc] border border-black h-2">
+                  <div className="bg-black h-full" style={{ width: sprint.passRate.split("%")[0] + "%" }} />
+                </div>
+                <div className="flex justify-between items-center mt-1 pt-1">
+                  <span className="text-neutral-600 font-bold">
+                    SEATS: {sprint.seatsRemaining}/{sprint.totalSeats} REMAINING
+                  </span>
+                  <button
+                    onClick={() => handleEnroll(sprint.title)}
+                    className="px-3.5 py-1.5 bg-black text-[#CCFF00] border border-black font-bold uppercase hover:bg-[#CCFF00] hover:text-black transition-all cursor-pointer shadow-[2px_2px_0px_#000000]"
+                    type="button"
+                  >
+                    ENROLL RUNTIME →
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. VIDEO LEARNING REPOSITORY & TECHNICAL TALKS (PRESERVING EXISTING FUNCTIONALITY) */}
+      <section className="flex flex-col gap-6 pt-4 border-t-2 border-black">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <span className="bg-black text-[#CCFF00] px-2 py-0.5 font-bold">LIBRARY // VIDEOS</span>
+              <span className="text-neutral-500 uppercase font-bold">ALUMNI MASTERCLASSES</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-sans mt-1">
+              Technical Masterclasses &amp; Video Runbooks
+            </h2>
+            <p className="text-sm text-neutral-600 max-w-2xl mt-0.5">
+              Watch deep-dive walkthroughs uploaded by verified alumni fellows or redeem your ALUMN-CR points.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 font-mono text-xs bg-white border-2 border-black p-2.5 shadow-[2px_2px_0px_#000000]">
+            <Coins size={18} className="text-[#FF5500]" />
+            <span className="text-neutral-600 font-bold">STAKED BALANCE:</span>
+            <span className="text-base font-black text-black">{currentBalance} pts</span>
+          </div>
+        </div>
+
+        {initialVideos.length === 0 ? (
+          <div className="bg-white border-2 border-black p-8 text-center shadow-[3px_3px_0px_#000000] font-mono">
+            <Play size={32} className="mx-auto text-neutral-400 mb-2" />
+            <p className="font-bold text-sm text-black">NO SUBMITTED MASTERCLASSES RECORDED YET</p>
+            <p className="text-xs text-neutral-500 mt-1">
+              Be the first alumni fellow to submit an architectural runbook video.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {initialVideos.map((video) => {
+              const isUnlocked = unlockedVideoIds.includes(video.id) || video.priceInCredits === 0;
+              const isFree = video.priceInCredits === 0;
+
+              return (
+                <div
+                  key={video.id}
+                  className="bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between overflow-hidden group hover:shadow-[6px_6px_0px_#000000] transition-all"
+                >
+                  {/* Thumbnail / Header */}
+                  <div className="relative aspect-video w-full bg-neutral-900 border-b-2 border-black flex flex-col justify-between p-3 overflow-hidden">
+                    <div className="flex justify-between items-start z-10">
+                      {isFree ? (
+                        <span className="px-2 py-0.5 bg-[#00E676] text-black border border-black font-mono text-[10px] font-bold">
+                          FREE SKILL
+                        </span>
+                      ) : isUnlocked ? (
+                        <span className="px-2 py-0.5 bg-[#CCFF00] text-black border border-black font-mono text-[10px] font-bold flex items-center gap-1">
+                          <CheckCircle2 size={11} /> UNLOCKED
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black font-mono text-[10px] font-bold flex items-center gap-1">
+                          <Coins size={11} /> {video.priceInCredits} PTS
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="z-10 mt-auto">
+                      <h4 className="font-sans font-extrabold text-white text-sm line-clamp-2 drop-shadow-sm">
+                        {video.title}
+                      </h4>
+                    </div>
+
+                    {/* Play Button Overlay */}
+                    {isUnlocked ? (
+                      <button
+                        onClick={() => setPlayingVideo(video)}
+                        className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border-none"
+                      >
+                        <div className="w-12 h-12 bg-[#CCFF00] border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                          <Play size={22} className="text-black ml-0.5 fill-black" />
+                        </div>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleUnlock(video.id, video.priceInCredits)}
+                        disabled={isPending}
+                        className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/75 p-3 text-center cursor-pointer border-none"
+                      >
+                        <Lock size={22} className="text-white mb-1.5" />
+                        <span className="font-mono text-xs font-bold text-white bg-[#FF5500] px-3 py-1 border border-black shadow-[1px_1px_0px_#000000]">
+                          Unlock for {video.priceInCredits} pts
+                        </span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Body & Meta */}
+                  <div className="p-4 flex flex-col flex-1 justify-between font-sans">
+                    <p className="text-xs text-neutral-700 line-clamp-2 leading-relaxed">
+                      {video.description || "Comprehensive hands-on engineering walkthrough."}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-3 border-t border-neutral-200 mt-4 font-mono text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <UserIcon size={12} className="text-neutral-500" />
+                        <span className="text-[11px] font-bold text-black truncate max-w-[120px]">
+                          {video.uploader?.name || "Verified Fellow"}
+                        </span>
+                      </div>
+                      {isUnlocked && (
+                        <button
+                          onClick={() => setPlayingVideo(video)}
+                          className="font-bold text-black hover:text-[#FF5500] flex items-center gap-1 text-[11px] cursor-pointer"
+                        >
+                          <span>Watch</span>
+                          <Play size={10} className="fill-current" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* 6. PROOF OF COMPLETION & WATCHDOG ARCHITECTURE (INDEX 03) */}
+      <section className="bg-[#F7F4EE] border-2 border-black p-6 sm:p-8 shadow-[5px_5px_0px_#000000] flex flex-col gap-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="bg-black text-[#CCFF00] px-2 py-0.5 font-bold">INDEX // 03</span>
+            <span className="text-[#FF5500] font-extrabold uppercase">
+              PROOF OF COMPLETION &amp; WATCHDOG ARCHITECTURE
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676]" />
+            <span className="font-bold text-black">ATTESTATION PROTOCOL: SEC_ECDSA_P384</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="bg-white border-2 border-black p-5 shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between font-mono text-[10px] text-neutral-500 font-bold">
+                <span>STAGE 01 // TELEMETRY</span>
+                <Cpu size={16} className="text-black" />
+              </div>
+              <h4 className="text-lg font-extrabold text-black font-sans">Heartbeat Watchdog</h4>
+              <p className="text-xs text-neutral-700 font-sans leading-relaxed">
+                Continuous keystroke entropy and interactive terminal session checks verify human execution. Minimum threshold: &gt;90% active retention.
+              </p>
+            </div>
+            <div className="mt-4 p-2 bg-[#F7F4EE] border border-black flex items-center justify-between font-mono text-xs">
+              <span className="text-neutral-500 font-bold">WATCHDOG STATUS</span>
+              <span className="text-[#00A859] font-extrabold">MONITORED: OK</span>
+            </div>
+          </div>
+
+          <div className="bg-white border-2 border-black p-5 shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between font-mono text-[10px] text-neutral-500 font-bold">
+                <span>STAGE 02 // VALIDATION</span>
+                <ShieldCheck size={16} className="text-black" />
+              </div>
+              <h4 className="text-lg font-extrabold text-black font-sans">Peer Code Review Sign-Off</h4>
+              <p className="text-xs text-neutral-700 font-sans leading-relaxed">
+                Two calibrated alumni fellows grade commit diffs against unit test coverage, AST linting, and benchmark latency guarantees.
+              </p>
+            </div>
+            <div className="mt-4 p-2 bg-[#F7F4EE] border border-black flex items-center justify-between font-mono text-xs">
+              <span className="text-neutral-500 font-bold">SIGN-OFF QUORUM</span>
+              <span className="text-black font-extrabold">2 OF 2 FELLOWS</span>
+            </div>
+          </div>
+
+          <div className="bg-white border-2 border-black p-5 shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between font-mono text-[10px] text-neutral-500 font-bold">
+                <span>STAGE 03 // CREDENTIAL</span>
+                <Award size={16} className="text-black" />
+              </div>
+              <h4 className="text-lg font-extrabold text-black font-sans">Cryptographic Certificate</h4>
+              <p className="text-xs text-neutral-700 font-sans leading-relaxed">
+                ECDSA P-384 signed root with immutable ledger timestamp. Downloadable JSON-LD and PDF cryptographic credentials.
+              </p>
+            </div>
+            <div className="mt-4 p-2 bg-[#F7F4EE] border border-black flex items-center justify-between font-mono text-xs">
+              <span className="text-neutral-500 font-bold">VALIDITY PROOF</span>
+              <span className="text-[#FF5500] font-extrabold">FIPS 140-3 COMPLIANT</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Verification Card Sample */}
+        <div className="bg-white border-2 border-black p-5 shadow-[3px_3px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 bg-black text-[#CCFF00] border-2 border-black flex items-center justify-center font-black text-sm shadow-[1px_1px_0px_#000000]">
+              CERT
+            </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-black font-sans text-sm">Elena Vance // Recent Verification</span>
+              <span className="text-neutral-500 text-[11px]">
+                ISSUED: 2026-03-28 | SPRINT: VECTOR-EMBEDDING-COMPRESSION-99
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+                  "@context": "https://w3id.org/security/v2",
+                  "type": "CryptographicSprintCredential",
+                  "issuer": "did:proalumn:authority:0x89F1",
+                  "recipient": "did:proalumn:user:elena-vance",
+                  "sprint": "VECTOR-EMBEDDING-COMPRESSION-99",
+                  "signature": "0x9F42..ECDSA_P384_VALID"
+                }, null, 2));
+                const dl = document.createElement("a");
+                dl.setAttribute("href", dataStr);
+                dl.setAttribute("download", "elena_vance_credential.json");
+                dl.click();
+              }}
+              className="px-3.5 py-1.5 bg-[#F7F4EE] text-black border border-black font-bold uppercase hover:bg-neutral-200 transition-all cursor-pointer shadow-[1px_1px_0px_#000000]"
+              type="button"
+            >
+              Download JSON-LD Key
+            </button>
+            <button
+              onClick={() => setIsSignatureModalOpen(true)}
+              className="px-4 py-1.5 bg-black text-white border-2 border-black font-bold uppercase hover:bg-[#CCFF00] hover:text-black transition-all cursor-pointer shadow-[2px_2px_0px_#000000]"
+              type="button"
+            >
+              Verify Signature →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. MODALS */}
+
+      {/* Modal 1: Upload Video Form */}
+      {showVideoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="relative w-full max-w-xl bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col font-mono text-xs max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b-2 border-black pb-3 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">[ SUBMISSION PORTAL ]</span>
+                <h3 className="font-extrabold text-black font-sans text-base uppercase">Submit Technical Video</h3>
+              </div>
+              <button
+                onClick={() => setShowVideoModal(false)}
+                className="p-1 border border-black hover:bg-neutral-100 cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <form onSubmit={handleVideoSubmit} className="space-y-4">
+              <div>
+                <label className="block font-bold text-black uppercase mb-1">
+                  Video Title <span className="text-red-600">*</span>
+                </label>
+                <input
+                  required
+                  name="title"
+                  placeholder="e.g. Raft Consensus Internals in Go"
+                  className="w-full px-3 py-2 border-2 border-black bg-[#F7F4EE] focus:bg-white text-xs font-mono focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-black uppercase mb-1">
+                  Description &amp; Key Concepts <span className="text-red-600">*</span>
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  name="description"
+                  placeholder="Summarize the architectural takeaways for students and fellows..."
+                  className="w-full px-3 py-2 border-2 border-black bg-[#F7F4EE] focus:bg-white text-xs font-mono focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-black uppercase mb-1">
+                  Video File (.mp4) <span className="text-red-600">*</span>
+                </label>
+                <input
+                  required
+                  name="videoFile"
+                  type="file"
+                  accept="video/mp4,video/x-m4v,video/*"
+                  className="w-full px-3 py-2 border-2 border-black bg-[#F7F4EE] text-xs font-mono file:mr-3 file:py-1 file:px-3 file:border-2 file:border-black file:font-bold file:bg-black file:text-white hover:file:bg-[#CCFF00] hover:file:text-black"
+                />
+                <p className="text-[10px] text-neutral-500 mt-1">Maximum file size: 150MB.</p>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t-2 border-black">
+                <button
+                  type="button"
+                  onClick={() => setShowVideoModal(false)}
+                  className="px-4 py-2 border-2 border-black bg-white font-bold hover:bg-neutral-100 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={isPending}
+                  type="submit"
+                  className="px-5 py-2 border-2 border-black bg-[#CCFF00] text-black font-bold shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] cursor-pointer disabled:opacity-50"
+                >
+                  {isPending ? "Transmitting..." : "Submit for Moderation"}
                 </button>
               </div>
             </form>
-          </Card>
-        )}
-
-        {/* CATEGORIZED DISPLAY */}
-        {initialVideos.length === 0 ? (
-          <Card padding="lg" className="text-center py-20 text-slate-500 border-dashed">
-            <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Video size={40} className="text-slate-400" />
-            </div>
-            <p className="text-xl font-bold text-slate-700 dark:text-slate-300">The library is currently empty</p>
-            <p className="text-sm mt-2 max-w-sm mx-auto">Be the first alumni to submit a premium masterclass or technical talk.</p>
-          </Card>
-        ) : (
-          <div className="space-y-12">
-            
-            {/* FREE VIDEOS */}
-            {initialVideos.filter(v => v.priceInCredits === 0).length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
-                  <Play size={24} className="text-blue-500" />
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Trending Free Skills</h2>
-                </div>
-                <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-4 px-4 sm:-mx-8 sm:px-8 [&::-webkit-scrollbar]:hidden">
-                  {initialVideos.filter(v => v.priceInCredits === 0).map((video) => (
-                    <div key={video.id} className="min-w-[280px] sm:min-w-[320px] snap-center shrink-0">
-                      <VideoCard video={video} isUnlocked={true} isFree={true} handleUnlock={handleUnlock} isPending={isPending} setPlayingVideo={setPlayingVideo} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* PREMIUM VIDEOS */}
-            {initialVideos.filter(v => v.priceInCredits > 0).length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
-                  <Flame size={24} className="text-orange-500" />
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Premium Deep Dives</h2>
-                </div>
-                <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-4 px-4 sm:-mx-8 sm:px-8 [&::-webkit-scrollbar]:hidden">
-                  {initialVideos.filter(v => v.priceInCredits > 0).map((video) => (
-                    <div key={video.id} className="min-w-[280px] sm:min-w-[320px] snap-center shrink-0">
-                      <VideoCard 
-                        video={video} 
-                        isUnlocked={unlockedIds.includes(video.id)} 
-                        isFree={false} 
-                        handleUnlock={handleUnlock} 
-                        isPending={isPending} 
-                        setPlayingVideo={setPlayingVideo}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Video Player Modal */}
+      {/* Modal 2: Watch Video Player */}
       {playingVideo && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-950/90 backdrop-blur-xl">
-          <div className="relative w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex justify-between items-center p-4 border-b border-slate-800">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <ShieldCheck size={20} className="text-emerald-500" /> Secure Watch-to-Earn Player
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="relative w-full max-w-4xl bg-white border-4 border-black shadow-[8px_8px_0px_#000000] flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b-2 border-black bg-[#F7F4EE] font-mono">
+              <h2 className="text-sm font-black text-black uppercase flex items-center gap-2">
+                <ShieldCheck size={18} className="text-[#00E676]" />
+                <span>SECURE WATCH-TO-EARN PLAYER // {playingVideo.title}</span>
               </h2>
-              <button 
+              <button
                 onClick={() => setPlayingVideo(null)}
-                className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full transition-colors"
+                className="p-1 border border-black bg-white hover:bg-neutral-100 cursor-pointer"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto">
-              <WatchVideoPlayer 
-                videoId={playingVideo.id} 
-                videoUrl={playingVideo.videoUrl} 
-                title={playingVideo.title} 
+              <WatchVideoPlayer
+                videoId={playingVideo.id}
+                videoUrl={playingVideo.videoUrl}
+                title={playingVideo.title}
               />
-              
-              <div className="p-6 bg-slate-900">
-                <h3 className="text-lg font-bold text-white mb-2">About this video</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{playingVideo.description}</p>
+              <div className="p-5 border-t-2 border-black bg-white font-mono text-xs">
+                <h3 className="font-extrabold text-black uppercase mb-1">About this Runbook</h3>
+                <p className="text-neutral-700 font-sans text-sm leading-relaxed">{playingVideo.description}</p>
               </div>
             </div>
           </div>
         </div>
       )}
-    </RoleShell>
-  );
-}
 
-// Helper Component for Video Card
-function VideoCard({ 
-  video, 
-  isUnlocked, 
-  isFree, 
-  handleUnlock, 
-  isPending,
-  setPlayingVideo
-}: { 
-  video: MarketVideo, 
-  isUnlocked: boolean, 
-  isFree: boolean, 
-  handleUnlock: (id: string) => void, 
-  isPending: boolean,
-  setPlayingVideo: (video: MarketVideo | null) => void
-}) {
-  const gradientIndex = video.title.charCodeAt(0) % 5;
-  const gradients = [
-    "from-blue-500 to-indigo-600",
-    "from-emerald-500 to-teal-600",
-    "from-rose-500 to-pink-600",
-    "from-amber-500 to-orange-600",
-    "from-purple-500 to-fuchsia-600"
-  ];
-  const gradient = gradients[gradientIndex];
-
-  return (
-    <div className="group flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:shadow-xl transition-all duration-300">
-      
-      {/* THUMBNAIL */}
-      <div className={`aspect-video w-full relative bg-gradient-to-br ${gradient} p-6 flex flex-col justify-end overflow-hidden`}>
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-        
-        <h3 className="relative z-10 font-display text-white text-lg font-bold leading-tight line-clamp-2 drop-shadow-md">
-          {video.title}
-        </h3>
-        
-        {/* OVERLAYS */}
-        {isUnlocked ? (
-          <button onClick={() => setPlayingVideo(video)} className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm cursor-pointer border-none outline-none w-full h-full">
-            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl scale-90 group-hover:scale-100 transition-transform">
-              <Play size={32} className="text-white ml-1.5 fill-white" />
-            </div>
-          </button>
-        ) : (
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 text-center">
-            <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center mb-3 shadow-lg border border-slate-700">
-              <Lock size={24} className="text-slate-400" />
-            </div>
-            <p className="text-sm font-bold text-white mb-3">Premium Content</p>
-            <button
-              onClick={() => handleUnlock(video.id)}
-              disabled={isPending}
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl shadow-md transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              {video.priceInCredits === 0 ? "Free" : `Unlock for ${video.priceInCredits} pts`}
-            </button>
-          </div>
-        )}
-
-        {/* BADGES */}
-        <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-2">
-          {!isFree && !isUnlocked && (
-            <div className="px-2.5 py-1 bg-black/60 backdrop-blur-md text-white text-xs font-bold rounded-md flex items-center gap-1 border border-white/10 shadow-sm">
-              <Coins size={12} className="text-amber-400" /> {video.priceInCredits} pts
-            </div>
-          )}
-          {isFree && (
-            <div className="px-2.5 py-1 bg-blue-500/80 backdrop-blur-md text-white text-xs font-bold rounded-md flex items-center gap-1 shadow-sm">
-              Free Skill
-            </div>
-          )}
-          {isUnlocked && !isFree && (
-            <div className="px-2.5 py-1 bg-emerald-500 text-white text-xs font-bold rounded-md flex items-center gap-1 shadow-sm">
-              <CheckCircle2 size={12} /> Unlocked
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* DETAILS */}
-      <div className="p-4 flex flex-col flex-1">
-        <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 flex-1">
-          {video.description}
-        </p>
-        
-        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto">
-          <div className="flex items-center gap-2 min-w-0">
-            {video.uploader?.avatarUrl ? (
-              <Image src={video.uploader.avatarUrl} alt={video.uploader.name || "Expert"} width={28} height={28} className="w-7 h-7 rounded-full object-cover shrink-0 bg-slate-200" />
-            ) : (
-              <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 shrink-0 border border-slate-200 dark:border-slate-700">
-                <UserIcon size={14} />
+      {/* Modal 3: Syllabus PDF Preview Modal */}
+      {isSyllabusModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="relative w-full max-w-2xl bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col gap-4 font-mono text-xs max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b-2 border-black pb-3">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">SYLLABUS SPEC</span>
+                <span className="font-extrabold text-black font-sans text-base uppercase">Sprint Curriculum Blueprint</span>
               </div>
-            )}
-            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">
-              {video.uploader?.name || "Expert"}
-            </span>
+              <button
+                onClick={() => setIsSyllabusModalOpen(false)}
+                className="p-1 border border-black hover:bg-neutral-100 cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-3 font-sans text-neutral-800 leading-relaxed text-xs">
+              <h4 className="font-mono font-bold text-black uppercase text-sm">
+                Module Breakdown // Distributed Systems Transition Protocol
+              </h4>
+              <ul className="list-decimal pl-5 space-y-1.5 font-mono text-xs">
+                <li><strong>Week 1 - Module 01:</strong> Formal Verification &amp; TLA+ state specification models.</li>
+                <li><strong>Week 1 - Module 02:</strong> Log-structured storage engines &amp; LSM-Tree write amplification.</li>
+                <li><strong>Week 1 - Module 03:</strong> Raft leader election, heartbeats, and cluster membership reconfiguration.</li>
+                <li><strong>Week 2 - Module 04:</strong> Vector clocks, CRDTs, and causal consistency invariants.</li>
+                <li><strong>Week 2 - Module 05:</strong> Chaos testing with Jepsen &amp; simulated packet drop injection.</li>
+                <li><strong>Week 2 - Module 06 (Capstone):</strong> Building a fault-tolerant multi-node key-value store in Go.</li>
+              </ul>
+            </div>
+
+            <div className="flex justify-end pt-3 border-t-2 border-black">
+              <button
+                onClick={() => setIsSyllabusModalOpen(false)}
+                className="px-4 py-2 border-2 border-black bg-black text-white font-bold uppercase hover:bg-[#CCFF00] hover:text-black cursor-pointer"
+              >
+                Close Syllabus
+              </button>
+            </div>
           </div>
-          <span className="text-[10px] text-slate-400 font-mono">
-            {video.createdAt ? new Date(video.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "Recently"}
-          </span>
         </div>
-      </div>
+      )}
+
+      {/* Modal 4: Signature Verification Modal */}
+      {isSignatureModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+          <div className="relative w-full max-w-lg bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col gap-4 font-mono text-xs">
+            <div className="flex items-center justify-between border-b-2 border-black pb-3">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-[#00E676] text-black font-bold">ATTESTATION OK</span>
+                <span className="font-extrabold text-black font-sans uppercase">Cryptographic Validation</span>
+              </div>
+              <button
+                onClick={() => setIsSignatureModalOpen(false)}
+                className="p-1 border border-black hover:bg-neutral-100 cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="p-3 bg-[#F7F4EE] border border-black space-y-1.5">
+              <div className="flex justify-between">
+                <span className="text-neutral-500 font-bold">ALGORITHM:</span>
+                <span className="font-bold text-black">ECDSA P-384 + SHA-384</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-500 font-bold">ROOT HASH:</span>
+                <span className="font-bold text-black truncate max-w-[200px]">0x89F1942E3120AA812</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-500 font-bold">ISSUER:</span>
+                <span className="font-bold text-black">PRO-ALUMN CONSORTIUM ROOT CA</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-500 font-bold">STATUS:</span>
+                <span className="text-[#00A859] font-extrabold">CRYPTOGRAPHICALLY VERIFIED</span>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2 border-t-2 border-black">
+              <button
+                onClick={() => setIsSignatureModalOpen(false)}
+                className="px-4 py-2 border-2 border-black bg-black text-white font-bold uppercase hover:bg-[#CCFF00] hover:text-black cursor-pointer"
+              >
+                Close Verification
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

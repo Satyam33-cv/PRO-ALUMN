@@ -1,26 +1,26 @@
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { verifyJwt } from "@/lib/jwt";
 import { getApiBaseUrl } from "@/lib/api";
-import { EducationContent } from "./EducationContent";
+import { AdaptiveShell } from "@/components/AdaptiveShell";
+import { EducationContent, MarketVideo } from "./EducationContent";
 
 export const metadata = {
-  title: "Education Centre | PRO ALUMN",
-  description: "Browse and share videos.",
+  title: "Education & Technical Sprint Center | PRO-ALUMN",
+  description: "High-velocity engineering protocols, tactical interview blueprints, and peer-reviewed architectural case studies verified by alumni fellows.",
 };
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
 
 async function getUserSession() {
-  const cookieStore = await cookies();
-  const token =
-    cookieStore.get("pro-alumn_token")?.value ||
-    cookieStore.get("token")?.value ||
-    cookieStore.get("alumni_connect_token")?.value;
-
-  if (!token) return null;
-
   try {
+    const cookieStore = await cookies();
+    const token =
+      cookieStore.get("pro-alumn_token")?.value ||
+      cookieStore.get("token")?.value ||
+      cookieStore.get("alumni_connect_token")?.value;
+
+    if (!token) return null;
+
     const decoded = verifyJwt(token, JWT_SECRET);
     if (!decoded || !decoded.id) return null;
     return { ...decoded, token };
@@ -32,38 +32,48 @@ async function getUserSession() {
 export default async function EducationPage() {
   const session = await getUserSession();
 
-  if (!session) {
-    redirect("/login");
-  }
-
   const baseUrl = getApiBaseUrl();
-  let videos: any[] = [];
-  let balance = 0;
+  let videos: MarketVideo[] = [];
+  let balance = 350;
   const unlockedIds: string[] = [];
 
-  try {
-    const [videoRes, walletRes] = await Promise.all([
-      fetch(`${baseUrl}/video`, {
-        headers: { Authorization: `Bearer ${session.token}` },
-        cache: "no-store",
-      }).then((r) => (r.ok ? r.json() : { videos: [] })),
-      fetch(`${baseUrl}/gamification/wallet`, {
-        headers: { Authorization: `Bearer ${session.token}` },
-        cache: "no-store",
-      }).then((r) => (r.ok ? r.json() : { wallet: { balance: 0 } })),
-    ]);
+  if (session?.token) {
+    try {
+      const [videoRes, walletRes] = await Promise.all([
+        fetch(`${baseUrl}/video`, {
+          headers: { Authorization: `Bearer ${session.token}` },
+          cache: "no-store",
+        }).then((r) => (r.ok ? r.json() : { videos: [] })),
+        fetch(`${baseUrl}/gamification/wallet`, {
+          headers: { Authorization: `Bearer ${session.token}` },
+          cache: "no-store",
+        }).then((r) => (r.ok ? r.json() : { wallet: { balance: 350 } })),
+      ]);
 
-    videos = videoRes.videos || [];
-    balance = walletRes.wallet?.balance || 0;
-  } catch {
-    // Graceful fallback
+      videos = videoRes.videos || [];
+      balance = walletRes.wallet?.balance ?? 350;
+    } catch {
+      // Graceful fallback
+    }
+  } else {
+    // Unauthenticated public visitors can discover video repository without forced redirect
+    try {
+      const videoRes = await fetch(`${baseUrl}/video`, {
+        cache: "no-store",
+      }).then((r) => (r.ok ? r.json() : { videos: [] }));
+      videos = videoRes.videos || [];
+    } catch {
+      // Fallback
+    }
   }
 
   return (
-    <EducationContent 
-      initialVideos={videos.map((v: any) => ({ ...v, description: v.description || "" }))} 
-      balance={balance} 
-      unlockedIds={unlockedIds}
-    />
+    <AdaptiveShell activeRoute="education">
+      <EducationContent
+        initialVideos={videos.map((v: any) => ({ ...v, description: v.description || "" }))}
+        balance={balance}
+        unlockedIds={unlockedIds}
+      />
+    </AdaptiveShell>
   );
 }
