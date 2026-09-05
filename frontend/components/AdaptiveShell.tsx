@@ -8,7 +8,7 @@ import { PublicHeader } from "@/components/PublicHeader";
 
 export interface AdaptiveShellProps {
   children: React.ReactNode;
-  activeRoute?: "directory" | "stories" | "announcements" | "education" | "home";
+  activeRoute?: "directory" | "stories" | "announcements" | "education" | "events" | "jobs" | "home";
   forcePublic?: boolean;
 }
 
@@ -39,68 +39,77 @@ export function AdaptiveShell({
     return <RoleShell>{children}</RoleShell>;
   }
 
-  // Otherwise, render full-width Public Guest Showcase Shell
+  // Unauthenticated visitor (Public Guest): render full-width broadsheet layout
   return (
-    <div
-      data-testid="public-guest-shell"
-      className="min-h-screen bg-[#fcf9f3] text-black border-t-4 border-black flex flex-col justify-between selection:bg-[#CCFF00] selection:text-black font-sans"
-    >
+    <div className="min-h-screen bg-[#fcf9f3] text-black flex flex-col justify-between selection:bg-[#CCFF00] selection:text-black">
+      {/* 1. Public Global Showcase Header */}
       <PublicHeader activeRoute={activeRoute} />
 
-      <main className="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 py-6 space-y-8">
+      {/* 2. Main Full-Width Content Container (Zero Left Sidebar) */}
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {children}
       </main>
 
-      {/* BEGIN: PublicGlobalFooter */}
-      <footer className="w-full border-t-2 border-black bg-[#fcf9f3] mt-16 font-mono text-xs">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-10">
+      {/* 3. Broadsheet Neobrutalist Footer */}
+      <footer className="border-t-4 border-black bg-white py-10 px-4 sm:px-6 font-mono text-xs mt-12">
+        <div className="max-w-[1400px] mx-auto space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-black">
-            {/* Col 1: Brand */}
-            <div className="space-y-3">
-              <div className="font-extrabold text-base text-black font-sans tracking-tight">
-                ///// PRO-ALUMN
-              </div>
-              <p className="text-neutral-700 text-xs leading-relaxed font-mono">
-                Federated alumni intelligence, career verification, and peer mentorship protocol for tier-one universities and technical faculties.
-              </p>
-              <div className="inline-flex items-center px-2 py-0.5 border border-black bg-black text-[#CCFF00] text-[10px] font-bold">
-                SECURE ENCLAVE ACTIVE
-              </div>
+          {/* Col 1: Identity */}
+          <div className="space-y-2">
+            <div className="font-extrabold text-base text-black font-sans tracking-tight">
+              ///// PRO-ALUMN
             </div>
+            <p className="text-neutral-700 text-xs leading-relaxed font-mono">
+              Federated alumni intelligence, career verification, and peer mentorship protocol for tier-one universities and technical faculties.
+            </p>
+            <div className="inline-flex items-center px-2 py-0.5 border border-black bg-black text-[#CCFF00] text-[10px] font-bold">
+              SECURE ENCLAVE ACTIVE
+            </div>
+          </div>
 
-            {/* Col 2: Showcase Pillars */}
-            <div className="space-y-2">
-              <div className="font-bold text-black uppercase tracking-wider text-[11px]">
-                [ 05 SHOWCASE PILLARS ]
-              </div>
-              <ul className="space-y-1 text-[11px] text-neutral-700">
-                <li>
-                  <Link href="/directory" className="hover:underline font-bold text-black">
-                    Pillar 01: Alumni Directory &amp; Topology
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="hover:underline">
-                    Pillar 02: Broadsheet &amp; Credentials
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="hover:underline">
-                    Pillar 03: Mentorship &amp; Flash 1:1
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="hover:underline">
-                    Pillar 04: Career &amp; Referral Hub
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/stories" className="hover:underline font-bold text-black">
-                    Pillar 05: Success Spotlight Wall
-                  </Link>
-                </li>
-              </ul>
+          {/* Col 2: Showcase Pillars */}
+          <div className="space-y-2">
+            <div className="font-bold text-black uppercase tracking-wider text-[11px]">
+              [ SHOWCASE PILLARS ]
             </div>
+            <ul className="space-y-1 text-[11px] text-neutral-700">
+              <li>
+                <Link href="/directory" className="hover:underline font-bold text-black">
+                  Pillar 01: Alumni Directory &amp; Geo-Map
+                </Link>
+              </li>
+              <li>
+                <Link href="/jobs" className="hover:underline font-bold text-black">
+                  Pillar 02: Career &amp; Referral Hub
+                </Link>
+              </li>
+              <li>
+                <Link href="/mentorship" className="hover:underline font-bold text-black">
+                  Pillar 03: Mentorship &amp; Flash 1:1
+                </Link>
+              </li>
+              <li>
+                <Link href="/events" className="hover:underline font-bold text-black">
+                  Pillar 04: Events &amp; Capacity RSVPs
+                </Link>
+              </li>
+              <li>
+                <Link href="/stories" className="hover:underline font-bold text-black">
+                  Pillar 05: Success Spotlight Wall
+                </Link>
+              </li>
+              <li>
+                <Link href="/announcements" className="hover:underline font-bold text-black">
+                  Pillar 06: Announcements Wire
+                </Link>
+              </li>
+              <li>
+                <Link href="/education" className="hover:underline font-bold text-black">
+                  Pillar 07: Technical Sprint Center
+                </Link>
+              </li>
+            </ul>
+          </div>
 
             {/* Col 3: Protocols & Governance */}
             <div className="space-y-2">

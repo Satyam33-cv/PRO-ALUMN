@@ -7,7 +7,7 @@ import { Menu, X, ArrowRight, ShieldCheck, User } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 
 export interface PublicHeaderProps {
-  activeRoute?: "directory" | "stories" | "announcements" | "education" | "home";
+  activeRoute?: "directory" | "stories" | "announcements" | "education" | "events" | "jobs" | "home";
 }
 
 export function PublicHeader({ activeRoute }: PublicHeaderProps) {
@@ -19,6 +19,10 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
     activeRoute ||
     (pathname.startsWith("/directory")
       ? "directory"
+      : pathname.startsWith("/jobs")
+      ? "jobs"
+      : pathname.startsWith("/events")
+      ? "events"
       : pathname.startsWith("/stories")
       ? "stories"
       : pathname.startsWith("/announcements")
@@ -35,6 +39,18 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
       href: "/directory",
       id: "directory",
       active: currentActive === "directory",
+    },
+    {
+      label: currentActive === "jobs" ? "Jobs *" : "Jobs",
+      href: "/jobs",
+      id: "jobs",
+      active: currentActive === "jobs",
+    },
+    {
+      label: currentActive === "events" ? "Events *" : "Events",
+      href: "/events",
+      id: "events",
+      active: currentActive === "events",
     },
     {
       label: currentActive === "stories" ? "Success Spotlight *" : "Success Spotlight",

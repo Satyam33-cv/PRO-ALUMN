@@ -2,605 +2,1184 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 import {
-  Plus,
-  X,
   Send,
-  MessageCircle,
   Search,
+  Lock,
+  Terminal,
+  Paperclip,
+  Code2,
+  Mic,
+  CheckCheck,
   ShieldCheck,
-  BriefcaseBusiness,
-  GraduationCap,
-  ChevronRight,
-  RefreshCw,
-  Hash,
-  MessageSquare,
+  CheckCircle,
+  X,
+  FileCode,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 import { useAuth } from "@/lib/context/AuthContext";
 import { getToken } from "@/lib/auth";
 import { getSocket } from "@/lib/socket";
-import type { Alumni } from "@/lib/api/types";
-import { ReferralThread } from "@/components/ReferralThread";
-import { Card } from "@/components/ui";
-type Tab = "1:1" | "Groups";
 
-type MockMessage = {
+type FilterTab = "ALL" | "1:1" | "ESCROW";
+
+interface ChatMessage {
   id: string;
-  text: string;
+  sender: {
+    id: string;
+    name: string;
+    avatarUrl?: string;
+    initials: string;
+    cohort?: string;
+  };
   time: string;
-  sent: boolean;
-};
-
-type ThreadMessage = {
-  id: string;
   text: string;
-  createdAt: string;
-  sender: { id: string; name: string; avatarUrl: string | null };
-};
+  sent: boolean;
+  signature?: string;
+  codeSnippet?: {
+    filename: string;
+    tag: string;
+    code: string;
+  };
+  attachment?: {
+    name: string;
+    metric: string;
+  };
+}
 
-const listItemVariants = {
-  initial: { opacity: 0, y: 12 },
-  animate: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.05, duration: 0.3, ease: "easeOut" as const },
-  }),
-  exit: { opacity: 0, y: -8, transition: { duration: 0.15 } },
-};
+interface ThreadSummary {
+  id: string;
+  index: string;
+  name: string;
+  title: string;
+  cohort: string;
+  pgp: string;
+  category: "1:1" | "FOUNDER" | "COMPLETED";
+  statusBadge: string;
+  statusColor: string;
+  lastMessage: string;
+  time: string;
+  escrowBadge: string;
+  escrowColor: string;
+  subTag: string;
+  avatarUrl: string;
+  isEscrowActive: boolean;
+  escrowAmount: number;
+}
 
-const modalBackdrop = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.2 } },
-  exit: { opacity: 0, transition: { duration: 0.15 } },
-};
-
-const modalContent = {
-  initial: { opacity: 0, scale: 0.95, y: 16 },
-  animate: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.25, ease: "easeOut" as const },
+const INITIAL_THREADS: ThreadSummary[] = [
+  {
+    id: "thread-01",
+    index: "#01",
+    name: "Sarah Jenkins",
+    title: "Principal Architect @ Snowflake",
+    cohort: "COHORT '16",
+    pgp: "PGP: 0x9AF4..C21",
+    category: "1:1",
+    statusBadge: "ACTIVE 1:1 FLASH",
+    statusColor: "bg-[#ffdbcf] text-[#a63500]",
+    lastMessage: "“Reviewed the Spanner consensus diagram. The Paxos lease renewal logic is solid.”",
+    time: "10:42 AM",
+    escrowBadge: "[ 30 ALUMN-CR HELD ]",
+    escrowColor: "text-[#a63500] bg-[#F7F4EE]",
+    subTag: "FL-8812",
+    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+    isEscrowActive: true,
+    escrowAmount: 30,
   },
-  exit: { opacity: 0, scale: 0.95, y: 16, transition: { duration: 0.15 } },
-};
+  {
+    id: "thread-02",
+    index: "#02",
+    name: "David Chen",
+    title: "Neuromorphic Labs / YC W26",
+    cohort: "COHORT '20",
+    pgp: "PGP: 0x3BC8..D90",
+    category: "FOUNDER",
+    statusBadge: "FOUNDER CONDUIT",
+    statusColor: "bg-[#e5e2dc] text-[#444748]",
+    lastMessage: "“Let's connect this Friday regarding the firmware hiring requisition.”",
+    time: "YESTERDAY",
+    escrowBadge: "[ DIRECT P2P ROUTE ]",
+    escrowColor: "text-[#635F57] bg-[#e5e2dc]",
+    subTag: "COHORT '20",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    isEscrowActive: false,
+    escrowAmount: 0,
+  },
+  {
+    id: "thread-03",
+    index: "#03",
+    name: "Ananya Deshmukh",
+    title: "AWS Edge Services",
+    cohort: "COHORT '19",
+    pgp: "PGP: 0x7E12..A44",
+    category: "COMPLETED",
+    statusBadge: "COMPLETED // RELEASED",
+    statusColor: "bg-[#f0eee8] text-[#8F8A7E]",
+    lastMessage: "“Thanks for the mock interview feedback! The L6 distributed systems rubric was spot on.”",
+    time: "OCT 12",
+    escrowBadge: "[ ESCROW DISBURSED ]",
+    escrowColor: "text-[#8F8A7E] bg-[#e5e2dc]",
+    subTag: "RATING: 5.0★",
+    avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
+    isEscrowActive: false,
+    escrowAmount: 0,
+  },
+];
 
-const roleBadges = {
-  student: { label: "Student", color: "bg-sage/10 text-sage", icon: GraduationCap },
-  alumni: { label: "Alumni", color: "bg-brass/10 text-brass", icon: BriefcaseBusiness },
-  faculty: { label: "Faculty", color: "bg-indigo/10 text-indigo", icon: GraduationCap },
-  admin: { label: "Admin", color: "bg-red/10 text-red", icon: ShieldCheck },
+const INITIAL_MESSAGES: Record<string, ChatMessage[]> = {
+  "thread-01": [
+    {
+      id: "msg-1",
+      sender: {
+        id: "sarah-j",
+        name: "Sarah Jenkins",
+        initials: "SJ",
+        cohort: "COHORT '16",
+      },
+      time: "10:32:14 AM",
+      text: "Hi Elena! I pulled up your thesis draft on columnar query optimization. The pushdown filter vectorization on slide 14 is very well structured.",
+      sent: false,
+      signature: "VERIFIED_SIGNATURE",
+    },
+    {
+      id: "msg-2",
+      sender: {
+        id: "sarah-j",
+        name: "Sarah Jenkins",
+        initials: "SJ",
+      },
+      time: "10:33:05 AM",
+      text: "One recommendation: check your memory alignment for AVX-512 register loads. In production, unaligned reads can cost up to 15% throughput.",
+      sent: false,
+      codeSnippet: {
+        filename: "SNOWFLAKE_COLUMN_STORE // OPT_V4.RS",
+        tag: "ASM//SIMD",
+        code: `// Enforce 64-byte alignment on AVX-512 chunks\n#[repr(align(64))]\npub struct VectorizedRegisterBatch {\n    pub bitmask_predicates: [u64; 8],\n    pub materialized_offsets: __m512i,\n}`,
+      },
+    },
+    {
+      id: "msg-3",
+      sender: {
+        id: "self",
+        name: "Elena Vance (You)",
+        initials: "EV",
+      },
+      time: "10:37:41 AM",
+      text: "Thank you Sarah! I made the adjustments in the compiler branch. Here is the revised execution profile with zero-copy memory alignment.",
+      sent: true,
+      attachment: {
+        name: "diff_bench_avx512_run09.json",
+        metric: "+14.8% MFLOPS",
+      },
+    },
+    {
+      id: "msg-4",
+      sender: {
+        id: "sarah-j",
+        name: "Sarah Jenkins",
+        initials: "SJ",
+      },
+      time: "10:40:18 AM",
+      text: "Looks exceptional. This meets Snowflake IC5 engineering standards. I am happy to issue a direct senior IC referral to our Core Engine team whenever you are ready to formally apply.",
+      sent: false,
+    },
+  ],
+  "thread-02": [
+    {
+      id: "msg-201",
+      sender: {
+        id: "david-c",
+        name: "David Chen",
+        initials: "DC",
+        cohort: "COHORT '20",
+      },
+      time: "YESTERDAY 4:15 PM",
+      text: "Hey! We are closing out our seed cohort for YC W26. Let's connect this Friday regarding the firmware hiring requisition.",
+      sent: false,
+      signature: "P2P_VERIFIED",
+    },
+  ],
+  "thread-03": [
+    {
+      id: "msg-301",
+      sender: {
+        id: "ananya-d",
+        name: "Ananya Deshmukh",
+        initials: "AD",
+      },
+      time: "OCT 12 11:20 AM",
+      text: "Thanks for the mock interview feedback! 50 Credits have been disbursed from escrow.",
+      sent: false,
+      signature: "CONTRACT_FINALIZED",
+    },
+  ],
 };
 
 export function ChatContent() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<Tab>("1:1");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [composeOpen, setComposeOpen] = useState(false);
-  const [selectedAlumni, setSelectedAlumni] = useState<Alumni | null>(null);
-  const [composeMessage, setComposeMessage] = useState("");
-  const [replyInputs, setReplyInputs] = useState<Record<string, string>>({});
-  const [localThreads, setLocalThreads] = useState<Record<string, MockMessage[]>>({});
-  const [messageSearch, setMessageSearch] = useState("");
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const replyEndRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterTab>("ALL");
+  const [selectedThreadId, setSelectedThreadId] = useState<string>("thread-01");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [messageInput, setMessageInput] = useState("");
+  const [messagesMap, setMessagesMap] = useState<Record<string, ChatMessage[]>>(INITIAL_MESSAGES);
+  const [threads, setThreads] = useState<ThreadSummary[]>(INITIAL_THREADS);
+  
+  // Real-time Countdown Timer (8 min 24 sec = 504 sec)
+  const [countdownSeconds, setCountdownSeconds] = useState<number>(504);
+  const [isEscrowReleased, setIsEscrowReleased] = useState<boolean>(false);
+  const [isReleasing, setIsReleasing] = useState<boolean>(false);
 
-
-  const { data: recommendedAlumniData } = useApi("chat:alumni", () =>
-    apiClient.alumni.list(undefined, { filter: "role", value: "ALUMNI" })
+  // Modals
+  const [codeModalOpen, setCodeModalOpen] = useState(false);
+  const [codeFilename, setCodeFilename] = useState("QUERY_OPT_V2.RS");
+  const [codeSnippetText, setCodeSnippetText] = useState(
+`#[inline(always)]\npub fn evaluate_predicates(batch: &[u64]) -> u64 {\n    batch.iter().fold(0, |acc, &val| acc | (val & 0x01))\n}`
   );
-  const recommendedAlumni = recommendedAlumniData || [];
+  
+  const [patchModalOpen, setPatchModalOpen] = useState(false);
+  const [patchFilename, setPatchFilename] = useState("simd_vector_bench.patch");
+  const [patchMetric, setPatchMetric] = useState("+18.2% IPC");
 
-  const { data: chatData, reload: reloadChatData } = useApi(
-    "chat:list",
-    () => apiClient.chat.list()
-  );
+  const [escrowConfirmOpen, setEscrowConfirmOpen] = useState(false);
 
-  const chatThreads = useMemo(() => {
-    if (!chatData?.threads) return [];
-    return (chatData.threads as unknown as Array<{ id: string; name: string; isGroup: boolean; participants?: Array<{ role?: string }>; lastMessage?: string; lastMessageAt: string; unread?: number }>).map((t) => ({
-      id: t.id,
-      name: t.name,
-      isGroup: t.isGroup,
-      role: t.participants?.[0]?.role?.toLowerCase() || "alumni",
-      initials: t.name ? t.name.substring(0, 2).toUpperCase() : "??",
-      lastMessage: t.lastMessage || "No messages yet",
-      time: new Date(t.lastMessageAt).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      unread: t.unread || 0,
-      participants: t.participants,
-    }));
-  }, [chatData]);
+  const chatStreamRef = useRef<HTMLDivElement>(null);
 
-  // Read URL query parameter ?thread={id} or ?threadId={id}
+  // Sync with API threads if available
+  const { data: apiChatData } = useApi("chat:threads", () => apiClient.chat.list().catch(() => null));
+
+  // Connect live API threads into list
+  useEffect(() => {
+    if (apiChatData?.threads && Array.isArray(apiChatData.threads)) {
+      const rawThreads = apiChatData.threads as unknown as Array<{ id: string; name: string; lastMessage?: string; lastMessageAt?: string; unread?: number }>;
+      const liveThreads: ThreadSummary[] = rawThreads.map((t, idx: number) => ({
+        id: t.id,
+        index: `#${String(idx + 4).padStart(2, "0")}`,
+        name: t.name || `Channel ${idx + 4}`,
+        title: "Peer Conduit Member",
+        cohort: "COHORT '24",
+        pgp: `PGP: 0x${t.id.substring(0, 4)}..${t.id.substring(t.id.length - 3)}`,
+        category: "1:1" as const,
+        statusBadge: "ACTIVE P2P",
+        statusColor: "bg-[#ffdbcf] text-[#a63500]",
+        lastMessage: t.lastMessage || "No messages recorded yet.",
+        time: t.lastMessageAt ? new Date(t.lastMessageAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "LIVE",
+        escrowBadge: "[ ZERO LOCK ]",
+        escrowColor: "text-[#635F57] bg-[#e5e2dc]",
+        subTag: "P2P",
+        avatarUrl: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80`,
+        isEscrowActive: false,
+        escrowAmount: 0,
+      }));
+
+      setThreads((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id));
+        const newOnes = liveThreads.filter((lt) => !existingIds.has(lt.id));
+        return [...prev, ...newOnes];
+      });
+    }
+  }, [apiChatData]);
+
+  // Read URL query parameter ?thread={id}
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const threadParam = params.get("thread") || params.get("threadId");
       if (threadParam) {
-        setSelectedId(threadParam);
+        setSelectedThreadId(threadParam);
       }
     }
   }, []);
 
-
-  const filtered = useMemo(() => {
-    let result = chatThreads.filter((t) =>
-      activeTab === "Groups" ? t.isGroup : !t.isGroup
-    );
-    if (messageSearch.trim()) {
-      const q = messageSearch.toLowerCase();
-      result = result.filter(
-        (t) =>
-          t.name.toLowerCase().includes(q) ||
-          t.lastMessage.toLowerCase().includes(q) ||
-          (t.role && t.role.toLowerCase().includes(q))
-      );
-    }
-    return result;
-  }, [activeTab, messageSearch, chatThreads]);
-
-  const totalUnread = chatThreads.reduce(
-    (sum: number, t) => sum + t.unread,
-    0
-  );
-
+  // Countdown timer effect
   useEffect(() => {
-    if (selectedId && replyEndRef.current) {
-      replyEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [selectedId, localThreads]);
+    const interval = setInterval(() => {
+      setCountdownSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-  // Real-time WebSockets Integration
+  // Auto-scroll chat stream
   useEffect(() => {
-    if (!selectedId || !user) return;
-    const socket = getSocket();
-    
-    // Connect to server and join the specific chat room
-    socket.connect();
-    const token = getToken();
-    if (token) socket.emit("authenticate", token);
-    socket.emit("join_room", selectedId);
+    if (chatStreamRef.current) {
+      chatStreamRef.current.scrollTop = chatStreamRef.current.scrollHeight;
+    }
+  }, [selectedThreadId, messagesMap]);
 
-    // Listen for incoming messages
-    const handleReceiveMessage = (data: { roomId: string; id: string; text: string; time: string; sent: boolean }) => {
-      if (data.roomId === selectedId) {
-        setLocalThreads((prev) => {
-          const current = prev[selectedId] || [];
-          // Avoid duplicates
-          if (current.find(m => m.id === data.id)) return prev;
-          
-          return {
-            ...prev,
-            [selectedId]: [...current, data],
-          };
-        });
-      }
-    };
-
-    socket.on("receive_message", handleReceiveMessage);
-
-    // Initial fetch of historical messages
-    const fetchMessages = async () => {
-      try {
-        const data = (await apiClient.chat.getThread(selectedId)) as {
-          messages: ThreadMessage[];
-        };
-
-        const formatted = data.messages.map((m) => ({
-          id: m.id,
-          text: m.text,
-          time: new Date(m.createdAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          sent: m.sender.id === user.id,
-        }));
-
-        setLocalThreads((prev) => ({
-          ...prev,
-          [selectedId]: formatted,
-        }));
-      } catch (err) {
-        console.error("Failed to fetch thread", err);
-      }
-    };
-    fetchMessages();
-
-    return () => {
-      socket.off("receive_message", handleReceiveMessage);
-    };
-  }, [selectedId, user]);
-
-  const handleSendReply = async (threadId: string) => {
-    const text = replyInputs[threadId]?.trim();
-    if (!text) return;
-
-    // Optimistic UI
-    const newMsg: MockMessage = {
-      id: `local-${Date.now()}`,
-      text,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      sent: true,
-    };
-    setLocalThreads((prev) => ({
-      ...prev,
-      [threadId]: [...(prev[threadId] ?? []), newMsg],
-    }));
-    setReplyInputs((prev) => ({ ...prev, [threadId]: "" }));
-
-    // API Call & WebSockets
+  // WebSockets integration
+  useEffect(() => {
+    if (!selectedThreadId || !user) return;
     try {
       const socket = getSocket();
-      socket.emit("send_message", { ...newMsg, threadId, roomId: threadId });
-      
-      await apiClient.chat.sendMessage(threadId, text);
-      reloadChatData();
-    } catch (err) {
-      console.error(err);
+      socket.connect();
+      const token = getToken();
+      if (token) socket.emit("authenticate", token);
+      socket.emit("join_room", selectedThreadId);
+
+      const handleReceive = (data: { roomId: string; id: string; text: string; time?: string }) => {
+        if (data.roomId === selectedThreadId) {
+          const incoming: ChatMessage = {
+            id: data.id || `ws-${Date.now()}`,
+            sender: {
+              id: "peer",
+              name: activeThread?.name || "Peer",
+              initials: activeThread?.name.substring(0, 2).toUpperCase() || "PA",
+            },
+            time: data.time || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            text: data.text,
+            sent: false,
+            signature: "WSS_VERIFIED",
+          };
+
+          setMessagesMap((prev) => ({
+            ...prev,
+            [selectedThreadId]: [...(prev[selectedThreadId] || []), incoming],
+          }));
+        }
+      };
+
+      socket.on("receive_message", handleReceive);
+      return () => {
+        socket.off("receive_message", handleReceive);
+      };
+    } catch {
+      // Graceful fallback for offline testing
+    }
+  }, [selectedThreadId, user]);
+
+  const activeThread = useMemo(() => {
+    return threads.find((t) => t.id === selectedThreadId) || threads[0];
+  }, [threads, selectedThreadId]);
+
+  const activeMessages = useMemo(() => {
+    return messagesMap[selectedThreadId] || [];
+  }, [messagesMap, selectedThreadId]);
+
+  // Filtered threads list
+  const filteredThreads = useMemo(() => {
+    let list = threads;
+    if (activeFilter === "1:1") {
+      list = list.filter((t) => t.category === "1:1");
+    } else if (activeFilter === "ESCROW") {
+      list = list.filter((t) => t.isEscrowActive);
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(
+        (t) =>
+          t.name.toLowerCase().includes(q) ||
+          t.title.toLowerCase().includes(q) ||
+          t.cohort.toLowerCase().includes(q) ||
+          t.lastMessage.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [threads, activeFilter, searchQuery]);
+
+  // Handle send message
+  const handleSendMessage = async () => {
+    const text = messageInput.trim();
+    if (!text) return;
+
+    const newMsg: ChatMessage = {
+      id: `msg-${Date.now()}`,
+      sender: {
+        id: user?.id || "self",
+        name: user?.name ? `${user.name} (You)` : "Elena Vance (You)",
+        initials: user?.name ? user.name.substring(0, 2).toUpperCase() : "EV",
+      },
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+      text,
+      sent: true,
+    };
+
+    setMessagesMap((prev) => ({
+      ...prev,
+      [selectedThreadId]: [...(prev[selectedThreadId] || []), newMsg],
+    }));
+
+    setMessageInput("");
+
+    // Emit via socket and API
+    try {
+      const socket = getSocket();
+      socket.emit("send_message", {
+        roomId: selectedThreadId,
+        text,
+        id: newMsg.id,
+        time: newMsg.time,
+      });
+      await apiClient.chat.sendMessage(selectedThreadId, text).catch(() => {});
+    } catch {
+      // Mock / local mode
     }
   };
 
-  const handleComposeSend = () => {
-    if (!selectedAlumni || !composeMessage.trim()) return;
-    setComposeOpen(false);
-    setSelectedAlumni(null);
-    setComposeMessage("");
+  // Handle Code snippet insertion
+  const handleInsertCode = () => {
+    if (!codeSnippetText.trim()) return;
+    const newMsg: ChatMessage = {
+      id: `code-${Date.now()}`,
+      sender: {
+        id: user?.id || "self",
+        name: user?.name ? `${user.name} (You)` : "Elena Vance (You)",
+        initials: user?.name ? user.name.substring(0, 2).toUpperCase() : "EV",
+      },
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+      text: `Attached benchmark code artifact for review in: ${codeFilename}`,
+      sent: true,
+      codeSnippet: {
+        filename: codeFilename,
+        tag: "SNIPPET // REVIEW",
+        code: codeSnippetText,
+      },
+    };
+
+    setMessagesMap((prev) => ({
+      ...prev,
+      [selectedThreadId]: [...(prev[selectedThreadId] || []), newMsg],
+    }));
+    setCodeModalOpen(false);
   };
 
-  const getThreadReferralStatus = (threadId: string) => {
-    const statusMap: Record<
-      string,
-      "pending" | "accepted" | "referred" | "hired" | "rejected" | null
-    > = {
-      "chat-1": "accepted",
-      "chat-3": "pending",
-      "chat-5": "referred",
-      "chat-2": "hired",
-      "chat-4": null,
+  // Handle Patch attachment insertion
+  const handleInsertPatch = () => {
+    if (!patchFilename.trim()) return;
+    const newMsg: ChatMessage = {
+      id: `patch-${Date.now()}`,
+      sender: {
+        id: user?.id || "self",
+        name: user?.name ? `${user.name} (You)` : "Elena Vance (You)",
+        initials: user?.name ? user.name.substring(0, 2).toUpperCase() : "EV",
+      },
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+      text: `Transmitted benchmark patch execution profile (${patchFilename}).`,
+      sent: true,
+      attachment: {
+        name: patchFilename,
+        metric: patchMetric,
+      },
     };
-    return statusMap[threadId] || null;
+
+    setMessagesMap((prev) => ({
+      ...prev,
+      [selectedThreadId]: [...(prev[selectedThreadId] || []), newMsg],
+    }));
+    setPatchModalOpen(false);
   };
+
+  // Handle escrow release execution
+  const handleReleaseEscrow = () => {
+    setIsReleasing(true);
+    setTimeout(() => {
+      setIsReleasing(false);
+      setIsEscrowReleased(true);
+      setEscrowConfirmOpen(false);
+
+      // Add system release message to thread
+      const releaseNotice: ChatMessage = {
+        id: `sys-release-${Date.now()}`,
+        sender: {
+          id: "system",
+          name: "SMART ESCROW AGENT",
+          initials: "SYS",
+        },
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+        text: `SUCCESS: 30 ALUMN-CR CREDITED TO ${activeThread.name.toUpperCase()} (#${activeThread.subTag}). SESSION ARCHIVED AS COMPLETE WITH 100% SATISFACTION ATTESTATION.`,
+        sent: false,
+        signature: "CONSENSUS_FINALIZED",
+      };
+
+      setMessagesMap((prev) => ({
+        ...prev,
+        [selectedThreadId]: [...(prev[selectedThreadId] || []), releaseNotice],
+      }));
+    }, 800);
+  };
+
+  // Format countdown
+  const minutes = Math.floor(countdownSeconds / 60);
+  const seconds = countdownSeconds % 60;
+  const timeFormatted = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
   return (
-    <div className="w-full">
-      {/* Top Header */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <h1 className="font-display text-3xl font-bold">Chat & Channels</h1>
-          {totalUnread > 0 && (
-            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-clay px-1.5 text-[10px] font-semibold text-white">
-              {totalUnread}
+    <div className="w-full bg-[#fcf9f3] text-[#1c1c18] font-mono select-text">
+      {/* Telemetry Sub-Header Strip */}
+      <div className="w-full bg-[#EFECE4] px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between border-b-2 border-[#1A1A1A] gap-3">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="px-1.5 py-0.5 bg-black text-white text-[11px] font-bold tracking-wider">
+              NODE//COMM-04
             </span>
-          )}
+            <span className="font-sans font-bold text-base sm:text-lg text-[#1A1A1A] tracking-tight">
+              ADVISORY CONDUIT & REAL-TIME ESCROW DISPATCH
+            </span>
+          </div>
+          <div className="hidden lg:flex items-center gap-2 px-2.5 py-0.5 bg-white border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A]">
+            <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+            <span className="text-xs text-[#1A1A1A] font-semibold">E2E RATIFIED // SHA-256 ENCLAVE</span>
+          </div>
         </div>
 
-        {/* Tab Controls */}
-        <div className="flex items-center gap-1 bg-paper/60 p-1 rounded-full border border-ink/10">
-          <button
-            onClick={() => setActiveTab("1:1")}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activeTab === "1:1"
-                ? "bg-white text-ink shadow-xs"
-                : "text-ink/60 hover:text-ink"
-            }`}
-          >
-            Direct Messages
-          </button>
-          <button
-            onClick={() => setActiveTab("Groups")}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activeTab === "Groups"
-                ? "bg-white text-ink shadow-xs"
-                : "text-ink/60 hover:text-ink"
-            }`}
-          >
-            Student Cohorts
-          </button>
-        </div>
-
-        <div className="relative max-w-xs w-full sm:w-auto">
-          <Search
-            size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40"
-          />
-          <input
-            type="search"
-            value={messageSearch}
-            onChange={(e) => setMessageSearch(e.target.value)}
-            placeholder="Search conversations..."
-            className="w-full pl-9 pr-4 py-2 text-sm rounded-full border border-ink/10 bg-white outline-none placeholder:text-ink/35 focus:border-brass focus:ring-1 focus:ring-brass"
-            aria-label="Search conversations"
-          />
+        <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-1.5 text-[#635F57]">
+            <span>ESCROW POOL:</span>
+            <span className="font-bold text-[#1A1A1A] px-2 py-0.5 bg-white border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A]">
+              90 ALUMN-CR
+            </span>
+          </div>
+          <div className="hidden sm:flex items-center gap-1.5 text-[#8F8A7E]">
+            <span>SESSION PROTOCOL:</span>
+            <span className="text-[#FF5500] font-bold">SYNCHRONOUS FLASH</span>
+          </div>
         </div>
       </div>
 
-      {/* Main Content Area: Direct Messages & Cohort Chats */}
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-0 bg-white rounded-2xl border border-ink/10 shadow-sm overflow-hidden h-[calc(100vh-14rem)]">
-          
-          {/* LEFT SIDEBAR: Threads List */}
-          <div className="lg:col-span-4 lg:col-span-3 border-r border-ink/10 flex flex-col h-full bg-paper/20">
-            <div className="p-4 border-b border-ink/10 bg-white/50 backdrop-blur-sm">
-              <h2 className="font-display font-bold text-lg">Conversations</h2>
+      {/* Main Split-Pane Workspace */}
+      <div className="grid grid-cols-12 gap-0 w-full min-h-[calc(100vh-10rem)] bg-[#fcf9f3]">
+        {/* LEFT PANE: Conversation Index & Escrow Threads */}
+        <section className="col-span-12 lg:col-span-4 xl:col-span-3 bg-[#F7F4EE] flex flex-col border-r-2 border-[#1A1A1A] z-10">
+          {/* Thread Query & Diagnostics Bar */}
+          <div className="p-3.5 sm:p-4 flex flex-col gap-2.5 border-b-2 border-[#1A1A1A] bg-[#F7F4EE]">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold tracking-wider text-[#8F8A7E] uppercase font-sans">
+                INDEXED CHANNELS
+              </span>
+              <span className="text-[11px] font-bold px-1.5 py-0.5 bg-[#e5e2dc] text-[#1A1A1A] border border-[#1A1A1A]">
+                TOTAL: {String(filteredThreads.length).padStart(2, "0")}
+              </span>
             </div>
-            
-            <div className="flex-1 overflow-y-auto" ref={listRef}>
-              {filtered.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full p-8 text-center opacity-60">
-                  <MessageCircle size={28} className="mb-3" />
-                  <p className="text-sm font-semibold">No active chats</p>
-                </div>
-              ) : (
-                <div className="p-2 space-y-1">
-                  {filtered.map((thread) => {
-                    const isSelected = selectedId === thread.id;
-                    const role = thread.role || "student";
-                    const roleInfo = roleBadges[role as keyof typeof roleBadges] || roleBadges.student;
-                    
-                    return (
-                      <button
-                        key={thread.id}
-                        onClick={() => setSelectedId(thread.id)}
-                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
-                          isSelected ? "bg-brass text-white shadow-md" : "hover:bg-ink/5"
-                        }`}
-                      >
-                        <div className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold text-sm ${isSelected ? 'bg-white/20' : 'bg-brass/15 text-brass'}`}>
-                          {thread.initials}
-                          {thread.unread > 0 && (
-                            <div className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-red-500 border-2 border-white"></div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0 text-left">
-                          <div className="flex justify-between items-baseline mb-0.5">
-                            <span className={`font-semibold text-sm truncate ${isSelected ? 'text-white' : 'text-ink'}`}>
-                              {thread.name}
-                            </span>
-                            <span className={`text-[9px] font-mono shrink-0 ${isSelected ? 'text-white/70' : 'text-ink/40'}`}>
-                              {thread.time}
-                            </span>
-                          </div>
-                          <span className={`text-xs truncate block ${isSelected ? 'text-white/80' : 'text-ink/60'}`}>
-                            {thread.lastMessage}
-                          </span>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
+
+            {/* Search Input */}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A]">
+              <Terminal size={15} className="text-[#8F8A7E] shrink-0" />
+              <input
+                type="text"
+                id="filter-search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="grep thread, cohort, tag..."
+                className="w-full bg-transparent text-xs text-[#1A1A1A] placeholder:text-[#8F8A7E] focus:outline-none"
+              />
+              <span className="text-[10px] text-[#8F8A7E]">/ESC</span>
+            </div>
+
+            {/* Filter Segmented Controller */}
+            <div className="flex items-center gap-1.5 pt-1 overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setActiveFilter("ALL")}
+                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap transition-all ${
+                  activeFilter === "ALL"
+                    ? "bg-black text-white"
+                    : "bg-white text-[#1A1A1A] hover:bg-[#e5e2dc]"
+                }`}
+              >
+                [ ALL CONVERSATIONS ]
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveFilter("1:1")}
+                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap transition-all ${
+                  activeFilter === "1:1"
+                    ? "bg-black text-white"
+                    : "bg-white text-[#1A1A1A] hover:bg-[#e5e2dc]"
+                }`}
+              >
+                [ 1:1 ADVISORY ]
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveFilter("ESCROW")}
+                className={`px-2 py-1 text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] whitespace-nowrap transition-all ${
+                  activeFilter === "ESCROW"
+                    ? "bg-[#FF5500] text-white"
+                    : "bg-white text-[#FF5500] hover:bg-[#e5e2dc]"
+                }`}
+              >
+                [ ESCROW ACTIVE ]
+              </button>
             </div>
           </div>
 
-          {/* RIGHT PANE: Chat View */}
-          <div className="lg:col-span-8 lg:col-span-9 flex flex-col h-full bg-white relative">
-            {selectedId ? (
-              <>
-                {/* Rich Context Header */}
-                <div className="px-6 py-4 border-b border-ink/10 flex items-center justify-between bg-white shadow-sm z-10">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brass/15 text-brass font-bold text-lg">
-                      {chatThreads.find((t) => t.id === selectedId)?.initials || "?"}
+          {/* Thread Scrollable Index */}
+          <div className="flex-1 flex flex-col overflow-y-auto divide-y-2 divide-[#1A1A1A]">
+            {filteredThreads.map((thread) => {
+              const isSelected = thread.id === selectedThreadId;
+              return (
+                <div
+                  key={thread.id}
+                  onClick={() => setSelectedThreadId(thread.id)}
+                  className={`p-3.5 sm:p-4 relative cursor-pointer group transition-all ${
+                    isSelected
+                      ? "bg-white"
+                      : "bg-[#F7F4EE] hover:bg-white"
+                  }`}
+                >
+                  {isSelected && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#FF5500]"></div>
+                  )}
+
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[11px] font-bold px-1.5 bg-black text-white">
+                        {thread.index}
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 border border-[#1A1A1A] uppercase font-sans ${thread.statusColor}`}>
+                        {thread.statusBadge}
+                      </span>
                     </div>
-                    <div>
-                      <h3 className="font-display text-xl font-bold text-ink">
-                        {chatThreads.find((t) => t.id === selectedId)?.name || "Conversation"}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Active
-                        </span>
-                        <a href={`/profile/${selectedId}`} className="text-xs text-blue-600 hover:underline font-semibold">
-                          View Profile & Videos
-                        </a>
-                      </div>
+                    <span className="text-[11px] text-[#8F8A7E] shrink-0">{thread.time}</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="relative w-10 h-10 bg-[#ebe8e2] border border-[#1A1A1A] shrink-0 overflow-hidden shadow-[1px_1px_0_#1A1A1A]">
+                      <Image
+                        src={thread.avatarUrl}
+                        alt={thread.name}
+                        width={40}
+                        height={40}
+                        unoptimized
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-sans font-bold text-sm text-[#1A1A1A] truncate">
+                        {thread.name}
+                      </span>
+                      <span className="font-sans text-xs text-[#635F57] truncate">
+                        {thread.title}
+                      </span>
                     </div>
                   </div>
-                  
-                  {/* Escrow Release Action */}
-                  <div className="hidden sm:flex items-center gap-4 text-right">
-                    <button 
-                      className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-sm rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center gap-2 border border-emerald-400/50 shadow-emerald-500/20"
-                      onClick={() => alert("Mentorship completed! 50 Credits released from escrow.")}
-                    >
-                      <ShieldCheck size={16} /> End & Release Credits
-                    </button>
+
+                  <p className="font-sans text-xs text-[#1A1A1A] line-clamp-2 mb-2.5 font-normal">
+                    {thread.lastMessage}
+                  </p>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-[#e5e2dc]">
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] ${thread.escrowColor}`}>
+                      {thread.escrowBadge}
+                    </span>
+                    <span className="text-[11px] text-[#8F8A7E] flex items-center gap-1">
+                      {thread.isEscrowActive && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
+                      )}
+                      {thread.subTag}
+                    </span>
                   </div>
                 </div>
+              );
+            })}
+          </div>
 
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[url('/chat-pattern.png')] bg-fixed bg-opacity-5">
-                  {(localThreads[selectedId] ?? []).map((msg) => (
-                    <div key={msg.id} className={`flex gap-3 ${msg.sent ? "flex-row-reverse" : "flex-row"}`}>
-                      {!msg.sent && (
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-xs font-bold shadow-sm mt-1">
-                          {chatThreads.find((t) => t.id === selectedId)?.initials || "?"}
+          {/* Quick Status Box at Bottom of Left Pane */}
+          <div className="p-3.5 sm:p-4 bg-[#EFECE4] border-t-2 border-[#1A1A1A] flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-[#8F8A7E] uppercase font-sans">
+                P2P WEBSOCKET
+              </span>
+              <span className="text-[11px] font-bold text-[#00E676] bg-black px-1.5 py-0.5 border border-[#1A1A1A]">
+                WSS://OK
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-[#635F57]">
+              <span>PACKET DROP: 0.00%</span>
+              <span>CIPHER: AES-GCM-256</span>
+            </div>
+          </div>
+        </section>
+
+        {/* RIGHT PANE: Active Flash Advisory Thread */}
+        <main className="col-span-12 lg:col-span-8 xl:col-span-9 bg-[#fcf9f3] flex flex-col justify-between relative overflow-hidden">
+          {/* Thread Header */}
+          <header className="p-3.5 sm:p-5 bg-white border-b-2 border-[#1A1A1A] flex flex-wrap items-center justify-between gap-4 z-20 shadow-[0_2px_0_#1A1A1A]">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 bg-[#ebe8e2] border-2 border-[#1A1A1A] shrink-0 overflow-hidden shadow-[2px_2px_0_#1A1A1A]">
+                <Image
+                  src={activeThread.avatarUrl}
+                  alt={activeThread.name}
+                  width={48}
+                  height={48}
+                  unoptimized
+                  className="w-full h-full object-cover"
+                />
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#00E676] border border-[#1A1A1A] shadow-[0_0_4px_#00E676]"></span>
+              </div>
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-sans font-bold text-lg sm:text-xl text-[#1A1A1A]">
+                    {activeThread.name}
+                  </span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#D9E021] text-[#1A1A1A] border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A]">
+                    {activeThread.cohort}
+                  </span>
+                  <span className="text-xs text-[#8F8A7E] font-mono">{activeThread.pgp}</span>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap text-xs text-[#635F57] font-sans">
+                  <span>{activeThread.title}</span>
+                  <span className="text-[#D5CEBF] font-bold">•</span>
+                  <span className="text-[#1D4ED8] font-bold font-mono">
+                    15-Minute Architectural Flash Session #{activeThread.subTag}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Timer & Escrow Action CTA */}
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+              <div className="flex flex-col items-end px-3 py-1 bg-[#F7F4EE] border border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A]">
+                <span className="text-[9px] font-bold text-[#8F8A7E] uppercase font-sans">
+                  SESSION COUNTDOWN
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#FF5500] animate-ping"></span>
+                  <span className="text-sm sm:text-base font-bold text-[#FF5500]">
+                    T-MINUS {timeFormatted}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                id="escrow-release-btn"
+                onClick={() => setEscrowConfirmOpen(true)}
+                disabled={isEscrowReleased}
+                className={`px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold font-sans tracking-tight border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A] transition-all flex items-center gap-2 ${
+                  isEscrowReleased
+                    ? "bg-[#e5e2dc] text-[#8F8A7E] cursor-not-allowed shadow-none"
+                    : "bg-[#FF5500] text-white hover:bg-[#d04400] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                }`}
+              >
+                {isEscrowReleased ? (
+                  <>
+                    <span>ESCROW DISBURSED (30 CR)</span>
+                    <CheckCircle size={15} className="text-[#00E676]" />
+                  </>
+                ) : (
+                  <>
+                    <span>END MENTORSHIP & RELEASE 30 CR</span>
+                    <span>→</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </header>
+
+          {/* Message History Display Area */}
+          <div
+            ref={chatStreamRef}
+            id="chat-stream"
+            className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 bg-[#fcf9f3]"
+          >
+            {/* System Enclave Notice */}
+            <div className="w-full flex justify-center">
+              <div className="max-w-xl w-full bg-[#F7F4EE] p-3 border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <Lock size={20} className="text-[#a63500] shrink-0" />
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-bold text-[#a63500] uppercase font-sans">
+                      SMART CONTRACT ESCROW ENGAGED
+                    </span>
+                    <span className="text-xs text-[#1A1A1A]">
+                      30 ALUMN-CR securely locked in dual-handshake enclave. Direct chat channel established.
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 bg-black text-white shrink-0 border border-[#1A1A1A]">
+                  BLOCK #194,821
+                </span>
+              </div>
+            </div>
+
+            {/* Message Stream */}
+            {activeMessages.map((msg) => {
+              return (
+                <div
+                  key={msg.id}
+                  className={`flex items-start gap-3 max-w-2xl ${
+                    msg.sent ? "ml-auto flex-row-reverse" : "mr-auto"
+                  }`}
+                >
+                  {/* Sender Initials Avatar */}
+                  <div
+                    className={`w-8 h-8 shrink-0 border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center justify-center text-xs font-bold ${
+                      msg.sent
+                        ? "bg-black text-white"
+                        : "bg-[#F7F4EE] text-[#1A1A1A]"
+                    }`}
+                  >
+                    {msg.sender.initials}
+                  </div>
+
+                  <div className={`flex flex-col gap-1 w-full ${msg.sent ? "items-end" : "items-start"}`}>
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      {msg.sent ? (
+                        <>
+                          <span className="text-[#8F8A7E]">{msg.time}</span>
+                          <span className="font-sans font-bold text-[#1A1A1A]">{msg.sender.name}</span>
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 bg-[#D9E021] text-[#1A1A1A] border border-[#1A1A1A]">
+                            AUTHOR
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="font-sans font-bold text-[#1A1A1A]">{msg.sender.name}</span>
+                          <span className="text-[#8F8A7E]">{msg.time}</span>
+                          {msg.signature && (
+                            <span className="text-[9px] font-bold px-1.5 py-0.2 bg-[#e5e2dc] text-[#635F57] border border-[#1A1A1A] uppercase">
+                              {msg.signature}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Message Bubble */}
+                    <div
+                      className={`p-3 sm:p-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] text-xs sm:text-sm leading-relaxed ${
+                        msg.sent ? "bg-[#F7F4EE] text-left" : "bg-white text-left"
+                      }`}
+                    >
+                      <p className="font-sans text-[#1A1A1A]">{msg.text}</p>
+
+                      {/* Code Snippet Artifact inside Chat Bubble */}
+                      {msg.codeSnippet && (
+                        <div className="mt-3 p-3 bg-[#EFECE4] border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between pb-1 border-b border-[#D5CEBF]">
+                            <span className="text-[11px] font-bold text-[#635F57]">
+                              {msg.codeSnippet.filename}
+                            </span>
+                            <span className="text-[9px] font-bold bg-black text-white px-1.5 py-0.5">
+                              {msg.codeSnippet.tag}
+                            </span>
+                          </div>
+                          <pre className="text-[11px] text-[#1A1A1A] overflow-x-auto p-2 bg-white border border-[#1A1A1A] font-mono leading-relaxed">
+                            <code>{msg.codeSnippet.code}</code>
+                          </pre>
                         </div>
                       )}
-                      <div className={`max-w-[70%] group`}>
-                        <div className={`px-4 py-3 rounded-2xl shadow-sm text-sm leading-relaxed ${
-                          msg.sent 
-                            ? "bg-brass text-white rounded-tr-sm" 
-                            : "bg-paper border border-ink/5 text-ink rounded-tl-sm"
-                        }`}>
-                          {msg.text}
-                        </div>
-                        <span className={`text-[10px] font-mono text-ink/30 mt-1 block px-1 opacity-0 group-hover:opacity-100 transition-opacity ${msg.sent ? "text-right" : "text-left"}`}>
-                          {msg.time}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={replyEndRef} />
-                </div>
 
-                {/* Input Area */}
-                <div className="p-4 border-t border-ink/10 bg-white">
-                  <div className="flex items-end gap-3 bg-paper/50 border border-ink/10 rounded-2xl p-2 focus-within:border-brass focus-within:ring-1 focus-within:ring-brass transition-all">
-                    <button className="p-2 text-ink/40 hover:text-brass transition-colors rounded-full hover:bg-white">
-                      <Plus size={20} />
-                    </button>
-                    <textarea
-                      rows={1}
-                      value={replyInputs[selectedId] ?? ""}
-                      onChange={(e) => setReplyInputs(prev => ({ ...prev, [selectedId]: e.target.value }))}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSendReply(selectedId);
-                        }
-                      }}
-                      placeholder={`Message ${chatThreads.find((t) => t.id === selectedId)?.name || 'them'}...`}
-                      className="flex-1 max-h-32 bg-transparent border-none focus:ring-0 resize-none py-2 text-sm outline-none placeholder:text-ink/40"
-                    />
-                    <button
-                      onClick={() => handleSendReply(selectedId)}
-                      disabled={!replyInputs[selectedId]?.trim()}
-                      className="p-2.5 bg-brass text-white rounded-xl hover:bg-ink transition-colors disabled:opacity-30 mb-0.5 shadow-sm"
-                    >
-                      <Send size={16} />
-                    </button>
+                      {/* Attached Diff Artifact */}
+                      {msg.attachment && (
+                        <div className="mt-2.5 p-2 bg-white border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-1.5">
+                            <FileCode size={16} className="text-[#1D4ED8]" />
+                            <span className="text-xs font-bold text-[#1A1A1A]">{msg.attachment.name}</span>
+                          </div>
+                          <span className="text-[10px] font-bold text-[#00E676] bg-black px-1.5 py-0.5 border border-[#1A1A1A]">
+                            {msg.attachment.metric}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Delivery status */}
+                    {msg.sent && (
+                      <div className="flex items-center gap-1 text-[10px] text-[#8F8A7E]">
+                        <CheckCheck size={13} className="text-[#00E676]" />
+                        <span>DELIVERED & DECRYPTED VIA CLIENT_ENCLAVE</span>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <div className="w-20 h-20 bg-paper rounded-full flex items-center justify-center mb-4">
-                  <MessageSquare size={32} className="text-ink/20" />
-                </div>
-                <h3 className="font-display text-2xl font-bold text-ink">Select a Conversation</h3>
-                <p className="text-sm text-ink/50 max-w-sm mt-2">
-                  Choose a direct message or active mentorship from the sidebar to start collaborating.
-                </p>
+              );
+            })}
+          </div>
+
+          {/* Telemetry Input Console Section */}
+          <footer className="p-3 sm:p-5 bg-[#F7F4EE] border-t-2 border-[#1A1A1A] flex flex-col gap-2.5 z-20 shadow-[0_-2px_0_#1A1A1A]">
+            {/* Console Utility Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setPatchModalOpen(true)}
+                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 transition-colors"
+                >
+                  <Paperclip size={13} />
+                  <span>ATTACH PATCH/DIFF</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCodeModalOpen(true)}
+                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 transition-colors"
+                >
+                  <Code2 size={13} />
+                  <span>SHARE BENCHMARK CODE</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => alert("Voice telemetry memo stream ready (RAW mono 16kHz)")}
+                  className="px-2.5 py-1 bg-white text-[#1A1A1A] hover:bg-[#e5e2dc] text-[11px] font-bold border border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] flex items-center gap-1.5 transition-colors"
+                >
+                  <Mic size={13} />
+                  <span>VOICE MEMO (RAW)</span>
+                </button>
               </div>
-            )}
+
+              <div className="hidden sm:flex items-center gap-2 text-[11px] text-[#8F8A7E]">
+                <span>INPUT: MONO_UTF8</span>
+                <span>|</span>
+                <span>SIGNING KEY: 2048-BIT ED25519</span>
+              </div>
+            </div>
+
+            {/* Textarea & Send Trigger Layout */}
+            <div className="flex items-end gap-2.5">
+              <div className="flex-1 bg-white p-2 border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] focus-within:shadow-[3px_3px_0_#1A1A1A] transition-all">
+                <textarea
+                  id="message-box"
+                  rows={2}
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                  placeholder="Draft message or attach cryptographic code artifact..."
+                  className="w-full bg-transparent p-1 text-xs sm:text-sm text-[#1A1A1A] placeholder:text-[#8F8A7E] focus:outline-none resize-none font-mono"
+                />
+                <div className="flex items-center justify-between px-1 pt-1 border-t border-[#e5e2dc] text-[#8F8A7E] text-[10px]">
+                  <span>[CMD + ENTER] TO SIGN & TRANSMIT</span>
+                  <span id="char-counter">{messageInput.length} / 2048 CHARS</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                id="send-btn"
+                onClick={handleSendMessage}
+                disabled={!messageInput.trim()}
+                className="h-[68px] sm:h-[76px] px-4 sm:px-6 bg-black text-white font-sans font-bold text-sm tracking-tight border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#1c1b1b] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex flex-col items-center justify-center gap-1 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <div className="flex items-center gap-1">
+                  <span>TRANSMIT</span>
+                  <span>↵</span>
+                </div>
+                <span className="text-[9px] text-[#ebe8e2] tracking-widest font-mono">PORT_OUT</span>
+              </button>
+            </div>
+          </footer>
+        </main>
+      </div>
+
+      {/* Real-Time Telemetry Global Status Footer */}
+      <footer className="w-full bg-[#EFECE4] border-t-2 border-[#1A1A1A] px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between gap-4 text-xs text-[#635F57] z-30">
+        <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_6px_#00E676]"></span>
+            <span className="font-bold text-[#1A1A1A] uppercase font-sans">BROADSHEET CONDUIT LIVE</span>
+          </div>
+          <div className="hidden md:flex items-center gap-1.5">
+            <span className="text-[#8F8A7E]">CHANNEL:</span>
+            <span className="font-bold text-[#1A1A1A]">WSS_PEER_SYNC://127.0.0.1:9042</span>
+          </div>
+          <div className="hidden lg:flex items-center gap-1.5">
+            <span className="text-[#8F8A7E]">LATENCY:</span>
+            <span className="text-[#1A1A1A] font-bold">11.4 ms</span>
           </div>
         </div>
 
-      {/* Floating compose button */}
-      <button
-        onClick={() => setComposeOpen(true)}
-        className="fixed bottom-24 right-6 md:bottom-8 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-brass text-white shadow-lg transition-colors hover:bg-ink lg:hidden"
-        aria-label="New message"
-      >
-        <Plus size={22} />
-      </button>
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#8F8A7E]">SMART ESCROW AGENT:</span>
+            <span className="text-[#FF5500] font-bold">ALUMN-CHAIN v4.9</span>
+          </div>
+          <span className="text-[#D5CEBF]">|</span>
+          <div className="flex items-center gap-1 text-[#8F8A7E]">
+            <span>SECURITY LEVEL 4</span>
+            <ShieldCheck size={14} className="text-[#00E676]" />
+          </div>
+        </div>
+      </footer>
 
-      {/* Compose Direct Message Modal */}
-      <AnimatePresence>
-        {composeOpen && (
-          <motion.div
-            variants={modalBackdrop}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="fixed inset-0 z-50 bg-ink/50 flex items-start justify-center"
-            onClick={() => setComposeOpen(false)}
-          >
-            <motion.div
-              variants={modalContent}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              onClick={(e) => e.stopPropagation()}
-              className="relative mt-20 w-full max-w-md rounded-lg bg-white p-6 shadow-xl"
-            >
+      {/* Modal 1: Code Snippet Insertion Modal */}
+      {codeModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#F7F4EE] border-4 border-[#1A1A1A] shadow-[6px_6px_0_#1A1A1A] w-full max-w-lg p-5 flex flex-col gap-4">
+            <div className="flex items-center justify-between border-b-2 border-[#1A1A1A] pb-3">
+              <div className="flex items-center gap-2">
+                <Code2 size={18} className="text-[#FF5500]" />
+                <h3 className="font-sans font-bold text-lg text-[#1A1A1A]">SHARE BENCHMARK CODE ARTIFACT</h3>
+              </div>
               <button
-                onClick={() => setComposeOpen(false)}
-                className="absolute right-4 top-4 text-ink/40 transition-colors hover:text-ink"
-                aria-label="Close"
+                type="button"
+                onClick={() => setCodeModalOpen(false)}
+                className="w-7 h-7 flex items-center justify-center bg-white border border-[#1A1A1A] hover:bg-black hover:text-white"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
+            </div>
 
-              <h2 className="font-display text-2xl font-bold">New Message</h2>
-
-              <div className="mt-5 max-h-60 space-y-1 overflow-y-auto">
-                {recommendedAlumni.map((alumni) => (
-                  <button
-                    key={alumni.id}
-                    onClick={() =>
-                      setSelectedAlumni(
-                        selectedAlumni?.id === alumni.id ? null : alumni
-                      )
-                    }
-                    className={`flex w-full items-center gap-3 rounded px-3 py-2.5 text-left text-sm transition-colors ${
-                      selectedAlumni?.id === alumni.id
-                        ? "bg-brass/10"
-                        : "hover:bg-paper/50"
-                    }`}
-                  >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brass/15 text-brass text-xs font-semibold overflow-hidden">
-                      {alumni.avatarUrl ? (
-                        <Image
-                          src={alumni.avatarUrl}
-                          alt={alumni.name}
-                          width={36}
-                          height={36}
-                          unoptimized
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        alumni.initials ||
-                        alumni.name
-                          .split(" ")
-                          .map((n: string) => n[0])
-                          .join("")
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold">{alumni.name}</p>
-                      <p className="truncate text-[11px] text-ink/50">
-                        {alumni.jobTitle || alumni.role} at{" "}
-                        {alumni.currentCompany || alumni.company}
-                      </p>
-                    </div>
-                    <div
-                      className={`h-4 w-4 shrink-0 rounded-full border-2 transition-colors ${
-                        selectedAlumni?.id === alumni.id
-                          ? "border-brass bg-brass"
-                          : "border-ink/25"
-                      }`}
-                    >
-                      {selectedAlumni?.id === alumni.id && (
-                        <div className="flex h-full items-center justify-center">
-                          <div className="h-1.5 w-1.5 rounded-full bg-white" />
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                ))}
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="text-[11px] font-bold text-[#635F57] uppercase block mb-1">
+                  Artifact Identifier / Filename
+                </label>
+                <input
+                  type="text"
+                  value={codeFilename}
+                  onChange={(e) => setCodeFilename(e.target.value)}
+                  className="w-full bg-white border-2 border-[#1A1A1A] p-2 text-xs font-mono text-[#1A1A1A] focus:outline-none"
+                />
               </div>
 
-              <textarea
-                value={composeMessage}
-                onChange={(e) => setComposeMessage(e.target.value)}
-                placeholder="Write a message..."
-                rows={3}
-                className="mt-4 w-full resize-none rounded-lg border border-ink/15 bg-white p-3 text-sm outline-none transition-colors placeholder:text-ink/35 focus:border-brass"
-              />
+              <div>
+                <label className="text-[11px] font-bold text-[#635F57] uppercase block mb-1">
+                  Code Block Contents (Rust / C++ / Python / Go)
+                </label>
+                <textarea
+                  rows={6}
+                  value={codeSnippetText}
+                  onChange={(e) => setCodeSnippetText(e.target.value)}
+                  className="w-full bg-white border-2 border-[#1A1A1A] p-2 text-xs font-mono text-[#1A1A1A] focus:outline-none leading-relaxed"
+                />
+              </div>
+            </div>
 
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D5CEBF]">
               <button
-                onClick={handleComposeSend}
-                disabled={!selectedAlumni || !composeMessage.trim()}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-brass px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-ink disabled:opacity-40 disabled:cursor-not-allowed"
+                type="button"
+                onClick={() => setCodeModalOpen(false)}
+                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc]"
               >
-                <Send size={14} />
-                Send
+                CANCEL
               </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <button
+                type="button"
+                onClick={handleInsertCode}
+                className="px-4 py-2 bg-black text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-[#1c1b1b]"
+              >
+                INJECT INTO ADVISORY CONDUIT →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 2: Patch / Diff Modal */}
+      {patchModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#F7F4EE] border-4 border-[#1A1A1A] shadow-[6px_6px_0_#1A1A1A] w-full max-w-md p-5 flex flex-col gap-4">
+            <div className="flex items-center justify-between border-b-2 border-[#1A1A1A] pb-3">
+              <div className="flex items-center gap-2">
+                <Paperclip size={18} className="text-[#1D4ED8]" />
+                <h3 className="font-sans font-bold text-lg text-[#1A1A1A]">ATTACH EXECUTION PROFILE DIFF</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPatchModalOpen(false)}
+                className="w-7 h-7 flex items-center justify-center bg-white border border-[#1A1A1A] hover:bg-black hover:text-white"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="text-[11px] font-bold text-[#635F57] uppercase block mb-1">
+                  Patch / Benchmark Profile File
+                </label>
+                <input
+                  type="text"
+                  value={patchFilename}
+                  onChange={(e) => setPatchFilename(e.target.value)}
+                  className="w-full bg-white border-2 border-[#1A1A1A] p-2 text-xs font-mono text-[#1A1A1A] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-[#635F57] uppercase block mb-1">
+                  Measured Performance Delta (e.g. +14.8% MFLOPS)
+                </label>
+                <input
+                  type="text"
+                  value={patchMetric}
+                  onChange={(e) => setPatchMetric(e.target.value)}
+                  className="w-full bg-white border-2 border-[#1A1A1A] p-2 text-xs font-mono text-[#1A1A1A] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D5CEBF]">
+              <button
+                type="button"
+                onClick={() => setPatchModalOpen(false)}
+                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc]"
+              >
+                CANCEL
+              </button>
+              <button
+                type="button"
+                onClick={handleInsertPatch}
+                className="px-4 py-2 bg-[#1D4ED8] text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-blue-800"
+              >
+                ATTACH DIFF ARTIFACT →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 3: Escrow Release Confirmation Modal */}
+      {escrowConfirmOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border-4 border-[#1A1A1A] shadow-[6px_6px_0_#1A1A1A] w-full max-w-lg p-6 flex flex-col gap-4">
+            <div className="flex items-center gap-3 border-b-2 border-[#1A1A1A] pb-3">
+              <div className="w-10 h-10 bg-[#ffdbcf] border-2 border-[#1A1A1A] flex items-center justify-center">
+                <Lock size={20} className="text-[#a63500]" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="font-sans font-bold text-lg text-[#1A1A1A]">CONFIRM ESCROW RELEASE</h3>
+                <span className="text-xs text-[#8F8A7E]">MUTUAL HANDSHAKE & CREDIT TRANSFER</span>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#F7F4EE] border-2 border-[#1A1A1A] text-xs leading-relaxed space-y-2">
+              <p className="font-bold text-[#1A1A1A]">
+                You are about to disburse <span className="text-[#FF5500] font-mono font-bold">30 ALUMN-CR</span> from Smart Escrow to:
+              </p>
+              <div className="p-2 bg-white border border-[#1A1A1A] flex items-center justify-between">
+                <span className="font-bold text-[#1A1A1A]">{activeThread.name}</span>
+                <span className="text-[#635F57] font-mono">{activeThread.subTag}</span>
+              </div>
+              <p className="text-[#635F57]">
+                This action is cryptographically signed and irreversible. The 15-minute architectural flash advisory session will be formally recorded as completed.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setEscrowConfirmOpen(false)}
+                className="px-4 py-2 bg-white border-2 border-[#1A1A1A] text-xs font-bold hover:bg-[#e5e2dc]"
+              >
+                KEEP IN ESCROW
+              </button>
+              <button
+                type="button"
+                onClick={handleReleaseEscrow}
+                disabled={isReleasing}
+                className="px-5 py-2 bg-[#FF5500] text-white border-2 border-[#1A1A1A] text-xs font-bold shadow-[2px_2px_0_#1A1A1A] hover:bg-[#d04400] flex items-center gap-1.5"
+              >
+                {isReleasing ? (
+                  <span>DISBURSING CREDITS...</span>
+                ) : (
+                  <>
+                    <span>CONFIRM & RELEASE 30 CR</span>
+                    <span>→</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

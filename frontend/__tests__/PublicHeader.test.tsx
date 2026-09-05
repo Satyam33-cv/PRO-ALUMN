@@ -46,6 +46,8 @@ describe("PublicHeader Component", () => {
     expect(screen.getAllByText("Features")[0]).toBeInTheDocument();
     expect(screen.getAllByText("AI Matching")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Directory *")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Jobs")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Events")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Success Spotlight")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Announcements")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Education")[0]).toBeInTheDocument();
