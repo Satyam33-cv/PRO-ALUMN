@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@100..900&family=Space+Mono:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-secondary-fixed":"#390c00","error-container":"#ffdad6","on-secondary-fixed-variant":"#822700","tertiary-fixed-dim":"#b7c4ff","on-surface-variant":"#444748","tertiary":"#000000","inverse-surface":"#31312d","primary":"#000000","surface-cream":"#F7F4EE","on-secondary-container":"#fffbff","border-muted":"#D5CEBF","error":"#ba1a1a","background":"#fcf9f3","secondary":"#a63500","outline-variant":"#c4c7c7","on-error":"#ffffff","on-primary":"#ffffff","on-tertiary-fixed-variant":"#0039b5","on-tertiary-fixed":"#001551","border-charcoal":"#1A1A1A","surface-variant":"#e5e2dc","surface-container-lowest":"#ffffff","primary-fixed-dim":"#c8c6c5","on-primary-container":"#858383","inverse-on-surface":"#f3f0ea","on-primary-fixed":"#1c1b1b","surface-container-highest":"#e5e2dc","primary-container":"#1c1b1b","on-primary-fixed-variant":"#474746","primary-fixed":"#e5e2e1","on-secondary":"#ffffff","surface-tint":"#5f5e5e","surface-card":"#FFFFFF","surface-dim":"#dcdad4","tertiary-fixed":"#dce1ff","text-primary":"#1A1A1A","secondary-fixed":"#ffdbcf","outline":"#747878","on-background":"#1c1c18","surface-container-low":"#f6f3ed","on-tertiary-container":"#547aff","on-surface":"#1c1c18","led-active":"#00E676","secondary-fixed-dim":"#ffb59c","text-secondary":"#635F57","accent-citron":"#D9E021","surface-container":"#f0eee8","on-error-container":"#93000a","text-muted":"#8F8A7E","inverse-primary":"#c8c6c5","surface-container-high":"#ebe8e2","surface-bright":"#fcf9f3","accent-cobalt":"#1D4ED8","surface-cream-subtle":"#EFECE4","on-tertiary":"#ffffff","secondary-container":"#d04400","accent-persimmon":"#FF5500","surface":"#fcf9f3","tertiary-container":"#001551"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"grid-gutter":"1.25rem","3xl":"4rem","2xl":"3rem","xs":"0.5rem","grid-margin-desktop":"2.5rem","sm":"0.75rem","md":"1rem","lg":"1.5rem","grid-margin-mobile":"1rem","xl":"2rem","2xs":"0.25rem"},"fontFamily":{"tag-index":["Space Mono"],"headline-lg":["Space Grotesk"],"label-caps":["Space Grotesk"],"headline-lg-mobile":["Space Grotesk"],"display-hero-mobile":["Space Grotesk"],"body-md":["Space Grotesk"],"headline-sm":["Space Grotesk"],"display-hero":["Space Grotesk"],"body-sm":["Space Grotesk"],"headline-md":["Space Grotesk"],"body-lg":["Space Grotesk"],"label-mono":["Space Mono"]},"fontSize":{"tag-index":["11px",{"lineHeight":"11px","letterSpacing":"0.06em","fontWeight":"700"}],"headline-lg":["36px",{"lineHeight":"42px","letterSpacing":"-0.03em","fontWeight":"700"}],"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"700"}],"display-hero-mobile":["38px",{"lineHeight":"42px","letterSpacing":"-0.03em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-hero":["64px",{"lineHeight":"68px","letterSpacing":"-0.04em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"30px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"label-mono":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-cream z-50 flex flex-col justify-between shadow-[2px_0_0_#1A1A1A]"><div class="flex flex-col"><div class="h-16 px-lg flex items-center justify-between bg-surface-cream shadow-[0_2px_0_#1A1A1A]"><div class="flex items-center gap-xs"><span class="flex items-center justify-center w-8 h-8 bg-primary text-on-primary font-tag-index text-tag-index shadow-[2px_2px_0_#1A1A1A]">PA</span><div class="flex flex-col"><span class="font-headline-sm text-headline-sm tracking-tight text-text-primary leading-none">PRO-ALUMN</span><span class="font-label-mono text-label-mono text-text-muted">NETWORK CORE v2.4</span></div></div><span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-variant text-text-primary border border-border-charcoal">SYS.OK</span></div><div class="px-lg pt-lg pb-xs flex items-center justify-between"><span class="font-label-caps text-label-caps uppercase text-text-muted">INDEX PROTOCOLS</span><span class="font-label-mono text-label-mono text-text-muted">[07]</span></div><nav class="flex flex-col px-md gap-xs" data-active-classes="bg-primary text-on-primary shadow-[2px_2px_0_#1A1A1A]"><a aria-current="page" class="flex items-center justify-between px-md py-xs font-body-sm transition-all bg-primary text-on-primary shadow-[2px_2px_0_#1A1A1A]" data-path="dashboard" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">01</span><span>Dashboard</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="alumni-directory" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">02</span><span>Alumni Directory</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="jobs-referrals" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">03</span><span>Jobs & Referrals</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="mentorship-hub" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">04</span><span>Mentorship Hub</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="events-rsvps" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">05</span><span>Events & RSVPs</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="success-stories" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">06</span><span>Success Stories</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="admin-command-center" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">07</span><span>Admin Command Center</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a></nav></div><div class="p-md flex flex-col gap-xs bg-surface-cream-subtle shadow-[0_-2px_0_#1A1A1A]"><div class="flex items-center justify-between px-xs py-2xs"><span class="font-label-caps text-label-caps text-text-muted uppercase">VECTOR RUNTIME</span><span class="font-label-mono text-label-mono text-accent-persimmon">HNSW:OK</span></div><div class="p-xs bg-surface-card border border-border-charcoal flex items-center justify-between"><div class="flex flex-col"><span class="font-label-caps text-label-caps text-text-muted">EMBEDDING DIM</span><span class="font-label-mono text-label-mono text-text-primary">1536_ADA002</span></div><div class="w-2 h-2 rounded-full bg-led-active shadow-[0_0_6px_#00E676]"></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface-cream z-40 px-lg flex items-center justify-between shadow-[0_2px_0_#1A1A1A]"><div class="flex items-center gap-md flex-1 max-w-xl"><div class="flex items-center gap-xs px-sm py-2xs bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] w-full"><span class="material-symbols-outlined text-text-muted text-[18px]">search</span><input class="w-full bg-transparent font-label-mono text-label-mono text-text-primary placeholder:text-text-muted focus:outline-none" placeholder="Query directory, skills, or vector tokens (e.g. /ai-research)..." type="text"/><span class="font-tag-index text-tag-index px-2xs bg-surface-variant text-text-muted">⌘K</span></div></div><div class="flex items-center gap-lg"><div class="hidden xl:flex items-center gap-sm px-sm py-2xs bg-surface-card border border-border-charcoal"><div class="flex items-center gap-2xs"><span class="w-2 h-2 rounded-full bg-led-active"></span><span class="font-label-caps text-label-caps text-text-primary uppercase">PGVECTOR</span></div><span class="text-border-muted font-label-mono text-label-mono">|</span><span class="font-label-mono text-label-mono text-text-secondary">LATENCY: 14ms</span></div><button aria-label="Notifications" class="relative flex items-center justify-center w-9 h-9 bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] hover:bg-surface-variant transition-colors" type="button"><span class="material-symbols-outlined text-text-primary text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-accent-persimmon"></span></button><div class="flex items-center gap-sm pl-xs border-l border-border-muted"><div class="flex flex-col items-end"><span class="font-body-sm text-body-sm font-semibold text-text-primary leading-tight">Elena Vance, Ph.D.</span><span class="font-label-caps text-label-caps px-2xs py-2xs bg-accent-citron text-border-charcoal border border-border-charcoal uppercase leading-none mt-2xs">FELLOW / COHORT '22</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[2px_2px_0_#1A1A1A]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full px-grid-margin-desktop py-lg flex flex-col gap-xl">
+<!-- Top Protocol Banner & Breadcrumb Header -->
+<div class="flex flex-col gap-xs pb-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index text-accent-persimmon">/////</span>
+<span class="font-tag-index text-tag-index text-text-primary uppercase tracking-wider">[ PILLAR // 02 ] REQUISITION CONDUIT // 384-DIM SEMANTIC MATCHING</span>
+<span class="px-2xs py-2xs bg-accent-citron text-border-charcoal font-tag-index text-tag-index uppercase">VERIFIED PROTOCOL</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-mono text-label-mono text-text-muted">SYNC_TIMESTAMP: 2026.03.30-T11:42Z</span>
+<span class="w-2 h-2 rounded-full bg-led-active"></span>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-md mt-xs">
+<div class="max-w-3xl flex flex-col gap-2xs">
+<h1 class="font-headline-lg text-headline-lg text-text-primary tracking-tight">
+            Career & Structured Referral Hub
+          </h1>
+<p class="font-body-md text-body-md text-text-secondary">
+            End-to-end verifiable referral pipeline. Direct conduit injection to tier-1 engineering and research teams with guaranteed alumni review within 48 hours.
+          </p>
+</div>
+<div class="flex items-center gap-xs">
+<button class="px-md py-xs bg-surface-card text-text-primary font-headline-sm text-headline-sm shadow-md hover:bg-surface-variant transition-all flex items-center gap-2xs" type="button">
+<span class="material-symbols-outlined text-[18px]">post_add</span>
+<span>Post Alumni Requisition</span>
+</button>
+<button class="px-md py-xs bg-primary text-on-primary font-headline-sm text-headline-sm shadow-md hover:bg-surface-variant hover:text-on-surface transition-all flex items-center gap-2xs" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span>Update Portfolio Key</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Top KPI Bento Strip -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-grid-gutter">
+<!-- KPI 1 -->
+<div class="bg-surface-card p-md shadow-md flex flex-col justify-between gap-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">SURFACE REQUISITIONS</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary font-label-mono">[K-01]</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-hero text-headline-lg text-text-primary">142</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon">+12 this wk</span>
+</div>
+<div class="flex items-center justify-between pt-xs bg-surface-cream-subtle px-xs -mx-md -mb-md">
+<span class="font-label-mono text-label-mono text-text-secondary">Active Hiring Conduits</span>
+<span class="material-symbols-outlined text-text-primary text-[18px]">hub</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-card p-md shadow-md flex flex-col justify-between gap-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">ACCEPTANCE METRIC</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary font-label-mono">[K-02]</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-hero text-headline-lg text-text-primary">88.4%</span>
+<span class="font-label-mono text-label-mono text-led-active">↑ 3.2% p90</span>
+</div>
+<div class="flex items-center justify-between pt-xs bg-surface-cream-subtle px-xs -mx-md -mb-md">
+<span class="font-label-mono text-label-mono text-text-secondary">Conduit Screening Pass</span>
+<span class="material-symbols-outlined text-text-primary text-[18px]">rule</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-card p-md shadow-md flex flex-col justify-between gap-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">SERVICE LEVEL AGREEMENT</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary font-label-mono">[K-03]</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-hero text-headline-lg text-text-primary">48h</span>
+<span class="font-label-mono text-label-mono text-text-muted">HARD LIMIT</span>
+</div>
+<div class="flex items-center justify-between pt-xs bg-surface-cream-subtle px-xs -mx-md -mb-md">
+<span class="font-label-mono text-label-mono text-text-secondary">Max Alumni First Review</span>
+<span class="material-symbols-outlined text-text-primary text-[18px]">timer</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="bg-surface-card p-md shadow-md flex flex-col justify-between gap-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">INCENTIVE PROTOCOL</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary font-label-mono">[K-04]</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-hero text-headline-lg text-text-primary">100</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon">ALUMN-CR</span>
+</div>
+<div class="flex items-center justify-between pt-xs bg-surface-cream-subtle px-xs -mx-md -mb-md">
+<span class="font-label-mono text-label-mono text-text-secondary">Network Bounty Escrow</span>
+<span class="material-symbols-outlined text-text-primary text-[18px]">token</span>
+</div>
+</div>
+</div>
+<!-- Referral Lifecycle State Machine Banner -->
+<div class="w-full bg-surface-cream p-lg shadow-md flex flex-col gap-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-primary text-on-primary">STATE_MACHINE</span>
+<span class="font-headline-sm text-headline-sm text-text-primary">Referral Lifecycle Protocol (RFC-814)</span>
+</div>
+<span class="font-label-mono text-label-mono text-text-muted">SYNCHRONOUS VERIFICATION ENGINE // 4 STAGES</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<!-- Step 1 -->
+<div class="bg-surface-card p-md shadow-sm flex flex-col gap-xs relative">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-2xs bg-surface-variant text-text-primary">01 PENDING</span>
+<span class="w-2 h-2 rounded-full bg-led-active"></span>
+</div>
+<span class="font-headline-sm text-headline-sm text-text-primary">Packet Ingest</span>
+<p class="font-body-sm text-body-sm text-text-secondary">Candidate matches vectors, attaches cryptographic thesis credentials & claims 1 quota ticket.</p>
+<div class="mt-xs pt-xs bg-surface-cream px-xs flex justify-between items-center font-label-mono text-label-mono text-text-muted">
+<span>DISPATCH</span>
+<span>T-00:00:00</span>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-card p-md shadow-sm flex flex-col gap-xs relative">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-2xs bg-accent-citron text-border-charcoal">02 SCREENED</span>
+<span class="font-label-mono text-label-mono text-text-muted">48H MAX</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-text-primary">Portfolio Review</span>
+<p class="font-body-sm text-body-sm text-text-secondary">Target alumni conducts technical review of architecture briefs, commits endorsement signature.</p>
+<div class="mt-xs pt-xs bg-surface-cream px-xs flex justify-between items-center font-label-mono text-label-mono text-text-muted">
+<span>PEER_VALIDATION</span>
+<span>ACTIVE</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-card p-md shadow-sm flex flex-col gap-xs relative">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-2xs bg-surface-variant text-text-primary">03 REFERRED</span>
+<span class="material-symbols-outlined text-[16px] text-text-muted">bolt</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-text-primary">Direct Conduit</span>
+<p class="font-body-sm text-body-sm text-text-secondary">Payload injected to direct partner hiring channel via internal API bypassing generic HR screener queues.</p>
+<div class="mt-xs pt-xs bg-surface-cream px-xs flex justify-between items-center font-label-mono text-label-mono text-text-muted">
+<span>ATS_INJECT</span>
+<span>REST API</span>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface-card p-md shadow-sm flex flex-col gap-xs relative">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-2xs bg-surface-variant text-text-primary">04 HIRED</span>
+<span class="material-symbols-outlined text-[16px] text-accent-persimmon">celebration</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-text-primary">Milestone Escrow</span>
+<p class="font-body-sm text-body-sm text-text-secondary">Candidate onboarded. 100 ALUMN-CR smart contract bounty releases automatically to the referring fellow.</p>
+<div class="mt-xs pt-xs bg-surface-cream px-xs flex justify-between items-center font-label-mono text-label-mono text-text-muted">
+<span>SETTLEMENT</span>
+<span>BOUNTY RELEASE</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Grid: Listings & Live Referral Tracker -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-grid-gutter">
+<!-- Left 8 Columns: Requisitions and Filters Matrix -->
+<div class="xl:col-span-8 flex flex-col gap-lg">
+<!-- Filter Matrix Toolbar -->
+<div class="bg-surface-card p-md shadow-md flex flex-col gap-md">
+<div class="flex flex-wrap items-center justify-between gap-sm">
+<div class="flex items-center gap-xs flex-wrap">
+<button class="px-sm py-2xs bg-primary text-on-primary font-tag-index text-tag-index shadow-sm hover:opacity-90" type="button">
+                [ ALL DOMAINS ]
+              </button>
+<button class="px-sm py-2xs bg-surface-cream text-text-primary font-tag-index text-tag-index hover:bg-surface-variant transition-all" type="button">
+                SYSTEMS & DISTRIBUTED
+              </button>
+<button class="px-sm py-2xs bg-surface-cream text-text-primary font-tag-index text-tag-index hover:bg-surface-variant transition-all" type="button">
+                AI & LLM KERNELS
+              </button>
+<button class="px-sm py-2xs bg-surface-cream text-text-primary font-tag-index text-tag-index hover:bg-surface-variant transition-all" type="button">
+                SILICON & FIRMWARE
+              </button>
+<button class="px-sm py-2xs bg-surface-cream text-text-primary font-tag-index text-tag-index hover:bg-surface-variant transition-all" type="button">
+                POSTDOC & APPLIED SCIENCE
+              </button>
+</div>
+<div class="flex items-center gap-2xs font-label-mono text-label-mono text-text-muted">
+<span>FOUND:</span>
+<span class="text-text-primary font-bold">4 REQUISITIONS</span>
+</div>
+</div>
+<!-- Secondary Filter Chips Bar -->
+<div class="flex items-center justify-between pt-xs bg-surface-cream px-sm py-2xs flex-wrap gap-xs">
+<div class="flex items-center gap-md">
+<label class="flex items-center gap-xs cursor-pointer select-none">
+<input checked="" class="w-3.5 h-3.5 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-label-caps text-label-caps text-text-primary uppercase">Remote Only</span>
+</label>
+<label class="flex items-center gap-xs cursor-pointer select-none">
+<input checked="" class="w-3.5 h-3.5 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-label-caps text-label-caps text-text-primary uppercase">Referral Slot Available</span>
+</label>
+<label class="flex items-center gap-xs cursor-pointer select-none">
+<input checked="" class="w-3.5 h-3.5 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-label-caps text-label-caps text-text-primary uppercase">High Match (>90%)</span>
+</label>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-label-mono text-label-mono text-text-muted">SORT:</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon font-bold">SEMANTIC_PROXIMITY_DESC</span>
+</div>
+</div>
+</div>
+<!-- Requisition Cards -->
+<div class="flex flex-col gap-lg">
+<!-- Card 1 -->
+<div class="bg-surface-card p-lg shadow-md flex flex-col gap-md transition-all hover:shadow-xl relative group">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-sm">
+<div class="flex flex-col gap-2xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary">REQ // 8820-GOOG</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-accent-citron text-border-charcoal">98.4% COSINE SIMILARITY</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-variant text-text-secondary">HIGH MATCH</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-text-primary mt-2xs">
+                  Senior Infrastructure Engineer (Spanner Core)
+                </h2>
+<div class="flex items-center gap-xs font-body-sm text-body-sm text-text-secondary">
+<span class="font-bold text-text-primary">Google Cloud</span>
+<span>•</span>
+<span>Sunnyvale, CA (Hybrid / US-Remote Eligible)</span>
+<span>•</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon">COMP: $340K - $420K TC</span>
+</div>
+</div>
+<!-- Poster Details -->
+<div class="bg-surface-cream p-xs shadow-sm flex items-center gap-xs min-w-[210px]">
+<div class="w-9 h-9 bg-primary text-on-primary font-tag-index text-tag-index flex items-center justify-center">VA</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-bold text-text-primary leading-tight">Vikram Aditya</span>
+<span class="font-label-mono text-label-mono text-text-muted">Cohort '19 // L5 SRE</span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-text-secondary">
+              Direct ingestion into Cloud Spanner's Paxos consensus layer and distributed query execution fabric. Seeking systems programmers with demonstrated mastery in deterministic state machines and zero-copy RPC architectures.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-md pt-sm bg-surface-cream-subtle px-md py-sm">
+<div class="flex items-center gap-xs flex-wrap">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">STACK:</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Rust</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Distributed Consensus</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Kubernetes</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Spanner</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono">
+<span class="w-2 h-2 rounded-full bg-led-active"></span>
+<span class="text-text-primary font-bold">4 Referral Slots Available</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-xs gap-sm flex-wrap">
+<div class="flex items-center gap-xs text-text-muted font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Verified Alumni Conduit • Fast-Track 48h Turnaround</span>
+</div>
+<div class="flex items-center gap-xs">
+<button class="px-md py-xs bg-surface-cream hover:bg-surface-variant font-headline-sm text-headline-sm text-text-primary shadow-sm transition-all" type="button">
+                  View Full Requisition
+                </button>
+<button class="px-md py-xs bg-primary text-on-primary hover:bg-surface-variant hover:text-on-surface font-headline-sm text-headline-sm shadow-md transition-all flex items-center gap-2xs" type="button">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span>Request Warm Referral (1-Click)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-card p-lg shadow-md flex flex-col gap-md transition-all hover:shadow-xl relative group">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-sm">
+<div class="flex flex-col gap-2xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary">REQ // 7041-SNOW</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-accent-citron text-border-charcoal">96.7% MATCH</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-variant text-text-secondary">QUERY ENGINE</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-text-primary mt-2xs">
+                  Principal Storage Architect (Columnar Engine)
+                </h2>
+<div class="flex items-center gap-xs font-body-sm text-body-sm text-text-secondary">
+<span class="font-bold text-text-primary">Snowflake</span>
+<span>•</span>
+<span>San Mateo, CA (100% US / CAN Remote)</span>
+<span>•</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon">COMP: $410K - $520K TC</span>
+</div>
+</div>
+<!-- Poster Details -->
+<div class="bg-surface-cream p-xs shadow-sm flex items-center gap-xs min-w-[210px]">
+<div class="w-9 h-9 bg-primary text-on-primary font-tag-index text-tag-index flex items-center justify-center">SJ</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-bold text-text-primary leading-tight">Sarah Jenkins</span>
+<span class="font-label-mono text-label-mono text-text-muted">Cohort '16 // Principal IC</span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-text-secondary">
+              Lead the architectural evolution of Snowflake's vectorized metadata micro-partition format. Focus on AVX-512 / NEON hardware intrinsics, multi-tier distributed caching, and zero-stall write amplification dampening.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-md pt-sm bg-surface-cream-subtle px-md py-sm">
+<div class="flex items-center gap-xs flex-wrap">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">STACK:</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">C++20</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">SIMD Vectorization</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Query Planning</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono">
+<span class="w-2 h-2 rounded-full bg-led-active"></span>
+<span class="text-text-primary font-bold">5 Referral Slots Available</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-xs gap-sm flex-wrap">
+<div class="flex items-center gap-xs text-text-muted font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Direct Executive Endorsement Conduit</span>
+</div>
+<div class="flex items-center gap-xs">
+<button class="px-md py-xs bg-surface-cream hover:bg-surface-variant font-headline-sm text-headline-sm text-text-primary shadow-sm transition-all" type="button">
+                  View Requisition
+                </button>
+<button class="px-md py-xs bg-primary text-on-primary hover:bg-surface-variant hover:text-on-surface font-headline-sm text-headline-sm shadow-md transition-all flex items-center gap-2xs" type="button">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span>Request Warm Referral (1-Click)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-card p-lg shadow-md flex flex-col gap-md transition-all hover:shadow-xl relative group">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-sm">
+<div class="flex flex-col gap-2xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary">REQ // 3319-STRP</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-accent-citron text-border-charcoal">94.8% MATCH</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-variant text-text-secondary">FINANCIAL LEDGER</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-text-primary mt-2xs">
+                  Core Transaction Ledger Architect
+                </h2>
+<div class="flex items-center gap-xs font-body-sm text-body-sm text-text-secondary">
+<span class="font-bold text-text-primary">Stripe</span>
+<span>•</span>
+<span>Seattle, WA (Hybrid / Remote Option)</span>
+<span>•</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon">COMP: $380K - $490K TC</span>
+</div>
+</div>
+<!-- Poster Details -->
+<div class="bg-surface-cream p-xs shadow-sm flex items-center gap-xs min-w-[210px]">
+<div class="w-9 h-9 bg-primary text-on-primary font-tag-index text-tag-index flex items-center justify-center">SJ</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-bold text-text-primary leading-tight">Siddharth Joshi</span>
+<span class="font-label-mono text-label-mono text-text-muted">Cohort '17 // Staff IC</span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-text-secondary">
+              Scale Stripe's immutable double-entry money movement platform processing $1T+ in annual run-rate. Strong emphasis on deterministic multi-region consensus, idempotent webhook queues, and formal TLA+ specifications.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-md pt-sm bg-surface-cream-subtle px-md py-sm">
+<div class="flex items-center gap-xs flex-wrap">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">STACK:</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Distributed Transactions</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Java</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Kafka</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">ACID</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono">
+<span class="w-2 h-2 rounded-full bg-accent-persimmon"></span>
+<span class="text-text-primary font-bold">2 Referral Slots Available</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-xs gap-sm flex-wrap">
+<div class="flex items-center gap-xs text-text-muted font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Ledger Engineering Core • 48h Response Commitment</span>
+</div>
+<div class="flex items-center gap-xs">
+<button class="px-md py-xs bg-surface-cream hover:bg-surface-variant font-headline-sm text-headline-sm text-text-primary shadow-sm transition-all" type="button">
+                  View Requisition
+                </button>
+<button class="px-md py-xs bg-primary text-on-primary hover:bg-surface-variant hover:text-on-surface font-headline-sm text-headline-sm shadow-md transition-all flex items-center gap-2xs" type="button">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span>Request Warm Referral (1-Click)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-card p-lg shadow-md flex flex-col gap-md transition-all hover:shadow-xl relative group">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-sm">
+<div class="flex flex-col gap-2xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-cream text-text-primary">REQ // 0914-NEURO</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-accent-citron text-border-charcoal">94.2% MATCH</span>
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-accent-persimmon text-on-primary">YC W26 ACCEL</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-text-primary mt-2xs">
+                  Founding AI Hardware Firmware Engineer
+                </h2>
+<div class="flex items-center gap-xs font-body-sm text-body-sm text-text-secondary">
+<span class="font-bold text-text-primary">Neuromorphic Labs (YC W26)</span>
+<span>•</span>
+<span>San Francisco, CA (Onsite)</span>
+<span>•</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon">COMP: $190K - $240K + 1.25% EQUITY</span>
+</div>
+</div>
+<!-- Poster Details -->
+<div class="bg-surface-cream p-xs shadow-sm flex items-center gap-xs min-w-[210px]">
+<div class="w-9 h-9 bg-primary text-on-primary font-tag-index text-tag-index flex items-center justify-center">DC</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-bold text-text-primary leading-tight">David Chen</span>
+<span class="font-label-mono text-label-mono text-text-muted">Cohort '17 // Co-Founder</span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-text-secondary">
+              Building next-gen analog in-memory compute silicon for edge transformer evaluation. You will write bare-metal firmware, custom RISC-V extensions, and LLVM toolchains to execute quantized sparsity maps directly on wafer.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-md pt-sm bg-surface-cream-subtle px-md py-sm">
+<div class="flex items-center gap-xs flex-wrap">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">STACK:</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">RISC-V</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Chisel</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">Verilog</span>
+<span class="px-xs py-2xs bg-surface-card font-label-mono text-label-mono text-text-primary">C++</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono">
+<span class="w-2 h-2 rounded-full bg-led-active"></span>
+<span class="text-text-primary font-bold">3 Referral Slots Available</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-xs gap-sm flex-wrap">
+<div class="flex items-center gap-xs text-text-muted font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Founder-Direct Fast Track • Coffee Intro in Mission</span>
+</div>
+<div class="flex items-center gap-xs">
+<button class="px-md py-xs bg-surface-cream hover:bg-surface-variant font-headline-sm text-headline-sm text-text-primary shadow-sm transition-all" type="button">
+                  View Requisition
+                </button>
+<button class="px-md py-xs bg-accent-persimmon text-on-primary hover:opacity-90 font-headline-sm text-headline-sm shadow-md transition-all flex items-center gap-2xs" type="button">
+<span class="material-symbols-outlined text-[18px]">handshake</span>
+<span>Request Founder Intro</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right 4 Columns: Active Referral Tracker Drawer & Telemetry Sidecar -->
+<div class="xl:col-span-4 flex flex-col gap-lg">
+<!-- Active Referral Tracker Card -->
+<div class="bg-surface-card p-lg shadow-md flex flex-col gap-md sticky top-20">
+<div class="flex items-center justify-between pb-xs bg-surface-cream px-sm py-2xs -mx-lg -mt-lg">
+<div class="flex items-center gap-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-persimmon animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-text-primary uppercase">IN-FLIGHT REFERRAL DISPATCHES</span>
+</div>
+<span class="font-tag-index text-tag-index px-2xs bg-surface-variant text-text-primary">2 ACTIVE</span>
+</div>
+<div class="flex flex-col gap-md mt-xs">
+<!-- In-flight Referral 1 -->
+<div class="bg-surface-cream p-md shadow-sm flex flex-col gap-xs relative">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-primary text-on-primary">DISPATCHED</span>
+<span class="font-label-mono text-label-mono text-text-muted">SLOT: 1 of 2</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-text-primary">Sr. Infrastructure Intern</span>
+<span class="font-body-sm text-body-sm text-text-secondary">Google Core • Host: Vikram Aditya</span>
+</div>
+<!-- Progress Indicator -->
+<div class="flex flex-col gap-2xs pt-xs">
+<div class="flex justify-between font-label-mono text-label-mono">
+<span class="text-text-muted">Status: Direct HR Conduit Injected</span>
+<span class="text-led-active font-bold">STG 03/04</span>
+</div>
+<div class="w-full h-2 bg-surface-variant overflow-hidden">
+<div class="bg-primary h-full w-3/4"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-xs text-text-muted font-label-mono text-label-mono">
+<span>ATS ID: REQ-8820-A1</span>
+<span class="text-accent-persimmon">ETA: 14h to Call</span>
+</div>
+</div>
+<!-- In-flight Referral 2 -->
+<div class="bg-surface-cream p-md shadow-sm flex flex-col gap-xs relative">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-accent-citron text-border-charcoal">IN SCREENING</span>
+<span class="font-label-mono text-label-mono text-text-muted">SLOT: 2 of 2</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-text-primary">ML Research Associate</span>
+<span class="font-body-sm text-body-sm text-text-secondary">Meta FAIR • Host: Dr. Marcus Vance</span>
+</div>
+<!-- Progress Indicator -->
+<div class="flex flex-col gap-2xs pt-xs">
+<div class="flex justify-between font-label-mono text-label-mono">
+<span class="text-text-muted">Status: Alumni Packet Review</span>
+<span class="text-accent-persimmon font-bold">STG 02/04</span>
+</div>
+<div class="w-full h-2 bg-surface-variant overflow-hidden">
+<div class="bg-primary h-full w-1/2"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-xs text-text-muted font-label-mono text-label-mono">
+<span>SLA Timer: 22h remaining</span>
+<span class="text-text-primary font-bold">REVIEW IN-PROGRESS</span>
+</div>
+</div>
+</div>
+<!-- Alumni Endorsement Quota Box -->
+<div class="bg-surface-card p-md shadow-sm flex flex-col gap-xs mt-xs">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">QUOTA & ESCROW CREDITS</span>
+<div class="flex items-baseline justify-between">
+<span class="font-headline-md text-headline-md text-text-primary">3 / 5 Tokens</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon">RESYNC IN 6D</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary">
+              High-trust referral allocations protect network integrity. Vetted submissions renew tokens upon candidate hire milestone.
+            </p>
+</div>
+<!-- Vector Matching Chamber (Mini Illustration/Graph) -->
+<div class="bg-surface-cream-subtle p-md shadow-sm flex flex-col gap-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-primary uppercase">VECTOR PROJECTION CHAMBER</span>
+<span class="font-label-mono text-label-mono text-accent-cobalt">ADA-002:1536</span>
+</div>
+<!-- Dynamic Vector Sparkline Visualization -->
+<div class="h-28 w-full bg-surface-card p-xs flex items-center justify-center relative overflow-hidden">
+<svg class="w-full h-full text-text-primary" fill="none" preserveaspectratio="none" viewbox="0 0 240 80">
+<path d="M0,60 Q30,20 60,45 T120,30 T180,65 T240,15" fill="none" stroke="currentColor" stroke-width="2"></path>
+<path class="text-text-muted" d="M0,70 Q40,40 80,60 T160,25 T200,45 T240,35" fill="none" stroke="currentColor" stroke-dasharray="3 3" stroke-width="1"></path>
+<circle cx="60" cy="45" fill="#FF5500" r="4"></circle>
+<circle cx="120" cy="30" fill="#000000" r="4"></circle>
+<circle cx="180" cy="65" fill="#D9E021" r="4"></circle>
+<circle cx="210" cy="22" fill="#00E676" r="5"></circle>
+</svg>
+<div class="absolute bottom-1 right-2 font-label-mono text-[10px] text-text-muted">CLUSTER DENSITY: 0.94</div>
+</div>
+<div class="flex items-center justify-between font-label-mono text-label-mono text-text-muted mt-2xs">
+<span>ELENA_VANCE_REP.VEC</span>
+<span class="text-led-active">MATCH OPTIMAL</span>
+</div>
+</div>
+<!-- Quick Action Link -->
+<button class="w-full py-xs bg-surface-cream hover:bg-surface-variant text-text-primary font-label-mono text-label-mono shadow-sm transition-all text-center" type="button">
+            ↓ EXPORT ENCLAVE ATTESTATION (PKI-SIGNED)
+          </button>
+</div>
+</div>
+</div>
+<!-- Telemetry Footer Strip -->
+<div class="w-full bg-surface-card p-md shadow-md flex flex-col md:flex-row items-center justify-between gap-sm mt-lg">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-led-active"></span>
+<span class="font-tag-index text-tag-index text-text-primary">CLUSTER STATE: OPTIMAL</span>
+<span class="text-text-muted">|</span>
+<span class="font-label-mono text-label-mono text-text-secondary">POSTGRES 16.2 / PGVECTOR 0.6.0</span>
+<span class="text-text-muted">|</span>
+<span class="font-label-mono text-label-mono text-text-secondary">SECURE ENCLAVE ACTIVE (AWS NITRO / SGX)</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-mono text-label-mono text-text-muted">MEM_ALLOC: 4.8GB / 32GB</span>
+<span class="font-tag-index text-tag-index px-2xs bg-surface-cream text-text-primary">E2EE-CONDUIT-v2</span>
+</div>
+</div>
+</div>
+</div></main></div></body></html>

@@ -99,6 +99,20 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'alumni-api', time: new Date().toISOString() });
 });
 
+// --- GraphQL Apollo Server Integration ---
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+const typeDefs = require('./graphql/typeDefs');
+const resolvers = require('./graphql/resolvers');
+const jwt = require('jsonwebtoken');
+const prisma = require('./db');
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
 // --- Routes ---
 app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
@@ -119,18 +133,11 @@ app.use('/api/pages', require('./routes/pages'));
 app.use('/api/search', require('./routes/search'));
 app.use('/api/video', require('./routes/video'));
 app.use('/api/support', require('./routes/support'));
+// ponytail: Giving route disabled per product direction; upgrade to dedicated endowment module if needed later.
+
 // --- Local file uploads (auth-protected) ---
 const { authenticate } = require('./middleware/auth');
 app.use('/uploads', authenticate, express.static(path.join(__dirname, 'uploads')));
-
-// --- 404 handler ---
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    code: 'ROUTE_NOT_FOUND',
-    message: `Cannot ${req.method} ${req.path}`,
-  });
-});
 
 // --- Global Centralized Error Handler (Commandment 04) ---
 app.use((err, req, res, next) => {
@@ -158,8 +165,46 @@ const io = new Server(httpServer, {
 });
 initSocket(io);
 
-const server = httpServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`PRO ALUMN API running on port ${PORT}`);
+let server;
+
+async function startServer() {
+  await apolloServer.start();
+  app.use(
+    '/graphql',
+    expressMiddleware(apolloServer, {
+      context: async ({ req }) => {
+        const header = req.headers.authorization;
+        let user = null;
+        if (header && header.startsWith('Bearer ')) {
+          try {
+            const token = header.split(' ')[1];
+            const decoded = jwt.verify(token, JWT_SECRET);
+            user = { id: decoded.id, email: decoded.email, role: decoded.role };
+          } catch (_) {}
+        }
+        return { user, prisma };
+      },
+    })
+  );
+
+  // --- 404 handler (after all routes & graphql) ---
+  app.use((req, res) => {
+    res.status(404).json({
+      success: false,
+      code: 'ROUTE_NOT_FOUND',
+      message: `Cannot ${req.method} ${req.path}`,
+    });
+  });
+
+  server = httpServer.listen(PORT, '0.0.0.0', () => {
+    console.log(`PRO ALUMN API running on port ${PORT}`);
+    console.log(`🚀 GraphQL Endpoint ready at http://localhost:${PORT}/graphql`);
+  });
+}
+
+startServer().catch((err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });
 
 // --- Graceful shutdown ---

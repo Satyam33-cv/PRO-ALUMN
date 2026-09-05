@@ -1,0 +1,814 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PRO-ALUMN // Success Spotlight &amp; Alumni Breakthroughs</title>
+<!-- Tailwind CSS CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Custom Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brutal-bg': '#FBFBF9',
+            'brutal-card': '#FFFFFF',
+            'brutal-black': '#000000',
+            'cyber-lime': '#CCFF00',
+            'safety-orange': '#FF5500',
+            'electric-blue': '#2E5BFF',
+            'muted-slate': '#71717A',
+            'border-gray': '#E4E4E7'
+          },
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            sans: ['"Space Grotesk"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif']
+          },
+          boxShadow: {
+            'brutal-sm': '2px 2px 0px #000000',
+            'brutal': '4px 4px 0px #000000',
+            'brutal-lg': '6px 6px 0px #000000',
+            'brutal-xl': '8px 8px 0px #000000'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Brutalist Typography and Utility Styles -->
+<style data-purpose="custom-typography">
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap');
+    
+    body {
+      background-color: #FBFBF9;
+      color: #000000;
+      font-family: 'Space Grotesk', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .font-mono-brutal {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+  </style>
+<style data-purpose="brutalist-interactive">
+    .brutal-btn-active:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #000000;
+    }
+    .brutal-link-hover:hover {
+      background-color: #000000;
+      color: #FFFFFF;
+    }
+    .technical-grid-bg {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+  </style>
+<!-- END: Custom Brutalist Typography and Utility Styles -->
+</head>
+<body class="min-h-screen bg-brutal-bg text-brutal-black border-t-4 border-brutal-black selection:bg-cyber-lime selection:text-black">
+<!-- BEGIN: Public Landing Navigation Bar -->
+<header class="sticky top-0 z-50 bg-white border-b-4 border-brutal-black px-4 sm:px-8 py-3.5" data-purpose="public-navigation-header">
+<div class="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
+<!-- Brand Logo Group -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-2 group" href="#home">
+<span class="bg-cyber-lime border-2 border-black font-mono-brutal font-bold text-xl px-2.5 py-1 tracking-tighter shadow-brutal-sm group-hover:bg-safety-orange group-hover:text-white transition-colors">
+            /////
+          </span>
+<span class="font-extrabold text-2xl tracking-tighter uppercase font-sans">
+            PRO-ALUMN
+          </span>
+</a>
+<div class="hidden lg:flex items-center gap-2 font-mono-brutal text-xs border-l-2 border-black pl-4 py-1 text-muted-slate">
+<span class="inline-block w-2 h-2 bg-emerald-500 rounded-none border border-black animate-pulse"></span>
+<span>SYS.V24 // NODE-ALPHA [PUBLIC_GUEST]</span>
+</div>
+</div>
+<!-- Public Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 font-mono-brutal text-xs uppercase font-bold tracking-tight" data-purpose="primary-nav-links">
+<a class="px-3 py-2 hover:bg-black hover:text-white border-2 border-transparent hover:border-black transition-all" href="#features">Features</a>
+<a class="px-3 py-2 hover:bg-black hover:text-white border-2 border-transparent hover:border-black transition-all" href="#matching">AI Matching</a>
+<a class="px-3 py-2 hover:bg-black hover:text-white border-2 border-transparent hover:border-black transition-all" href="#directory">Directory</a>
+<!-- Active Public Tab: Success Spotlight -->
+<a class="px-3 py-2 bg-cyber-lime text-black border-2 border-black shadow-brutal-sm flex items-center gap-1.5 font-bold" href="#spotlight">
+<span>Success Spotlight</span>
+<span class="w-1.5 h-1.5 bg-black rounded-none"></span>
+</a>
+<a class="px-3 py-2 hover:bg-black hover:text-white border-2 border-transparent hover:border-black transition-all" href="#announcements">Announcements</a>
+<a class="px-3 py-2 hover:bg-black hover:text-white border-2 border-transparent hover:border-black transition-all" href="#education">Education</a>
+</nav>
+<!-- Right Action CTA Buttons -->
+<div class="flex items-center gap-3 font-mono-brutal font-bold text-xs uppercase">
+<a class="px-4 py-2.5 border-2 border-black hover:bg-black hover:text-white shadow-brutal-sm transition-all" data-purpose="nav-login-btn" href="#login">
+          Log In
+        </a>
+<a class="px-5 py-2.5 bg-safety-orange text-white border-2 border-black shadow-brutal hover:bg-black hover:text-cyber-lime transition-all flex items-center gap-2 brutal-btn-active" data-purpose="nav-cta-btn" href="#signup">
+<span>Get Started</span>
+<span class="text-base leading-none">→</span>
+</a>
+</div>
+</div>
+</header>
+<!-- END: Public Landing Navigation Bar -->
+<!-- BEGIN: Main Page Content -->
+<main class="max-w-[1400px] mx-auto px-4 sm:px-8 py-8 sm:py-10 space-y-10">
+<!-- BEGIN: Hero Section -->
+<section class="border-4 border-brutal-black bg-white p-6 sm:p-10 shadow-brutal-lg technical-grid-bg relative" data-purpose="hero-header-section">
+<!-- Top Protocol Metadata Banner -->
+<div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b-2 border-dashed border-black font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<span class="bg-black text-white px-2.5 py-1 uppercase">[ PILLAR 05 // PUBLIC DISPATCHES &amp; PROOF OF IMPACT ]</span>
+<span class="bg-cyber-lime border-2 border-black px-2 py-0.5 uppercase tracking-wide flex items-center gap-1">
+<span class="w-2 h-2 bg-emerald-600 inline-block"></span>
+            LIVE FEED // UNRESTRICTED
+          </span>
+</div>
+<div class="text-muted-slate text-[11px]">
+          PROTOCOL RFC-088 // ED25519-STAMP VERIFIED
+        </div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+<!-- Hero Title & Subtext -->
+<div class="lg:col-span-8 space-y-4">
+<div class="font-mono-brutal text-xs tracking-wider uppercase font-semibold text-black/70 flex items-center gap-2">
+<span>// VERIFIED MILESTONES, PEER ENDORSEMENTS &amp; VENTURE DISPATCHES</span>
+</div>
+<h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tighter leading-[0.95] text-black">
+            Success Spotlight <br class="hidden sm:inline">&amp; Alumni Breakthroughs
+          </h1>
+<p class="text-base sm:text-lg text-black/85 max-w-2xl font-mono-brutal font-medium pt-2 leading-relaxed">
+            Peer-attested achievements, career pivots, venture funding rounds, and research breakthroughs from verified alumni fellows. Explore real career trajectories before joining.
+          </p>
+</div>
+<!-- Hero Interaction Action Box -->
+<div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 font-mono-brutal text-xs uppercase font-bold">
+<a class="w-full text-center px-5 py-3.5 bg-white hover:bg-black hover:text-white border-2 border-black shadow-brutal brutal-btn-active transition-all flex items-center justify-center gap-2" href="#all-dispatches">
+<span>Explore All 184 Trajectories</span>
+<span>↓</span>
+</a>
+<a class="w-full text-center px-5 py-3.5 bg-safety-orange text-white border-2 border-black shadow-brutal hover:bg-black hover:text-cyber-lime brutal-btn-active transition-all flex items-center justify-center gap-2" href="#signup">
+<span>Join Network to Transmit</span>
+<span>→</span>
+</a>
+</div>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Telemetry & Verified Impact Metrics -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6" data-purpose="telemetry-impact-counters">
+<!-- Counter 1 -->
+<div class="border-3 border-black bg-white p-5 sm:p-6 shadow-brutal flex flex-col justify-between border-4">
+<div>
+<div class="flex items-center justify-between font-mono-brutal text-xs font-bold uppercase mb-2">
+<span class="text-muted-slate">[ TEL_01 // MILESTONES ]</span>
+<span class="w-3 h-3 bg-black"></span>
+</div>
+<div class="text-4xl sm:text-5xl font-extrabold tracking-tighter my-2 font-sans">
+            184
+          </div>
+<div class="font-mono-brutal text-xs uppercase font-semibold text-black tracking-wide">
+            Verified Milestones
+          </div>
+</div>
+<div class="mt-4 pt-3 border-t-2 border-black/10 flex items-center justify-between font-mono-brutal text-[11px]">
+<span>COHORTS '14-'26</span>
+<span class="bg-cyber-lime border border-black px-1.5 py-0.5 font-bold">LIVE FEED</span>
+</div>
+</div>
+<!-- Counter 2 -->
+<div class="border-3 border-black bg-white p-5 sm:p-6 shadow-brutal flex flex-col justify-between border-4">
+<div>
+<div class="flex items-center justify-between font-mono-brutal text-xs font-bold uppercase mb-2">
+<span class="text-muted-slate">[ TEL_02 // VENTURE CAPITAL ]</span>
+<span class="w-3 h-3 bg-safety-orange"></span>
+</div>
+<div class="text-4xl sm:text-5xl font-extrabold tracking-tighter my-2 font-sans">
+            $48.2M
+          </div>
+<div class="font-mono-brutal text-xs uppercase font-semibold text-black tracking-wide">
+            Venture Capital Raised
+          </div>
+</div>
+<div class="mt-4 pt-3 border-t-2 border-black/10 flex items-center justify-between font-mono-brutal text-[11px]">
+<span>2024-2026 AUDIT</span>
+<span class="bg-black text-cyber-lime px-1.5 py-0.5 font-bold">+38% YoY</span>
+</div>
+</div>
+<!-- Counter 3 -->
+<div class="border-3 border-black bg-white p-5 sm:p-6 shadow-brutal flex flex-col justify-between border-4">
+<div>
+<div class="flex items-center justify-between font-mono-brutal text-xs font-bold uppercase mb-2">
+<span class="text-muted-slate">[ TEL_03 // ATTESTATIONS ]</span>
+<span class="w-3 h-3 bg-electric-blue"></span>
+</div>
+<div class="text-4xl sm:text-5xl font-extrabold tracking-tighter my-2 font-sans">
+            1,420
+          </div>
+<div class="font-mono-brutal text-xs uppercase font-semibold text-black tracking-wide">
+            Peer Endorsements
+          </div>
+</div>
+<div class="mt-4 pt-3 border-t-2 border-black/10 flex items-center justify-between font-mono-brutal text-[11px]">
+<span>CRYPTO VOUCHES</span>
+<span class="bg-black text-white px-1.5 py-0.5 font-bold">100% AUDITED</span>
+</div>
+</div>
+<!-- Counter 4 -->
+<div class="border-3 border-black bg-white p-5 sm:p-6 shadow-brutal flex flex-col justify-between border-4">
+<div>
+<div class="flex items-center justify-between font-mono-brutal text-xs font-bold uppercase mb-2">
+<span class="text-muted-slate">[ TEL_04 // CONVERSIONS ]</span>
+<span class="w-3 h-3 bg-black"></span>
+</div>
+<div class="text-4xl sm:text-5xl font-extrabold tracking-tighter my-2 font-sans">
+            94.2%
+          </div>
+<div class="font-mono-brutal text-xs uppercase font-semibold text-black tracking-wide">
+            Referral Conversion Rate
+          </div>
+</div>
+<div class="mt-4 pt-3 border-t-2 border-black/10 flex items-center justify-between font-mono-brutal text-[11px]">
+<span>TALENT LIQUIDITY</span>
+<span class="bg-safety-orange text-white px-1.5 py-0.5 font-bold">HIGH DEMAND</span>
+</div>
+</div>
+</section>
+<!-- END: Telemetry & Verified Impact Metrics -->
+<!-- BEGIN: Pinned Flagship Spotlight (Full-width Bento Anchor) -->
+<section class="border-4 border-black bg-white shadow-brutal-xl overflow-hidden" data-purpose="flagship-pinned-story">
+<!-- Card Bar Header -->
+<div class="bg-black text-white px-5 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3 font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-3">
+<span class="bg-cyber-lime text-black px-2 py-0.5 font-extrabold uppercase">01 PINNED ANCHOR</span>
+<span class="tracking-wide uppercase text-zinc-300">// ANNUAL SPOTLIGHT // COHORT CLUSTER ALPHA</span>
+</div>
+<div class="bg-safety-orange text-white px-2.5 py-1 text-[11px] uppercase tracking-wider font-extrabold border border-white">
+          VENTURE SEED • $10M ROUND CLOSED
+        </div>
+</div>
+<div class="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Story Content Column -->
+<div class="lg:col-span-7 space-y-6">
+<div class="flex flex-wrap items-center gap-2 font-mono-brutal text-xs">
+<span class="bg-black text-white px-2 py-1 font-bold">LEAD ARCHITECTS</span>
+<span class="font-bold text-black underline">Marcus Brody ('18, CEO)</span>
+<span class="text-muted-slate">&amp;</span>
+<span class="font-bold text-black underline">Tara Vance ('20, CTO)</span>
+</div>
+<h2 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight leading-tight font-sans">
+            Kinetix Robotics Raises $10M Seed For Distributed Actuator Firmwares
+          </h2>
+<!-- Founder Direct Quote Callout -->
+<div class="border-l-4 border-black pl-5 py-2 bg-zinc-50 border-y-2 border-r-2 border-black/10">
+<p class="font-mono-brutal text-sm sm:text-base leading-relaxed text-black/90">
+              "From our dorm-room autonomous sandbox to 20 manufacturing facilities across North America. How five alumni engineers leveraged PRO-ALUMN referral pipelines to scale high-concurrency ROS2 robotic firmware and complete a syndicate round led by Founders Fund and Sequoia."
+            </p>
+</div>
+<!-- Metadata Pill Badges -->
+<div class="flex flex-wrap items-center gap-3 font-mono-brutal text-xs font-bold">
+<div class="border-2 border-black px-3 py-1.5 bg-zinc-100">
+              SYNDICATE: <span class="font-semibold">FOUNDERS FUND + SEQUOIA</span>
+</div>
+<div class="border-2 border-black px-3 py-1.5 bg-zinc-100">
+              VALUATION: <span class="font-semibold">$45M POST</span>
+</div>
+<div class="border-2 border-black px-3 py-1.5 bg-cyber-lime">
+              HIRING: <span class="font-bold">4 FIRMWARE FELLOWS</span>
+</div>
+</div>
+<!-- Public Interactive Buttons -->
+<div class="pt-4 flex flex-wrap items-center gap-4 font-mono-brutal text-xs font-bold">
+<button class="px-5 py-3 bg-cyber-lime border-2 border-black shadow-brutal flex items-center gap-2 hover:bg-black hover:text-white brutal-btn-active transition-all">
+<span>👍 ENDORSE DISPATCH (+142)</span>
+</button>
+<button class="px-5 py-3 bg-white border-2 border-black shadow-brutal flex items-center gap-2 hover:bg-black hover:text-white brutal-btn-active transition-all">
+<span>💬 38 COMMENTS &amp; NOTES</span>
+</button>
+<a class="px-5 py-3 bg-black text-white border-2 border-black shadow-brutal hover:bg-safety-orange hover:text-white brutal-btn-active transition-all flex items-center gap-1.5" href="#signup">
+<span>SIGN UP TO REQUEST FOUNDER INTRO</span>
+<span>→</span>
+</a>
+<a class="text-xs font-mono-brutal font-bold underline hover:text-safety-orange ml-1" href="#requisitions">
+              VIEW 4 OPEN REQUISITIONS
+            </a>
+</div>
+</div>
+<!-- Technical Schematic Blueprint Box -->
+<div class="lg:col-span-5 border-3 border-black bg-zinc-100 p-5 shadow-brutal border-4" data-purpose="technical-schematic-diagram">
+<div class="flex items-center justify-between pb-3 border-b-2 border-black font-mono-brutal text-xs font-bold uppercase">
+<span>SCHEMATIC // ACTUATOR TOPOLOGY V4.2</span>
+<span class="bg-safety-orange text-white px-2 py-0.5 text-[10px]">CAN-BUS / ROS2</span>
+</div>
+<!-- Visual Architecture Schematic Frame -->
+<div class="my-4 bg-white border-2 border-black p-4 font-mono-brutal text-[11px] space-y-3">
+<div class="border border-dashed border-black p-3 bg-zinc-50">
+<div class="font-bold text-xs uppercase mb-1 flex items-center justify-between">
+<span>[NODE: CONTROLLER]</span>
+<span class="w-2 h-2 bg-emerald-500"></span>
+</div>
+<p class="text-zinc-600">STM32H7 Core // Dual Cortex-M7 @ 480MHz</p>
+<div class="mt-2 text-[10px] bg-black text-white px-2 py-0.5 inline-block font-bold">
+                LATENCY: 0.12ms
+              </div>
+</div>
+<!-- Interconnect Signal Line -->
+<div class="text-center font-bold text-xs text-zinc-400">
+              ↓ [HIGH-SPEED ROS2 / DDS LINK] ↓
+            </div>
+<div class="grid grid-cols-2 gap-2">
+<div class="border border-black p-2 bg-zinc-50">
+<div class="font-bold text-[10px] uppercase">ACTUATOR CLUSTER A</div>
+<div class="text-zinc-500 text-[10px]">Torque: 45Nm (Closed-loop)</div>
+</div>
+<div class="border border-black p-2 bg-cyber-lime/40">
+<div class="font-bold text-[10px] uppercase">ACTUATOR CLUSTER B</div>
+<div class="text-zinc-700 text-[10px]">Firmware: PRO-RT-09</div>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t-2 border-black/10 flex items-center justify-between font-mono-brutal text-[10px] text-zinc-600 font-bold">
+<span>REPO: github/kinetix-firmware</span>
+<span class="bg-zinc-200 border border-black px-1.5 py-0.5 font-mono">HASH: #8F0A2E</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Pinned Flagship Spotlight -->
+<!-- BEGIN: Filter Protocol & Live Index Bar -->
+<section class="space-y-4" data-purpose="filtering-and-index-system">
+<!-- Primary Category Pills -->
+<div class="flex flex-wrap items-center gap-2 font-mono-brutal text-xs font-bold" data-purpose="category-filter-bar">
+<button class="px-4 py-2.5 bg-black text-white border-2 border-black shadow-brutal-sm hover:opacity-90">
+          ALL DISPATCHES (184)
+        </button>
+<button class="px-4 py-2.5 bg-white text-black border-2 border-black shadow-brutal-sm hover:bg-black hover:text-white transition-all">
+          VENTURE &amp; STARTUPS (42)
+        </button>
+<button class="px-4 py-2.5 bg-white text-black border-2 border-black shadow-brutal-sm hover:bg-black hover:text-white transition-all">
+          CAREER PIVOTS &amp; PROMOTIONS (68)
+        </button>
+<button class="px-4 py-2.5 bg-white text-black border-2 border-black shadow-brutal-sm hover:bg-black hover:text-white transition-all">
+          RESEARCH &amp; PAPERS (34)
+        </button>
+<button class="px-4 py-2.5 bg-white text-black border-2 border-black shadow-brutal-sm hover:bg-black hover:text-white transition-all">
+          PATENTS &amp; ARCHITECTURE (24)
+        </button>
+<button class="px-4 py-2.5 bg-white text-black border-2 border-black shadow-brutal-sm hover:bg-black hover:text-white transition-all">
+          FELLOW AWARDS (16)
+        </button>
+</div>
+<!-- Cohort and Regional Topology Filter Sub-bar -->
+<div class="border-2 border-black bg-white p-3 shadow-brutal flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-mono-brutal text-xs">
+<!-- Topology selector -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-bold text-muted-slate uppercase">TOPOLOGY:</span>
+<button class="px-2.5 py-1 bg-cyber-lime border border-black font-bold">ALL</button>
+<button class="px-2.5 py-1 bg-zinc-100 hover:bg-black hover:text-white border border-black font-bold">SF</button>
+<button class="px-2.5 py-1 bg-zinc-100 hover:bg-black hover:text-white border border-black font-bold">NYC</button>
+<button class="px-2.5 py-1 bg-zinc-100 hover:bg-black hover:text-white border border-black font-bold">BLR</button>
+<button class="px-2.5 py-1 bg-zinc-100 hover:bg-black hover:text-white border border-black font-bold">REMOTE</button>
+</div>
+<!-- Order & Index metadata -->
+<div class="flex items-center gap-3 text-[11px] font-bold">
+<span class="text-muted-slate uppercase">ORDER BY:</span>
+<span class="bg-black text-white px-2 py-0.5">MOST UPVOTED</span>
+<span class="text-zinc-400">/</span>
+<a class="hover:underline" href="#">LATEST DISPATCHES</a>
+<span class="text-zinc-400">/</span>
+<a class="hover:underline" href="#">HIGHEST IMPACT SCORE</a>
+</div>
+</div>
+<!-- Public Search Input Container -->
+<div class="relative" data-purpose="spotlight-search-field">
+<input class="w-full bg-white border-3 border-black p-3.5 pl-4 text-xs font-mono-brutal font-bold placeholder:text-zinc-400 focus:ring-0 focus:border-black shadow-brutal border-4" placeholder="SEARCH BY FELLOW NAME, COMPANY (SNOWFLAKE, GOOGLE, STRIPE), OR RESEARCH TOKEN..." type="text">
+<div class="absolute right-3.5 top-3.5 font-mono-brutal text-xs font-bold bg-cyber-lime border border-black px-2 py-0.5">
+          ⌘K SEARCH
+        </div>
+</div>
+</section>
+<!-- END: Filter Protocol & Live Index Bar -->
+<!-- BEGIN: High-Impact Showcase Story Grid (2-Column Brutalist Layout) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8" data-purpose="showcase-stories-grid">
+<!-- STORY CARD 01: SARAH JENKINS (SNOWFLAKE) -->
+<article class="border-4 border-black bg-white p-6 sm:p-7 shadow-brutal flex flex-col justify-between" data-purpose="story-card-career">
+<div>
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-black font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<span class="bg-black text-white px-2 py-0.5">02</span>
+<span class="bg-cyber-lime border border-black px-2 py-0.5 uppercase">CAREER ASCENT</span>
+<span class="text-muted-slate">COHORT '16 · SAN MATEO</span>
+</div>
+<span class="border border-black bg-zinc-100 px-2 py-0.5 font-mono text-[11px] uppercase">SNOWFLAKE</span>
+</div>
+<!-- Fellow Identity & Role -->
+<div class="flex items-start gap-4 mb-4">
+<div class="w-14 h-14 bg-cyber-lime border-3 border-black shadow-brutal-sm flex items-center justify-center font-extrabold text-xl font-mono shrink-0 border-2">
+              SJ
+            </div>
+<div>
+<h3 class="text-2xl font-extrabold uppercase tracking-tight leading-tight hover:underline cursor-pointer">
+                Sarah Jenkins ('16) Elevated To Principal Architect At Snowflake Compute
+              </h3>
+<p class="font-mono-brutal text-xs text-muted-slate mt-1">
+                Core Database Storage Group · 8.5 Years Alumni Tenor
+              </p>
+</div>
+</div>
+<!-- Story Text Content -->
+<div class="bg-zinc-50 border-2 border-black/20 p-4 font-mono-brutal text-xs sm:text-sm leading-relaxed mb-5">
+            "Author of 4 core patents on columnar partitioning algorithms and SIMD predicate pushdown. Thrilled to announce our team is scaling fast: I've opened 5 dedicated internal referral slots for verified university and master's graduates."
+          </div>
+<!-- Impact Metrics Strip -->
+<div class="grid grid-cols-3 gap-2 font-mono-brutal text-xs font-bold mb-6">
+<div class="border-2 border-black p-2 bg-amber-50">
+<div class="text-[10px] text-zinc-500 uppercase">REFERRAL SLOTS:</div>
+<div class="text-sm font-extrabold text-black">5 OPEN</div>
+</div>
+<div class="border-2 border-black p-2 bg-zinc-50">
+<div class="text-[10px] text-zinc-500 uppercase">LEVEL:</div>
+<div class="text-xs font-bold text-black truncate">PRINCIPAL IC8</div>
+</div>
+<div class="border-2 border-black p-2 bg-electric-blue text-white">
+<div class="text-[10px] text-zinc-200 uppercase">IMPACT:</div>
+<div class="text-sm font-extrabold">98/100</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Strip -->
+<div class="pt-4 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>👍</span>
+<span>89 UPVOTES</span>
+</button>
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>💬 19</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<a class="px-3.5 py-1.5 bg-safety-orange text-white border-2 border-black shadow-brutal-sm hover:bg-black transition-all" href="#signup">
+              ASK FOR REFERRAL
+            </a>
+<button class="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all">
+              SEND KUDOS
+            </button>
+</div>
+</div>
+</article>
+<!-- STORY CARD 02: DAVID CHEN (YC W26) -->
+<article class="border-4 border-black bg-white p-6 sm:p-7 shadow-brutal flex flex-col justify-between" data-purpose="story-card-founder">
+<div>
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-black font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<span class="bg-black text-white px-2 py-0.5">03</span>
+<span class="bg-safety-orange text-white px-2 py-0.5 uppercase">FOUNDER SPOTLIGHT</span>
+<span class="text-muted-slate">COHORT '17 · PALO ALTO</span>
+</div>
+<span class="border border-black bg-cyber-lime px-2 py-0.5 font-mono text-[11px] uppercase font-bold">YC W26 BATCH</span>
+</div>
+<!-- Fellow Identity & Role -->
+<div class="flex items-start gap-4 mb-4">
+<div class="w-14 h-14 bg-safety-orange text-white border-3 border-black shadow-brutal-sm flex items-center justify-center font-extrabold text-xl font-mono shrink-0 border-2">
+              DC
+            </div>
+<div>
+<h3 class="text-2xl font-extrabold uppercase tracking-tight leading-tight hover:underline cursor-pointer">
+                David Chen ('17) Co-Founds Neuromorphic Labs (YC W26)
+              </h3>
+<p class="font-mono-brutal text-xs text-muted-slate mt-1">
+                Pre-Seed Round: $3.2M · Khosla Ventures &amp; BoxGroup
+              </p>
+</div>
+</div>
+<!-- Story Text Content -->
+<div class="bg-zinc-50 border-2 border-black/20 p-4 font-mono-brutal text-xs sm:text-sm leading-relaxed mb-5">
+            "Closing $3.2M pre-seed to fabricate sub-milliwatt event-driven edge inference silicon. We are actively hiring 2 founding kernel engineers from our engineering alumni base who understand RISC-V and analog accelerators."
+          </div>
+<!-- Impact Metrics Strip -->
+<div class="grid grid-cols-3 gap-2 font-mono-brutal text-xs font-bold mb-6">
+<div class="border-2 border-black p-2 bg-zinc-50">
+<div class="text-[10px] text-zinc-500 uppercase">STACK:</div>
+<div class="text-xs font-bold text-black truncate">RISC-V / C++20</div>
+</div>
+<div class="border-2 border-black p-2 bg-zinc-50">
+<div class="text-[10px] text-zinc-500 uppercase">EQUITY:</div>
+<div class="text-sm font-extrabold text-black">1.5 - 3.0%</div>
+</div>
+<div class="border-2 border-black p-2 bg-safety-orange text-white">
+<div class="text-[10px] text-zinc-200 uppercase">IMPACT:</div>
+<div class="text-sm font-extrabold">95/100</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Strip -->
+<div class="pt-4 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>👍</span>
+<span>114 UPVOTES</span>
+</button>
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>💬 24</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<a class="px-3.5 py-1.5 bg-black text-white border-2 border-black shadow-brutal-sm hover:bg-safety-orange transition-all" href="#signup">
+              BOOK FLASH INTRO
+            </a>
+<button class="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all">
+              VOUCH / ENDORSE
+            </button>
+</div>
+</div>
+</article>
+<!-- STORY CARD 03: ELENA ROSTOVA (RESEARCH / CRYPTO) -->
+<article class="border-4 border-black bg-white p-6 sm:p-7 shadow-brutal flex flex-col justify-between" data-purpose="story-card-research">
+<div>
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-black font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<span class="bg-black text-white px-2 py-0.5">04</span>
+<span class="bg-electric-blue text-white px-2 py-0.5 uppercase">RESEARCH BREAKTHROUGH</span>
+<span class="text-muted-slate">COHORT '21 · STANFORD</span>
+</div>
+<span class="border border-black bg-zinc-100 px-2 py-0.5 font-mono text-[11px] uppercase font-bold">IEEE S&amp;P 2026</span>
+</div>
+<!-- Fellow Identity & Role -->
+<div class="flex items-start gap-4 mb-4">
+<div class="w-14 h-14 bg-electric-blue text-white border-3 border-black shadow-brutal-sm flex items-center justify-center font-extrabold text-xl font-mono shrink-0 border-2">
+              ER
+            </div>
+<div>
+<h3 class="text-2xl font-extrabold uppercase tracking-tight leading-tight hover:underline cursor-pointer">
+                Elena Rostova ('21) Publishes FIPS 140-3 Post-Quantum Cryptography Paper
+              </h3>
+<p class="font-mono-brutal text-xs text-muted-slate mt-1">
+                Dept of Applied Mathematics · Zero-Knowledge Lattice Verifiers
+              </p>
+</div>
+</div>
+<!-- Story Text Content -->
+<div class="bg-zinc-50 border-2 border-black/20 p-4 font-mono-brutal text-xs sm:text-sm leading-relaxed mb-5">
+            "Formal machine-checked verification of lattice-based key encapsulation mechanisms under zk-SNARK constraints. The entire Coq and Rust verification pipeline has been open-sourced for peer scrutiny."
+          </div>
+<!-- Impact Metrics Strip -->
+<div class="grid grid-cols-3 gap-2 font-mono-brutal text-xs font-bold mb-6">
+<div class="border-2 border-black p-2 bg-zinc-50">
+<div class="text-[10px] text-zinc-500 uppercase">ARXIV:</div>
+<div class="text-xs font-bold text-black truncate">2503.11692</div>
+</div>
+<div class="border-2 border-black p-2 bg-zinc-50">
+<div class="text-[10px] text-zinc-500 uppercase">LICENSE:</div>
+<div class="text-xs font-bold text-black">MIT / APACHE-2</div>
+</div>
+<div class="border-2 border-black p-2 bg-cyber-lime text-black">
+<div class="text-[10px] text-zinc-700 uppercase">IMPACT:</div>
+<div class="text-sm font-extrabold">94/100</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Strip -->
+<div class="pt-4 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>👍</span>
+<span>76 UPVOTES</span>
+</button>
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>💬 14</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-1.5 bg-electric-blue text-white border-2 border-black shadow-brutal-sm hover:bg-black transition-all">
+              READ PAPER PDF →
+            </button>
+<button class="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all">
+              PEER REVIEW NOTES
+            </button>
+</div>
+</div>
+</article>
+<!-- STORY CARD 04: PRATEEK SHAH (STRIPE LEDGER) -->
+<article class="border-4 border-black bg-white p-6 sm:p-7 shadow-brutal flex flex-col justify-between" data-purpose="story-card-infrastructure">
+<div>
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-black font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<span class="bg-black text-white px-2 py-0.5">05</span>
+<span class="bg-zinc-800 text-white px-2 py-0.5 uppercase">INFRASTRUCTURE SCALE</span>
+<span class="text-muted-slate">COHORT '19 · SEATTLE</span>
+</div>
+<span class="border border-black bg-zinc-100 px-2 py-0.5 font-mono text-[11px] uppercase font-bold">STRIPE LEDGER</span>
+</div>
+<!-- Fellow Identity & Role -->
+<div class="flex items-start gap-4 mb-4">
+<div class="w-14 h-14 bg-black text-white border-3 border-black shadow-brutal-sm flex items-center justify-center font-extrabold text-xl font-mono shrink-0 border-2">
+              PS
+            </div>
+<div>
+<h3 class="text-2xl font-extrabold uppercase tracking-tight leading-tight hover:underline cursor-pointer">
+                Prateek Shah ('19) Leads Stripe Core Ledger Migration To Spanner
+              </h3>
+<p class="font-mono-brutal text-xs text-muted-slate mt-1">
+                Staff Systems Architect · Financial Infrastructure
+              </p>
+</div>
+</div>
+<!-- Story Text Content -->
+<div class="bg-zinc-50 border-2 border-black/20 p-4 font-mono-brutal text-xs sm:text-sm leading-relaxed mb-5">
+            "Over 18 months, our squad safely re-architected and live-migrated 80,000 tx/sec with strict serializability and zero downtime. Documenting the post-mortem and distributed locking tradeoffs on my alumni blog."
+          </div>
+<!-- Impact Metrics Strip -->
+<div class="grid grid-cols-3 gap-2 font-mono-brutal text-xs font-bold mb-6">
+<div class="border-2 border-black p-2 bg-zinc-50">
+<div class="text-[10px] text-zinc-500 uppercase">QPS:</div>
+<div class="text-xs font-bold text-black truncate">80,000 / SEC</div>
+</div>
+<div class="border-2 border-black p-2 bg-zinc-50">
+<div class="text-[10px] text-zinc-500 uppercase">AVAILABILITY:</div>
+<div class="text-xs font-bold text-black">99.9999%</div>
+</div>
+<div class="border-2 border-black p-2 bg-electric-blue text-white">
+<div class="text-[10px] text-zinc-200 uppercase">IMPACT:</div>
+<div class="text-sm font-extrabold">99/100</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Strip -->
+<div class="pt-4 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>👍</span>
+<span>102 UPVOTES</span>
+</button>
+<button class="px-3 py-1.5 border border-black bg-zinc-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-brutal-sm">
+<span>💬 31</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<a class="px-3.5 py-1.5 bg-black text-white border-2 border-black shadow-brutal-sm hover:bg-cyber-lime hover:text-black transition-all" href="#signup">
+              REQUEST 1:1 MENTORSHIP
+            </a>
+<button class="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all">
+              VIEW TIMELINE
+            </button>
+</div>
+</div>
+</article>
+</section>
+<!-- END: High-Impact Showcase Story Grid -->
+<!-- BEGIN: Protocol Technical Verification Infobox -->
+<section class="border-4 border-black bg-white p-6 sm:p-8 shadow-brutal-lg" data-purpose="cryptographic-pipeline-box">
+<div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b-2 border-black font-mono-brutal text-xs font-bold">
+<div class="flex items-center gap-2">
+<span class="bg-black text-white px-2 py-0.5">SYS_SPEC // RFC-088</span>
+<span class="uppercase">PEER ATTESTATION PROTOCOL &amp; MILESTONE VERIFICATION PIPELINE</span>
+</div>
+<span class="bg-cyber-lime border border-black px-2 py-0.5 text-[11px]">HASH ENCLAVE: SHA-256 / ED25519-STAMP</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono-brutal text-xs">
+<div class="border-2 border-black p-4 bg-zinc-50 space-y-2">
+<div class="text-safety-orange font-bold text-[11px] uppercase">01 // CRYPTOGRAPHIC VOUCHING</div>
+<h4 class="font-extrabold text-sm uppercase text-black font-sans">CONSENSUS ATTESTATIONS</h4>
+<p class="text-zinc-600 leading-relaxed text-[11px]">
+            Milestones require minimum 3 signatures from verified alumni within the recipient's accredited faculty or venture syndicate prior to broadcast on the primary network wall.
+          </p>
+<div class="pt-2 text-[10px] text-zinc-500 font-bold border-t border-black/10">THRESHOLD: 3 SIGNATURES (ED25519)</div>
+</div>
+<div class="border-2 border-black p-4 bg-zinc-50 space-y-2">
+<div class="text-electric-blue font-bold text-[11px] uppercase">02 // ZERO-NOISE MODERATION</div>
+<h4 class="font-extrabold text-sm uppercase text-black font-sans">PGVECTOR SEMANTIC INDEXING</h4>
+<p class="text-zinc-600 leading-relaxed text-[11px]">
+            Dispatches are vector-ranked against alumni career trajectories and domain expertise to prevent corporate spam and ensure high signal-to-noise educational exchanges.
+          </p>
+<div class="pt-2 text-[10px] text-zinc-500 font-bold border-t border-black/10">COSINE SIMILARITY FILTER: &gt; 0.82</div>
+</div>
+<div class="border-2 border-black p-4 bg-zinc-50 space-y-2">
+<div class="text-black font-bold text-[11px] uppercase">03 // TALENT LIQUIDITY DROPS</div>
+<h4 class="font-extrabold text-sm uppercase text-black font-sans">+100 ALUMN-CR REWARD</h4>
+<p class="text-zinc-600 leading-relaxed text-[11px]">
+            Alumni who post validated hiring requests or offer active 1:1 mentorship slots instantly earn peer credit rep, unlocking private syndicate calls and deal rooms.
+          </p>
+<div class="pt-2 text-[10px] text-zinc-500 font-bold border-t border-black/10">REPUTATION MULTIPLIER: 1.45X</div>
+</div>
+</div>
+<!-- Live Infrastructure Footnote -->
+<div class="mt-6 pt-4 border-t-2 border-dashed border-black/30 flex flex-wrap items-center justify-between gap-3 font-mono-brutal text-[11px] text-zinc-600 font-bold">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2 h-2 bg-emerald-500"></span>
+<span>POSTGRES 16.2 / PGVECTOR 0.6.0 COMPILED</span>
+</div>
+<div class="bg-black text-white px-2 py-0.5">SECURITY ENCLAVE: ACTIVE [FIPS 140-3]</div>
+</div>
+</section>
+<!-- END: Protocol Technical Verification Infobox -->
+<!-- BEGIN: Public Call-To-Action Conversion Banner -->
+<section class="border-4 border-black bg-cyber-lime p-8 sm:p-12 shadow-brutal-xl text-black" data-purpose="conversion-cta-banner">
+<div class="max-w-4xl mx-auto text-center space-y-6">
+<div class="inline-block bg-black text-white px-3 py-1 font-mono-brutal text-xs font-bold uppercase tracking-wider">
+          UNRESTRICTED MEMBERSHIP ACCESS // ADMISSION ROSTER 2026
+        </div>
+<h2 class="text-4xl sm:text-6xl font-extrabold uppercase tracking-tight font-sans leading-none">
+          Ready To Accelerate Your Career Trajectory?
+        </h2>
+<p class="font-mono-brutal text-sm sm:text-base max-w-2xl mx-auto font-medium text-black/85">
+          Connect with 1,200+ verified alumni fellows, request vetted internal referrals at tier-one tech institutions, and publish your breakthroughs to accredited peers.
+        </p>
+<div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-mono-brutal text-xs uppercase font-bold">
+<a class="w-full sm:w-auto px-8 py-4 bg-safety-orange text-white border-3 border-black shadow-brutal hover:bg-black hover:text-cyber-lime brutal-btn-active transition-all border-2" href="#signup">
+            Create Free Fellow Account →
+          </a>
+<a class="w-full sm:w-auto px-8 py-4 bg-white text-black border-3 border-black shadow-brutal hover:bg-black hover:text-white brutal-btn-active transition-all border-2" href="#directory">
+            Explore Alumni Directory
+          </a>
+</div>
+</div>
+</section>
+<!-- END: Public Call-To-Action Conversion Banner -->
+</main>
+<!-- END: Main Page Content -->
+<!-- BEGIN: Public Academic Broadsheet Footer -->
+<footer class="mt-16 bg-white border-t-4 border-black font-mono-brutal text-xs" data-purpose="site-footer">
+<!-- Top Row Directory Grid -->
+<div class="max-w-[1400px] mx-auto px-4 sm:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
+<!-- Brand Colophon -->
+<div class="lg:col-span-4 space-y-4">
+<div class="flex items-center gap-2">
+<span class="bg-cyber-lime border-2 border-black font-mono-brutal font-bold text-lg px-2 py-0.5">/////</span>
+<span class="font-extrabold text-xl tracking-tighter uppercase font-sans">PRO-ALUMN</span>
+</div>
+<p class="text-zinc-600 text-xs leading-relaxed max-w-sm">
+          The collegiate broadsheet index and intellectual network for verified alumni, researchers, and professional fellows across accredited faculties.
+        </p>
+<div class="inline-block border-2 border-black bg-cyber-lime/40 px-2.5 py-1 text-[11px] font-bold">
+          SYS.INFRA: GOOGLE CLOUD + PGVECTOR
+        </div>
+</div>
+<!-- Sitemap Index Column -->
+<div class="lg:col-span-3 space-y-3">
+<div class="font-bold text-black uppercase border-b-2 border-black pb-1.5 text-xs">
+          [ INDEX DIRECTORY // SITEMAP ]
+        </div>
+<ul class="space-y-1.5 text-[11px] font-semibold">
+<li><a class="hover:underline" href="#faculty">01. Faculty &amp; Alumni Directory →</a></li>
+<li><a class="hover:underline" href="#dispatches">02. Dispatches &amp; Opportunities →</a></li>
+<li><a class="hover:underline" href="#fellowships">03. Fellowships &amp; Mentorship →</a></li>
+<li><a class="hover:underline" href="#gazette">04. Gazette &amp; Bulletins →</a></li>
+<li><a class="hover:underline" href="#research">05. Advanced Research Modules →</a></li>
+</ul>
+</div>
+<!-- Legal & Governance Column -->
+<div class="lg:col-span-3 space-y-3">
+<div class="font-bold text-black uppercase border-b-2 border-black pb-1.5 text-xs">
+          [ PROTOCOLS // LEGAL &amp; GOVERNANCE ]
+        </div>
+<ul class="space-y-1.5 text-[11px] text-zinc-700">
+<li><a class="hover:underline" href="#charter">Academic Charter</a></li>
+<li><a class="hover:underline" href="#privacy">Cryptographic Privacy Ledger</a></li>
+<li><a class="hover:underline" href="#terms">Terms of Affiliation</a></li>
+<li><a class="hover:underline" href="#ethics">Peer Review Ethics</a></li>
+<li><a class="hover:underline" href="#governance">Vector Index Governance</a></li>
+</ul>
+</div>
+<!-- Telemetry Status Column -->
+<div class="lg:col-span-2 space-y-3">
+<div class="font-bold text-black uppercase border-b-2 border-black pb-1.5 text-xs">
+          [ TELEMETRY ]
+        </div>
+<div class="bg-zinc-100 border border-black p-2.5 space-y-1.5 text-[10px]">
+<div class="flex items-center justify-between">
+<span class="text-zinc-500">NODE:</span>
+<span class="font-bold bg-black text-cyber-lime px-1">ACTIVE-01</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-zinc-500">LATENCY:</span>
+<span class="font-bold">14MS</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-zinc-500">REGISTRY:</span>
+<span class="font-bold">VERIFIED</span>
+</div>
+</div>
+<div class="text-[10px] text-zinc-500 pt-1">
+          Accreditation: Office of Academic Records &amp; University Alumni Registries.
+        </div>
+</div>
+</div>
+<!-- Bottom Copyright & Edition Bar -->
+<div class="border-t-2 border-black bg-zinc-100 px-4 sm:px-8 py-3.5">
+<div class="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-bold">
+<div>
+          © 2026 PRO-ALUMN CONSORTIUM. ALL RIGHTS RESERVED. PRINTED DIGITALLY.
+        </div>
+<div class="flex items-center gap-3">
+<span class="bg-cyber-lime border border-black px-2 py-0.5">EDITION 14.8.2</span>
+<span>ENCRYPTED REPOSITORY</span>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: Public Academic Broadsheet Footer -->
+</body></html>

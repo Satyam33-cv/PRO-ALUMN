@@ -15,6 +15,7 @@
     "prisma:deploy": "prisma migrate deploy --schema ./prisma/schema.prisma"
   },
   "dependencies": {
+    "@apollo/server": "^5.5.1",
     "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.48.1",
     "bcryptjs": "^3.0.3",
@@ -23,6 +24,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-rate-limit": "^8.6.2",
+    "graphql": "^16.14.2",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.11.0",

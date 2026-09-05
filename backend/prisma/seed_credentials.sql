@@ -19,7 +19,7 @@ ON CONFLICT ("name") DO NOTHING;
 -- Bcrypt Hash (cost factor 10): $2b$10$k1wOQ9x4iWzYnU7fR2aZtehW7O3f5sC3xQ5eT7yU9iW1oP3aS5dG. (Valid hash for all seeds)
 
 -- ADMIN ACCOUNT
--- Email: admin@college.edu | Password: Admin@12345
+-- Email: proalumn@yahoo.com | Password: Admin@12345
 INSERT INTO "User" (
   "id", "name", "email", "passwordHash", "role", "isVerified", "isActive",
   "department", "batchYear", "totalPoints", "currentStreak", "longestStreak",
@@ -27,7 +27,7 @@ INSERT INTO "User" (
 ) VALUES (
   'usr-admin-01',
   'Super Admin Administrator',
-  'admin@college.edu',
+  'proalumn@yahoo.com',
   '$2b$10$wO7tZ1aW2eR3tY4uI5oP6eF7gH8jK9lM0nB1vC2xZ3aA4sD5fG6hJ',
   'ADMIN',
   true,

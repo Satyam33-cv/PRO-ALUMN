@@ -467,20 +467,24 @@ export const apiClient = {
     },
   },
   notifications: {
-    list: async () => {
-      return await apiFetch<{ notifications: Record<string, unknown>[]; unreadCount: number }>({
+    list: async (params?: { page?: number; limit?: number }) => {
+      return await apiFetch<{ notifications: Record<string, unknown>[]; unreadCount: number; pagination?: Record<string, unknown> }>({
         method: "GET",
         url: "/notifications",
+        params,
       });
     },
+    unreadCount: async () => {
+      return await apiFetch<{ count: number }>({ method: "GET", url: "/notifications/unread-count" });
+    },
     readAll: async () => {
-      return await apiFetch<{ message: string }>({
+      return await apiFetch<{ message?: string; updated?: number }>({
         method: "PATCH",
         url: "/notifications/read-all",
       });
     },
     markRead: async (id: string) => {
-      return await apiFetch<{ message: string }>({
+      return await apiFetch<{ message?: string; success?: boolean }>({
         method: "PATCH",
         url: `/notifications/${id}/read`,
       });
@@ -526,6 +530,20 @@ export const apiClient = {
     },
     updateStatus: async (id: string, status: string): Promise<{ ticket: Record<string, unknown>; message: string }> => {
       return await apiFetch<{ ticket: Record<string, unknown>; message: string }>({ method: "PATCH", url: `/support/${id}/status`, data: { status } });
+    }
+  },
+  giving: {
+    campaigns: async (params?: { category?: string; status?: string; page?: number; limit?: number }) => {
+      return await apiFetch<{ success: boolean; data: any[]; meta: any }>({ method: "GET", url: "/giving/campaigns", params });
+    },
+    campaignDetails: async (id: string) => {
+      return await apiFetch<{ success: boolean; data: any }>({ method: "GET", url: `/giving/campaigns/${id}` });
+    },
+    pledge: async (data: { campaignId: string; amount: number; isAnonymous?: boolean; donorNote?: string }) => {
+      return await apiFetch<{ success: boolean; message: string; data: any }>({ method: "POST", url: "/giving/pledge", data });
+    },
+    createCampaign: async (data: { title: string; description: string; category?: string; targetAmount: number; coverImage?: string; endDate?: string }) => {
+      return await apiFetch<{ success: boolean; data: any }>({ method: "POST", url: "/giving/campaigns", data });
     }
   }
 };

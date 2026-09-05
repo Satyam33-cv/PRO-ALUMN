@@ -38,27 +38,3 @@ if (typeof window !== "undefined") {
   if (typeof (window as any).Request === "undefined") (window as any).Request = (global as any).Request;
   if (typeof (window as any).Headers === "undefined") (window as any).Headers = (global as any).Headers;
 }
-
-jest.mock("@/lib/firebase", () => ({
-  auth: { currentUser: null },
-  db: {},
-  googleAuthProvider: { addScope: jest.fn() },
-}));
-
-jest.mock("firebase/auth", () => ({
-  getAuth: jest.fn(),
-  signInWithPopup: jest.fn(),
-  signOut: jest.fn(),
-  onAuthStateChanged: jest.fn(() => () => {}),
-  GoogleAuthProvider: Object.assign(
-    jest.fn().mockImplementation(() => ({ addScope: jest.fn() })),
-    { credentialFromResult: jest.fn() }
-  ),
-}));
-
-jest.mock("firebase/firestore", () => ({
-  getFirestore: jest.fn(),
-  doc: jest.fn(),
-  getDoc: jest.fn(() => Promise.resolve({ exists: () => false, data: () => ({}) })),
-  setDoc: jest.fn(() => Promise.resolve()),
-}));

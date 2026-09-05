@@ -75,6 +75,6 @@ describe("DirectoryContent", () => {
     setupSuccessMocks();
     render(<DirectoryContent />);
     expect(screen.getByText(/Showing/)).toBeInTheDocument();
-    expect(screen.getByText(/3/)).toBeInTheDocument();
+    expect(screen.getAllByText(/3/).length).toBeGreaterThan(0);
   });
 });

@@ -1,0 +1,897 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@100..900&amp;family=Space+Mono:wght@100..900&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-secondary-fixed":"#390c00","error-container":"#ffdad6","on-secondary-fixed-variant":"#822700","tertiary-fixed-dim":"#b7c4ff","on-surface-variant":"#444748","tertiary":"#000000","inverse-surface":"#31312d","primary":"#000000","surface-cream":"#F7F4EE","on-secondary-container":"#fffbff","border-muted":"#D5CEBF","error":"#ba1a1a","background":"#fcf9f3","secondary":"#a63500","outline-variant":"#c4c7c7","on-error":"#ffffff","on-primary":"#ffffff","on-tertiary-fixed-variant":"#0039b5","on-tertiary-fixed":"#001551","border-charcoal":"#1A1A1A","surface-variant":"#e5e2dc","surface-container-lowest":"#ffffff","primary-fixed-dim":"#c8c6c5","on-primary-container":"#858383","inverse-on-surface":"#f3f0ea","on-primary-fixed":"#1c1b1b","surface-container-highest":"#e5e2dc","primary-container":"#1c1b1b","on-primary-fixed-variant":"#474746","primary-fixed":"#e5e2e1","on-secondary":"#ffffff","surface-tint":"#5f5e5e","surface-card":"#FFFFFF","surface-dim":"#dcdad4","tertiary-fixed":"#dce1ff","text-primary":"#1A1A1A","secondary-fixed":"#ffdbcf","outline":"#747878","on-background":"#1c1c18","surface-container-low":"#f6f3ed","on-tertiary-container":"#547aff","on-surface":"#1c1c18","led-active":"#00E676","secondary-fixed-dim":"#ffb59c","text-secondary":"#635F57","accent-citron":"#D9E021","surface-container":"#f0eee8","on-error-container":"#93000a","text-muted":"#8F8A7E","inverse-primary":"#c8c6c5","surface-container-high":"#ebe8e2","surface-bright":"#fcf9f3","accent-cobalt":"#1D4ED8","surface-cream-subtle":"#EFECE4","on-tertiary":"#ffffff","secondary-container":"#d04400","accent-persimmon":"#FF5500","surface":"#fcf9f3","tertiary-container":"#001551"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"grid-gutter":"1.25rem","3xl":"4rem","2xl":"3rem","xs":"0.5rem","grid-margin-desktop":"2.5rem","sm":"0.75rem","md":"1rem","lg":"1.5rem","grid-margin-mobile":"1rem","xl":"2rem","2xs":"0.25rem"},"fontFamily":{"tag-index":["Space Mono"],"headline-lg":["Space Grotesk"],"label-caps":["Space Grotesk"],"headline-lg-mobile":["Space Grotesk"],"display-hero-mobile":["Space Grotesk"],"body-md":["Space Grotesk"],"headline-sm":["Space Grotesk"],"display-hero":["Space Grotesk"],"body-sm":["Space Grotesk"],"headline-md":["Space Grotesk"],"body-lg":["Space Grotesk"],"label-mono":["Space Mono"]},"fontSize":{"tag-index":["11px",{"lineHeight":"11px","letterSpacing":"0.06em","fontWeight":"700"}],"headline-lg":["36px",{"lineHeight":"42px","letterSpacing":"-0.03em","fontWeight":"700"}],"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"700"}],"display-hero-mobile":["38px",{"lineHeight":"42px","letterSpacing":"-0.03em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-hero":["64px",{"lineHeight":"68px","letterSpacing":"-0.04em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"30px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"label-mono":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-cream z-50 flex flex-col justify-between shadow-[2px_0_0_#1A1A1A]"><div class="flex flex-col"><div class="h-16 px-lg flex items-center justify-between bg-surface-cream shadow-[0_2px_0_#1A1A1A]"><div class="flex items-center gap-xs"><span class="flex items-center justify-center w-8 h-8 bg-primary text-on-primary font-tag-index text-tag-index shadow-[2px_2px_0_#1A1A1A]">PA</span><div class="flex flex-col"><span class="font-headline-sm text-headline-sm tracking-tight text-text-primary leading-none">PRO-ALUMN</span><span class="font-label-mono text-label-mono text-text-muted">NETWORK CORE v2.4</span></div></div><span class="font-tag-index text-tag-index px-2xs py-2xs bg-surface-variant text-text-primary border border-border-charcoal">SYS.OK</span></div><div class="px-lg pt-lg pb-xs flex items-center justify-between"><span class="font-label-caps text-label-caps uppercase text-text-muted">INDEX PROTOCOLS</span><span class="font-label-mono text-label-mono text-text-muted">[07]</span></div><nav class="flex flex-col px-md gap-xs" data-active-classes="bg-primary text-on-primary shadow-[2px_2px_0_#1A1A1A]"><a aria-current="page" class="flex items-center justify-between px-md py-xs font-body-sm transition-all bg-primary text-on-primary shadow-[2px_2px_0_#1A1A1A]" data-path="dashboard" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">01</span><span>Dashboard</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="alumni-directory" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">02</span><span>Alumni Directory</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="jobs-referrals" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">03</span><span>Jobs &amp; Referrals</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="mentorship-hub" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">04</span><span>Mentorship Hub</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="events-rsvps" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">05</span><span>Events &amp; RSVPs</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="success-stories" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">06</span><span>Success Stories</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a><a class="flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all" data-path="admin-command-center" href="#"><span class="flex items-center gap-xs"><span class="font-tag-index text-tag-index text-text-muted">07</span><span>Admin Command Center</span></span><span class="font-label-mono text-label-mono text-text-muted">→</span></a></nav></div><div class="p-md flex flex-col gap-xs bg-surface-cream-subtle shadow-[0_-2px_0_#1A1A1A]"><div class="flex items-center justify-between px-xs py-2xs"><span class="font-label-caps text-label-caps text-text-muted uppercase">VECTOR RUNTIME</span><span class="font-label-mono text-label-mono text-accent-persimmon">HNSW:OK</span></div><div class="p-xs bg-surface-card border border-border-charcoal flex items-center justify-between"><div class="flex flex-col"><span class="font-label-caps text-label-caps text-text-muted">EMBEDDING DIM</span><span class="font-label-mono text-label-mono text-text-primary">1536_ADA002</span></div><div class="w-2 h-2 rounded-full bg-led-active shadow-[0_0_6px_#00E676]"></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface-cream z-40 px-lg flex items-center justify-between shadow-[0_2px_0_#1A1A1A]"><div class="flex items-center gap-md flex-1 max-w-xl"><div class="flex items-center gap-xs px-sm py-2xs bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] w-full"><span class="material-symbols-outlined text-text-muted text-[18px]">search</span><input class="w-full bg-transparent font-label-mono text-label-mono text-text-primary placeholder:text-text-muted focus:outline-none" placeholder="Query directory, skills, or vector tokens (e.g. /ai-research)..." type="text"><span class="font-tag-index text-tag-index px-2xs bg-surface-variant text-text-muted">⌘K</span></div></div><div class="flex items-center gap-lg"><div class="hidden xl:flex items-center gap-sm px-sm py-2xs bg-surface-card border border-border-charcoal"><div class="flex items-center gap-2xs"><span class="w-2 h-2 rounded-full bg-led-active"></span><span class="font-label-caps text-label-caps text-text-primary uppercase">PGVECTOR</span></div><span class="text-border-muted font-label-mono text-label-mono">|</span><span class="font-label-mono text-label-mono text-text-secondary">LATENCY: 14ms</span></div><button aria-label="Notifications" class="relative flex items-center justify-center w-9 h-9 bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] hover:bg-surface-variant transition-colors" type="button"><span class="material-symbols-outlined text-text-primary text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-accent-persimmon"></span></button><div class="flex items-center gap-sm pl-xs border-l border-border-muted"><div class="flex flex-col items-end"><span class="font-body-sm text-body-sm font-semibold text-text-primary leading-tight">Elena Vance, Ph.D.</span><span class="font-label-caps text-label-caps px-2xs py-2xs bg-accent-citron text-border-charcoal border border-border-charcoal uppercase leading-none mt-2xs">FELLOW / COHORT '22</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[2px_2px_0_#1A1A1A]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<script>
+    (function updateSidebarProtocol() {
+      const navLinks = document.querySelectorAll('aside nav a');
+      if (navLinks && navLinks.length >= 7) {
+        const labels = [
+          'Dashboard',
+          'Alumni Directory',
+          'Jobs & Referrals',
+          'Mentorship Hub',
+          'Events & RSVPs',
+          'Success Stories',
+          'Learning & Certifications'
+        ];
+        const paths = [
+          'dashboard',
+          'alumni-directory',
+          'jobs-referrals',
+          'mentorship-hub',
+          'events-rsvps',
+          'success-stories',
+          'learning-certifications'
+        ];
+
+        navLinks.forEach((link, idx) => {
+          if (idx < labels.length) {
+            link.setAttribute('data-path', paths[idx]);
+            const labelSpan = link.querySelector('span > span:last-child');
+            if (labelSpan) {
+              labelSpan.textContent = labels[idx];
+            }
+            if (idx === 4) { // 05 Events & RSVPs
+              link.className = 'flex items-center justify-between px-md py-xs font-body-sm text-body-sm bg-primary text-on-primary shadow-[2px_2px_0_#1A1A1A] transition-all font-semibold';
+              const arrow = link.querySelector('.font-label-mono');
+              if (arrow) arrow.className = 'font-label-mono text-label-mono text-accent-citron';
+            } else {
+              link.className = 'flex items-center justify-between px-md py-xs font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all';
+              const arrow = link.querySelector('.font-label-mono');
+              if (arrow) arrow.className = 'font-label-mono text-label-mono text-text-muted';
+            }
+          }
+        });
+      }
+    })();
+  </script>
+<!-- TELEMETRY MARQUEE & TICKER HEADER -->
+<div class="w-full bg-surface-cream-subtle px-lg py-xs border-b border-border-charcoal flex flex-wrap items-center justify-between gap-sm">
+<div class="flex items-center gap-xs">
+<span class="inline-block w-2 h-2 rounded-full bg-led-active shadow-[0_0_6px_#00E676]"></span>
+<span class="font-tag-index text-tag-index uppercase tracking-wider text-text-primary">[PILLAR // 04] PROTOCOL 05 // SYNCHRONOUS ALUMNI REUNIONS &amp; HARDWARE CAPACITY LOCKS</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs">
+<span class="font-label-mono text-label-mono text-text-muted">ISOLATION:</span>
+<span class="font-label-mono text-label-mono font-bold text-accent-persimmon bg-surface-card px-2xs border border-border-charcoal">POSTGRES SERIALIZABLE (P2034 SAFE)</span>
+</div>
+<div class="hidden md:flex items-center gap-2xs font-label-mono text-label-mono text-text-muted">
+<span>G-CAL SYNC:</span>
+<span class="text-led-active font-bold">MUTUAL_AUTH_OK</span>
+</div>
+</div>
+</div>
+<div class="p-grid-margin-desktop flex flex-col gap-2xl">
+<!-- PAGE HERO & KPI MATRIX -->
+<header class="flex flex-col gap-lg">
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-md border-b-2 border-border-charcoal pb-lg">
+<div class="flex flex-col gap-2xs max-w-4xl">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-xs py-2xs bg-accent-citron text-border-charcoal font-bold border border-border-charcoal uppercase">ASSEMBLAGE ENGINE</span>
+<span class="font-label-mono text-label-mono text-text-muted">HASH // CLUSTER_TXN_0x9924</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-text-primary tracking-tight">Events, Reunions &amp; Capacity RSVPs</h1>
+<p class="font-body-lg text-body-lg text-text-secondary mt-2xs">
+            Capacity-gated 1-click registration using serializable database transactions to guarantee zero overbooking. Seamless sync with Google Calendar and offline encrypted QR wallet admission.
+          </p>
+</div>
+<div class="flex items-center gap-xs shrink-0">
+<button class="flex items-center gap-xs px-md py-sm bg-surface-card hover:bg-surface-cream text-text-primary border border-border-charcoal font-headline-sm text-body-sm shadow-[2px_2px_0_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" id="batch-sync-gcal">
+<span class="material-symbols-outlined text-[18px] text-accent-cobalt">calendar_month</span>
+<span>Sync All to G-Cal</span>
+</button>
+<button class="flex items-center gap-xs px-md py-sm bg-primary hover:bg-surface-container-highest text-on-primary border border-border-charcoal font-headline-sm text-body-sm shadow-[2px_2px_0_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" id="quick-ticket-vault">
+<span class="material-symbols-outlined text-[18px] text-accent-citron">confirmation_number</span>
+<span>Access Pass Vault (3)</span>
+</button>
+</div>
+</div>
+<!-- METRICS STRIP / BRUTALIST TILES -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="p-md bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase text-text-muted">ACTIVE ASSEMBLAGES</span>
+<span class="font-tag-index text-tag-index px-2xs bg-surface-cream text-text-primary border border-border-charcoal">01</span>
+</div>
+<div class="mt-sm">
+<span class="font-headline-lg text-headline-lg text-text-primary leading-none">12</span>
+<span class="font-label-mono text-label-mono text-text-secondary ml-xs">Upcoming Global</span>
+</div>
+<div class="w-full bg-surface-container h-1 mt-sm">
+<div class="bg-accent-persimmon h-full w-[75%]"></div>
+</div>
+</div>
+<div class="p-md bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase text-text-muted">SECURED PASSES</span>
+<span class="font-tag-index text-tag-index px-2xs bg-accent-citron text-text-primary border border-border-charcoal">ACTIVE</span>
+</div>
+<div class="mt-sm">
+<span class="font-headline-lg text-headline-lg text-text-primary leading-none">03</span>
+<span class="font-label-mono text-label-mono text-text-secondary ml-xs">Wallet Verified</span>
+</div>
+<div class="w-full bg-surface-container h-1 mt-sm">
+<div class="bg-led-active h-full w-[100%]"></div>
+</div>
+</div>
+<div class="p-md bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase text-text-muted">ATOMIC INTEGRITY</span>
+<span class="font-tag-index text-tag-index px-2xs bg-surface-cream text-accent-cobalt border border-border-charcoal font-bold">ACID</span>
+</div>
+<div class="mt-sm">
+<span class="font-headline-lg text-headline-lg text-text-primary leading-none">0.00%</span>
+<span class="font-label-mono text-label-mono text-text-secondary ml-xs">Overbooking Lock</span>
+</div>
+<div class="w-full bg-surface-container h-1 mt-sm">
+<div class="bg-accent-cobalt h-full w-[100%]"></div>
+</div>
+</div>
+<div class="p-md bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase text-text-muted">MEDIAN ATTENDANCE</span>
+<span class="font-tag-index text-tag-index px-2xs bg-surface-cream text-text-primary border border-border-charcoal">TELEMETRY</span>
+</div>
+<div class="mt-sm">
+<span class="font-headline-lg text-headline-lg text-text-primary leading-none">91.4%</span>
+<span class="font-label-mono text-label-mono text-text-secondary ml-xs">Verified Turnout</span>
+</div>
+<div class="w-full bg-surface-container h-1 mt-sm">
+<div class="bg-primary h-full w-[91.4%]"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- HERO FLAGSHIP EVENT SECTION -->
+<section class="border-2 border-border-charcoal bg-surface-card shadow-[4px_4px_0_#1A1A1A] relative">
+<div class="bg-primary text-on-primary px-lg py-xs flex flex-wrap items-center justify-between gap-xs">
+<div class="flex items-center gap-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-persimmon animate-pulse"></span>
+<span class="font-label-caps text-label-caps tracking-widest text-on-primary uppercase">ANNUAL FLAGSHIP ASSEMBLAGE // COHORT CLUSTER ALPHA</span>
+</div>
+<div class="flex items-center gap-sm font-label-mono text-label-mono">
+<span class="text-accent-citron">CONCURRENCY ENGINE: ACTIVE</span>
+<span class="text-text-muted">|</span>
+<span>LOCK_TTL: 450ms</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12">
+<!-- Visual & Keynote Roster Chamber -->
+<div class="lg:col-span-7 p-lg border-b lg:border-b-0 lg:border-r border-border-charcoal flex flex-col justify-between gap-lg bg-surface-card">
+<div class="flex flex-col gap-sm">
+<div class="flex flex-wrap items-center gap-xs">
+<span class="px-xs py-2xs bg-accent-citron text-border-charcoal font-tag-index text-tag-index font-bold border border-border-charcoal">OCTOBER 15, 2026</span>
+<span class="px-xs py-2xs bg-surface-cream text-text-primary font-label-mono text-label-mono border border-border-charcoal">18:00 EST • MAIN AUDITORIUM</span>
+<span class="px-xs py-2xs bg-surface-cream text-text-secondary font-label-mono text-label-mono border border-border-charcoal">CAMPUS PAVILION</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-text-primary leading-tight mt-xs">
+              Homecoming &amp; Tech Gala 2026: Autonomous Systems &amp; Next-Gen Compute
+            </h2>
+<p class="font-body-md text-body-md text-text-secondary leading-relaxed">
+              The marquee gathering of engineering leadership, robotics researchers, and founding alumni. Highlighting breakthrough paradigms in neuromorphic processors, verified distributed databases, and high-concurrency micro-architectures.
+            </p>
+</div>
+<!-- Featured Keynote Vignettes -->
+<div class="flex flex-col gap-xs pt-md border-t border-border-charcoal">
+<span class="font-label-caps text-label-caps uppercase text-text-muted">CONFIRMED KEYNOTE ASSEMBLERS &amp; PANELS</span>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-xs mt-xs">
+<div class="p-xs bg-surface-cream border border-border-charcoal flex items-center gap-xs">
+<div class="w-10 h-10 bg-primary text-on-primary font-tag-index text-tag-index flex items-center justify-center shrink-0 border border-border-charcoal">
+                  EV
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Dr. Elena Vance</span>
+<span class="font-label-mono text-label-mono text-text-muted truncate">Fellow '22 / MIT Lab</span>
+</div>
+</div>
+<div class="p-xs bg-surface-cream border border-border-charcoal flex items-center gap-xs">
+<div class="w-10 h-10 bg-accent-cobalt text-on-primary font-tag-index text-tag-index flex items-center justify-center shrink-0 border border-border-charcoal">
+                  VA
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Vikram Aditya</span>
+<span class="font-label-mono text-label-mono text-text-muted truncate">Google Cloud SRE</span>
+</div>
+</div>
+<div class="p-xs bg-surface-cream border border-border-charcoal flex items-center gap-xs">
+<div class="w-10 h-10 bg-secondary text-on-primary font-tag-index text-tag-index flex items-center justify-center shrink-0 border border-border-charcoal">
+                  SJ
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm font-semibold text-text-primary truncate">Sarah Jenkins</span>
+<span class="font-label-mono text-label-mono text-text-muted truncate">Snowflake Arch</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Telemetry & Registration Panel -->
+<div class="lg:col-span-5 p-lg bg-surface-cream flex flex-col justify-between gap-md">
+<!-- Live Countdown Dial -->
+<div class="flex flex-col gap-xs p-md bg-surface-card border border-border-charcoal shadow-[2px_2px_0_#1A1A1A]">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">SYNCHRONIZATION VECTOR</span>
+<span class="font-label-mono text-label-mono text-accent-persimmon font-bold">CLOCK_SYNC: UTC-05</span>
+</div>
+<div class="grid grid-cols-4 gap-xs text-center py-xs border-y border-border-charcoal" id="countdown-display">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-text-primary font-bold" id="cnt-days">28</span>
+<span class="font-label-mono text-label-mono text-text-muted uppercase">DAYS</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-text-primary font-bold" id="cnt-hours">14</span>
+<span class="font-label-mono text-label-mono text-text-muted uppercase">HRS</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-text-primary font-bold" id="cnt-mins">22</span>
+<span class="font-label-mono text-label-mono text-text-muted uppercase">MIN</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-accent-persimmon font-bold" id="cnt-secs">35</span>
+<span class="font-label-mono text-label-mono text-text-muted uppercase">SEC</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2xs">
+<span class="font-label-mono text-label-mono text-text-muted">LOCATION: CAMPUS ROBOTICS CENTER // HALL A</span>
+<span class="font-tag-index text-tag-index text-led-active uppercase">GEO_LOCK: OK</span>
+</div>
+</div>
+<!-- Capacity Guage & Metric -->
+<div class="flex flex-col gap-xs">
+<div class="flex items-center justify-between font-label-mono text-label-mono">
+<span class="font-semibold text-text-primary">CAPACITY QUOTA ALLOCATION:</span>
+<span class="text-accent-persimmon font-bold">184 / 300 RESERVED (61.3%)</span>
+</div>
+<div class="w-full bg-surface-container h-4 border border-border-charcoal p-[2px] bg-surface-card shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2)]">
+<div class="h-full bg-accent-persimmon transition-all duration-500" style="width: 61.3%;"></div>
+</div>
+<div class="flex items-center justify-between font-label-mono text-label-mono text-text-secondary">
+<span>116 SEATS REMAINING</span>
+<span class="text-text-muted">ZERO-OVERBOOK GUARANTEE</span>
+</div>
+</div>
+<!-- Primary Action Deck -->
+<div class="flex flex-col gap-xs pt-xs">
+<div class="p-xs bg-surface-variant border border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-led-active text-[20px]">verified</span>
+<span class="font-headline-sm text-body-sm font-semibold text-text-primary">PASS ALLOCATED TO YOU</span>
+</div>
+<span class="font-label-mono text-label-mono bg-surface-card px-xs py-2xs border border-border-charcoal font-bold">#HG-9924</span>
+</div>
+<button class="w-full py-sm px-md bg-primary text-on-primary border border-border-charcoal font-headline-sm text-headline-sm flex items-center justify-center gap-xs shadow-[3px_3px_0_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+<span class="material-symbols-outlined text-led-active text-[22px]">check_circle</span>
+<span>RSVP CONFIRMED • PASS IN WALLET</span>
+</button>
+<div class="grid grid-cols-3 gap-xs">
+<button class="p-xs bg-surface-card hover:bg-surface-variant border border-border-charcoal font-label-mono text-label-mono text-text-primary flex flex-col items-center justify-center gap-2xs shadow-[2px_2px_0_#1A1A1A] transition-all">
+<span class="material-symbols-outlined text-[16px] text-accent-cobalt">event</span>
+<span>SYNC G-CAL</span>
+</button>
+<button class="p-xs bg-surface-card hover:bg-surface-variant border border-border-charcoal font-label-mono text-label-mono text-text-primary flex flex-col items-center justify-center gap-2xs shadow-[2px_2px_0_#1A1A1A] transition-all">
+<span class="material-symbols-outlined text-[16px] text-text-primary">group</span>
+<span>ROSTER (184)</span>
+</button>
+<button class="p-xs bg-accent-citron hover:bg-surface-card border border-border-charcoal font-label-mono text-label-mono text-border-charcoal font-bold flex flex-col items-center justify-center gap-2xs shadow-[2px_2px_0_#1A1A1A] transition-all" id="btn-show-qr">
+<span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+<span>VIEW QR PASS</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: CONFIRMED PASSES & QR WALLET DRAWER -->
+<section class="flex flex-col gap-md">
+<div class="flex items-center justify-between border-b border-border-charcoal pb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-primary text-on-primary font-bold">DRAWER // 02</span>
+<h2 class="font-headline-md text-headline-md text-text-primary">Your Registered Passes &amp; Enclave Admissions</h2>
+</div>
+<div class="flex items-center gap-xs font-label-mono text-label-mono text-text-muted">
+<span>WALLET STATE: ENCRYPTED</span>
+<span class="inline-block w-2 h-2 rounded-full bg-led-active"></span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- PASS CARD 1: Flagship Gala -->
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[3px_3px_0_#1A1A1A] flex flex-col justify-between">
+<div class="p-md flex flex-col gap-sm border-b border-border-charcoal bg-surface-cream-subtle">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-xs py-2xs bg-primary text-on-primary border border-border-charcoal">TICKET #HG-9924</span>
+<span class="flex items-center gap-2xs font-label-mono text-label-mono text-led-active font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-led-active"></span>
+                CONFIRMED
+              </span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-text-primary font-bold">Annual Alumni Gala 2026</span>
+<span class="font-label-mono text-label-mono text-text-muted mt-2xs">Oct 15, 2026 • Tier-1 Reserved Seat #A-42</span>
+</div>
+</div>
+<div class="p-md flex items-center justify-between gap-md bg-surface-card">
+<!-- Simulated QR Visual -->
+<div class="p-xs bg-surface-card border-2 border-border-charcoal flex flex-col items-center justify-center shrink-0">
+<div class="w-16 h-16 bg-surface-variant flex items-center justify-center border border-border-charcoal relative">
+<!-- SVG QR Code abstraction -->
+<svg class="w-12 h-12 text-primary" fill="currentColor" viewBox="0 0 24 24">
+<path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-2h2v2h-2v-2zm2 2h2v2h-2v-2z"></path>
+</svg>
+</div>
+<span class="font-tag-index text-tag-index text-text-muted mt-2xs">SCAN CODE</span>
+</div>
+<div class="flex flex-col gap-xs flex-1">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">LOCATION ENCLAVE</span>
+<span class="font-body-sm text-body-sm font-semibold text-text-primary">Robotics Hall A, Campus</span>
+</div>
+<div class="flex items-center gap-xs mt-2xs">
+<button class="px-xs py-2xs bg-surface-cream hover:bg-surface-variant border border-border-charcoal font-label-mono text-label-mono text-text-primary shadow-[1px_1px_0_#1A1A1A]">
+                  PASS PDF
+                </button>
+<button class="px-xs py-2xs bg-surface-card hover:bg-surface-variant border border-border-charcoal font-label-mono text-label-mono text-accent-cobalt shadow-[1px_1px_0_#1A1A1A]">
+                  RE-SYNC
+                </button>
+</div>
+</div>
+</div>
+<div class="p-xs bg-surface-cream border-t border-border-charcoal flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-text-muted">TXN: 0x9924A_MUTUAL_COMMIT</span>
+<span class="font-label-mono text-label-mono text-text-primary font-bold">1-OF-1 PASS</span>
+</div>
+</div>
+<!-- PASS CARD 2: SF Tech Mixer -->
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[3px_3px_0_#1A1A1A] flex flex-col justify-between">
+<div class="p-md flex flex-col gap-sm border-b border-border-charcoal bg-surface-cream-subtle">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-xs py-2xs bg-primary text-on-primary border border-border-charcoal">TICKET #SF-1108</span>
+<span class="flex items-center gap-2xs font-label-mono text-label-mono text-led-active font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-led-active"></span>
+                CONFIRMED
+              </span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-text-primary font-bold">SF Tech Alumni Mixer &amp; Cocktails</span>
+<span class="font-label-mono text-label-mono text-text-muted mt-2xs">Nov 12, 2026 • Mission Bay Bayfront Pavilion</span>
+</div>
+</div>
+<div class="p-md flex items-center justify-between gap-md bg-surface-card">
+<div class="p-xs bg-surface-card border-2 border-border-charcoal flex flex-col items-center justify-center shrink-0">
+<div class="w-16 h-16 bg-surface-variant flex items-center justify-center border border-border-charcoal relative">
+<svg class="w-12 h-12 text-primary" fill="currentColor" viewBox="0 0 24 24">
+<path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm12 2h4v4h-4v-4zm-4-4h2v2h-2v-2zm4 0h2v2h-2v-2zm-2 2h2v2h-2v-2zm4 4h2v2h-2v-2z"></path>
+</svg>
+</div>
+<span class="font-tag-index text-tag-index text-text-muted mt-2xs">ADMIT ONLY</span>
+</div>
+<div class="flex flex-col gap-xs flex-1">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">CAPACITY RESTORE PROTOCOL</span>
+<span class="font-body-sm text-body-sm text-text-secondary">Release seat atomically if unable to attend.</span>
+</div>
+<div class="mt-2xs">
+<button class="px-xs py-2xs bg-surface-cream hover:bg-error-container text-error border border-border-charcoal font-label-mono text-label-mono font-bold shadow-[1px_1px_0_#1A1A1A] transition-colors" id="btn-cancel-sf">
+                  1-CLICK CANCEL &amp; RESTORE
+                </button>
+</div>
+</div>
+</div>
+<div class="p-xs bg-surface-cream border-t border-border-charcoal flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-text-muted">SYNCED: GCAL_TOKEN_#488</span>
+<span class="font-tag-index text-tag-index text-accent-cobalt font-bold">TIER-II BADGE</span>
+</div>
+</div>
+<!-- PASS CARD 3: Distributed Systems Fireside -->
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[3px_3px_0_#1A1A1A] flex flex-col justify-between">
+<div class="p-md flex flex-col gap-sm border-b border-border-charcoal bg-surface-cream-subtle">
+<div class="flex items-center justify-between">
+<span class="font-tag-index text-tag-index px-xs py-2xs bg-primary text-on-primary border border-border-charcoal">TICKET #VIR-402</span>
+<span class="flex items-center gap-2xs font-label-mono text-label-mono text-led-active font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-led-active"></span>
+                CALENDAR LOCKED
+              </span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-text-primary font-bold">Distributed Systems Architecture Fireside</span>
+<span class="font-label-mono text-label-mono text-text-muted mt-2xs">Nov 22, 2026 • Encrypted Google Meet Session</span>
+</div>
+</div>
+<div class="p-md flex items-center justify-between gap-md bg-surface-card">
+<div class="p-xs bg-surface-card border-2 border-border-charcoal flex flex-col items-center justify-center shrink-0">
+<div class="w-16 h-16 bg-surface-variant flex items-center justify-center border border-border-charcoal">
+<span class="material-symbols-outlined text-[32px] text-accent-cobalt">video_camera_front</span>
+</div>
+<span class="font-tag-index text-tag-index text-accent-cobalt mt-2xs">SECURE LINK</span>
+</div>
+<div class="flex flex-col gap-xs flex-1">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-text-muted">COMMUNICATION VECTOR</span>
+<span class="font-body-sm text-body-sm font-semibold text-text-primary">Direct Meet Link Provisioned</span>
+</div>
+<div class="flex items-center gap-xs mt-2xs">
+<a class="px-xs py-2xs bg-primary text-on-primary font-label-mono text-label-mono border border-border-charcoal shadow-[1px_1px_0_#1A1A1A]" href="#">
+                  JOIN REHEARSAL
+                </a>
+</div>
+</div>
+</div>
+<div class="p-xs bg-surface-cream border-t border-border-charcoal flex items-center justify-between">
+<span class="font-label-mono text-label-mono text-text-muted">HOST: DR. RAJESH VERMA (MIT)</span>
+<span class="font-label-mono text-label-mono text-text-primary font-bold">VIRTUAL SEAT #42</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: BROWSE ASSEMBLAGES & FILTER ENGINE -->
+<section class="flex flex-col gap-md">
+<!-- Filter Bar Controls -->
+<div class="flex flex-col gap-sm border-2 border-border-charcoal bg-surface-cream p-md shadow-[3px_3px_0_#1A1A1A]">
+<div class="flex flex-wrap items-center justify-between gap-xs border-b border-border-charcoal pb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-primary text-on-primary font-bold">FILTER PROTOCOL</span>
+<span class="font-label-caps text-label-caps text-text-muted uppercase">CAPACITY INDEX QUERYING</span>
+</div>
+<span class="font-label-mono text-label-mono text-text-secondary">QUERY EXEC: 1.2ms (SERIALIZABLE CACHE)</span>
+</div>
+<!-- Filter Pills: Categories -->
+<div class="flex flex-wrap items-center gap-xs">
+<span class="font-label-mono text-label-mono text-text-muted mr-xs">CATEGORY:</span>
+<button class="filter-btn active px-sm py-2xs bg-primary text-on-primary font-label-mono text-label-mono border border-border-charcoal shadow-[2px_2px_0_#1A1A1A]">
+            ALL (12)
+          </button>
+<button class="filter-btn px-sm py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-mono text-label-mono border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] transition-all">
+            FLAGSHIP REUNIONS
+          </button>
+<button class="filter-btn px-sm py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-mono text-label-mono border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] transition-all">
+            TECHNICAL SALONS &amp; WORKSHOPS
+          </button>
+<button class="filter-btn px-sm py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-mono text-label-mono border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] transition-all">
+            REGIONAL MIXERS
+          </button>
+<button class="filter-btn px-sm py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-mono text-label-mono border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] transition-all">
+            VIRTUAL AMA WEBINARS
+          </button>
+<button class="filter-btn px-sm py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-mono text-label-mono border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] transition-all">
+            CAREER DEMO DAYS
+          </button>
+</div>
+<!-- Filter Pills: Geographies -->
+<div class="flex flex-wrap items-center gap-xs pt-xs border-t border-border-charcoal">
+<span class="font-label-mono text-label-mono text-text-muted mr-xs">TOPOLOGY:</span>
+<button class="city-btn active px-xs py-2xs bg-accent-citron text-border-charcoal font-label-caps text-label-caps border border-border-charcoal font-bold">
+            GLOBAL HYBRID
+          </button>
+<button class="city-btn px-xs py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-caps text-label-caps border border-border-charcoal">
+            SAN FRANCISCO
+          </button>
+<button class="city-btn px-xs py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-caps text-label-caps border border-border-charcoal">
+            NEW YORK
+          </button>
+<button class="city-btn px-xs py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-caps text-label-caps border border-border-charcoal">
+            BENGALURU
+          </button>
+<button class="city-btn px-xs py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-caps text-label-caps border border-border-charcoal">
+            LONDON
+          </button>
+<button class="city-btn px-xs py-2xs bg-surface-card hover:bg-surface-variant text-text-primary font-label-caps text-label-caps border border-border-charcoal">
+            ON-CAMPUS
+          </button>
+</div>
+</div>
+<!-- GRID OF 4 MAJOR ASSEMBLAGES -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- CARD 1: NYC Wall Street & FinTech Summit -->
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#1A1A1A] transition-all">
+<div>
+<!-- Card Header Index Bar -->
+<div class="p-xs px-md bg-surface-cream border-b border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs bg-primary text-on-primary font-bold">01</span>
+<span class="font-label-caps text-label-caps text-text-muted uppercase">NYC // FINANCIAL DISTRICT</span>
+</div>
+<span class="font-label-mono text-label-mono text-accent-persimmon font-bold">IN-PERSON ASSEMBLY</span>
+</div>
+<!-- Card Content Body -->
+<div class="p-lg flex flex-col gap-sm">
+<div class="flex flex-wrap items-center gap-xs">
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono font-bold text-text-primary">NOV 05, 2026</span>
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono text-text-muted">17:30 - 21:00 EST</span>
+<span class="px-xs py-2xs bg-accent-citron border border-border-charcoal font-tag-index text-tag-index text-border-charcoal font-bold">20 SEATS LEFT</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-text-primary">
+                NYC Wall Street &amp; FinTech Alumni Summit 2026
+              </h3>
+<p class="font-body-md text-body-md text-text-secondary">
+                Executive roundtable addressing ultra-low-latency financial plumbing, smart contracts settlement at scale, and high-frequency risk modeling with seasoned quant practitioners.
+              </p>
+<!-- Key Alumni Vignette -->
+<div class="p-sm bg-surface-cream border border-border-charcoal flex flex-col gap-xs mt-xs">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">KEY ALUMNI ATTENDING &amp; SPEAKING</span>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 rounded-full bg-accent-cobalt text-on-primary font-tag-index text-tag-index flex items-center justify-center">SJ</div>
+<span class="font-label-mono text-label-mono text-text-primary font-semibold">Siddharth Joshi (Stripe Core)</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary font-tag-index text-tag-index flex items-center justify-center">ML</div>
+<span class="font-label-mono text-label-mono text-text-primary font-semibold">Maya Lin (FinTech Global)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card Capacity & 1-Click RSVP Action Footer -->
+<div class="p-md bg-surface-cream-subtle border-t border-border-charcoal flex flex-col gap-sm">
+<div class="flex items-center justify-between font-label-mono text-label-mono">
+<span class="text-text-muted">CAPACITY ALLOCATION:</span>
+<span class="text-text-primary font-bold">80 / 100 CONFIRMED (80%)</span>
+</div>
+<div class="w-full bg-surface-container h-2.5 border border-border-charcoal bg-surface-card p-[1px]">
+<div class="h-full bg-text-primary" style="width: 80%;"></div>
+</div>
+<div class="flex items-center justify-between gap-sm pt-xs">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono text-text-muted">
+<span class="material-symbols-outlined text-[16px] text-led-active">lock</span>
+<span>SERIALIZABLE_GUARD</span>
+</div>
+<button class="btn-rsvp px-lg py-xs bg-primary hover:bg-surface-container-highest text-on-primary font-headline-sm text-body-sm font-semibold border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-xs">
+<span>RSVP 1-CLICK (20 SLOTS)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 2: Generative AI Infrastructure & HNSW Benchmark Roundtable -->
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#1A1A1A] transition-all">
+<div>
+<div class="p-xs px-md bg-surface-cream border-b border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs bg-primary text-on-primary font-bold">02</span>
+<span class="font-label-caps text-label-caps text-text-muted uppercase">VIRTUAL GLOBAL // GOOGLE MEET</span>
+</div>
+<span class="font-label-mono text-label-mono text-accent-persimmon font-bold animate-pulse">8 SEATS LEFT • HURRY</span>
+</div>
+<div class="p-lg flex flex-col gap-sm">
+<div class="flex flex-wrap items-center gap-xs">
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono font-bold text-text-primary">NOV 18, 2026</span>
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono text-text-muted">19:00 - 20:30 EST</span>
+<span class="px-xs py-2xs bg-accent-persimmon text-on-primary border border-border-charcoal font-tag-index text-tag-index font-bold">HIGH DEMAND</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-text-primary">
+                Generative AI Infrastructure &amp; HNSW Benchmark Roundtable
+              </h3>
+<p class="font-body-md text-body-md text-text-secondary">
+                Technical breakdown comparing pgvector 0.7 HNSW recall, GPU graph indexing, and quantization tradeoffs across 100M+ vector embeddings in production stacks.
+              </p>
+<div class="p-sm bg-surface-cream border border-border-charcoal flex flex-col gap-xs mt-xs">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">KEY ALUMNI ATTENDING &amp; SPEAKING</span>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 rounded-full bg-accent-persimmon text-on-primary font-tag-index text-tag-index flex items-center justify-center">DC</div>
+<span class="font-label-mono text-label-mono text-text-primary font-semibold">David Chen (YC Alum)</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary font-tag-index text-tag-index flex items-center justify-center">KA</div>
+<span class="font-label-mono text-label-mono text-text-primary font-semibold">Kareem Al-Sayed (Meta AI)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-cream-subtle border-t border-border-charcoal flex flex-col gap-sm">
+<div class="flex items-center justify-between font-label-mono text-label-mono">
+<span class="text-text-muted">CAPACITY ALLOCATION:</span>
+<span class="text-accent-persimmon font-bold">242 / 250 CONFIRMED (96.8%)</span>
+</div>
+<div class="w-full bg-surface-container h-2.5 border border-border-charcoal bg-surface-card p-[1px]">
+<div class="h-full bg-accent-persimmon" style="width: 96.8%;"></div>
+</div>
+<div class="flex items-center justify-between gap-sm pt-xs">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono text-text-muted">
+<span class="material-symbols-outlined text-[16px] text-accent-cobalt">videocam</span>
+<span>VIRTUAL_SLOT_LOCK</span>
+</div>
+<button class="btn-rsvp px-lg py-xs bg-secondary-container hover:bg-accent-persimmon text-on-secondary font-headline-sm text-body-sm font-semibold border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-xs">
+<span>RESERVE VIRTUAL SEAT</span>
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 3: Silicon Valley Founders & Angel Capital Dinner -->
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#1A1A1A] transition-all">
+<div>
+<div class="p-xs px-md bg-surface-cream border-b border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs bg-primary text-on-primary font-bold">03</span>
+<span class="font-label-caps text-label-caps text-text-muted uppercase">PALO ALTO // CLOSED ENCLAVE</span>
+</div>
+<span class="font-label-mono text-label-mono text-accent-cobalt font-bold">TIER-IV / FOUNDER GATED</span>
+</div>
+<div class="p-lg flex flex-col gap-sm">
+<div class="flex flex-wrap items-center gap-xs">
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono font-bold text-text-primary">DEC 02, 2026</span>
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono text-text-muted">19:30 PST</span>
+<span class="px-xs py-2xs bg-accent-citron border border-border-charcoal font-tag-index text-tag-index text-border-charcoal font-bold">3 SEATS LEFT</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-text-primary">
+                Silicon Valley Founders &amp; Angel Capital Dinner
+              </h3>
+<p class="font-body-md text-body-md text-text-secondary">
+                Private Chatham House rule dinner for venture-backed alumni founders, LP partners, and early operator-angels discussing secondary liquidity and hardware startup financing.
+              </p>
+<div class="p-sm bg-surface-cream border border-border-charcoal flex flex-col gap-xs mt-xs">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">PREREQUISITE ENTRY CLEARANCE</span>
+<div class="flex items-center gap-xs font-label-mono text-label-mono text-text-secondary">
+<span class="material-symbols-outlined text-[16px] text-accent-persimmon">shield</span>
+<span>Verified Alumni Tier-IV or Founder status required for admission clearance.</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-cream-subtle border-t border-border-charcoal flex flex-col gap-sm">
+<div class="flex items-center justify-between font-label-mono text-label-mono">
+<span class="text-text-muted">CAPACITY ALLOCATION:</span>
+<span class="text-text-primary font-bold">32 / 35 CONFIRMED (91.4%)</span>
+</div>
+<div class="w-full bg-surface-container h-2.5 border border-border-charcoal bg-surface-card p-[1px]">
+<div class="h-full bg-accent-cobalt" style="width: 91.4%;"></div>
+</div>
+<div class="flex items-center justify-between gap-sm pt-xs">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono text-text-muted">
+<span class="material-symbols-outlined text-[16px] text-text-muted">verified_user</span>
+<span>PEER_VOUCH_ACTIVE</span>
+</div>
+<button class="btn-rsvp px-lg py-xs bg-surface-card hover:bg-surface-variant text-text-primary font-headline-sm text-body-sm font-semibold border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-xs">
+<span>REQUEST INVITATION CLEARANCE</span>
+<span class="material-symbols-outlined text-[18px]">badge</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 4: Women in Engineering & Research Breakfast -->
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#1A1A1A] transition-all">
+<div>
+<div class="p-xs px-md bg-surface-cream border-b border-border-charcoal flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs bg-primary text-on-primary font-bold">04</span>
+<span class="font-label-caps text-label-caps text-text-muted uppercase">SEATTLE // SLU TECH QUARTER</span>
+</div>
+<span class="font-label-mono text-label-mono text-text-primary font-bold">IN-PERSON ASSEMBLY</span>
+</div>
+<div class="p-lg flex flex-col gap-sm">
+<div class="flex flex-wrap items-center gap-xs">
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono font-bold text-text-primary">DEC 10, 2026</span>
+<span class="px-xs py-2xs bg-surface-cream-subtle border border-border-charcoal font-label-mono text-label-mono text-text-muted">08:30 - 11:00 PST</span>
+<span class="px-xs py-2xs bg-surface-cream border border-border-charcoal font-tag-index text-tag-index text-text-primary font-bold">15 SLOTS AVAILABLE</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-text-primary">
+                Women in Engineering &amp; Research Breakfast
+              </h3>
+<p class="font-body-md text-body-md text-text-secondary">
+                Collaborative morning session bringing together researchers in formal systems verification, embedded robotics firmware, and technical engineering directorship.
+              </p>
+<div class="p-sm bg-surface-cream border border-border-charcoal flex flex-col gap-xs mt-xs">
+<span class="font-label-caps text-label-caps text-text-muted uppercase">SESSION HOST &amp; FACILITATOR</span>
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 rounded-full bg-accent-citron text-border-charcoal font-tag-index text-tag-index font-bold flex items-center justify-center">AD</div>
+<span class="font-label-mono text-label-mono text-text-primary font-semibold">Ananya Deshmukh (Amazon SDE II)</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-cream-subtle border-t border-border-charcoal flex flex-col gap-sm">
+<div class="flex items-center justify-between font-label-mono text-label-mono">
+<span class="text-text-muted">CAPACITY ALLOCATION:</span>
+<span class="text-text-primary font-bold">45 / 60 CONFIRMED (75%)</span>
+</div>
+<div class="w-full bg-surface-container h-2.5 border border-border-charcoal bg-surface-card p-[1px]">
+<div class="h-full bg-text-primary" style="width: 75%;"></div>
+</div>
+<div class="flex items-center justify-between gap-sm pt-xs">
+<div class="flex items-center gap-2xs font-label-mono text-label-mono text-text-muted">
+<span class="material-symbols-outlined text-[16px] text-led-active">check_circle</span>
+<span>OPEN_REGISTRATION</span>
+</div>
+<button class="btn-rsvp px-lg py-xs bg-primary hover:bg-surface-container-highest text-on-primary font-headline-sm text-body-sm font-semibold border border-border-charcoal shadow-[2px_2px_0_#1A1A1A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-xs">
+<span>RSVP 1-CLICK (15 SLOTS)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: TECHNICAL PROTOCOL SPECIFICATION & TRANSACTION INTEGRITY -->
+<section class="border-2 border-border-charcoal bg-surface-cream p-lg shadow-[3px_3px_0_#1A1A1A] flex flex-col gap-md">
+<div class="flex flex-wrap items-center justify-between gap-xs border-b border-border-charcoal pb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-xs py-2xs bg-primary text-on-primary font-bold">SYS_SPEC // RFC-049</span>
+<h4 class="font-headline-sm text-headline-sm text-text-primary uppercase tracking-tight">
+            TRANSACTION INTEGRITY: SERIALIZABLE ISOLATION &amp; DUAL-RESTORE PIPELINE
+          </h4>
+</div>
+<div class="flex items-center gap-xs font-label-mono text-label-mono text-accent-persimmon font-bold">
+<span>TX_ISOLATION_LEVEL: REPEATABLE_READ_SERIALIZABLE</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<div class="p-md bg-surface-card border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] flex flex-col gap-xs">
+<div class="flex items-center gap-xs text-text-primary font-headline-sm text-body-sm font-bold">
+<span class="font-tag-index text-tag-index px-2xs bg-surface-cream border border-border-charcoal">01</span>
+<span>Deterministic Capacity Guards</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary leading-relaxed">
+            Every 1-click RSVP executes inside a row-locked Postgres transaction block. If concurrent requests collide at full capacity, Prisma aborts with <code class="bg-surface-variant px-1 font-label-mono">P2034</code> serialization conflict, guaranteeing zero ghost seats or overbooking.
+          </p>
+</div>
+<div class="p-md bg-surface-card border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] flex flex-col gap-xs">
+<div class="flex items-center gap-xs text-text-primary font-headline-sm text-body-sm font-bold">
+<span class="font-tag-index text-tag-index px-2xs bg-surface-cream border border-border-charcoal">02</span>
+<span>Atomic Dual-Restore Pipeline</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary leading-relaxed">
+            When an attendee triggers <em>1-Click Cancel</em>, capacity quotas restore atomically in realtime while simultaneously triggering an authenticated webhook to decrement the Google Calendar roster and notify the next waitlisted peer.
+          </p>
+</div>
+<div class="p-md bg-surface-card border border-border-charcoal shadow-[1px_1px_0_#1A1A1A] flex flex-col gap-xs">
+<div class="flex items-center gap-xs text-text-primary font-headline-sm text-body-sm font-bold">
+<span class="font-tag-index text-tag-index px-2xs bg-surface-cream border border-border-charcoal">03</span>
+<span>Cryptographic Offline QR Badging</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary leading-relaxed">
+            Admission passes generate time-signed ed25519 tokens stored in the browser's local cache. On-site venue hardware scanners verify admission credentials without requiring persistent cellular connectivity at the quadrangle entrance.
+          </p>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-sm pt-xs border-t border-border-charcoal font-label-mono text-label-mono text-text-muted">
+<div class="flex items-center gap-sm">
+<span>PIPELINE HEALTH: OPTIMAL</span>
+<span>•</span>
+<span>CURRENT DB CONNECTION POOL: 48 / 64 ACTIVE</span>
+<span>•</span>
+<span>AVG LATENCY: 14.2ms</span>
+</div>
+<span class="text-text-primary font-semibold">PRO-ALUMN NETWORK CORE ARCHITECTURE v2.4</span>
+</div>
+</section>
+</div>
+<!-- MODAL / TOAST / QR PASS DIALOG (HIDDEN BY DEFAULT) -->
+<div class="fixed inset-0 z-50 bg-primary/60 backdrop-blur-sm hidden items-center justify-center p-md" id="qr-modal">
+<div class="bg-surface-card border-2 border-border-charcoal shadow-[8px_8px_0_#1A1A1A] max-w-md w-full p-lg flex flex-col gap-md relative">
+<div class="flex items-center justify-between border-b border-border-charcoal pb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-tag-index text-tag-index px-2xs py-2xs bg-accent-citron text-border-charcoal font-bold border border-border-charcoal">ADMIT_PASS</span>
+<span class="font-headline-sm text-headline-sm text-text-primary">Offline Entry Key</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center bg-surface-cream hover:bg-surface-variant border border-border-charcoal font-label-mono text-text-primary" id="close-modal-btn">
+          ✕
+        </button>
+</div>
+<div class="flex flex-col items-center justify-center p-md bg-surface-cream border border-border-charcoal gap-sm">
+<div class="w-48 h-48 bg-surface-card border-2 border-border-charcoal p-sm flex items-center justify-center shadow-[2px_2px_0_#1A1A1A]">
+<svg class="w-40 h-40 text-primary" fill="currentColor" viewBox="0 0 24 24">
+<path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-2h2v2h-2v-2zm2 2h2v2h-2v-2z"></path>
+</svg>
+</div>
+<div class="flex flex-col items-center text-center">
+<span class="font-label-mono text-label-mono font-bold text-text-primary">TICKET #HG-9924 // ELENA VANCE</span>
+<span class="font-label-mono text-label-mono text-text-secondary">COHORT '22 • TIER-1 RESERVED #A-42</span>
+</div>
+</div>
+<div class="flex items-center justify-between font-label-mono text-label-mono text-text-muted">
+<span>ED25519_SIG_VALID</span>
+<span class="text-led-active font-bold">READY TO SCAN</span>
+</div>
+<button class="w-full py-xs bg-primary text-on-primary font-headline-sm text-body-sm font-semibold border border-border-charcoal shadow-[2px_2px_0_#1A1A1A]" id="close-modal-confirm">
+        DISMISS TICKET DISPLAY
+      </button>
+</div>
+</div>
+<!-- INTERACTION SCRIPTS -->
+<script>
+    (function setupInteractions() {
+      // Countdown simulation
+      const secEl = document.getElementById('cnt-secs');
+      let secs = 5;
+      setInterval(() => {
+        secs = (secs <= 0) ? 59 : secs - 1;
+        if (secEl) {
+          secEl.textContent = secs < 10 ? '0' + secs : secs;
+        }
+      }, 1000);
+
+      // Modal Controls
+      const qrModal = document.getElementById('qr-modal');
+      const openBtn = document.getElementById('btn-show-qr');
+      const vaultBtn = document.getElementById('quick-ticket-vault');
+      const closeBtn = document.getElementById('close-modal-btn');
+      const closeConfirm = document.getElementById('close-modal-confirm');
+
+      function openModal() {
+        if (qrModal) {
+          qrModal.classList.remove('hidden');
+          qrModal.classList.add('flex');
+        }
+      }
+      function closeModal() {
+        if (qrModal) {
+          qrModal.classList.add('hidden');
+          qrModal.classList.remove('flex');
+        }
+      }
+
+      if (openBtn) openBtn.addEventListener('click', openModal);
+      if (vaultBtn) vaultBtn.addEventListener('click', openModal);
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (closeConfirm) closeConfirm.addEventListener('click', closeModal);
+
+      // Interactive RSVP buttons feedback
+      const rsvpButtons = document.querySelectorAll('.btn-rsvp');
+      rsvpButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const originalText = this.innerHTML;
+          this.innerHTML = '<span class="material-symbols-outlined text-[18px] text-led-active">sync</span><span>ACID COMMITTING...</span>';
+          this.disabled = true;
+          setTimeout(() => {
+            this.innerHTML = '<span class="material-symbols-outlined text-[18px] text-led-active">check_circle</span><span>SEAT LOCKED & SYNCED</span>';
+            this.classList.remove('bg-primary', 'bg-secondary-container');
+            this.classList.add('bg-surface-card', 'text-text-primary');
+          }, 650);
+        });
+      });
+
+      // Cancellation feedback
+      const cancelBtn = document.getElementById('btn-cancel-sf');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+          if (confirm("Restore capacity seat #SF-1108 back to the public pool?")) {
+            this.textContent = "RESTORED // SEAT RELEASED";
+            this.disabled = true;
+            this.classList.remove('text-error');
+            this.classList.add('text-text-muted');
+          }
+        });
+      }
+
+      // Filter button toggles
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => {
+            b.classList.remove('bg-primary', 'text-on-primary');
+            b.classList.add('bg-surface-card', 'text-text-primary');
+          });
+          this.classList.add('bg-primary', 'text-on-primary');
+          this.classList.remove('bg-surface-card', 'text-text-primary');
+        });
+      });
+
+      const cityBtns = document.querySelectorAll('.city-btn');
+      cityBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          cityBtns.forEach(b => {
+            b.classList.remove('bg-accent-citron', 'text-border-charcoal', 'font-bold');
+            b.classList.add('bg-surface-card', 'text-text-primary');
+          });
+          this.classList.add('bg-accent-citron', 'text-border-charcoal', 'font-bold');
+          this.classList.remove('bg-surface-card', 'text-text-primary');
+        });
+      });
+
+      // Batch sync toast
+      const batchSyncBtn = document.getElementById('batch-sync-gcal');
+      if (batchSyncBtn) {
+        batchSyncBtn.addEventListener('click', function() {
+          const prev = this.innerHTML;
+          this.innerHTML = '<span class="material-symbols-outlined text-[18px] text-led-active">done_all</span><span>3 Passes Synced</span>';
+          setTimeout(() => {
+            this.innerHTML = prev;
+          }, 2000);
+        });
+      }
+    })();
+  </script>
+</div></main></div></body></html>

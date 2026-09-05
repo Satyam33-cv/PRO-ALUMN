@@ -1,0 +1,647 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-container": "#848484", "tertiary-fixed-dim": "#c6c6c6", "surface-container": "#eeeeee", "on-secondary": "#ffffff", "on-tertiary-fixed": "#1b1b1b", "primary-fixed-dim": "#c6c6c6", "secondary-fixed-dim": "#c6c6c6", "on-secondary-fixed": "#1b1b1b", "error": "#ba1a1a", "surface-container-highest": "#e2e2e2", "inverse-surface": "#2f3131", "outline": "#7e7576", "tertiary-container": "#1b1b1b", "outline-variant": "#cfc4c5", "on-tertiary-fixed-variant": "#474747", "secondary": "#5e5e5e", "error-container": "#ffdad6", "on-error": "#ffffff", "secondary-container": "#e2e2e2", "surface-dim": "#dadada", "on-surface-variant": "#4c4546", "on-primary-fixed": "#1b1b1b", "surface-container-high": "#e8e8e8", "on-tertiary-container": "#848484", "tertiary": "#000000", "on-secondary-container": "#646464", "inverse-on-surface": "#f0f1f1", "inverse-primary": "#c6c6c6", "on-primary": "#ffffff", "primary": "#000000", "secondary-fixed": "#e2e2e2", "surface-container-low": "#f3f3f4", "surface-variant": "#e2e2e2", "background": "#f9f9f9", "on-secondary-fixed-variant": "#474747", "surface-tint": "#5e5e5e", "surface-bright": "#f9f9f9", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff", "surface": "#f9f9f9", "on-background": "#1a1c1c", "on-surface": "#1a1c1c", "tertiary-fixed": "#e2e2e2", "on-tertiary": "#ffffff", "primary-fixed": "#e2e2e2", "primary-container": "#1b1b1b", "on-primary-fixed-variant": "#474747" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-mobile": "1rem", "gutter-desktop": "2rem", "pad-lg": "2rem", "gutter-mobile": "1rem", "margin-desktop": "3rem", "pad-md": "1rem", "pad-xl": "4rem", "rule-hairline": "1px", "pad-xs": "0.25rem", "pad-sm": "0.5rem", "pad-2xl": "8rem" }, "fontFamily": { "headline-lg": [ "Space Grotesk" ], "display-scaffold": [ "Space Grotesk" ], "body-condensed": [ "Space Grotesk" ], "headline-xl": [ "Space Grotesk" ], "headline-md": [ "Space Grotesk" ], "headline-xl-mobile": [ "Space Grotesk" ], "body-regular": [ "Newsreader" ], "body-lead": [ "Newsreader" ], "display-scaffold-mobile": [ "Space Grotesk" ], "label-mono-xs": [ "JetBrains Mono" ], "label-mono": [ "JetBrains Mono" ] }, "fontSize": { "headline-lg": [ "36px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "display-scaffold": [ "160px", { "lineHeight": "140px", "letterSpacing": "-0.05em", "fontWeight": "700" } ], "body-condensed": [ "14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-xl": [ "64px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" } ], "headline-md": [ "24px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "headline-xl-mobile": [ "38px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "body-regular": [ "16px", { "lineHeight": "26px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "body-lead": [ "22px", { "lineHeight": "32px", "letterSpacing": "0em", "fontWeight": "400" } ], "display-scaffold-mobile": [ "80px", { "lineHeight": "76px", "letterSpacing": "-0.04em", "fontWeight": "700" } ], "label-mono-xs": [ "10px", { "lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700" } ], "label-mono": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "500" } ] } } } };</script></head><body class="bg-surface font-body-regular text-on-surface antialiased selection:bg-primary selection:text-on-primary"><header class="fixed top-0 left-0 w-full z-50 bg-surface border-b border-primary"><div class="w-full flex items-stretch justify-between h-16"><div class="flex items-center px-gutter-desktop border-r border-primary"><a class="flex items-center gap-pad-xs" data-path="landing" href="#"><span class="font-label-mono text-label-mono tracking-widest text-primary font-bold">/////</span><span class="font-headline-md text-headline-md tracking-tighter text-primary uppercase">PRO-ALUMN</span></a><span class="hidden xl:inline-block ml-pad-md font-label-mono-xs text-label-mono-xs text-on-surface-variant">[ VOL. XXIV // ISSUE 08 ]</span></div><nav class="hidden lg:flex items-stretch h-full" data-active-classes="bg-primary text-on-primary"><a class="flex items-center px-pad-md font-label-mono text-label-mono uppercase text-on-surface-variant border-r border-primary hover:bg-primary hover:text-on-primary transition-none" data-path="directory" href="#">Directory</a><a class="flex items-center px-pad-md font-label-mono text-label-mono uppercase text-on-surface-variant border-r border-primary hover:bg-primary hover:text-on-primary transition-none" data-path="jobs-and-referrals" href="#">Jobs &amp; Referrals</a><a class="flex items-center px-pad-md font-label-mono text-label-mono uppercase text-on-surface-variant border-r border-primary hover:bg-primary hover:text-on-primary transition-none" data-path="mentorship" href="#">Mentorship</a><a class="flex items-center px-pad-md font-label-mono text-label-mono uppercase text-on-surface-variant border-r border-primary hover:bg-primary hover:text-on-primary transition-none" data-path="announcements" href="#">Announcements</a><a class="flex items-center px-pad-md font-label-mono text-label-mono uppercase text-on-surface-variant border-r border-primary hover:bg-primary hover:text-on-primary transition-none" data-path="education" href="#">Education</a></nav><div class="flex items-stretch"><a class="flex items-center px-pad-md font-label-mono text-label-mono uppercase text-on-surface border-l border-primary hover:bg-primary hover:text-on-primary transition-none" data-path="login" href="#">Login</a><a class="flex items-center px-pad-md font-label-mono text-label-mono uppercase bg-primary text-on-primary border-l border-primary hover:bg-surface hover:text-primary transition-none" data-path="register" href="#">Get Started →</a><div class="flex items-center px-pad-md border-l border-primary"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<!-- SECTION 1: ARCHITECTURAL HERO & BROADSHEET MASTHEAD -->
+<section class="w-full bg-surface">
+<!-- Masthead Gazette Sub-header Strip -->
+<div class="w-full px-gutter-desktop py-pad-xs bg-surface-container-high flex flex-col md:flex-row justify-between items-center text-on-surface-variant font-label-mono-xs text-label-mono-xs tracking-wider uppercase">
+<div class="flex items-center gap-pad-md">
+<span class="font-bold text-primary">BULLETIN // DISPATCH NO. 448</span>
+<span>INDEXED IN POSTGRESQL + PGVECTOR</span>
+</div>
+<div class="flex items-center gap-pad-lg">
+<span>LATENCY: 8.4MS [US-CENTRAL1]</span>
+<span>SEMANTIC COSINE THRESHOLD: 0.884</span>
+<span class="text-primary font-bold">STATE: PRODUCTION STABLE</span>
+</div>
+</div>
+<!-- Editorial Scaffolding & Title Block -->
+<div class="w-full px-gutter-desktop pt-pad-xl pb-pad-lg bg-surface">
+<div class="inline-flex items-center gap-pad-xs px-pad-sm py-pad-xs bg-surface-container text-on-surface font-label-mono-xs text-label-mono-xs uppercase tracking-wider mb-pad-md">
+<span class="inline-block w-2 h-2 bg-primary"></span>
+        [ AI-POWERED ALUMNI INTELLIGENCE // GOOGLE CLOUD &amp; PGVECTOR ]
+      </div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop items-end">
+<div class="lg:col-span-8">
+<h1 class="font-headline-xl text-headline-xl uppercase tracking-tighter text-primary leading-none">
+            Where Alumni Networks Power Fast-Track Careers.
+          </h1>
+</div>
+<div class="lg:col-span-4 pb-pad-xs">
+<p class="font-body-lead text-body-lead text-on-surface-variant italic">
+            Connecting students with verified alumni champions via 384-dimensional vector embeddings, driving warm referrals across a transparent, state-governed hiring lifecycle.
+          </p>
+</div>
+</div>
+<!-- Action Row & Direct Vector Prompt -->
+<div class="mt-pad-lg pt-pad-md flex flex-col sm:flex-row gap-pad-md items-stretch sm:items-center">
+<a class="inline-flex items-center justify-center px-pad-lg py-pad-sm bg-primary text-on-primary font-label-mono text-label-mono uppercase hover:bg-secondary transition-none" data-path="register" href="#">
+          Create Free Account →
+        </a>
+<a class="inline-flex items-center justify-center px-pad-lg py-pad-sm bg-surface-container text-on-surface font-label-mono text-label-mono uppercase hover:bg-surface-container-highest transition-none" data-path="directory" href="#">
+          Explore Directory [1,200+]
+        </a>
+<div class="sm:ml-auto flex items-center gap-pad-xs font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary">verified_user</span>
+<span>Dual-Handshake Institutional Auth Guaranteed</span>
+</div>
+</div>
+</div>
+<!-- Interactive Broad-Search Terminal Console -->
+<div class="w-full bg-surface-container-low px-gutter-desktop py-pad-md">
+<div class="max-w-5xl mx-auto flex flex-col gap-pad-sm">
+<div class="flex items-center justify-between font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">
+<span>// INSTANT EMBEDDING LOOKUP ENGINE</span>
+<span>INDEX: pgv_alumni_embeddings_hnsw</span>
+</div>
+<div class="flex flex-col md:flex-row items-stretch bg-surface-container-lowest shadow-sm">
+<div class="flex items-center px-pad-md bg-surface-container text-on-surface-variant font-label-mono-xs text-label-mono-xs uppercase">
+<span class="material-symbols-outlined text-[18px] mr-pad-xs text-primary">manage_search</span>
+<span>VECTOR QUERY:</span>
+</div>
+<input class="w-full px-pad-md py-pad-sm bg-transparent font-body-regular text-body-regular text-on-surface focus:outline-none placeholder:italic placeholder:text-on-surface-variant" id="vectorSearchInput" placeholder="e.g. Distributed systems engineer with Kubernetes expertise willing to mentor underrepresented graduates..." type="text">
+<button class="px-pad-lg py-pad-sm bg-primary text-on-primary font-label-mono text-label-mono uppercase hover:bg-secondary whitespace-nowrap transition-none" onclick="document.getElementById('vectorSearchResult').classList.remove('hidden');" type="button">
+            Compute Match (384-D) →
+          </button>
+</div>
+<!-- Semantic pill tokens -->
+<div class="flex flex-wrap items-center gap-pad-xs pt-pad-xs">
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase mr-pad-xs">Popular Targets:</span>
+<button class="px-pad-xs py-0.5 bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary font-label-mono-xs text-label-mono-xs transition-none" onclick="fillQuery('Google L6 Site Reliability Engineer')">Google</button>
+<button class="px-pad-xs py-0.5 bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary font-label-mono-xs text-label-mono-xs transition-none" onclick="fillQuery('Microsoft Azure Core Kernel Engineer')">Microsoft</button>
+<button class="px-pad-xs py-0.5 bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary font-label-mono-xs text-label-mono-xs transition-none" onclick="fillQuery('Amazon AWS Distributed Databases SDE II')">Amazon</button>
+<button class="px-pad-xs py-0.5 bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary font-label-mono-xs text-label-mono-xs transition-none" onclick="fillQuery('Meta Infrastructure &amp; PyTorch Performance')">Meta</button>
+<button class="px-pad-xs py-0.5 bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary font-label-mono-xs text-label-mono-xs transition-none" onclick="fillQuery('Staff Site Reliability Engineer High-Throughput')">SRE</button>
+<button class="px-pad-xs py-0.5 bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary font-label-mono-xs text-label-mono-xs transition-none" onclick="fillQuery('Technical Product Manager AI Platform Growth')">Product Manager</button>
+<button class="px-pad-xs py-0.5 bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary font-label-mono-xs text-label-mono-xs transition-none" onclick="fillQuery('LLM Fine-Tuning &amp; Quantization ML Engineer')">Machine Learning</button>
+</div>
+<!-- Dynamic inline match result preview -->
+<div class="hidden mt-pad-xs p-pad-sm bg-surface-container text-on-surface flex items-center justify-between font-label-mono-xs text-label-mono-xs" id="vectorSearchResult">
+<div class="flex items-center gap-pad-sm">
+<span class="text-primary font-bold">█ TOP VECTOR MATCH:</span>
+<span>Dr. Aris Thorne (Staff Infra Architect @ DeepMind) • Cosine: 0.9421 • Status: Open for 2 Referrals</span>
+</div>
+<a class="text-primary font-bold underline hover:opacity-80" data-path="directory" href="#">Inspect Dossier →</a>
+</div>
+</div>
+</div>
+<!-- Telemetry Strip Metrics (4 Columns) -->
+<div class="w-full grid grid-cols-2 lg:grid-cols-4 bg-surface-container">
+<div class="p-pad-lg bg-surface-container-lowest flex flex-col justify-between">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ TELEMETRY // 01 ]</span>
+<div class="my-pad-sm">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">1,200+</div>
+<div class="font-body-condensed text-body-condensed text-on-surface uppercase">Verified Institutional Alumni</div>
+</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant">Auth via .edu / corporate SAML SSO</div>
+</div>
+<div class="p-pad-lg bg-surface-container-lowest flex flex-col justify-between">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ TELEMETRY // 02 ]</span>
+<div class="my-pad-sm">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">85.4%</div>
+<div class="font-body-condensed text-body-condensed text-on-surface uppercase">Warm Referral Interview Rate</div>
+</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant">Vs. 3.2% cold applicant benchmark</div>
+</div>
+<div class="p-pad-lg bg-surface-container-lowest flex flex-col justify-between">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ TELEMETRY // 03 ]</span>
+<div class="my-pad-sm">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">384-Dim</div>
+<div class="font-body-condensed text-body-condensed text-on-surface uppercase">Gemini Embedding Precision</div>
+</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant">PostgreSQL pgvector cosine retrieval</div>
+</div>
+<div class="p-pad-lg bg-surface-container-lowest flex flex-col justify-between">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ TELEMETRY // 04 ]</span>
+<div class="my-pad-sm">
+<div class="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">40+</div>
+<div class="font-body-condensed text-body-condensed text-on-surface uppercase">Partner Tech Corporations</div>
+</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant">Direct requisition mapping conduits</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: REFERRAL LIFECYCLE STATE MACHINE -->
+<section class="w-full bg-surface-container-low py-pad-2xl px-gutter-desktop">
+<div class="max-w-6xl mx-auto space-y-pad-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-pad-md">
+<div>
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant tracking-wider mb-pad-xs">
+            [ PROTOCOL SPECIFICATION // LIFECYCLE DISPATCH ]
+          </div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-primary tracking-tight">
+            No generic cold applications. Structured warm referrals, end to end.
+          </h2>
+</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase md:text-right">
+          STATE MACHINE ENGINE: pg_referral_fsm_v4
+        </div>
+</div>
+<!-- State Machine Stepper Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-pad-md">
+<!-- Step 01 -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between hover:bg-primary-container group transition-none">
+<div>
+<div class="flex items-center justify-between pb-pad-xs mb-pad-sm bg-surface-container group-hover:bg-surface-dim px-pad-xs">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-primary group-hover:text-on-primary">PHASE 01</span>
+<span class="px-pad-xs py-0.5 bg-surface-container-highest text-on-surface-variant font-label-mono-xs text-label-mono-xs uppercase">STATE: PENDING</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary group-hover:text-on-primary mb-pad-xs uppercase">
+              Targeted Dossier Submission
+            </div>
+<p class="font-body-regular text-body-regular text-on-surface-variant group-hover:text-tertiary-fixed-dim">
+              Candidate selects an open requisition from verified alumni corporate boards, attaching a tailored resume and personalized match rationale.
+            </p>
+</div>
+<div class="mt-pad-lg pt-pad-xs font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant group-hover:text-tertiary-fixed-dim flex justify-between items-center">
+<span>█ SLA: 72H RESPONSE</span>
+<span class="text-primary group-hover:text-on-primary font-bold">→</span>
+</div>
+</div>
+<!-- Step 02 -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between hover:bg-primary-container group transition-none">
+<div>
+<div class="flex items-center justify-between pb-pad-xs mb-pad-sm bg-surface-container group-hover:bg-surface-dim px-pad-xs">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-primary group-hover:text-on-primary">PHASE 02</span>
+<span class="px-pad-xs py-0.5 bg-surface-container-highest text-on-surface-variant font-label-mono-xs text-label-mono-xs uppercase">STATE: SCREENED</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary group-hover:text-on-primary mb-pad-xs uppercase">
+              Peer Verification &amp; Review
+            </div>
+<p class="font-body-regular text-body-regular text-on-surface-variant group-hover:text-tertiary-fixed-dim">
+              Alumnus conducts an asynchronous review or conducts a 15-minute flash screening session, offering inline code/portfolio annotations.
+            </p>
+</div>
+<div class="mt-pad-lg pt-pad-xs font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant group-hover:text-tertiary-fixed-dim flex justify-between items-center">
+<span>█ DUAL SIGN-OFF</span>
+<span class="text-primary group-hover:text-on-primary font-bold">→</span>
+</div>
+</div>
+<!-- Step 03 -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between hover:bg-primary-container group transition-none">
+<div>
+<div class="flex items-center justify-between pb-pad-xs mb-pad-sm bg-surface-container group-hover:bg-surface-dim px-pad-xs">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-primary group-hover:text-on-primary">PHASE 03</span>
+<span class="px-pad-xs py-0.5 bg-surface-container-highest text-on-surface-variant font-label-mono-xs text-label-mono-xs uppercase">STATE: REFERRED</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary group-hover:text-on-primary mb-pad-xs uppercase">
+              Internal Portal Dispatch
+            </div>
+<p class="font-body-regular text-body-regular text-on-surface-variant group-hover:text-tertiary-fixed-dim">
+              Alumnus submits candidate directly into internal corporate routing (Workday, Greenhouse, Taleo) with candidate identification token.
+            </p>
+</div>
+<div class="mt-pad-lg pt-pad-xs font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant group-hover:text-tertiary-fixed-dim flex justify-between items-center">
+<span>█ REQ HASH ISSUED</span>
+<span class="text-primary group-hover:text-on-primary font-bold">→</span>
+</div>
+</div>
+<!-- Step 04 -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between hover:bg-primary-container group transition-none">
+<div>
+<div class="flex items-center justify-between pb-pad-xs mb-pad-sm bg-surface-container group-hover:bg-surface-dim px-pad-xs">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-primary group-hover:text-on-primary">PHASE 04</span>
+<span class="px-pad-xs py-0.5 bg-primary text-on-primary font-label-mono-xs text-label-mono-xs uppercase">STATE: HIRED</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary group-hover:text-on-primary mb-pad-xs uppercase">
+              Offer Cleared &amp; Celebrated
+            </div>
+<p class="font-body-regular text-body-regular text-on-surface-variant group-hover:text-tertiary-fixed-dim">
+              Candidate accepts offer letter. Platform archives interview cycle, unlocks alumni mentor badges, and updates institutional metrics.
+            </p>
+</div>
+<div class="mt-pad-lg pt-pad-xs font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant group-hover:text-tertiary-fixed-dim flex justify-between items-center">
+<span>█ MILESTONE LEDGER</span>
+<span class="text-primary group-hover:text-on-primary font-bold">✓</span>
+</div>
+</div>
+</div>
+<!-- State Flow Interactive Monitor Graphic -->
+<div class="w-full bg-surface-container p-pad-md">
+<div class="flex flex-col md:flex-row items-center justify-between gap-pad-sm font-label-mono-xs text-label-mono-xs uppercase text-on-surface">
+<div class="flex items-center gap-pad-xs">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span>ACTIVE LIVE TRANSMISSIONS: 147 CANDIDATES CURRENTLY IN FLIGHT</span>
+</div>
+<div class="flex items-center gap-pad-md">
+<span>AVG STAGE CONVERSION: 71.8%</span>
+<span>MEDIAN REFERRAL LATENCY: 3.4 DAYS</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: THE 5 ESSENTIAL PILLARS (EDITORIAL MOSAIC) -->
+<section class="w-full bg-surface py-pad-2xl px-gutter-desktop">
+<div class="max-w-7xl mx-auto space-y-pad-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop items-end pb-pad-md">
+<div class="lg:col-span-8">
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant tracking-wider mb-pad-xs">
+            [ INFRASTRUCTURE FRAMEWORK // 05 PILLARS ]
+          </div>
+<h2 class="font-headline-xl text-headline-xl uppercase tracking-tighter text-primary">
+            The Complete Architectural Ecosystem.
+          </h2>
+</div>
+<div class="lg:col-span-4 font-body-regular text-body-regular text-on-surface-variant">
+          Engineered to dismantle friction in collegiate mentorship, internal corporate referrals, and graduate career acceleration.
+        </div>
+</div>
+<!-- Pillars Bento Mosaic -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-pad-md">
+<!-- Pillar 01: Directory & Geo-Map -->
+<div class="lg:col-span-2 p-pad-lg bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-pad-sm mb-pad-md">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ PILLAR 01 // DIRECTORY &amp; CARTOGRAPHY ]</span>
+<span class="font-label-mono-xs text-label-mono-xs uppercase bg-surface-container px-pad-xs py-0.5 text-on-surface">HNSW COSINE INDEX</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary mb-pad-xs">
+              Verified Alumni Directory &amp; Leaflet Geo-Map
+            </h3>
+<p class="font-body-regular text-body-regular text-on-surface-variant max-w-2xl">
+              Locate fellows across San Francisco, Seattle, London, Zurich, and Tokyo. Query by exact company division, tech stack, or graduate cohort year using 384-dimensional semantic similarity ranking.
+            </p>
+</div>
+<!-- Geo Visual Location Canvas -->
+<div class="mt-pad-lg bg-surface-container p-pad-md">
+<div class="w-full h-48 bg-cover bg-center mb-pad-sm" data-alt="Stylized high contrast minimalist architectural map layout depicting San Francisco Silicon Valley tech hub with clean modern geographic grids and monospaced terminal indicators in pure black and bone white monochrome." data-location="San Francisco, CA" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuARSuDhnPvwnhOSnmK_1pUThw31GYnti1jZtNXEqRiiH2MJO2ucua_Q1bEZ9-6ZHQxTAm7jCYkoG8wLJC2Arl6x6B9BRxNqUcwEBgpVn0aUZIDOTPgiGXp4XX6YJuPch8B8UFrDxdFwKzJ-3-4seKQ0DIdHJyzJagJ6e38L2Lx-w2CVy7ZUoEsC2stkpz1SkNSWr0A-24aNvHDG20li1dq_27xppaqHQO26csA0unbyxzPh8AY_b7o')"></div>
+<div class="flex justify-between items-center font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">
+<span>NODE: SF_BAY_AREA_CLUSTER (N=412)</span>
+<span>GEO-INDEX: EPSG:4326 // LEAFLET OPTIMIZED</span>
+</div>
+</div>
+</div>
+<!-- Pillar 02: Career Hub -->
+<div class="p-pad-lg bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-pad-sm mb-pad-md">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ PILLAR 02 // CAREERS ]</span>
+<span class="font-label-mono-xs text-label-mono-xs uppercase bg-surface-container px-pad-xs py-0.5 text-on-surface">DIRECT DISPATCH</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary mb-pad-xs">
+              Career &amp; Referral Hub
+            </h3>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              Live requisition boards linked to alumni referral quotas. Direct submission pipelines bypass general applicant pools with structured endorsement packets.
+            </p>
+</div>
+<div class="mt-pad-lg p-pad-sm bg-surface-container text-on-surface font-label-mono-xs text-label-mono-xs space-y-pad-xs">
+<div class="flex justify-between">
+<span>ACTIVE REQUISITIONS</span>
+<span class="font-bold text-primary">342 OPEN</span>
+</div>
+<div class="flex justify-between">
+<span>INTERNAL REVIEWS</span>
+<span class="font-bold text-primary">48H SLA</span>
+</div>
+<div class="flex justify-between">
+<span>TOP DISCIPLINE</span>
+<span class="font-bold text-primary">SYSTEMS ARCHITECTURE</span>
+</div>
+</div>
+</div>
+<!-- Pillar 03: Mentorship & Flash Sessions -->
+<div class="p-pad-lg bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-pad-sm mb-pad-md">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ PILLAR 03 // FELLOWSHIPS ]</span>
+<span class="font-label-mono-xs text-label-mono-xs uppercase bg-surface-container px-pad-xs py-0.5 text-on-surface">FLASH 1-ON-1</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary mb-pad-xs">
+              Mentorship &amp; Flash 1-on-1 Sessions
+            </h3>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              High-impact 15-to-30 minute micro-consults. Frictionless calendar sync with Google Meet integration, paired agenda topics, and dual-confirmed handshakes.
+            </p>
+</div>
+<div class="mt-pad-lg flex items-center justify-between font-label-mono text-label-mono uppercase pt-pad-sm">
+<span>SLOT CAPACITY: 120/WK</span>
+<a class="font-bold text-primary hover:opacity-80" data-path="mentorship" href="#">Book Flash →</a>
+</div>
+</div>
+<!-- Pillar 04: Events & RSVPs -->
+<div class="p-pad-lg bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-pad-sm mb-pad-md">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ PILLAR 04 // SYMPOSIA ]</span>
+<span class="font-label-mono-xs text-label-mono-xs uppercase bg-surface-container px-pad-xs py-0.5 text-on-surface">CALENDAR SYNC</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary mb-pad-xs">
+              Events, Reunions &amp; Capacity RSVPs
+            </h3>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              Private collegiate salons, AI masterclasses, and regional alumni dinners. Strict capacity enforcement with automated waitlist elevation and QR credentials.
+            </p>
+</div>
+<div class="mt-pad-lg flex items-center justify-between font-label-mono text-label-mono uppercase pt-pad-sm">
+<span>UPCOMING: NY TECH SALON</span>
+<span class="font-bold text-primary">T-MINUS 6D</span>
+</div>
+</div>
+<!-- Pillar 05: Feed & Milestones -->
+<div class="p-pad-lg bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-pad-sm mb-pad-md">
+<span class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant">[ PILLAR 05 // CHRONICLE ]</span>
+<span class="font-label-mono-xs text-label-mono-xs uppercase bg-surface-container px-pad-xs py-0.5 text-on-surface">LEDGER VERIFIED</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary mb-pad-xs">
+              Community Feed &amp; Milestone Wall
+            </h3>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              A high-signal academic broadsheet wall documenting promotions, peer-reviewed publications, open-source releases, and confirmed offers.
+            </p>
+</div>
+<div class="mt-pad-lg flex items-center justify-between font-label-mono text-label-mono uppercase pt-pad-sm">
+<span>LATEST: 32 OFFERS ACCEPTED</span>
+<a class="font-bold text-primary hover:opacity-80" data-path="announcements" href="#">Read Gazette →</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: ROLE-AWARE ARCHITECTURE (4 PERSONAS) -->
+<section class="w-full bg-surface-container-low py-pad-2xl px-gutter-desktop">
+<div class="max-w-6xl mx-auto space-y-pad-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-pad-md">
+<div>
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant tracking-wider mb-pad-xs">
+            [ MULTI-TENANT ACCESS // 04 PERSONAS ]
+          </div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-primary tracking-tight">
+            Tailored Architectural Consoles for Every Stakeholder.
+          </h2>
+</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase">
+          ROLE-BASED PERMISSIONS: RBAC-LEVEL-4
+        </div>
+</div>
+<!-- Segmented Persona Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-pad-md">
+<!-- Persona 1: Student -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="space-y-pad-sm">
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-primary font-bold">
+              01 // UNDERGRAD &amp; GRADUATE
+            </div>
+<h4 class="font-headline-md text-headline-md uppercase text-primary">Student Candidates</h4>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              Generate tailored referral packets, query alumni vectors by match relevance, and lock in flash mentoring with leaders in your target domain.
+            </p>
+<ul class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface space-y-pad-xs pt-pad-xs">
+<li>• One-Click Referral Dossiers</li>
+<li>• AI Resume Alignment Score</li>
+<li>• Flash Slot Reservations</li>
+</ul>
+</div>
+<div class="mt-pad-lg pt-pad-xs">
+<a class="font-label-mono text-label-mono uppercase text-primary font-bold hover:underline" data-path="register" href="#">Student Entry →</a>
+</div>
+</div>
+<!-- Persona 2: Alumni -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="space-y-pad-sm">
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-primary font-bold">
+              02 // WORKING INDUSTRY FELLOW
+            </div>
+<h4 class="font-headline-md text-headline-md uppercase text-primary">Verified Alumni</h4>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              Pay forward opportunities effortlessly. Manage pre-screened referral requests with preset quotas and host structured 15-minute guidance chats.
+            </p>
+<ul class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface space-y-pad-xs pt-pad-xs">
+<li>• Cap Maximum Monthly Referrals</li>
+<li>• Pre-vetted Student Profiles</li>
+<li>• Verified Company Badging</li>
+</ul>
+</div>
+<div class="mt-pad-lg pt-pad-xs">
+<a class="font-label-mono text-label-mono uppercase text-primary font-bold hover:underline" data-path="register" href="#">Alumni Portal →</a>
+</div>
+</div>
+<!-- Persona 3: Faculty -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="space-y-pad-sm">
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-primary font-bold">
+              03 // ACADEMIC DEPARTMENT
+            </div>
+<h4 class="font-headline-md text-headline-md uppercase text-primary">Faculty &amp; Labs</h4>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              Bridge classroom research directly to industry labs. Track where graduates land, source guest seminar speakers, and coordinate grant co-sponsorships.
+            </p>
+<ul class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface space-y-pad-xs pt-pad-xs">
+<li>• Research Lab Placements</li>
+<li>• Guest Lecturer Dispatch</li>
+<li>• Thesis Industry Advisers</li>
+</ul>
+</div>
+<div class="mt-pad-lg pt-pad-xs">
+<a class="font-label-mono text-label-mono uppercase text-primary font-bold hover:underline" data-path="register" href="#">Faculty Access →</a>
+</div>
+</div>
+<!-- Persona 4: Administrator -->
+<div class="p-pad-md bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="space-y-pad-sm">
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-primary font-bold">
+              04 // UNIVERSITY ADVANCEMENT
+            </div>
+<h4 class="font-headline-md text-headline-md uppercase text-primary">Dean &amp; Advancement</h4>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+              Audit live placement analytics, export accreditation telemetry, verify student credentials, and nurture lifelong institutional affinity.
+            </p>
+<ul class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface space-y-pad-xs pt-pad-xs">
+<li>• Real-Time Employment Rates</li>
+<li>• SAML / Okta Integration</li>
+<li>• Audit-Ready Reporting</li>
+</ul>
+</div>
+<div class="mt-pad-lg pt-pad-xs">
+<a class="font-label-mono text-label-mono uppercase text-primary font-bold hover:underline" data-path="register" href="#">Admin Console →</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: TECHNICAL ARCHITECTURE & PGVECTOR QUERY -->
+<section class="w-full bg-surface py-pad-2xl px-gutter-desktop">
+<div class="max-w-6xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop">
+<!-- Left: Rationale & Google Workspace Native Suite -->
+<div class="lg:col-span-5 space-y-pad-md">
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant tracking-wider">
+            [ ENGINE SPECIFICATION // VECTOR TOPOLOGY ]
+          </div>
+<h2 class="font-headline-lg text-headline-lg uppercase tracking-tight text-primary">
+            Sub-10ms Vector Proximity Search.
+          </h2>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+            Built atop Google Gemini text embeddings and PostgreSQL <code class="font-label-mono text-label-mono bg-surface-container px-pad-xs">pgvector</code> HNSW indexing. We calculate multidimensional proximity across alumni technical competencies, departmental lineage, and current hiring demand.
+          </p>
+<div class="pt-pad-sm space-y-pad-xs font-label-mono text-label-mono uppercase">
+<div class="p-pad-xs bg-surface-container text-on-surface flex justify-between">
+<span>EMBEDDING MODEL</span>
+<span class="font-bold">GOOGLE-GEMINI-V2</span>
+</div>
+<div class="p-pad-xs bg-surface-container text-on-surface flex justify-between">
+<span>INDEX ALGORITHM</span>
+<span class="font-bold">HNSW (m=16, ef_construction=64)</span>
+</div>
+<div class="p-pad-xs bg-surface-container text-on-surface flex justify-between">
+<span>SIMILARITY METRIC</span>
+<span class="font-bold">COSINE DISTANCE (&lt;=&gt;)</span>
+</div>
+<div class="p-pad-xs bg-surface-container text-on-surface flex justify-between">
+<span>QUERY TIME</span>
+<span class="font-bold">7.2ms AT 100K NODES</span>
+</div>
+</div>
+<!-- Native Google Workspace Badge -->
+<div class="p-pad-sm bg-surface-container-low text-on-surface-variant font-label-mono-xs text-label-mono-xs space-y-pad-xs">
+<div class="font-bold text-primary uppercase">[ NATIVE GOOGLE WORKSPACE PROTOCOLS ]</div>
+<p class="font-body-regular text-body-condensed">Direct sync with Google Calendar for flash availability, Google Docs for interactive dossier markup, and automated Gmail priority notification filters.</p>
+</div>
+</div>
+<!-- Right: Raw SQL Query Terminal -->
+<div class="lg:col-span-7 bg-primary-container text-surface p-pad-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-pad-xs mb-pad-md font-label-mono-xs text-label-mono-xs text-on-primary-container">
+<span>SQL QUERY RUNNER // PRODUCTION NODE 01</span>
+<span>READ COMMITTED</span>
+</div>
+<pre class="font-label-mono text-label-mono text-surface-container-low overflow-x-auto leading-relaxed"><span class="text-secondary-fixed-dim">-- Semantic Alumni Discovery via pgvector HNSW</span>
+<span class="text-tertiary-fixed-dim">SELECT</span> 
+    a.alumni_id,
+    a.full_name,
+    a.current_company,
+    a.verified_role,
+    <span class="text-tertiary-fixed-dim">1</span> - (a.profile_embedding &lt;=&gt; q.query_vector) <span class="text-tertiary-fixed-dim">AS</span> cosine_similarity
+<span class="text-tertiary-fixed-dim">FROM</span> 
+    institutional_alumni a,
+    (
+        <span class="text-tertiary-fixed-dim">SELECT</span> gemini_embed_text(
+            <span class="text-surface-tint">'Distributed systems, SRE, fault tolerance'</span>
+        )::vector(<span class="text-tertiary-fixed-dim">384</span>) <span class="text-tertiary-fixed-dim">AS</span> query_vector
+    ) q
+<span class="text-tertiary-fixed-dim">WHERE</span> 
+    a.referral_quota_active = <span class="text-tertiary-fixed-dim">TRUE</span>
+    <span class="text-tertiary-fixed-dim">AND</span> a.verified_status = <span class="text-surface-tint">'ACCREDITED'</span>
+<span class="text-tertiary-fixed-dim">ORDER BY</span> 
+    a.profile_embedding &lt;=&gt; q.query_vector <span class="text-tertiary-fixed-dim">ASC</span>
+<span class="text-tertiary-fixed-dim">LIMIT</span> 5;</pre>
+</div>
+<div class="pt-pad-md mt-pad-md flex items-center justify-between font-label-mono-xs text-label-mono-xs text-on-primary-container">
+<span>INDEX EXECUTION: INDEX SCAN USING idx_alumni_hnsw</span>
+<span class="text-surface-tint">TOTAL: 6.84ms</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: SOCIAL PROOF & ALUMNI SPOTLIGHT -->
+<section class="w-full bg-surface-container-low py-pad-2xl px-gutter-desktop">
+<div class="max-w-6xl mx-auto space-y-pad-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-pad-md">
+<div>
+<div class="font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant tracking-wider mb-pad-xs">
+            [ FIELD VERIFICATION // FELLOW TESTIMONIALS ]
+          </div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-primary tracking-tight">
+            Verified Testimonials From Industry Champions.
+          </h2>
+</div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase">
+          AUTHENTICATED ALUMNI NODES
+        </div>
+</div>
+<!-- Testimonial Broadsheet Columns -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-pad-md">
+<!-- Quote 1 -->
+<div class="p-pad-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="space-y-pad-sm">
+<div class="flex items-center justify-between">
+<span class="px-pad-xs py-0.5 bg-surface-container text-on-surface font-label-mono-xs text-label-mono-xs uppercase font-bold">GOOGLE CLOUD</span>
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface-variant">[ CLASS OF 2018 ]</span>
+</div>
+<p class="font-body-regular text-body-regular text-on-surface italic pt-pad-xs">
+              “Cold InMail was overwhelming and ineffective. PRO-ALUMN gave me pre-screened students from my alma mater whose background was mathematically aligned with our backend infra requisitions. Two hires closed in 60 days.”
+            </p>
+</div>
+<div class="mt-pad-lg pt-pad-sm">
+<div class="font-headline-md text-body-condensed font-bold text-primary uppercase">Marcus Vance</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase">L6 Staff SRE • Google Cloud Storage</div>
+</div>
+</div>
+<!-- Quote 2 -->
+<div class="p-pad-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="space-y-pad-sm">
+<div class="flex items-center justify-between">
+<span class="px-pad-xs py-0.5 bg-surface-container text-on-surface font-label-mono-xs text-label-mono-xs uppercase font-bold">AMAZON AWS</span>
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface-variant">[ CLASS OF 2020 ]</span>
+</div>
+<p class="font-body-regular text-body-regular text-on-surface italic pt-pad-xs">
+              “The 15-minute flash mentorship format completely changes the dynamic. It prevents conversational fatigue while allowing me to review portfolios rapidly and refer candidates directly to hiring directors.”
+            </p>
+</div>
+<div class="mt-pad-lg pt-pad-sm">
+<div class="font-headline-md text-body-condensed font-bold text-primary uppercase">Elena Rostova</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase">SDE II • Amazon Elastic Kubernetes Service</div>
+</div>
+</div>
+<!-- Quote 3 -->
+<div class="p-pad-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="space-y-pad-sm">
+<div class="flex items-center justify-between">
+<span class="px-pad-xs py-0.5 bg-surface-container text-on-surface font-label-mono-xs text-label-mono-xs uppercase font-bold">META AI</span>
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface-variant">[ CLASS OF 2017 ]</span>
+</div>
+<p class="font-body-regular text-body-regular text-on-surface italic pt-pad-xs">
+              “The state machine tracking offers peace of mind. Both the student and I know the exact status of the referral inside our system. No awkward follow-ups, just crisp computational accountability.”
+            </p>
+</div>
+<div class="mt-pad-lg pt-pad-sm">
+<div class="font-headline-md text-body-condensed font-bold text-primary uppercase">Kareem Al-Sayed</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase">Senior Research Scientist • Meta Fundamental AI</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 7: FINAL CALL TO ACTION BANNER -->
+<section class="w-full bg-primary text-on-primary py-pad-2xl px-gutter-desktop">
+<div class="max-w-5xl mx-auto flex flex-col items-center text-center space-y-pad-lg">
+<div class="font-label-mono-xs text-label-mono-xs uppercase tracking-widest text-on-primary-container">
+        [ IMMEDIATE ACCREDITATION // DEPLOYED CAMPUS-WIDE ]
+      </div>
+<h2 class="font-headline-xl text-headline-xl uppercase tracking-tighter max-w-3xl">
+        Start Accelerating Your Career Today.
+      </h2>
+<p class="font-body-lead text-body-lead text-tertiary-fixed-dim max-w-2xl">
+        Join over 1,200 verified engineers, product architects, and institutional researchers across leading technology organisations worldwide.
+      </p>
+<div class="flex flex-col sm:flex-row gap-pad-md items-center pt-pad-md">
+<a class="px-pad-xl py-pad-sm bg-surface text-primary font-label-mono text-label-mono uppercase hover:bg-surface-container-highest transition-none" data-path="register" href="#">
+          Claim Your Profile →
+        </a>
+<a class="px-pad-xl py-pad-sm bg-transparent text-on-primary font-label-mono text-label-mono uppercase hover:bg-primary-container transition-none" data-path="login" href="#">
+          Verify via SSO
+        </a>
+</div>
+<div class="pt-pad-lg font-label-mono-xs text-label-mono-xs text-on-primary-container uppercase tracking-wider flex items-center gap-pad-md">
+<span>• ZERO PLATFORM FEES FOR STUDENTS</span>
+<span>• FERPA &amp; SOC-2 TYPE II CERTIFIED</span>
+<span>• INSTANT .EDU VERIFICATION</span>
+</div>
+</div>
+</section>
+</div>
+<script>
+  function fillQuery(text) {
+    var input = document.getElementById('vectorSearchInput');
+    if (input) {
+      input.value = text;
+      var result = document.getElementById('vectorSearchResult');
+      if (result) {
+        result.classList.remove('hidden');
+      }
+    }
+  }
+</script></main><footer class="w-full bg-surface border-t border-primary"><div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 border-b border-primary"><div class="lg:col-span-4 p-pad-lg border-b lg:border-b-0 lg:border-r border-primary flex flex-col justify-between"><div class="space-y-pad-sm"><div class="flex items-center gap-pad-xs"><span class="font-label-mono text-label-mono font-bold">/////</span><span class="font-headline-md text-headline-md uppercase tracking-tight">PRO-ALUMN</span></div><p class="font-body-regular text-body-regular text-on-surface-variant">The collegiate broadsheet index and intellectual network for verified alumni, researchers, and professional fellows across accredited faculties.</p></div><div class="pt-pad-lg"><div class="inline-flex items-center gap-pad-xs border border-primary px-pad-sm py-pad-xs font-label-mono-xs text-label-mono-xs uppercase text-on-surface"><span class="inline-block w-2 h-2 bg-primary"></span>System Infrastructure: Google Cloud &amp; pgvector Enabled</div></div></div><div class="lg:col-span-3 p-pad-lg border-b md:border-b-0 lg:border-r border-primary space-y-pad-md"><div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase tracking-wider">[ INDEX DIRECTORY // SITEMAP ]</div><ul class="space-y-pad-xs font-label-mono text-label-mono uppercase"><li class="border-b border-outline-variant pb-pad-xs"><a class="hover:text-on-surface-variant transition-none block" data-path="directory" href="#">01. Faculty &amp; Alumni Directory →</a></li><li class="border-b border-outline-variant pb-pad-xs"><a class="hover:text-on-surface-variant transition-none block" data-path="jobs-and-referrals" href="#">02. Dispatches &amp; Opportunities →</a></li><li class="border-b border-outline-variant pb-pad-xs"><a class="hover:text-on-surface-variant transition-none block" data-path="mentorship" href="#">03. Fellowships &amp; Mentorship →</a></li><li class="border-b border-outline-variant pb-pad-xs"><a class="hover:text-on-surface-variant transition-none block" data-path="announcements" href="#">04. Gazette &amp; Bulletins →</a></li><li><a class="hover:text-on-surface-variant transition-none block" data-path="education" href="#">05. Advanced Research Modules →</a></li></ul></div><div class="lg:col-span-3 p-pad-lg border-b md:border-b-0 lg:border-r border-primary space-y-pad-md"><div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase tracking-wider">[ PROTOCOLS // LEGAL &amp; GOVERNANCE ]</div><ul class="space-y-pad-xs font-label-mono text-label-mono uppercase"><li><a class="hover:text-on-surface-variant transition-none block" data-path="academic-charter" href="#">Academic Charter</a></li><li><a class="hover:text-on-surface-variant transition-none block" data-path="data-privacy" href="#">Cryptographic Privacy Ledger</a></li><li><a class="hover:text-on-surface-variant transition-none block" data-path="terms" href="#">Terms of Affiliation</a></li><li><a class="hover:text-on-surface-variant transition-none block" data-path="ethics" href="#">Peer Review Ethics</a></li><li><a class="hover:text-on-surface-variant transition-none block" data-path="security" href="#">Vector Index Governance</a></li></ul></div><div class="lg:col-span-2 p-pad-lg flex flex-col justify-between space-y-pad-md"><div class="space-y-pad-xs"><div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase tracking-wider">[ TELEMETRY ]</div><div class="font-label-mono-xs text-label-mono-xs"><div class="text-primary font-bold">█ NODE: ACTIVE-01</div><div class="text-on-surface-variant">LATENCY: 14MS</div><div class="text-on-surface-variant">REGISTRY: VERIFIED</div></div></div><div class="border-t border-outline-variant pt-pad-sm font-label-mono-xs text-label-mono-xs uppercase text-on-surface-variant"><span class="block font-bold text-on-surface">ACCREDITATION</span>Office of Academic Records &amp; University Alumni Registries</div></div></div><div class="w-full px-gutter-desktop py-pad-sm flex flex-col sm:flex-row items-center justify-between font-label-mono-xs text-label-mono-xs text-on-surface-variant gap-pad-xs"><div>© 2025 PRO-ALUMN CONSORTIUM. ALL RIGHTS RESERVED. PRINTED DIGITALLY.</div><div class="flex items-center gap-pad-md"><span class="text-primary font-bold">EDITION 14.8.2</span><span>ENCRYPTED REPOSITORY</span></div></div></footer></body></html>

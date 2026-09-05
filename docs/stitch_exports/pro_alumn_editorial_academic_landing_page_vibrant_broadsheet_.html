@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-container": "#848484", "tertiary-fixed-dim": "#c6c6c6", "surface-container": "#eeeeee", "on-secondary": "#ffffff", "on-tertiary-fixed": "#1b1b1b", "primary-fixed-dim": "#c6c6c6", "secondary-fixed-dim": "#c6c6c6", "on-secondary-fixed": "#1b1b1b", "error": "#ba1a1a", "surface-container-highest": "#e2e2e2", "inverse-surface": "#2f3131", "outline": "#7e7576", "tertiary-container": "#1b1b1b", "outline-variant": "#cfc4c5", "on-tertiary-fixed-variant": "#474747", "secondary": "#5e5e5e", "error-container": "#ffdad6", "on-error": "#ffffff", "secondary-container": "#e2e2e2", "surface-dim": "#dadada", "on-surface-variant": "#4c4546", "on-primary-fixed": "#1b1b1b", "surface-container-high": "#e8e8e8", "on-tertiary-container": "#848484", "tertiary": "#000000", "on-secondary-container": "#646464", "inverse-on-surface": "#f0f1f1", "inverse-primary": "#c6c6c6", "on-primary": "#ffffff", "primary": "#000000", "secondary-fixed": "#e2e2e2", "surface-container-low": "#f3f3f4", "surface-variant": "#e2e2e2", "background": "#f9f9f9", "on-secondary-fixed-variant": "#474747", "surface-tint": "#5e5e5e", "surface-bright": "#f9f9f9", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff", "surface": "#f9f9f9", "on-background": "#1a1c1c", "on-surface": "#1a1c1c", "tertiary-fixed": "#e2e2e2", "on-tertiary": "#ffffff", "primary-fixed": "#e2e2e2", "primary-container": "#1b1b1b", "on-primary-fixed-variant": "#474747" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-mobile": "1rem", "gutter-desktop": "2rem", "pad-lg": "2rem", "gutter-mobile": "1rem", "margin-desktop": "3rem", "pad-md": "1rem", "pad-xl": "4rem", "rule-hairline": "1px", "pad-xs": "0.25rem", "pad-sm": "0.5rem", "pad-2xl": "8rem" }, "fontFamily": { "headline-lg": [ "Space Grotesk" ], "display-scaffold": [ "Space Grotesk" ], "body-condensed": [ "Space Grotesk" ], "headline-xl": [ "Space Grotesk" ], "headline-md": [ "Space Grotesk" ], "headline-xl-mobile": [ "Space Grotesk" ], "body-regular": [ "Newsreader" ], "body-lead": [ "Newsreader" ], "display-scaffold-mobile": [ "Space Grotesk" ], "label-mono-xs": [ "JetBrains Mono" ], "label-mono": [ "JetBrains Mono" ] }, "fontSize": { "headline-lg": [ "36px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "display-scaffold": [ "160px", { "lineHeight": "140px", "letterSpacing": "-0.05em", "fontWeight": "700" } ], "body-condensed": [ "14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ], "headline-xl": [ "64px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" } ], "headline-md": [ "24px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "headline-xl-mobile": [ "38px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "body-regular": [ "16px", { "lineHeight": "26px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "body-lead": [ "22px", { "lineHeight": "32px", "letterSpacing": "0em", "fontWeight": "400" } ], "display-scaffold-mobile": [ "80px", { "lineHeight": "76px", "letterSpacing": "-0.04em", "fontWeight": "700" } ], "label-mono-xs": [ "10px", { "lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700" } ], "label-mono": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "500" } ] } } } };</script></head><body class="bg-surface font-body-regular text-on-surface antialiased selection:bg-primary selection:text-on-primary"><header class="fixed top-0 left-0 w-full z-50 bg-[#FCF9F3] border-b-2 border-black">
+<div class="w-full flex items-stretch justify-between h-16">
+<div class="flex items-center px-4 md:px-8 border-r-2 border-black bg-[#FCF9F3]">
+<a class="flex items-center gap-2 group" data-path="landing" href="#">
+<span class="font-['JetBrains_Mono'] text-sm tracking-widest text-black font-black group-hover:text-[#FF5500] transition-colors">/////</span>
+<span class="font-['Space_Grotesk'] text-xl font-black tracking-tighter text-black uppercase">PRO-ALUMN</span>
+</a>
+<div class="hidden xl:flex items-center ml-4 px-2 py-0.5 bg-[#CCFF00] border border-black text-[10px] font-['JetBrains_Mono'] font-bold text-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-ping mr-1.5"></span>
+        SYS.V24 // NODE-ALPHA [PUBLIC_GUEST]
+      </div>
+</div>
+<nav class="hidden lg:flex items-stretch h-full" data-active-classes="bg-black text-white">
+<a class="flex items-center px-4 font-['JetBrains_Mono'] text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors" data-path="directory" href="#">
+        Directory <span class="ml-1.5 px-1 bg-[#CCFF00] text-black text-[9px] font-black border border-black">★ 1.2K</span>
+</a>
+<a class="flex items-center px-4 font-['JetBrains_Mono'] text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors" data-path="jobs-and-referrals" href="#">
+        Jobs &amp; Referrals
+      </a>
+<a class="flex items-center px-4 font-['JetBrains_Mono'] text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors" data-path="mentorship" href="#">
+        Mentorship
+      </a>
+<a class="flex items-center px-4 font-['JetBrains_Mono'] text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors" data-path="announcements" href="#">
+        Announcements
+      </a>
+<a class="flex items-center px-4 font-['JetBrains_Mono'] text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors" data-path="education" href="#">
+        Education
+      </a>
+</nav>
+<div class="flex items-stretch">
+<a class="flex items-center px-4 font-['JetBrains_Mono'] text-xs font-bold uppercase text-black border-l-2 border-black hover:bg-black hover:text-white transition-colors" data-path="login" href="#">
+        Login
+      </a>
+<a class="flex items-center gap-2 px-5 font-['JetBrains_Mono'] text-xs font-black uppercase bg-[#FF5500] text-white border-l-2 border-black hover:bg-[#E04B00] shadow-[inset_-2px_0px_0px_0px_#000000] transition-colors" data-path="register" href="#">
+        Get Started <span class="font-black">→</span>
+</a>
+<div class="flex items-center px-4 border-l-2 border-black bg-[#EFECE4]">
+<div class="w-8 h-8 rounded-full bg-black flex items-center justify-center border border-black shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[#CCFF00] text-[18px]">person</span>
+</div>
+</div>
+</div>
+</div>
+</header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full bg-[#FCF9F3]">
+<!-- SECTION 1: ARCHITECTURAL HERO & BROADSHEET MASTHEAD -->
+<section class="w-full bg-[#FCF9F3] border-b-2 border-black">
+<!-- Masthead Gazette Sub-header Strip -->
+<div class="w-full px-4 md:px-8 py-2 bg-[#EFECE4] border-b border-black flex flex-col md:flex-row justify-between items-center text-black font-['JetBrains_Mono'] text-[11px] font-semibold tracking-wider uppercase gap-2">
+<div class="flex flex-wrap items-center gap-3">
+<span class="px-2 py-0.5 bg-black text-[#CCFF00] font-black border border-black">DISPATCH NO. 448</span>
+<span class="flex items-center gap-1.5 text-[#1A1A1A]"><span class="w-2 h-2 rounded-full bg-[#00E676]"></span>INDEXED IN POSTGRESQL + PGVECTOR</span>
+</div>
+<div class="flex flex-wrap items-center gap-4 text-[#474746]">
+<span>LATENCY: <strong class="text-black font-bold">8.4MS [US-CENTRAL1]</strong></span>
+<span class="hidden sm:inline">•</span>
+<span>SEMANTIC COSINE THRESHOLD: <strong class="text-black font-bold">0.884</strong></span>
+<span class="px-2 py-0.5 bg-[#00E676]/20 text-[#00873E] border border-[#00A34D] font-bold text-[10px]">● STATE: PRODUCTION STABLE</span>
+</div>
+</div>
+<!-- Editorial Scaffolding & Title Block -->
+<div class="w-full px-4 md:px-8 pt-10 pb-8 bg-[#FCF9F3]">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-[#CCFF00] text-black font-['JetBrains_Mono'] text-xs font-black uppercase tracking-wider mb-6 border-2 border-black shadow-[3px_3px_0px_0px_#000000]">
+<span class="inline-block w-2.5 h-2.5 bg-black"></span>
+        AI-POWERED ALUMNI INTELLIGENCE // GOOGLE CLOUD &amp; PGVECTOR
+      </div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+<div class="lg:col-span-8 space-y-4">
+<h1 class="font-['Space_Grotesk'] text-4xl sm:text-5xl lg:text-[62px] lg:leading-[1.05] font-black uppercase tracking-tighter text-black">
+            Where Alumni Networks Power <span class="bg-[#CCFF00] px-2 py-0.5 border-2 border-black shadow-[4px_4px_0px_0px_#000000] inline-block mt-1">Fast-Track Careers.</span>
+</h1>
+</div>
+<div class="lg:col-span-4 pb-1">
+<div class="p-4 bg-[#F7F4EE] border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+<div class="font-['JetBrains_Mono'] text-[10px] font-bold text-[#1D4ED8] uppercase mb-1">// MISSION PROTOCOL</div>
+<p class="font-['Newsreader'] text-lg text-[#1A1A1A] italic leading-snug">
+              Connecting students with verified alumni champions via 384-dimensional vector embeddings, driving warm referrals across a transparent, state-governed hiring lifecycle.
+            </p>
+</div>
+</div>
+</div>
+<!-- Action Row & Direct Vector Prompt -->
+<div class="mt-8 pt-4 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+<a class="inline-flex items-center justify-center px-6 py-3.5 bg-[#FF5500] text-white font-['JetBrains_Mono'] text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000000] transition-all" data-path="register" href="#">
+          Create Free Fellow Account →
+        </a>
+<a class="inline-flex items-center justify-center px-6 py-3.5 bg-[#FCF9F3] text-black font-['JetBrains_Mono'] text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#EFECE4] transition-all" data-path="directory" href="#">
+          Explore Directory [1,248+]
+        </a>
+<div class="sm:ml-auto flex items-center gap-2 font-['JetBrains_Mono'] text-xs font-bold uppercase text-black bg-[#EFECE4] px-3 py-2 border border-black">
+<span class="material-symbols-outlined text-base text-[#1D4ED8]">verified_user</span>
+<span>Dual-Handshake Institutional Auth Guaranteed</span>
+</div>
+</div>
+</div>
+<!-- Interactive Broad-Search Terminal Console -->
+<div class="w-full bg-[#EFECE4] px-4 md:px-8 py-6 border-t-2 border-black">
+<div class="max-w-6xl mx-auto flex flex-col gap-3">
+<div class="flex items-center justify-between font-['JetBrains_Mono'] text-xs font-bold uppercase text-[#474746]">
+<span class="flex items-center gap-2"><span class="w-2 h-2 bg-[#FF5500]"></span>// INSTANT EMBEDDING LOOKUP ENGINE</span>
+<span class="bg-black text-[#CCFF00] px-2 py-0.5 border border-black text-[11px]">INDEX: pgv_alumni_embeddings_hnsw</span>
+</div>
+<div class="flex flex-col md:flex-row items-stretch bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+<div class="flex items-center px-4 py-3 bg-[#FCF9F3] border-b md:border-b-0 md:border-r-2 border-black text-black font-['JetBrains_Mono'] text-xs font-bold uppercase whitespace-nowrap">
+<span class="material-symbols-outlined text-lg mr-2 text-[#1D4ED8]">manage_search</span>
+<span>VECTOR QUERY:</span>
+</div>
+<input class="w-full px-4 py-3 bg-transparent font-['Space_Grotesk'] text-sm text-black focus:outline-none placeholder:italic placeholder:text-[#635F57] font-medium" id="vectorSearchInput" placeholder="e.g. Distributed systems engineer with Kubernetes expertise willing to mentor underrepresented graduates..." type="text"/>
+<button class="px-6 py-3 bg-[#CCFF00] text-black font-['JetBrains_Mono'] text-xs font-black uppercase hover:bg-black hover:text-[#CCFF00] whitespace-nowrap border-t md:border-t-0 md:border-l-2 border-black transition-colors" onclick="document.getElementById('vectorSearchResult').classList.remove('hidden');" type="button">
+            Compute Match (384-D) ↵
+          </button>
+</div>
+<!-- Semantic pill tokens -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<span class="font-['JetBrains_Mono'] text-xs font-bold text-black uppercase mr-1">Target Hubs:</span>
+<button class="px-2.5 py-1 bg-white hover:bg-black hover:text-[#CCFF00] text-black font-['JetBrains_Mono'] text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors" onclick="fillQuery('Google L6 Site Reliability Engineer')">Google</button>
+<button class="px-2.5 py-1 bg-white hover:bg-black hover:text-[#CCFF00] text-black font-['JetBrains_Mono'] text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors" onclick="fillQuery('Microsoft Azure Core Kernel Engineer')">Microsoft</button>
+<button class="px-2.5 py-1 bg-white hover:bg-black hover:text-[#CCFF00] text-black font-['JetBrains_Mono'] text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors" onclick="fillQuery('Amazon AWS Distributed Databases SDE II')">Amazon</button>
+<button class="px-2.5 py-1 bg-white hover:bg-black hover:text-[#CCFF00] text-black font-['JetBrains_Mono'] text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors" onclick="fillQuery('Meta Infrastructure &amp; PyTorch Performance')">Meta</button>
+<button class="px-2.5 py-1 bg-[#1D4ED8] text-white hover:bg-black font-['JetBrains_Mono'] text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors" onclick="fillQuery('Staff Site Reliability Engineer High-Throughput')">Systems / SRE</button>
+<button class="px-2.5 py-1 bg-[#FF5500] text-white hover:bg-black font-['JetBrains_Mono'] text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors" onclick="fillQuery('Technical Product Manager AI Platform Growth')">Product Architect</button>
+<button class="px-2.5 py-1 bg-[#CCFF00] text-black hover:bg-black hover:text-[#CCFF00] font-['JetBrains_Mono'] text-xs font-black border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors" onclick="fillQuery('LLM Fine-Tuning &amp; Quantization ML Engineer')">Machine Learning</button>
+</div>
+<!-- Dynamic inline match result preview -->
+<div class="hidden mt-2 p-3 bg-black text-white flex flex-col md:flex-row md:items-center justify-between font-['JetBrains_Mono'] text-xs border-2 border-black shadow-[4px_4px_0px_0px_#000000] gap-2" id="vectorSearchResult">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-[#CCFF00] text-black font-black uppercase text-[10px]">★ 0.942 COSINE MATCH</span>
+<span class="font-bold">Dr. Aris Thorne</span> (Staff Infra Architect @ DeepMind) • <span class="text-[#00E676] font-bold">Status: Open for 2 Referrals</span>
+</div>
+<a class="text-[#CCFF00] font-black underline hover:text-white uppercase" data-path="directory" href="#">Inspect Dossier →</a>
+</div>
+</div>
+</div>
+<!-- Telemetry Strip Metrics (4 Columns) -->
+<div class="w-full grid grid-cols-2 lg:grid-cols-4 bg-black gap-[2px] border-t-2 border-black">
+<div class="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-['JetBrains_Mono'] text-[11px] uppercase text-[#474746] font-bold">[ TELEMETRY // 01 ]</span>
+<span class="w-2 h-2 bg-[#00E676] rounded-full"></span>
+</div>
+<div class="my-4">
+<div class="font-['Space_Grotesk'] text-4xl font-black text-black tracking-tight">1,248+</div>
+<div class="font-['Space_Grotesk'] text-sm font-bold text-black uppercase mt-1">Verified Alumni Fellows</div>
+</div>
+<div class="font-['JetBrains_Mono'] text-[11px] text-[#474746] border-t border-black/10 pt-2">Auth via .edu / SAML SSO</div>
+</div>
+<div class="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-['JetBrains_Mono'] text-[11px] uppercase text-[#1D4ED8] font-bold">[ TELEMETRY // 02 ]</span>
+<span class="px-1.5 py-0.5 bg-[#1D4ED8] text-white text-[9px] font-black font-['JetBrains_Mono']">HIGH SIGNAL</span>
+</div>
+<div class="my-4">
+<div class="font-['Space_Grotesk'] text-4xl font-black text-[#1D4ED8] tracking-tight">88.4%</div>
+<div class="font-['Space_Grotesk'] text-sm font-bold text-black uppercase mt-1">Warm Referral Interview Rate</div>
+</div>
+<div class="font-['JetBrains_Mono'] text-[11px] text-[#474746] border-t border-black/10 pt-2">Vs. 3.2% cold applicant benchmark</div>
+</div>
+<div class="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-['JetBrains_Mono'] text-[11px] uppercase text-black font-bold">[ TELEMETRY // 03 ]</span>
+<span class="px-1.5 py-0.5 bg-[#CCFF00] text-black text-[9px] font-black font-['JetBrains_Mono'] border border-black">AI EMBED</span>
+</div>
+<div class="my-4">
+<div class="font-['Space_Grotesk'] text-4xl font-black text-black tracking-tight">384-Dim</div>
+<div class="font-['Space_Grotesk'] text-sm font-bold text-black uppercase mt-1">Gemini Embedding Precision</div>
+</div>
+<div class="font-['JetBrains_Mono'] text-[11px] text-[#474746] border-t border-black/10 pt-2">PostgreSQL pgvector cosine retrieval</div>
+</div>
+<div class="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-['JetBrains_Mono'] text-[11px] uppercase text-[#FF5500] font-bold">[ TELEMETRY // 04 ]</span>
+<span class="px-1.5 py-0.5 bg-[#FF5500] text-white text-[9px] font-black font-['JetBrains_Mono']">PARTNERS</span>
+</div>
+<div class="my-4">
+<div class="font-['Space_Grotesk'] text-4xl font-black text-[#FF5500] tracking-tight">40+</div>
+<div class="font-['Space_Grotesk'] text-sm font-bold text-black uppercase mt-1">Partner Tech Corporations</div>
+</div>
+<div class="font-['JetBrains_Mono'] text-[11px] text-[#474746] border-t border-black/10 pt-2">Direct requisition mapping conduits</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: REFERRAL LIFECYCLE STATE MACHINE -->
+<section class="w-full bg-[#EFECE4] py-16 px-4 md:px-8 border-b-2 border-black">
+<div class="max-w-6xl mx-auto space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-black font-bold tracking-wider mb-2 flex items-center gap-2">
+<span class="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-black">PROTOCOL SPECIFICATION</span>
+<span>// LIFECYCLE DISPATCH</span>
+</div>
+<h2 class="font-['Space_Grotesk'] text-3xl md:text-4xl uppercase text-black font-black tracking-tight">
+            No Generic Cold Applications. Structured Warm Referrals.
+          </h2>
+</div>
+<div class="font-['JetBrains_Mono'] text-xs font-bold text-black uppercase bg-white px-3 py-1.5 border-2 border-black shadow-[3px_3px_0px_0px_#000000]">
+          STATE MACHINE ENGINE: pg_referral_fsm_v4
+        </div>
+</div>
+<!-- State Machine Stepper Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Step 01 -->
+<div class="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div>
+<div class="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black">PHASE 01</span>
+<span class="px-2 py-0.5 bg-[#EFECE4] border border-black text-black font-['JetBrains_Mono'] text-[10px] font-bold uppercase">STATE: PENDING</span>
+</div>
+<div class="font-['Space_Grotesk'] text-lg font-black text-black mb-2 uppercase leading-snug">
+              Targeted Dossier Submission
+            </div>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Candidate selects an open requisition from verified alumni corporate boards, attaching a tailored resume and personalized match rationale.
+            </p>
+</div>
+<div class="mt-6 pt-3 border-t border-black font-['JetBrains_Mono'] text-xs uppercase text-black font-bold flex justify-between items-center">
+<span class="text-[#FF5500] font-black">█ SLA: 72H RESPONSE</span>
+<span class="text-black font-black text-base">→</span>
+</div>
+</div>
+<!-- Step 02 -->
+<div class="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div>
+<div class="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black">PHASE 02</span>
+<span class="px-2 py-0.5 bg-[#1D4ED8] text-white font-['JetBrains_Mono'] text-[10px] font-bold uppercase">STATE: SCREENED</span>
+</div>
+<div class="font-['Space_Grotesk'] text-lg font-black text-black mb-2 uppercase leading-snug">
+              Peer Verification &amp; Review
+            </div>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Alumnus conducts an asynchronous review or conducts a 15-minute flash screening session, offering inline code/portfolio annotations.
+            </p>
+</div>
+<div class="mt-6 pt-3 border-t border-black font-['JetBrains_Mono'] text-xs uppercase text-black font-bold flex justify-between items-center">
+<span class="text-[#1D4ED8] font-black">█ DUAL SIGN-OFF</span>
+<span class="text-black font-black text-base">→</span>
+</div>
+</div>
+<!-- Step 03 -->
+<div class="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div>
+<div class="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black">PHASE 03</span>
+<span class="px-2 py-0.5 bg-[#FF5500] text-white font-['JetBrains_Mono'] text-[10px] font-bold uppercase">STATE: REFERRED</span>
+</div>
+<div class="font-['Space_Grotesk'] text-lg font-black text-black mb-2 uppercase leading-snug">
+              Internal Portal Dispatch
+            </div>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Alumnus submits candidate directly into internal corporate routing (Workday, Greenhouse, Taleo) with candidate identification token.
+            </p>
+</div>
+<div class="mt-6 pt-3 border-t border-black font-['JetBrains_Mono'] text-xs uppercase text-black font-bold flex justify-between items-center">
+<span class="text-black font-black">█ REQ HASH ISSUED</span>
+<span class="text-black font-black text-base">→</span>
+</div>
+</div>
+<!-- Step 04 -->
+<div class="p-5 bg-[#CCFF00] border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black">PHASE 04</span>
+<span class="px-2 py-0.5 bg-black text-[#CCFF00] font-['JetBrains_Mono'] text-[10px] font-black uppercase">STATE: HIRED</span>
+</div>
+<div class="font-['Space_Grotesk'] text-lg font-black text-black mb-2 uppercase leading-snug">
+              Offer Cleared &amp; Celebrated
+            </div>
+<p class="font-['Space_Grotesk'] text-sm text-black leading-relaxed font-medium">
+              Candidate accepts offer letter. Platform archives interview cycle, unlocks alumni mentor badges, and updates institutional metrics.
+            </p>
+</div>
+<div class="mt-6 pt-3 border-t-2 border-black font-['JetBrains_Mono'] text-xs uppercase text-black font-black flex justify-between items-center">
+<span>█ MILESTONE LEDGER</span>
+<span class="text-black font-black text-base">✓</span>
+</div>
+</div>
+</div>
+<!-- State Flow Interactive Monitor Graphic -->
+<div class="w-full bg-black text-white p-4 border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+<div class="flex flex-col md:flex-row items-center justify-between gap-3 font-['JetBrains_Mono'] text-xs uppercase">
+<div class="flex items-center gap-2 text-[#CCFF00]">
+<span class="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-ping"></span>
+<span class="font-bold">ACTIVE LIVE TRANSMISSIONS: 147 CANDIDATES IN FLIGHT</span>
+</div>
+<div class="flex items-center gap-6 text-[#EFECE4]">
+<span>AVG STAGE CONVERSION: <strong class="text-[#CCFF00]">71.8%</strong></span>
+<span>MEDIAN REFERRAL LATENCY: <strong class="text-[#CCFF00]">3.4 DAYS</strong></span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: THE 5 ESSENTIAL PILLARS (EDITORIAL MOSAIC) -->
+<section class="w-full bg-[#FCF9F3] py-16 px-4 md:px-8 border-b-2 border-black">
+<div class="max-w-7xl mx-auto space-y-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-4 border-b-2 border-black">
+<div class="lg:col-span-8">
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-[#1D4ED8] font-bold tracking-wider mb-2 flex items-center gap-2">
+<span class="px-2 py-0.5 bg-[#1D4ED8] text-white font-black">05 PILLARS</span>
+<span>INFRASTRUCTURE FRAMEWORK</span>
+</div>
+<h2 class="font-['Space_Grotesk'] text-3xl md:text-5xl uppercase tracking-tighter text-black font-black">
+            The Complete Architectural Ecosystem.
+          </h2>
+</div>
+<div class="lg:col-span-4 font-['Space_Grotesk'] text-base text-[#474746] leading-relaxed font-medium">
+          Engineered to dismantle friction in collegiate mentorship, internal corporate referrals, and graduate career acceleration.
+        </div>
+</div>
+<!-- Pillars Bento Mosaic -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Pillar 01: Directory & Geo-Map -->
+<div class="lg:col-span-2 p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 mb-4 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-bold uppercase text-[#474746]">[ PILLAR 01 // DIRECTORY &amp; CARTOGRAPHY ]</span>
+<span class="font-['JetBrains_Mono'] text-[11px] font-black uppercase bg-[#CCFF00] border border-black px-2 py-0.5 text-black">HNSW COSINE INDEX</span>
+</div>
+<h3 class="font-['Space_Grotesk'] text-2xl font-black uppercase text-black mb-2">
+              Verified Alumni Directory &amp; Leaflet Geo-Map
+            </h3>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] max-w-2xl leading-relaxed">
+              Locate fellows across San Francisco, Seattle, London, Zurich, and Tokyo. Query by exact company division, tech stack, or graduate cohort year using 384-dimensional semantic similarity ranking.
+            </p>
+</div>
+<!-- Geo Visual Location Canvas -->
+<div class="mt-6 bg-[#FCF9F3] p-3 border-2 border-black">
+<div class="w-full h-48 bg-cover bg-center mb-2 border border-black" data-alt="Stylized map layout" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuARSuDhnPvwnhOSnmK_1pUThw31GYnti1jZtNXEqRiiH2MJO2ucua_Q1bEZ9-6ZHQxTAm7jCYkoG8wLJC2Arl6x6B9BRxNqUcwEBgpVn0aUZIDOTPgiGXp4XX6YJuPch8B8UFrDxdFwKzJ-3-4seKQ0DIdHJyzJagJ6e38L2Lx-w2CVy7ZUoEsC2stkpz1SkNSWr0A-24aNvHDG20li1dq_27xppaqHQO26csA0unbyxzPh8AY_b7o')"></div>
+<div class="flex justify-between items-center font-['JetBrains_Mono'] text-[11px] font-bold uppercase text-black pt-1">
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#00E676]"></span>NODE: SF_BAY_AREA_CLUSTER (N=412)</span>
+<span class="bg-black text-[#CCFF00] px-1.5 py-0.5 text-[10px]">GEO-INDEX: EPSG:4326 // LEAFLET</span>
+</div>
+</div>
+</div>
+<!-- Pillar 02: Career Hub -->
+<div class="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 mb-4 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-bold uppercase text-[#474746]">[ PILLAR 02 // CAREERS ]</span>
+<span class="font-['JetBrains_Mono'] text-[11px] font-black uppercase bg-[#FF5500] text-white px-2 py-0.5 border border-black">DIRECT DISPATCH</span>
+</div>
+<h3 class="font-['Space_Grotesk'] text-2xl font-black uppercase text-black mb-2">
+              Career &amp; Referral Hub
+            </h3>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Live requisition boards linked to alumni referral quotas. Direct submission pipelines bypass general applicant pools with structured endorsement packets.
+            </p>
+</div>
+<div class="mt-6 p-4 bg-[#FCF9F3] border-2 border-black text-black font-['JetBrains_Mono'] text-xs space-y-2">
+<div class="flex justify-between border-b border-black/10 pb-1.5">
+<span class="font-bold uppercase">ACTIVE REQUISITIONS</span>
+<span class="font-black text-[#FF5500]">342 OPEN</span>
+</div>
+<div class="flex justify-between border-b border-black/10 pb-1.5">
+<span class="font-bold uppercase">INTERNAL REVIEWS</span>
+<span class="font-black text-[#1D4ED8]">48H SLA</span>
+</div>
+<div class="flex justify-between pt-0.5">
+<span class="font-bold uppercase">TOP DISCIPLINE</span>
+<span class="font-black text-black">SYSTEMS ARCH</span>
+</div>
+</div>
+</div>
+<!-- Pillar 03: Mentorship & Flash Sessions -->
+<div class="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 mb-4 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-bold uppercase text-[#474746]">[ PILLAR 03 // FELLOWSHIPS ]</span>
+<span class="font-['JetBrains_Mono'] text-[11px] font-black uppercase bg-[#1D4ED8] text-white px-2 py-0.5 border border-black">FLASH 1-ON-1</span>
+</div>
+<h3 class="font-['Space_Grotesk'] text-2xl font-black uppercase text-black mb-2">
+              Mentorship &amp; 1-on-1 Sessions
+            </h3>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              High-impact 15-to-30 minute micro-consults. Frictionless calendar sync with Google Meet integration, paired agenda topics, and dual-confirmed handshakes.
+            </p>
+</div>
+<div class="mt-6 flex items-center justify-between font-['JetBrains_Mono'] text-xs uppercase pt-3 border-t-2 border-black">
+<span class="font-bold text-[#474746]">SLOT CAPACITY: <strong class="text-black font-black">120/WK</strong></span>
+<a class="font-black text-white bg-black px-3 py-1.5 hover:bg-[#1D4ED8] transition-colors" data-path="mentorship" href="#">Book Flash →</a>
+</div>
+</div>
+<!-- Pillar 04: Events & RSVPs -->
+<div class="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 mb-4 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-bold uppercase text-[#474746]">[ PILLAR 04 // SYMPOSIA ]</span>
+<span class="font-['JetBrains_Mono'] text-[11px] font-black uppercase bg-[#EFECE4] text-black border border-black px-2 py-0.5">CALENDAR SYNC</span>
+</div>
+<h3 class="font-['Space_Grotesk'] text-2xl font-black uppercase text-black mb-2">
+              Events &amp; Capacity RSVPs
+            </h3>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Private collegiate salons, AI masterclasses, and regional alumni dinners. Strict capacity enforcement with automated waitlist elevation and QR credentials.
+            </p>
+</div>
+<div class="mt-6 flex items-center justify-between font-['JetBrains_Mono'] text-xs uppercase pt-3 border-t-2 border-black">
+<span class="font-bold text-[#474746]">UPCOMING: NY TECH SALON</span>
+<span class="font-black px-2 py-0.5 bg-[#FF5500] text-white border border-black">T-MINUS 6D</span>
+</div>
+</div>
+<!-- Pillar 05: Feed & Milestones -->
+<div class="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 mb-4 border-b-2 border-black">
+<span class="font-['JetBrains_Mono'] text-xs font-bold uppercase text-[#474746]">[ PILLAR 05 // CHRONICLE ]</span>
+<span class="font-['JetBrains_Mono'] text-[11px] font-black uppercase bg-[#00E676]/30 text-black border border-black px-2 py-0.5">LEDGER VERIFIED</span>
+</div>
+<h3 class="font-['Space_Grotesk'] text-2xl font-black uppercase text-black mb-2">
+              Community Feed &amp; Milestones
+            </h3>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              A high-signal academic broadsheet wall documenting promotions, peer-reviewed publications, open-source releases, and confirmed offers.
+            </p>
+</div>
+<div class="mt-6 flex items-center justify-between font-['JetBrains_Mono'] text-xs uppercase pt-3 border-t-2 border-black">
+<span class="font-bold text-[#474746]">LATEST: 32 OFFERS</span>
+<a class="font-black text-black underline hover:text-[#FF5500]" data-path="announcements" href="#">Read Gazette →</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: ROLE-AWARE ARCHITECTURE (4 PERSONAS) -->
+<section class="w-full bg-[#EFECE4] py-16 px-4 md:px-8 border-b-2 border-black">
+<div class="max-w-6xl mx-auto space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-black font-bold tracking-wider mb-2 flex items-center gap-2">
+<span class="px-2 py-0.5 bg-[#FF5500] text-white font-black">04 PERSONAS</span>
+<span>MULTI-TENANT ACCESS</span>
+</div>
+<h2 class="font-['Space_Grotesk'] text-3xl md:text-4xl uppercase text-black font-black tracking-tight">
+            Tailored Consoles for Every Stakeholder.
+          </h2>
+</div>
+<div class="font-['JetBrains_Mono'] text-xs font-bold text-black uppercase bg-white px-3 py-1.5 border-2 border-black shadow-[3px_3px_0px_0px_#000000]">
+          RBAC-LEVEL-4 PERMISSIONS
+        </div>
+</div>
+<!-- Segmented Persona Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Persona 1: Student -->
+<div class="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div class="space-y-3">
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-[#1D4ED8] font-black">
+              01 // UNDERGRAD &amp; GRAD
+            </div>
+<h4 class="font-['Space_Grotesk'] text-xl font-black uppercase text-black">Student Candidates</h4>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Generate tailored referral packets, query alumni vectors by match relevance, and lock in flash mentoring with domain leaders.
+            </p>
+<ul class="font-['JetBrains_Mono'] text-[11px] uppercase text-black space-y-1.5 pt-2 border-t border-black/10 font-bold">
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#1D4ED8]"></span>One-Click Referral Dossiers</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#1D4ED8]"></span>AI Resume Alignment Score</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#1D4ED8]"></span>Flash Slot Reservations</li>
+</ul>
+</div>
+<div class="mt-6 pt-3 border-t-2 border-black">
+<a class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black hover:text-[#1D4ED8] flex items-center justify-between" data-path="register" href="#">
+<span>Student Entry</span>
+<span>→</span>
+</a>
+</div>
+</div>
+<!-- Persona 2: Alumni -->
+<div class="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div class="space-y-3">
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-[#FF5500] font-black">
+              02 // INDUSTRY FELLOW
+            </div>
+<h4 class="font-['Space_Grotesk'] text-xl font-black uppercase text-black">Verified Alumni</h4>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Pay forward opportunities effortlessly. Manage pre-screened referral requests with preset quotas and host structured 15-min chats.
+            </p>
+<ul class="font-['JetBrains_Mono'] text-[11px] uppercase text-black space-y-1.5 pt-2 border-t border-black/10 font-bold">
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#FF5500]"></span>Cap Monthly Referrals</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#FF5500]"></span>Pre-vetted Student Profiles</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#FF5500]"></span>Verified Company Badging</li>
+</ul>
+</div>
+<div class="mt-6 pt-3 border-t-2 border-black">
+<a class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black hover:text-[#FF5500] flex items-center justify-between" data-path="register" href="#">
+<span>Alumni Portal</span>
+<span>→</span>
+</a>
+</div>
+</div>
+<!-- Persona 3: Faculty -->
+<div class="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div class="space-y-3">
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-black font-black">
+              03 // ACADEMIC LABS
+            </div>
+<h4 class="font-['Space_Grotesk'] text-xl font-black uppercase text-black">Faculty &amp; Labs</h4>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Bridge classroom research directly to industry labs. Track where graduates land and coordinate corporate grant co-sponsorships.
+            </p>
+<ul class="font-['JetBrains_Mono'] text-[11px] uppercase text-black space-y-1.5 pt-2 border-t border-black/10 font-bold">
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-black"></span>Research Lab Placements</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-black"></span>Guest Lecturer Dispatch</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-black"></span>Thesis Industry Advisers</li>
+</ul>
+</div>
+<div class="mt-6 pt-3 border-t-2 border-black">
+<a class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black hover:text-[#1D4ED8] flex items-center justify-between" data-path="register" href="#">
+<span>Faculty Access</span>
+<span>→</span>
+</a>
+</div>
+</div>
+<!-- Persona 4: Administrator -->
+<div class="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div class="space-y-3">
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-black font-black">
+              04 // ADVANCEMENT
+            </div>
+<h4 class="font-['Space_Grotesk'] text-xl font-black uppercase text-black">Dean &amp; Advancement</h4>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+              Audit live placement analytics, export accreditation telemetry, verify student credentials, and nurture lifelong affinity.
+            </p>
+<ul class="font-['JetBrains_Mono'] text-[11px] uppercase text-black space-y-1.5 pt-2 border-t border-black/10 font-bold">
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#00E676]"></span>Real-Time Employment</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#00E676]"></span>SAML / Okta Integration</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-[#00E676]"></span>Audit-Ready Reporting</li>
+</ul>
+</div>
+<div class="mt-6 pt-3 border-t-2 border-black">
+<a class="font-['JetBrains_Mono'] text-xs font-black uppercase text-black hover:text-[#FF5500] flex items-center justify-between" data-path="register" href="#">
+<span>Admin Console</span>
+<span>→</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: TECHNICAL ARCHITECTURE & PGVECTOR QUERY -->
+<section class="w-full bg-[#FCF9F3] py-16 px-4 md:px-8 border-b-2 border-black">
+<div class="max-w-6xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left: Rationale & Google Workspace Native Suite -->
+<div class="lg:col-span-5 space-y-5">
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-[#1D4ED8] font-bold tracking-wider flex items-center gap-2">
+<span class="px-2 py-0.5 bg-[#1D4ED8] text-white font-black">TOPOLOGY</span>
+<span>ENGINE SPECIFICATION</span>
+</div>
+<h2 class="font-['Space_Grotesk'] text-3xl font-black uppercase tracking-tight text-black">
+            Sub-10ms Vector Proximity Search.
+          </h2>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+            Built atop Google Gemini text embeddings and PostgreSQL <code class="font-['JetBrains_Mono'] text-xs bg-[#CCFF00] border border-black px-1.5 py-0.5 text-black font-bold">pgvector</code> HNSW indexing. We calculate multidimensional proximity across alumni technical competencies, departmental lineage, and current hiring demand.
+          </p>
+<div class="pt-2 space-y-2 font-['JetBrains_Mono'] text-xs uppercase">
+<div class="p-2.5 bg-white border border-black text-black flex justify-between shadow-[2px_2px_0px_0px_#000000]">
+<span class="font-bold">EMBEDDING MODEL</span>
+<span class="font-black text-[#1D4ED8]">GOOGLE-GEMINI-V2</span>
+</div>
+<div class="p-2.5 bg-white border border-black text-black flex justify-between shadow-[2px_2px_0px_0px_#000000]">
+<span class="font-bold">INDEX ALGORITHM</span>
+<span class="font-black">HNSW (m=16, ef=64)</span>
+</div>
+<div class="p-2.5 bg-white border border-black text-black flex justify-between shadow-[2px_2px_0px_0px_#000000]">
+<span class="font-bold">SIMILARITY METRIC</span>
+<span class="font-black text-[#FF5500]">COSINE DISTANCE (&lt;=&gt;)</span>
+</div>
+<div class="p-2.5 bg-white border border-black text-black flex justify-between shadow-[2px_2px_0px_0px_#000000]">
+<span class="font-bold">QUERY LATENCY</span>
+<span class="font-black text-[#00A34D]">7.2ms AT 100K NODES</span>
+</div>
+</div>
+<!-- Native Google Workspace Badge -->
+<div class="p-4 bg-[#EFECE4] border-2 border-black text-black font-['JetBrains_Mono'] text-xs space-y-1 shadow-[3px_3px_0px_0px_#000000]">
+<div class="font-black uppercase flex items-center gap-1.5"><span class="w-2 h-2 bg-[#00E676]"></span>[ NATIVE GOOGLE WORKSPACE PROTOCOLS ]</div>
+<p class="font-['Space_Grotesk'] text-xs text-[#474746] pt-1">Direct sync with Google Calendar for flash availability, Google Docs for interactive dossier markup, and automated Gmail priority notification filters.</p>
+</div>
+</div>
+<!-- Right: Raw SQL Query Terminal with neon syntax -->
+<div class="lg:col-span-7 bg-[#111827] text-white p-6 border-2 border-black shadow-[5px_5px_0px_0px_#000000] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 mb-4 font-['JetBrains_Mono'] text-xs border-b border-gray-700 text-gray-400">
+<span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#FF5500]"></span>SQL QUERY RUNNER // PRODUCTION NODE 01</span>
+<span class="px-2 py-0.5 bg-[#CCFF00] text-black font-bold text-[10px]">READ COMMITTED</span>
+</div>
+<pre class="font-['JetBrains_Mono'] text-xs text-gray-200 overflow-x-auto leading-relaxed"><span class="text-[#6EE7B7]">-- Semantic Alumni Discovery via pgvector HNSW</span>
+<span class="text-[#93C5FD] font-bold">SELECT</span> 
+    a.alumni_id,
+    a.full_name,
+    a.current_company,
+    a.verified_role,
+    <span class="text-[#FDE047]">1</span> - (a.profile_embedding &lt;=&gt; q.query_vector) <span class="text-[#93C5FD] font-bold">AS</span> cosine_similarity
+<span class="text-[#93C5FD] font-bold">FROM</span> 
+    institutional_alumni a,
+    (
+        <span class="text-[#93C5FD] font-bold">SELECT</span> gemini_embed_text(
+            <span class="text-[#FDBA74]">'Distributed systems, SRE, fault tolerance'</span>
+        )::vector(<span class="text-[#FDE047]">384</span>) <span class="text-[#93C5FD] font-bold">AS</span> query_vector
+    ) q
+<span class="text-[#93C5FD] font-bold">WHERE</span> 
+    a.referral_quota_active = <span class="text-[#CCFF00] font-bold">TRUE</span>
+    <span class="text-[#93C5FD] font-bold">AND</span> a.verified_status = <span class="text-[#FDBA74]">'ACCREDITED'</span>
+<span class="text-[#93C5FD] font-bold">ORDER BY</span> 
+    a.profile_embedding &lt;=&gt; q.query_vector <span class="text-[#93C5FD] font-bold">ASC</span>
+<span class="text-[#93C5FD] font-bold">LIMIT</span> <span class="text-[#FDE047]">5</span>;</pre>
+</div>
+<div class="pt-4 mt-4 border-t border-gray-700 flex items-center justify-between font-['JetBrains_Mono'] text-xs text-gray-400">
+<span>INDEX: <span class="text-[#CCFF00]">idx_alumni_hnsw</span></span>
+<span class="px-2 py-0.5 bg-[#00E676]/20 text-[#00E676] font-bold">TOTAL EXECUTION: 6.84ms</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: SOCIAL PROOF & ALUMNI SPOTLIGHT -->
+<section class="w-full bg-[#EFECE4] py-16 px-4 md:px-8 border-b-2 border-black">
+<div class="max-w-6xl mx-auto space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="font-['JetBrains_Mono'] text-xs uppercase text-black font-bold tracking-wider mb-2 flex items-center gap-2">
+<span class="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-black">VERIFIED SPOTLIGHT</span>
+<span>// FELLOW TESTIMONIALS</span>
+</div>
+<h2 class="font-['Space_Grotesk'] text-3xl md:text-4xl uppercase text-black font-black tracking-tight">
+            Verified Testimonials From Industry Champions.
+          </h2>
+</div>
+<div class="font-['JetBrains_Mono'] text-xs font-bold text-black uppercase bg-white px-3 py-1.5 border-2 border-black shadow-[3px_3px_0px_0px_#000000]">
+          AUTHENTICATED ALUMNI NODES
+        </div>
+</div>
+<!-- Testimonial Broadsheet Columns -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Quote 1 -->
+<div class="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div class="space-y-3">
+<div class="flex items-center justify-between pb-2 border-b-2 border-black">
+<span class="px-2 py-0.5 bg-[#1D4ED8] text-white font-['JetBrains_Mono'] text-xs font-black uppercase">GOOGLE CLOUD</span>
+<span class="font-['JetBrains_Mono'] text-xs text-[#474746] font-bold">[ CLASS OF '18 ]</span>
+</div>
+<p class="font-['Newsreader'] text-lg text-black italic leading-snug pt-1">
+              “Cold InMail was overwhelming and ineffective. PRO-ALUMN gave me pre-screened students from my alma mater whose background was mathematically aligned with our backend infra requisitions. Two hires closed in 60 days.”
+            </p>
+</div>
+<div class="mt-6 pt-3 border-t border-black/20">
+<div class="font-['Space_Grotesk'] text-sm font-black text-black uppercase">Marcus Vance</div>
+<div class="font-['JetBrains_Mono'] text-[11px] text-[#474746] uppercase font-bold">L6 Staff SRE • Google Cloud Storage</div>
+</div>
+</div>
+<!-- Quote 2 -->
+<div class="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div class="space-y-3">
+<div class="flex items-center justify-between pb-2 border-b-2 border-black">
+<span class="px-2 py-0.5 bg-[#FF5500] text-white font-['JetBrains_Mono'] text-xs font-black uppercase">AMAZON AWS</span>
+<span class="font-['JetBrains_Mono'] text-xs text-[#474746] font-bold">[ CLASS OF '20 ]</span>
+</div>
+<p class="font-['Newsreader'] text-lg text-black italic leading-snug pt-1">
+              “The 15-minute flash mentorship format completely changes the dynamic. It prevents conversational fatigue while allowing me to review portfolios rapidly and refer candidates directly to hiring directors.”
+            </p>
+</div>
+<div class="mt-6 pt-3 border-t border-black/20">
+<div class="font-['Space_Grotesk'] text-sm font-black text-black uppercase">Elena Rostova</div>
+<div class="font-['JetBrains_Mono'] text-[11px] text-[#474746] uppercase font-bold">SDE II • Amazon Elastic Kubernetes</div>
+</div>
+</div>
+<!-- Quote 3 -->
+<div class="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+<div class="space-y-3">
+<div class="flex items-center justify-between pb-2 border-b-2 border-black">
+<span class="px-2 py-0.5 bg-black text-[#CCFF00] font-['JetBrains_Mono'] text-xs font-black uppercase border border-black">META AI</span>
+<span class="font-['JetBrains_Mono'] text-xs text-[#474746] font-bold">[ CLASS OF '17 ]</span>
+</div>
+<p class="font-['Newsreader'] text-lg text-black italic leading-snug pt-1">
+              “The state machine tracking offers peace of mind. Both the student and I know the exact status of the referral inside our system. No awkward follow-ups, just crisp computational accountability.”
+            </p>
+</div>
+<div class="mt-6 pt-3 border-t border-black/20">
+<div class="font-['Space_Grotesk'] text-sm font-black text-black uppercase">Kareem Al-Sayed</div>
+<div class="font-['JetBrains_Mono'] text-[11px] text-[#474746] uppercase font-bold">Senior Research Scientist • Meta AI</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 7: FINAL CALL TO ACTION BANNER (HIGH IMPACT CYBER LIME ACCENT CONTAINER) -->
+<section class="w-full bg-[#CCFF00] text-black py-20 px-4 md:px-8 border-b-2 border-black relative">
+<div class="max-w-5xl mx-auto flex flex-col items-center text-center space-y-6">
+<div class="font-['JetBrains_Mono'] text-xs font-black uppercase tracking-widest bg-black text-[#CCFF00] px-3 py-1 border border-black shadow-[2px_2px_0px_0px_#000000]">
+        [ IMMEDIATE ACCREDITATION // DEPLOYED CAMPUS-WIDE ]
+      </div>
+<h2 class="font-['Space_Grotesk'] text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tighter max-w-4xl font-black leading-none">
+        Want Direct Referrals &amp; Unrestricted Access To The Fellow Roster?
+      </h2>
+<p class="font-['Space_Grotesk'] text-base md:text-lg text-black max-w-2xl font-bold leading-normal">
+        Join over 1,248 verified engineers, product architects, and institutional researchers across leading technology organisations worldwide.
+      </p>
+<div class="flex flex-col sm:flex-row gap-4 items-center pt-4">
+<a class="px-8 py-4 bg-[#FF5500] text-white font-['JetBrains_Mono'] text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000000] transition-all" data-path="register" href="#">
+          Create Free Fellow Account →
+        </a>
+<a class="px-8 py-4 bg-white text-black font-['JetBrains_Mono'] text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#FCF9F3] transition-all" data-path="login" href="#">
+          Verify via Campus SSO
+        </a>
+</div>
+<div class="pt-6 font-['JetBrains_Mono'] text-xs font-bold text-black uppercase tracking-wider flex flex-wrap justify-center items-center gap-6">
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-black"></span>ZERO PLATFORM FEES FOR STUDENTS</span>
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-black"></span>FERPA &amp; SOC-2 TYPE II CERTIFIED</span>
+<span class="flex items-center gap-1.5"><span class="w-2 h-2 bg-black"></span>INSTANT .EDU DUAL-HANDSHAKE</span>
+</div>
+</div>
+</section>
+</div></main><footer class="w-full bg-[#FCF9F3] border-t-2 border-black">
+<div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 border-b-2 border-black">
+<div class="lg:col-span-4 p-8 border-b-2 lg:border-b-0 lg:border-r-2 border-black flex flex-col justify-between space-y-6">
+<div class="space-y-3">
+<div class="flex items-center gap-2">
+<span class="font-['JetBrains_Mono'] text-sm tracking-widest font-black text-black">/////</span>
+<span class="font-['Space_Grotesk'] text-2xl font-black uppercase tracking-tight">PRO-ALUMN</span>
+</div>
+<p class="font-['Space_Grotesk'] text-sm text-[#474746] leading-relaxed">
+          The collegiate broadsheet index and intellectual network for verified alumni, researchers, and professional fellows across accredited faculties.
+        </p>
+</div>
+<div>
+<div class="inline-flex items-center gap-2 border-2 border-black px-3 py-1.5 bg-[#EFECE4] font-['JetBrains_Mono'] text-xs uppercase text-black font-bold shadow-[2px_2px_0px_0px_#000000]">
+<span class="inline-block w-2 h-2 bg-[#00E676] rounded-full"></span>
+          Google Cloud &amp; pgvector Cluster Active
+        </div>
+</div>
+</div>
+<div class="lg:col-span-3 p-8 border-b-2 md:border-b-0 lg:border-r-2 border-black space-y-4">
+<div class="font-['JetBrains_Mono'] text-xs text-black font-black uppercase tracking-wider flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-[#FF5500]"></span>
+        [ INDEX DIRECTORY // SITEMAP ]
+      </div>
+<ul class="space-y-2 font-['JetBrains_Mono'] text-xs uppercase font-bold">
+<li class="border-b border-black/15 pb-1.5"><a class="hover:text-[#FF5500] flex justify-between items-center" data-path="directory" href="#"><span>01. Faculty &amp; Alumni Directory</span><span>→</span></a></li>
+<li class="border-b border-black/15 pb-1.5"><a class="hover:text-[#FF5500] flex justify-between items-center" data-path="jobs-and-referrals" href="#"><span>02. Dispatches &amp; Opportunities</span><span>→</span></a></li>
+<li class="border-b border-black/15 pb-1.5"><a class="hover:text-[#FF5500] flex justify-between items-center" data-path="mentorship" href="#"><span>03. Fellowships &amp; Mentorship</span><span>→</span></a></li>
+<li class="border-b border-black/15 pb-1.5"><a class="hover:text-[#FF5500] flex justify-between items-center" data-path="announcements" href="#"><span>04. Gazette &amp; Bulletins</span><span>→</span></a></li>
+<li><a class="hover:text-[#FF5500] flex justify-between items-center" data-path="education" href="#"><span>05. Advanced Research Modules</span><span>→</span></a></li>
+</ul>
+</div>
+<div class="lg:col-span-3 p-8 border-b-2 md:border-b-0 lg:border-r-2 border-black space-y-4">
+<div class="font-['JetBrains_Mono'] text-xs text-black font-black uppercase tracking-wider flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-[#1D4ED8]"></span>
+        [ PROTOCOLS // GOVERNANCE ]
+      </div>
+<ul class="space-y-2 font-['JetBrains_Mono'] text-xs uppercase font-bold text-[#474746]">
+<li><a class="hover:text-black block" data-path="academic-charter" href="#">Academic Charter</a></li>
+<li><a class="hover:text-black block" data-path="data-privacy" href="#">Cryptographic Privacy Ledger</a></li>
+<li><a class="hover:text-black block" data-path="terms" href="#">Terms of Affiliation</a></li>
+<li><a class="hover:text-black block" data-path="ethics" href="#">Peer Review Ethics</a></li>
+<li><a class="hover:text-black block" data-path="security" href="#">Vector Index Governance</a></li>
+</ul>
+</div>
+<div class="lg:col-span-2 p-8 flex flex-col justify-between space-y-6 bg-[#FCF9F3]">
+<div class="space-y-2">
+<div class="font-['JetBrains_Mono'] text-xs text-black font-black uppercase tracking-wider">[ TELEMETRY ]</div>
+<div class="font-['JetBrains_Mono'] text-xs space-y-1">
+<div class="text-black font-black flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#00E676]"></span>NODE: ACTIVE-01</div>
+<div class="text-[#474746] font-bold">LATENCY: 14MS</div>
+<div class="text-[#474746] font-bold">REGISTRY: VERIFIED</div>
+</div>
+</div>
+<div class="border-t-2 border-black pt-3 font-['JetBrains_Mono'] text-[11px] uppercase text-[#474746]">
+<span class="block font-black text-black">ACCREDITATION</span>
+        Office of Academic Records
+      </div>
+</div>
+</div>
+<div class="w-full px-4 md:px-8 py-4 bg-[#EFECE4] flex flex-col sm:flex-row items-center justify-between font-['JetBrains_Mono'] text-xs text-black font-bold gap-2">
+<div>© 2025 PRO-ALUMN CONSORTIUM. ALL RIGHTS RESERVED.</div>
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-black">EDITION 14.8.2</span>
+<span>ENCRYPTED REPOSITORY</span>
+</div>
+</div>
+</footer></body></html>

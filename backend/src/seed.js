@@ -43,7 +43,7 @@ async function main() {
   // 1. ADMIN
   const admin = await upsertUser({
     name: 'Super Admin Administrator',
-    email: 'admin@college.edu',
+    email: 'proalumn@yahoo.com',
     role: 'ADMIN',
     isVerified: true,
     isActive: true,

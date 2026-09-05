@@ -1,0 +1,849 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PRO-ALUMN // Public Alumni Directory (Landing Page Nav Showcase)</title>
+<!-- Tailwind CSS v3 with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Space Grotesk & IBM Plex Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: '#fcf9f3',
+            'surface-dim': '#dcdad4',
+            'surface-low': '#f6f3ed',
+            'cyber-lime': '#CCFF00',
+            'safety-orange': '#FF5500',
+            'electric-blue': '#2E5BFF',
+            'ink-black': '#000000',
+          },
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['"Space Grotesk"', 'sans-serif'],
+          },
+          boxShadow: {
+            'brutal-sm': '2px 2px 0px #000000',
+            'brutal': '4px 4px 0px #000000',
+            'brutal-lg': '5px 5px 0px #000000',
+            'brutal-xl': '7px 7px 0px #000000',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="base-layout">
+    body {
+      background-color: #fcf9f3;
+      color: #000000;
+      font-family: 'Space Grotesk', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .technical-grid-bg {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+  </style>
+<style data-purpose="brutalist-components">
+    .brutal-border {
+      border: 2px solid #000000;
+    }
+    .brutal-border-thick {
+      border: 3px solid #000000;
+    }
+    .brutal-shadow {
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .brutal-shadow-lg {
+      box-shadow: 5px 5px 0px #000000;
+    }
+    .brutal-shadow-orange {
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .brutal-btn-press:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #000000;
+    }
+  </style>
+</head>
+<body class="min-h-screen border-t-4 border-ink-black flex flex-col justify-between">
+<!-- BEGIN: PublicGlobalHeader -->
+<header class="w-full border-b-2 border-ink-black bg-surface sticky top-0 z-50">
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+<!-- Left: Logo & System Indicator -->
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 font-mono font-bold tracking-tighter text-xl text-black hover:opacity-80" href="#">
+<span class="text-black font-extrabold tracking-tight">///// PRO-ALUMN</span>
+</a>
+<span class="hidden md:inline-flex items-center px-2 py-0.5 text-[11px] font-mono font-medium border border-ink-black bg-white">
+<span class="w-2 h-2 rounded-none bg-emerald-500 mr-1.5 inline-block"></span>
+          SYS.V24 // NODE-ALPHA [PUBLIC_GUEST]
+        </span>
+</div>
+<!-- Center: Navigation Links -->
+<nav class="hidden lg:flex items-center space-x-1 font-mono text-xs font-semibold uppercase tracking-wider">
+<a class="px-3 py-1.5 hover:bg-black hover:text-white transition-colors" href="#">Features</a>
+<a class="px-3 py-1.5 hover:bg-black hover:text-white transition-colors" href="#">AI Matching</a>
+<!-- Active Tab: Directory with Cyber Lime highlight -->
+<a class="px-3 py-1.5 bg-cyber-lime border border-ink-black text-black font-bold shadow-[2px_2px_0px_#000000]" href="#">
+          Directory *
+        </a>
+<a class="px-3 py-1.5 hover:bg-black hover:text-white transition-colors" href="#">Success Spotlight</a>
+<a class="px-3 py-1.5 hover:bg-black hover:text-white transition-colors" href="#">Announcements</a>
+<a class="px-3 py-1.5 hover:bg-black hover:text-white transition-colors" href="#">Education</a>
+</nav>
+<!-- Right: Auth CTAs -->
+<div class="flex items-center space-x-3">
+<a class="px-4 py-1.5 text-xs font-mono font-bold tracking-wider uppercase border border-ink-black bg-white hover:bg-neutral-100 brutal-shadow-sm brutal-btn-press transition-all" href="#">
+          Log In
+        </a>
+<a class="px-4 py-1.5 text-xs font-mono font-bold tracking-wider uppercase bg-safety-orange text-white border-2 border-ink-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 brutal-btn-press transition-all" href="#">
+          Get Started →
+        </a>
+</div>
+</div>
+</header>
+<!-- END: PublicGlobalHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 py-6 space-y-8">
+<!-- Hero Box: Title, Description and Embedding Search -->
+<!-- BEGIN: HeroSection -->
+<section class="brutal-border-thick bg-surface p-6 sm:p-8 technical-grid-bg relative shadow-brutal-lg" data-purpose="directory-hero">
+<!-- Technical Eyebrow Tag -->
+<div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-ink-black mb-6 font-mono text-xs">
+<div class="flex items-center space-x-2">
+<span class="font-bold tracking-wide">[ PILLAR 01 // TALENT TOPOLOGY &amp; VERIFIED FELLOWS ]</span>
+<span class="inline-flex items-center px-2 py-0.5 bg-cyber-lime text-black border border-ink-black font-semibold text-[10px]">
+<span class="w-1.5 h-1.5 bg-black mr-1 inline-block animate-pulse"></span>
+            LIVE DIRECTORY // ACCREDITED
+          </span>
+</div>
+<div class="text-neutral-600 text-[11px] font-mono">
+          [ 384-DIM PGVECTOR // ACTIVE ] • EMBEDDING RES: 0.9984 COSINE
+        </div>
+</div>
+<!-- Headline and Subtitle Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end mb-8">
+<div class="lg:col-span-8">
+<p class="text-xs font-mono font-semibold uppercase tracking-widest text-neutral-600 mb-2">
+            // ACCREDITED FELLOW ROSTER &amp; PRODUCTION ALUMNI CLUSTERS
+          </p>
+<h1 class="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-none text-ink-black">
+            VERIFIED ALUMNI DIRECTORY<br class="hidden sm:inline">&amp; TALENT TOPOLOGY
+          </h1>
+<p class="mt-4 text-sm sm:text-base font-normal max-w-2xl text-neutral-800 leading-relaxed">
+            Browse 1,200+ vetted alumni fellows across frontier engineering, research laboratories, and venture-backed institutions. Search by cosine vector embeddings, company, department, or graduation cohort.
+          </p>
+</div>
+<div class="lg:col-span-4 flex flex-col space-y-2 lg:items-end">
+<a class="w-full sm:w-auto text-center px-5 py-2.5 bg-white text-ink-black border-2 border-ink-black text-xs font-mono font-bold uppercase tracking-wider brutal-shadow hover:bg-neutral-100 transition-all brutal-btn-press" href="#">
+            ↓ EXPLORE 42+ INSTITUTIONS
+          </a>
+<a class="w-full sm:w-auto text-center px-5 py-2.5 bg-safety-orange text-white border-2 border-ink-black text-xs font-mono font-bold uppercase tracking-wider shadow-brutal hover:bg-orange-600 transition-all brutal-btn-press" href="#">
+            JOIN VETTED NETWORK →
+          </a>
+</div>
+</div>
+<!-- Search Console Bar -->
+<div class="p-2 sm:p-3 bg-white brutal-border-thick shadow-brutal" data-purpose="embedding-search-bar">
+<div class="flex flex-col sm:flex-row items-stretch gap-2">
+<div class="relative flex-grow">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="font-mono text-sm font-bold text-neutral-400">&gt;&gt;</span>
+</div>
+<input class="w-full pl-10 pr-24 py-3 bg-neutral-50 text-sm font-mono border-2 border-ink-black placeholder:text-neutral-500 focus:outline-none focus:bg-white focus:ring-0" placeholder="Search by fellow name, target company (Google, Snowflake, Stripe), research token, or skills (Distributed Systems, Rust)..." type="text">
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+<span class="text-[10px] font-mono font-bold px-2 py-1 bg-neutral-200 border border-ink-black text-neutral-700 select-none">
+                [ ⌘K SEARCH ]
+              </span>
+</div>
+</div>
+<button class="px-6 py-3 bg-cyber-lime text-black font-mono font-bold text-xs uppercase tracking-wider border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-[#bbf000] brutal-btn-press flex items-center justify-center space-x-2" type="button">
+<span>MATCH VECTORS</span>
+<span>↵</span>
+</button>
+</div>
+</div>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: TelemetryStrip -->
+<!-- 4-Column KPI Stats Strip -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono" data-purpose="telemetry-kpis">
+<!-- KPI 1 -->
+<div class="bg-surface p-4 brutal-border shadow-brutal flex flex-col justify-between">
+<div class="flex items-center justify-between text-[11px] text-neutral-700 border-b border-ink-black pb-2 mb-3">
+<span class="font-semibold">[ TEL_01 // VERIFIED FELLOWS ]</span>
+<span class="w-2.5 h-2.5 bg-black"></span>
+</div>
+<div>
+<div class="text-3xl lg:text-4xl font-black text-ink-black tracking-tighter">1,248</div>
+<div class="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">ACCREDITED ALUMNI MEMBERS</div>
+</div>
+<div class="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
+<span>COHORTS '14 - '25</span>
+<span class="bg-cyber-lime border border-ink-black px-1.5 py-0.5 font-bold">LIVE INDEX</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface p-4 brutal-border shadow-brutal flex flex-col justify-between">
+<div class="flex items-center justify-between text-[11px] text-neutral-700 border-b border-ink-black pb-2 mb-3">
+<span class="font-semibold">[ TEL_02 // PLACEMENT REACH ]</span>
+<span class="w-2.5 h-2.5 bg-safety-orange"></span>
+</div>
+<div>
+<div class="text-3xl lg:text-4xl font-black text-ink-black tracking-tighter">42+</div>
+<div class="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">TIER-1 TECH &amp; RESEARCH LABS</div>
+</div>
+<div class="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
+<span>2024-2026 AUDIT</span>
+<span class="bg-white border border-ink-black px-1.5 py-0.5 font-bold">+18% YoY</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface p-4 brutal-border shadow-brutal flex flex-col justify-between">
+<div class="flex items-center justify-between text-[11px] text-neutral-700 border-b border-ink-black pb-2 mb-3">
+<span class="font-semibold">[ TEL_03 // REFERRAL LIQUIDITY ]</span>
+<span class="w-2.5 h-2.5 bg-electric-blue"></span>
+</div>
+<div>
+<div class="text-3xl lg:text-4xl font-black text-ink-black tracking-tighter">88.4%</div>
+<div class="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">WARM INTRO CONVERSION RATE</div>
+</div>
+<div class="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
+<span>VERIFIED VOUCHERS</span>
+<span class="bg-black text-white border border-ink-black px-1.5 py-0.5 font-bold">100% AUDITED</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="bg-surface p-4 brutal-border shadow-brutal flex flex-col justify-between">
+<div class="flex items-center justify-between text-[11px] text-neutral-700 border-b border-ink-black pb-2 mb-3">
+<span class="font-semibold">[ TEL_04 // VECTOR LATENCY ]</span>
+<span class="w-2.5 h-2.5 bg-black"></span>
+</div>
+<div>
+<div class="text-3xl lg:text-4xl font-black text-ink-black tracking-tighter">11.8ms</div>
+<div class="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">HNSW COSINE SIMILARITY SEARCH</div>
+</div>
+<div class="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
+<span>HNSW INDEX ENGINE</span>
+<span class="bg-cyber-lime border border-ink-black px-1.5 py-0.5 font-bold">OPTIMAL</span>
+</div>
+</div>
+</section>
+<!-- END: TelemetryStrip -->
+<!-- BEGIN: FilterTopologyAndTabs -->
+<section class="space-y-4" data-purpose="directory-filters">
+<!-- Main Category Tabs -->
+<div class="flex flex-wrap gap-2 font-mono text-xs">
+<button class="bg-black text-white border-2 border-ink-black px-3.5 py-2 font-bold tracking-tight shadow-[2px_2px_0px_#000000]">
+          ALL FELLOWS (1,248)
+        </button>
+<button class="bg-white text-black border-2 border-ink-black px-3.5 py-2 font-bold tracking-tight shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 transition-colors">
+          SYSTEMS &amp; CLOUD INFRA (412)
+        </button>
+<button class="bg-white text-black border-2 border-ink-black px-3.5 py-2 font-bold tracking-tight shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 transition-colors">
+          AI &amp; LLM KERNELS (326)
+        </button>
+<button class="bg-white text-black border-2 border-ink-black px-3.5 py-2 font-bold tracking-tight shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 transition-colors">
+          HARDWARE &amp; ROBOTICS (184)
+        </button>
+<button class="bg-white text-black border-2 border-ink-black px-3.5 py-2 font-bold tracking-tight shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 transition-colors">
+          FINTECH &amp; CRYPTO (162)
+        </button>
+<button class="bg-white text-black border-2 border-ink-black px-3.5 py-2 font-bold tracking-tight shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 transition-colors">
+          ACADEMIC &amp; POSTDOC (164)
+        </button>
+</div>
+<!-- Secondary Sub-Filters Strip -->
+<div class="p-3 bg-surface brutal-border shadow-brutal flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-mono text-xs">
+<!-- Left: Filter chips -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Cohort dropdown/chips -->
+<div class="flex items-center space-x-1.5">
+<span class="text-neutral-500 font-bold uppercase text-[10px]">COHORT:</span>
+<span class="px-2 py-0.5 bg-black text-white text-[11px] font-bold border border-ink-black">ALL</span>
+<span class="px-2 py-0.5 bg-white text-black text-[11px] font-semibold border border-ink-black cursor-pointer hover:bg-neutral-100">'24</span>
+<span class="px-2 py-0.5 bg-white text-black text-[11px] font-semibold border border-ink-black cursor-pointer hover:bg-neutral-100">'23</span>
+<span class="px-2 py-0.5 bg-white text-black text-[11px] font-semibold border border-ink-black cursor-pointer hover:bg-neutral-100">'22</span>
+<span class="px-2 py-0.5 bg-white text-black text-[11px] font-semibold border border-ink-black cursor-pointer hover:bg-neutral-100">'21</span>
+<span class="px-2 py-0.5 bg-white text-black text-[11px] font-semibold border border-ink-black cursor-pointer hover:bg-neutral-100">'20+</span>
+</div>
+<div class="hidden xl:block h-4 w-px bg-neutral-300"></div>
+<!-- Company Tags -->
+<div class="flex items-center space-x-1.5">
+<span class="text-neutral-500 font-bold uppercase text-[10px]">COMPANY:</span>
+<span class="px-2 py-0.5 bg-white text-black text-[10px] font-mono border border-ink-black hover:bg-neutral-100 cursor-pointer">Google</span>
+<span class="px-2 py-0.5 bg-white text-black text-[10px] font-mono border border-ink-black hover:bg-neutral-100 cursor-pointer">Snowflake</span>
+<span class="px-2 py-0.5 bg-white text-black text-[10px] font-mono border border-ink-black hover:bg-neutral-100 cursor-pointer">Stripe</span>
+<span class="px-2 py-0.5 bg-white text-black text-[10px] font-mono border border-ink-black hover:bg-neutral-100 cursor-pointer">Meta</span>
+<span class="px-2 py-0.5 bg-white text-black text-[10px] font-mono border border-ink-black hover:bg-neutral-100 cursor-pointer">Apple</span>
+<span class="px-2 py-0.5 bg-white text-black text-[10px] font-mono border border-ink-black hover:bg-neutral-100 cursor-pointer">OpenAI</span>
+</div>
+<div class="hidden xl:block h-4 w-px bg-neutral-300"></div>
+<!-- Toggles -->
+<div class="flex items-center space-x-3">
+<label class="inline-flex items-center cursor-pointer select-none">
+<input checked="" class="rounded-none border-2 border-black text-black focus:ring-0 w-3.5 h-3.5" type="checkbox">
+<span class="ml-1.5 text-[11px] font-semibold">Accepting Mentees</span>
+</label>
+<label class="inline-flex items-center cursor-pointer select-none">
+<input checked="" class="rounded-none border-2 border-black text-black focus:ring-0 w-3.5 h-3.5" type="checkbox">
+<span class="ml-1.5 text-[11px] font-semibold">Provides Referrals</span>
+</label>
+</div>
+</div>
+<!-- Right: View switchers -->
+<div class="flex items-center space-x-2 self-end md:self-auto">
+<button class="px-3 py-1.5 bg-black text-white text-[11px] font-mono font-bold border border-ink-black flex items-center space-x-1 shadow-[2px_2px_0px_#000000]">
+<span>[ ☷ GRID VIEW ]</span>
+</button>
+<button class="px-3 py-1.5 bg-white text-black text-[11px] font-mono font-bold border border-ink-black flex items-center space-x-1 hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]">
+<span>[ ⚲ LEAFLET GEO-MAP (142 NODES) ]</span>
+</button>
+</div>
+</div>
+</section>
+<!-- END: FilterTopologyAndTabs -->
+<!-- BEGIN: AlumniCardGrid -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" data-purpose="alumni-directory-cards">
+<!-- FELLOW 1: Vikram Aditya -->
+<article class="bg-surface brutal-border shadow-brutal-lg flex flex-col justify-between relative" data-purpose="alumni-card">
+<div>
+<!-- Header Bar -->
+<div class="p-3 border-b-2 border-ink-black bg-white flex items-center justify-between font-mono text-[11px]">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-neutral-800">01</span>
+<span class="px-1.5 py-0.5 bg-cyber-lime border border-ink-black text-black font-bold">
+                AI MATCH: 98.4%
+              </span>
+</div>
+<span class="text-neutral-600 font-medium">COHORT '18 // MT VIEW</span>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<!-- Profile Identity Header -->
+<div class="flex items-start space-x-4">
+<!-- Avatar Square -->
+<div class="w-14 h-14 bg-neutral-900 text-white font-mono font-black text-lg flex items-center justify-center border-2 border-ink-black shadow-[2px_2px_0px_#000000] flex-shrink-0">
+                VA
+              </div>
+<div class="space-y-0.5">
+<h3 class="text-xl font-bold uppercase tracking-tight text-ink-black">Vikram Aditya</h3>
+<p class="text-xs font-mono font-bold text-neutral-900 leading-snug">
+                  Senior Software Engineer (L5) @ Google Cloud
+                </p>
+<p class="text-[11px] font-mono text-neutral-600">
+                  Computer Science ('18) • Distributed Systems &amp; Raft
+                </p>
+</div>
+</div>
+<!-- Quote/Bio Box -->
+<div class="p-3 bg-neutral-100 border border-ink-black text-xs font-mono text-neutral-800 leading-relaxed">
+              "Specializing in multi-region Spanner deployments and Kubernetes core runtimes. Mentored 14 fellows, opened 4 internal referral slots."
+            </div>
+<!-- Skill Tags -->
+<div>
+<div class="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-bold mb-1.5">STACK &amp; SKILL VECTORS:</div>
+<div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Go</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Rust</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Distributed Systems</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">gRPC</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Kubernetes</span>
+</div>
+</div>
+<!-- Badges/Slots -->
+<div class="flex flex-wrap gap-2 text-[10px] font-mono font-bold pt-2 border-t border-neutral-300">
+<span class="px-2 py-1 bg-emerald-100 text-emerald-950 border border-emerald-800 flex items-center">
+<span class="w-1.5 h-1.5 bg-emerald-600 mr-1.5"></span>
+                [OPEN TO REFERRALS: 4 SLOTS]
+              </span>
+<span class="px-2 py-1 bg-yellow-100 text-neutral-900 border border-yellow-700">
+                [⚡ FLASH 1-ON-1 AVAILABLE]
+              </span>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 border-t-2 border-ink-black bg-white grid grid-cols-2 gap-2 font-mono text-xs">
+<button class="w-full py-2 bg-safety-orange text-white font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 brutal-btn-press text-center">
+            REQUEST REFERRAL →
+          </button>
+<button class="w-full py-2 bg-white text-black font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 brutal-btn-press text-center">
+            VIEW DOSSIER
+          </button>
+</div>
+</article>
+<!-- FELLOW 2: Sarah Jenkins -->
+<article class="bg-surface brutal-border shadow-brutal-lg flex flex-col justify-between relative" data-purpose="alumni-card">
+<div>
+<!-- Header Bar -->
+<div class="p-3 border-b-2 border-ink-black bg-white flex items-center justify-between font-mono text-[11px]">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-neutral-800">02</span>
+<span class="px-1.5 py-0.5 bg-cyber-lime border border-ink-black text-black font-bold">
+                AI MATCH: 96.7%
+              </span>
+</div>
+<span class="text-neutral-600 font-medium">COHORT '16 // SAN MATEO</span>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<!-- Profile Identity Header -->
+<div class="flex items-start space-x-4">
+<!-- Avatar Square -->
+<div class="w-14 h-14 bg-cyber-lime text-black font-mono font-black text-lg flex items-center justify-center border-2 border-ink-black shadow-[2px_2px_0px_#000000] flex-shrink-0">
+                SJ
+              </div>
+<div class="space-y-0.5">
+<h3 class="text-xl font-bold uppercase tracking-tight text-ink-black">Sarah Jenkins</h3>
+<p class="text-xs font-mono font-bold text-neutral-900 leading-snug">
+                  Principal Architect @ Snowflake Compute
+                </p>
+<p class="text-[11px] font-mono text-neutral-600">
+                  Comp Sci ('16) • Query Execution &amp; SIMD Engines
+                </p>
+</div>
+</div>
+<!-- Quote/Bio Box -->
+<div class="p-3 bg-neutral-100 border border-ink-black text-xs font-mono text-neutral-800 leading-relaxed">
+              "Author of 4 core patents on columnar query pushdown. Passionate about helping system researchers transition to principal staff IC roles."
+            </div>
+<!-- Skill Tags -->
+<div>
+<div class="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-bold mb-1.5">STACK &amp; SKILL VECTORS:</div>
+<div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Columnar Engines</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">C++20</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">System Design</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">SIMD Optimization</span>
+</div>
+</div>
+<!-- Badges/Slots -->
+<div class="flex flex-wrap gap-2 text-[10px] font-mono font-bold pt-2 border-t border-neutral-300">
+<span class="px-2 py-1 bg-emerald-100 text-emerald-950 border border-emerald-800 flex items-center">
+<span class="w-1.5 h-1.5 bg-emerald-600 mr-1.5"></span>
+                [OPEN TO REFERRALS: 5 SLOTS]
+              </span>
+<span class="px-2 py-1 bg-blue-100 text-neutral-900 border border-blue-600">
+                [MENTORING ACCEPTED]
+              </span>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 border-t-2 border-ink-black bg-white grid grid-cols-2 gap-2 font-mono text-xs">
+<button class="w-full py-2 bg-safety-orange text-white font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 brutal-btn-press text-center">
+            REQUEST REFERRAL →
+          </button>
+<button class="w-full py-2 bg-white text-black font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 brutal-btn-press text-center">
+            VIEW DOSSIER
+          </button>
+</div>
+</article>
+<!-- FELLOW 3: David Chen -->
+<article class="bg-surface brutal-border shadow-brutal-lg flex flex-col justify-between relative" data-purpose="alumni-card">
+<div>
+<!-- Header Bar -->
+<div class="p-3 border-b-2 border-ink-black bg-white flex items-center justify-between font-mono text-[11px]">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-neutral-800">03</span>
+<span class="px-1.5 py-0.5 bg-electric-blue border border-ink-black text-white font-bold">
+                AI MATCH: 94.2%
+              </span>
+</div>
+<span class="text-neutral-600 font-medium">COHORT '17 // PALO ALTO</span>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<!-- Profile Identity Header -->
+<div class="flex items-start space-x-4">
+<!-- Avatar Square -->
+<div class="w-14 h-14 bg-safety-orange text-white font-mono font-black text-lg flex items-center justify-center border-2 border-ink-black shadow-[2px_2px_0px_#000000] flex-shrink-0">
+                DC
+              </div>
+<div class="space-y-0.5">
+<h3 class="text-xl font-bold uppercase tracking-tight text-ink-black">David Chen</h3>
+<p class="text-xs font-mono font-bold text-neutral-900 leading-snug">
+                  Co-Founder &amp; CEO @ Neuromorphic Labs (YC W26)
+                </p>
+<p class="text-[11px] font-mono text-neutral-600">
+                  Electrical Eng ('17) • RISC-V Custom Silicon
+                </p>
+</div>
+</div>
+<!-- Quote/Bio Box -->
+<div class="p-3 bg-neutral-100 border border-ink-black text-xs font-mono text-neutral-800 leading-relaxed">
+              "Closed $3.2M seed for ultra-low-power edge ML silicon. Actively hiring 2 founding firmware engineers from university alumni base."
+            </div>
+<!-- Skill Tags -->
+<div>
+<div class="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-bold mb-1.5">STACK &amp; SKILL VECTORS:</div>
+<div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">RISC-V</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Chisel / Verilog</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Firmware</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Zero-to-One Startups</span>
+</div>
+</div>
+<!-- Badges/Slots -->
+<div class="flex flex-wrap gap-2 text-[10px] font-mono font-bold pt-2 border-t border-neutral-300">
+<span class="px-2 py-1 bg-red-100 text-red-950 border border-red-800 flex items-center">
+<span class="w-1.5 h-1.5 bg-red-600 mr-1.5"></span>
+                [🔥 HIRING FOUNDING TEAM]
+              </span>
+<span class="px-2 py-1 bg-neutral-100 text-neutral-900 border border-black">
+                [ADVISORY SLOTS]
+              </span>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 border-t-2 border-ink-black bg-white grid grid-cols-2 gap-2 font-mono text-xs">
+<button class="w-full py-2 bg-safety-orange text-white font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 brutal-btn-press text-center">
+            REQUEST FOUNDER INTRO →
+          </button>
+<button class="w-full py-2 bg-white text-black font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 brutal-btn-press text-center">
+            VIEW DOSSIER
+          </button>
+</div>
+</article>
+<!-- FELLOW 4: Dr. Elena Rostova -->
+<article class="bg-surface brutal-border shadow-brutal-lg flex flex-col justify-between relative" data-purpose="alumni-card">
+<div>
+<!-- Header Bar -->
+<div class="p-3 border-b-2 border-ink-black bg-white flex items-center justify-between font-mono text-[11px]">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-neutral-800">04</span>
+<span class="px-1.5 py-0.5 bg-white border border-ink-black text-black font-bold">
+                AI MATCH: 93.8%
+              </span>
+</div>
+<span class="text-neutral-600 font-medium">COHORT '21 // STANFORD</span>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<!-- Profile Identity Header -->
+<div class="flex items-start space-x-4">
+<!-- Avatar Square -->
+<div class="w-14 h-14 bg-blue-700 text-white font-mono font-black text-lg flex items-center justify-center border-2 border-ink-black shadow-[2px_2px_0px_#000000] flex-shrink-0">
+                ER
+              </div>
+<div class="space-y-0.5">
+<h3 class="text-xl font-bold uppercase tracking-tight text-ink-black">Dr. Elena Rostova</h3>
+<p class="text-xs font-mono font-bold text-neutral-900 leading-snug">
+                  Postdoc Fellow @ Stanford &amp; Lattice Security
+                </p>
+<p class="text-[11px] font-mono text-neutral-600">
+                  Applied Math ('21) • Post-Quantum Cryptography
+                </p>
+</div>
+</div>
+<!-- Quote/Bio Box -->
+<div class="p-3 bg-neutral-100 border border-ink-black text-xs font-mono text-neutral-800 leading-relaxed">
+              "Lead researcher on machine-checked verification of lattice-based key encapsulation mechanisms under zk-SNARK constraints."
+            </div>
+<!-- Skill Tags -->
+<div>
+<div class="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-bold mb-1.5">STACK &amp; SKILL VECTORS:</div>
+<div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Cryptography</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Coq / Lean4</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">zk-SNARKs</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Formal Verification</span>
+</div>
+</div>
+<!-- Badges/Slots -->
+<div class="flex flex-wrap gap-2 text-[10px] font-mono font-bold pt-2 border-t border-neutral-300">
+<span class="px-2 py-1 bg-purple-100 text-purple-950 border border-purple-800 flex items-center">
+<span class="w-1.5 h-1.5 bg-purple-600 mr-1.5"></span>
+                [📜 RESEARCH COLLAB]
+              </span>
+<span class="px-2 py-1 bg-neutral-100 text-neutral-900 border border-black">
+                [PEER REVIEW]
+              </span>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 border-t-2 border-ink-black bg-white grid grid-cols-2 gap-2 font-mono text-xs">
+<button class="w-full py-2 bg-black text-white font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-800 brutal-btn-press text-center">
+            CONNECT RESEARCHER →
+          </button>
+<button class="w-full py-2 bg-white text-black font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 brutal-btn-press text-center">
+            VIEW DOSSIER
+          </button>
+</div>
+</article>
+<!-- FELLOW 5: Prateek Shah -->
+<article class="bg-surface brutal-border shadow-brutal-lg flex flex-col justify-between relative" data-purpose="alumni-card">
+<div>
+<!-- Header Bar -->
+<div class="p-3 border-b-2 border-ink-black bg-white flex items-center justify-between font-mono text-[11px]">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-neutral-800">05</span>
+<span class="px-1.5 py-0.5 bg-white border border-ink-black text-black font-bold">
+                AI MATCH: 91.5%
+              </span>
+</div>
+<span class="text-neutral-600 font-medium">COHORT '19 // SEATTLE</span>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<!-- Profile Identity Header -->
+<div class="flex items-start space-x-4">
+<!-- Avatar Square -->
+<div class="w-14 h-14 bg-neutral-800 text-white font-mono font-black text-lg flex items-center justify-center border-2 border-ink-black shadow-[2px_2px_0px_#000000] flex-shrink-0">
+                PS
+              </div>
+<div class="space-y-0.5">
+<h3 class="text-xl font-bold uppercase tracking-tight text-ink-black">Prateek Shah</h3>
+<p class="text-xs font-mono font-bold text-neutral-900 leading-snug">
+                  Staff Systems Architect @ Stripe Financial Infra
+                </p>
+<p class="text-[11px] font-mono text-neutral-600">
+                  Systems Architecture ('19) • Distributed Databases
+                </p>
+</div>
+</div>
+<!-- Quote/Bio Box -->
+<div class="p-3 bg-neutral-100 border border-ink-black text-xs font-mono text-neutral-800 leading-relaxed">
+              "Led live migration of core transaction ledger handling 80,000 tx/sec with zero downtime. Mentoring for backend placement loops."
+            </div>
+<!-- Skill Tags -->
+<div>
+<div class="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-bold mb-1.5">STACK &amp; SKILL VECTORS:</div>
+<div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">High Throughput</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">ACID Transactions</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Java</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">AWS Infra</span>
+</div>
+</div>
+<!-- Badges/Slots -->
+<div class="flex flex-wrap gap-2 text-[10px] font-mono font-bold pt-2 border-t border-neutral-300">
+<span class="px-2 py-1 bg-emerald-100 text-emerald-950 border border-emerald-800 flex items-center">
+<span class="w-1.5 h-1.5 bg-emerald-600 mr-1.5"></span>
+                [OPEN TO REFERRALS: 3 SLOTS]
+              </span>
+<span class="px-2 py-1 bg-neutral-100 text-neutral-900 border border-black">
+                [1:1 SYSTEM MENTOR]
+              </span>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 border-t-2 border-ink-black bg-white grid grid-cols-2 gap-2 font-mono text-xs">
+<button class="w-full py-2 bg-safety-orange text-white font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 brutal-btn-press text-center">
+            REQUEST REFERRAL →
+          </button>
+<button class="w-full py-2 bg-white text-black font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 brutal-btn-press text-center">
+            VIEW DOSSIER
+          </button>
+</div>
+</article>
+<!-- FELLOW 6: Ananya Deshmukh -->
+<article class="bg-surface brutal-border shadow-brutal-lg flex flex-col justify-between relative" data-purpose="alumni-card">
+<div>
+<!-- Header Bar -->
+<div class="p-3 border-b-2 border-ink-black bg-white flex items-center justify-between font-mono text-[11px]">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-neutral-800">06</span>
+<span class="px-1.5 py-0.5 bg-white border border-ink-black text-black font-bold">
+                AI MATCH: 89.9%
+              </span>
+</div>
+<span class="text-neutral-600 font-medium">COHORT '15 // NEW YORK</span>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<!-- Profile Identity Header -->
+<div class="flex items-start space-x-4">
+<!-- Avatar Square -->
+<div class="w-14 h-14 bg-neutral-900 text-white font-mono font-black text-lg flex items-center justify-center border-2 border-ink-black shadow-[2px_2px_0px_#000000] flex-shrink-0">
+                AD
+              </div>
+<div class="space-y-0.5">
+<h3 class="text-xl font-bold uppercase tracking-tight text-ink-black">Ananya Deshmukh</h3>
+<p class="text-xs font-mono font-bold text-neutral-900 leading-snug">
+                  Principal TPM @ AWS Edge Services
+                </p>
+<p class="text-[11px] font-mono text-neutral-600">
+                  Information Science ('15) • Cloud Infrastructure
+                </p>
+</div>
+</div>
+<!-- Quote/Bio Box -->
+<div class="p-3 bg-neutral-100 border border-ink-black text-xs font-mono text-neutral-800 leading-relaxed">
+              "Leading serverless edge computing roadmap across 30+ availability zones. Available for 15-min flash career architecture reviews."
+            </div>
+<!-- Skill Tags -->
+<div>
+<div class="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-bold mb-1.5">STACK &amp; SKILL VECTORS:</div>
+<div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Cloud Architecture</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Career Roadmaps</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Distributed Teams</span>
+<span class="px-2 py-0.5 bg-white border border-ink-black text-neutral-800 font-medium">Edge Compute</span>
+</div>
+</div>
+<!-- Badges/Slots -->
+<div class="flex flex-wrap gap-2 text-[10px] font-mono font-bold pt-2 border-t border-neutral-300">
+<span class="px-2 py-1 bg-yellow-100 text-yellow-950 border border-yellow-800 flex items-center">
+<span class="w-1.5 h-1.5 bg-yellow-600 mr-1.5"></span>
+                [⚡ 15-MIN FLASH REVIEW]
+              </span>
+<span class="px-2 py-1 bg-neutral-100 text-neutral-900 border border-black">
+                [TPM EXECUTIVE TRACK]
+              </span>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 border-t-2 border-ink-black bg-white grid grid-cols-2 gap-2 font-mono text-xs">
+<button class="w-full py-2 bg-safety-orange text-white font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 brutal-btn-press text-center">
+            REQUEST MENTORSHIP →
+          </button>
+<button class="w-full py-2 bg-white text-black font-bold border-2 border-ink-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-100 brutal-btn-press text-center">
+            VIEW DOSSIER
+          </button>
+</div>
+</article>
+</section>
+<!-- END: AlumniCardGrid -->
+<!-- BEGIN: PaginationStrip -->
+<div class="p-4 bg-surface brutal-border shadow-brutal flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs" data-purpose="directory-pagination">
+<div class="text-neutral-700 font-medium">
+        Showing <span class="font-bold text-black">1–6</span> of <span class="font-bold text-black">1,248</span> Verified Alumni Fellows
+      </div>
+<div class="flex items-center space-x-1.5">
+<button class="px-3 py-1.5 bg-white border border-ink-black font-bold hover:bg-neutral-100 disabled:opacity-50">
+          [ &lt; PREV ]
+        </button>
+<button class="px-3 py-1.5 bg-black text-white border border-ink-black font-bold">
+          1
+        </button>
+<button class="px-3 py-1.5 bg-white text-black border border-ink-black font-bold hover:bg-neutral-100">
+          2
+        </button>
+<button class="px-3 py-1.5 bg-white text-black border border-ink-black font-bold hover:bg-neutral-100">
+          3
+        </button>
+<span class="px-2 py-1 text-neutral-500 font-bold">...</span>
+<button class="px-3 py-1.5 bg-white text-black border border-ink-black font-bold hover:bg-neutral-100">
+          208
+        </button>
+<button class="px-3 py-1.5 bg-white border border-ink-black font-bold hover:bg-neutral-100">
+          [ NEXT &gt; ]
+        </button>
+</div>
+</div>
+<!-- END: PaginationStrip -->
+<!-- BEGIN: ConversionHeroBanner -->
+<section class="bg-cyber-lime brutal-border-thick p-8 sm:p-10 shadow-brutal-xl text-center" data-purpose="conversion-banner">
+<div class="max-w-3xl mx-auto space-y-4">
+<div class="inline-block px-3 py-1 bg-black text-white font-mono text-xs font-bold uppercase tracking-widest">
+          UNRESTRICTED MEMBERSHIP ACCESS // ADMISSION ROSTER 2026
+        </div>
+<h2 class="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-ink-black leading-tight">
+          WANT DIRECT REFERRALS &amp; UNRESTRICTED ACCESS TO THE FELLOW ROSTER?
+        </h2>
+<p class="text-xs sm:text-sm font-mono text-neutral-900 max-w-xl mx-auto leading-relaxed">
+          Create a verified student or alumni fellow account to unlock instant 1-click referral dispatches, book flash 1-on-1 mentorship slots, and publish career dispatches to accredited peers.
+        </p>
+<div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 font-mono text-xs">
+<a class="w-full sm:w-auto px-6 py-3.5 bg-safety-orange text-white font-bold uppercase tracking-wider border-2 border-ink-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 brutal-btn-press" href="#">
+            CREATE FREE FELLOW ACCOUNT →
+          </a>
+<a class="w-full sm:w-auto px-6 py-3.5 bg-white text-ink-black font-bold uppercase tracking-wider border-2 border-ink-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-100 brutal-btn-press" href="#">
+            EXPLORE SUCCESS STORIES ↓
+          </a>
+</div>
+</div>
+</section>
+<!-- END: ConversionHeroBanner -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: PublicGlobalFooter -->
+<footer class="w-full border-t-2 border-ink-black bg-surface mt-16 font-mono" data-purpose="page-footer">
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-neutral-300 text-xs">
+<!-- Col 1: System Info -->
+<div class="space-y-3">
+<div class="font-black text-base text-ink-black flex items-center space-x-1">
+<span>///// PRO-ALUMN</span>
+</div>
+<p class="text-neutral-600 text-[11px] leading-relaxed">
+            The collegiate broadsheet index and intellectual network for verified alumni, researchers, and professional fellows across accredited faculties.
+          </p>
+<div class="inline-block px-2.5 py-1 bg-cyber-lime border border-ink-black text-[10px] font-bold text-black">
+            SYS.INFRA: GOOGLE CLOUD + PGVECTOR
+          </div>
+</div>
+<!-- Col 2: Sitemap -->
+<div class="space-y-2">
+<div class="font-bold text-black uppercase tracking-wider text-[11px]">[ INDEX DIRECTORY // SITEMAP ]</div>
+<ul class="space-y-1 text-[11px] text-neutral-700">
+<li><a class="hover:underline" href="#">01. Faculty &amp; Alumni Directory *</a></li>
+<li><a class="hover:underline" href="#">02. Dispatches &amp; Opportunities →</a></li>
+<li><a class="hover:underline" href="#">03. Fellowships &amp; Mentorship →</a></li>
+<li><a class="hover:underline" href="#">04. Gazette &amp; Bulletins →</a></li>
+<li><a class="hover:underline" href="#">05. Advanced Research Modules →</a></li>
+</ul>
+</div>
+<!-- Col 3: Protocols & Governance -->
+<div class="space-y-2">
+<div class="font-bold text-black uppercase tracking-wider text-[11px]">[ PROTOCOLS // LEGAL &amp; GOVERNANCE ]</div>
+<ul class="space-y-1 text-[11px] text-neutral-700">
+<li><a class="hover:underline" href="#">Academic Charter</a></li>
+<li><a class="hover:underline" href="#">Cryptographic Privacy Ledger</a></li>
+<li><a class="hover:underline" href="#">Terms of Affiliation</a></li>
+<li><a class="hover:underline" href="#">Peer Review Ethics</a></li>
+<li><a class="hover:underline" href="#">Vector Index Governance</a></li>
+</ul>
+</div>
+<!-- Col 4: Telemetry -->
+<div class="space-y-2">
+<div class="font-bold text-black uppercase tracking-wider text-[11px]">[ TELEMETRY ]</div>
+<div class="p-2.5 bg-white border border-ink-black space-y-1 text-[10px]">
+<div class="flex justify-between">
+<span class="text-neutral-500">NODE:</span>
+<span class="bg-black text-white px-1 font-bold">ACTIVE-01</span>
+</div>
+<div class="flex justify-between">
+<span class="text-neutral-500">LATENCY:</span>
+<span class="font-bold">14MS</span>
+</div>
+<div class="flex justify-between">
+<span class="text-neutral-500">REGISTRY:</span>
+<span class="font-bold text-emerald-600">VERIFIED</span>
+</div>
+</div>
+<div class="text-[9px] text-neutral-500 pt-1">
+            Accreditation: Office of Academic Records &amp; University Alumni Registries.
+          </div>
+</div>
+</div>
+<!-- Bottom Bar -->
+<div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-600 gap-3">
+<div>
+          © 2026 PRO-ALUMN CONSORTIUM. ALL RIGHTS RESERVED. PRINTED DIGITALLY.
+        </div>
+<div class="flex items-center space-x-3">
+<span class="px-2 py-0.5 bg-cyber-lime text-black border border-ink-black font-bold text-[10px]">
+            EDITION 14.8.2
+          </span>
+<span class="text-[10px] uppercase tracking-wider font-semibold">
+            ENCRYPTED REPOSITORY
+          </span>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: PublicGlobalFooter -->
+</body></html>

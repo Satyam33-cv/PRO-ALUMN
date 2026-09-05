@@ -130,6 +130,8 @@ model User {
   paymentRecords     PaymentRecord[]
   watchSessions      WatchSession[]
   certificates       Certificate[]
+  givingCampaigns    GivingCampaign[]    @relation("CampaignsCreated")
+  donationPledges    DonationPledge[]    @relation("DonationsMade")
 
   @@index([batchYear])
   @@index([department])
@@ -650,4 +652,63 @@ model SupportTicket {
 
   @@index([userId])
   @@index([status])
+}
+
+// =================== GIVING & PHILANTHROPY ===================
+enum CampaignCategory {
+  SCHOLARSHIP
+  INFRASTRUCTURE
+  LAB_EQUIPMENT
+  RESEARCH
+  STUDENT_EMERGENCY
+}
+
+enum CampaignStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+model GivingCampaign {
+  id           String           @id @default(uuid())
+  title        String
+  description  String           @db.Text
+  category     CampaignCategory @default(SCHOLARSHIP)
+  targetAmount Int              // Target in INR
+  raisedAmount Int              @default(0) // Raised so far in INR
+  coverImage   String?
+  startDate    DateTime         @default(now())
+  endDate      DateTime?
+  status       CampaignStatus   @default(ACTIVE)
+
+  createdById  String
+  createdBy    User             @relation("CampaignsCreated", fields: [createdById], references: [id], onDelete: Cascade)
+
+  pledges      DonationPledge[]
+
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([status])
+  @@index([category])
+}
+
+model DonationPledge {
+  id           String         @id @default(uuid())
+  campaignId   String
+  campaign     GivingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  
+  donorId      String
+  donor        User           @relation("DonationsMade", fields: [donorId], references: [id], onDelete: Cascade)
+
+  amount       Int            // In INR
+  isAnonymous  Boolean        @default(false)
+  donorNote    String?        @db.Text
+  receiptUrl   String?
+  paymentId    String?
+
+  createdAt    DateTime       @default(now())
+
+  @@index([campaignId])
+  @@index([donorId])
 }

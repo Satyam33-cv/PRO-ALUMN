@@ -6,34 +6,14 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Bell,
-  BriefcaseBusiness,
-  ChevronDown,
+  Check,
   ChevronRight,
-  GraduationCap,
-  LayoutDashboard,
   LogOut,
   Menu,
-  MessageCircle,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Users,
-  BookOpen,
   X,
-  Mail,
-  FileQuestion,
-  Megaphone,
-  FileText,
-  Calendar,
-  StickyNote,
-  Flame,
-  Coins,
-  Trophy,
-  HelpCircle,
-  Target,
-  Sparkles,
-  MonitorCheck,
-  Compass,
-  Video,
+  User,
+  Activity,
+  Cpu,
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { UserRole } from "@/lib/context/AuthContext";
@@ -45,64 +25,23 @@ import { getSocket } from "@/lib/socket";
 
 type Role = UserRole;
 
-type SubItem = {
+export interface NavProtocolItem {
+  id: string;
+  index: string;
   title: string;
   href: string;
-  icon: React.ElementType;
-};
+  adminOnly?: boolean;
+}
 
-type NavItemConfig = {
-  title: string;
-  href?: string;
-  icon: React.ElementType;
-  subItems?: SubItem[];
-};
-
-const navConfig: NavItemConfig[] = [
-  {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard
-  },
-  {
-    title: 'Network',
-    href: '/directory',
-    icon: Users
-  },
-  {
-    title: 'Opportunities',
-    icon: BriefcaseBusiness,
-    subItems: [
-      { title: 'Job Board', href: '/jobs', icon: BriefcaseBusiness },
-      { title: 'AI Match', href: '/matching', icon: Sparkles },
-    ],
-  },
-  {
-    title: 'Engage',
-    icon: Compass,
-    subItems: [
-      { title: 'Mentorship Hub', href: '/mentorship', icon: GraduationCap },
-      { title: 'Events & Reunions', href: '/events', icon: Calendar },
-      { title: 'Calendar Schedule', href: '/calendar', icon: Calendar },
-      { title: 'Spotlight Stories', href: '/stories', icon: BookOpen },
-      { title: 'Announcements', href: '/announcements', icon: Megaphone },
-      { title: 'Messages & Chat', href: '/chat', icon: MessageCircle },
-      { title: 'Education Centre', href: '/education', icon: Video },
-      { title: 'Rewards & Streaks', href: '/rewards', icon: Trophy },
-      { title: 'Help & Support', href: '/help', icon: HelpCircle },
-    ],
-  },
+const PROTOCOLS: NavProtocolItem[] = [
+  { id: "dashboard", index: "01", title: "Dashboard", href: "/dashboard" },
+  { id: "directory", index: "02", title: "Alumni Directory", href: "/directory" },
+  { id: "jobs", index: "03", title: "Jobs & Referrals", href: "/jobs" },
+  { id: "mentorship", index: "04", title: "Mentorship Hub", href: "/mentorship" },
+  { id: "events", index: "05", title: "Events & RSVPs", href: "/events" },
+  { id: "stories", index: "06", title: "Success Stories", href: "/stories" },
+  { id: "admin", index: "07", title: "Admin Command Center", href: "/admin", adminOnly: true },
 ];
-
-function capitalize(s?: string): string {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
-
-function isActive(pathname: string, href: string): boolean {
-  if (href === "/home") return pathname === "/home" || pathname === "/";
-  return pathname === href || pathname.startsWith(href + "/");
-}
 
 export interface NotificationShellItem {
   id: string;
@@ -142,7 +81,9 @@ function NotificationPanel({
         return;
       }
       if (e.key !== "Tab" || !panel) return;
-      const focusable = panel.querySelectorAll<HTMLElement>("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
+      const focusable = panel.querySelectorAll<HTMLElement>(
+        "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
+      );
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -162,22 +103,26 @@ function NotificationPanel({
   }, [open, onClose, triggerRef]);
 
   if (!open) return null;
+
   return (
     <div
       ref={panelRef}
       role="dialog"
-      aria-label="Notifications"
-      className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
+      aria-label="System Notifications"
+      className="absolute right-0 top-full z-50 mt-2 w-80 md:w-96 overflow-hidden border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 bg-[#F7F4EE] dark:bg-[#12151b] shadow-[4px_4px_0_#1A1A1A] dark:shadow-[4px_4px_0_#333]"
     >
-      <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-4 py-3 bg-slate-50/50 dark:bg-slate-800/40">
+      <div className="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800 px-4 py-3 bg-[#EFECE4] dark:bg-[#181a20]">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Notifications</p>
-          {notifications.some(n => !n.isRead) && (
+          <span className="text-[#FF5500] font-mono text-xs font-bold">/////</span>
+          <p className="font-headline text-xs uppercase font-bold text-[#1A1A1A] dark:text-white tracking-tight">
+            NOTIFICATIONS WIRE
+          </p>
+          {notifications.some((n) => !n.isRead) && (
             <button
               onClick={onMarkAllRead}
-              className="text-[11px] text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium"
+              className="font-mono text-[10px] text-[#FF5500] hover:underline font-bold ml-2 cursor-pointer"
             >
-              Mark all read
+              [CLEAR ALL]
             </button>
           )}
         </div>
@@ -187,30 +132,40 @@ function NotificationPanel({
             onClose();
             triggerRef.current?.focus();
           }}
-          className="rounded-lg p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 transition-colors"
+          className="p-1 text-[#1A1A1A] dark:text-neutral-300 hover:bg-[#D5CEBF] dark:hover:bg-neutral-800 transition-colors"
           aria-label="Close notifications"
         >
           <X size={16} />
         </button>
       </div>
-      <ul className="max-h-80 divide-y divide-slate-100 dark:divide-slate-800/80 overflow-y-auto">
+      <ul className="max-h-80 divide-y-[1.5px] divide-[#D5CEBF]/60 dark:divide-neutral-800 overflow-y-auto font-sans">
         {notifications.length === 0 ? (
-          <li className="px-4 py-6 text-center text-xs text-slate-400">
-            No notifications yet
+          <li className="px-4 py-8 text-center font-mono text-xs text-neutral-500">
+            [QUEUE EMPTY] • ZERO PENDING PROTOCOLS
           </li>
         ) : (
           notifications.map((n) => (
             <li
               key={n.id}
-              className={`px-4 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${!n.isRead ? "bg-blue-50/40 dark:bg-blue-950/20" : ""
-                }`}
+              className={`p-3.5 transition-colors hover:bg-[#ebe8e2] dark:hover:bg-[#181a20] ${
+                !n.isRead ? "bg-white dark:bg-[#15181f]" : ""
+              }`}
             >
-              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{n.title || n.message || n.text}</p>
+              <p className="font-headline text-xs font-bold text-[#1A1A1A] dark:text-neutral-100">
+                {n.title || n.message || n.text}
+              </p>
               {n.message && n.title && (
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{n.message}</p>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
+                  {n.message}
+                </p>
               )}
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                {n.createdAt ? new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently"}
+              <p className="mt-1 font-mono text-[10px] uppercase text-neutral-500">
+                {n.createdAt
+                  ? new Date(n.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "JUST NOW"}
               </p>
             </li>
           ))
@@ -219,8 +174,6 @@ function NotificationPanel({
     </div>
   );
 }
-
-
 
 export function RoleShell({
   children,
@@ -233,9 +186,6 @@ export function RoleShell({
   const role = roleOverride ?? authRole;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-  const [collapsedHydrated, setCollapsedHydrated] = useState(false);
-  const [openSection, setOpenSection] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const notifTriggerRef = useRef<HTMLButtonElement>(null);
@@ -249,53 +199,14 @@ export function RoleShell({
   const notifications = (notifData?.notifications as unknown as NotificationShellItem[]) || [];
   const unreadCount = notifData?.unreadCount ?? notifications.filter((n) => !n.isRead).length;
 
-  const handleMarkAllRead = async () => {
+  const markAllRead = async () => {
     try {
       await apiClient.notifications.readAll();
       reloadNotifs();
-    } catch (err) {
-      console.error("Mark read error:", err);
+    } catch {
+      // Non-blocking UI update
     }
   };
-
-  const { data: gamificationData } = useApi(
-    "shell:gamification",
-    () => apiClient.gamification.getStatus(),
-    // Admins are invisible overseers — they don't participate in the gamification economy
-    { enabled: Boolean(user) && role !== "admin" }
-  );
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("pro-alumn_sidebar_collapsed");
-      if (saved === "1") setCollapsed(true);
-    } catch {
-      /* ignore */
-    }
-    setCollapsedHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!collapsedHydrated) return;
-    try {
-      localStorage.setItem("pro-alumn_sidebar_collapsed", collapsed ? "1" : "0");
-    } catch {
-      /* ignore */
-    }
-  }, [collapsed, collapsedHydrated]);
-
-  useEffect(() => {
-    setSidebarOpen(false);
-    setNotificationsOpen(false);
-
-    // Auto-open parent dropdown if child route is active
-    const activeSection = navConfig.find((item) =>
-      item.subItems?.some((sub) => isActive(pathname, sub.href))
-    );
-    if (activeSection) {
-      setOpenSection(activeSection.title);
-    }
-  }, [pathname]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -304,7 +215,10 @@ export function RoleShell({
       const socket = getSocket();
       if (!socket.connected) {
         socket.connect();
-        const token = localStorage.getItem("pro-alumn_token") || localStorage.getItem("token") || localStorage.getItem("alumni_connect_token");
+        const token =
+          localStorage.getItem("pro-alumn_token") ||
+          localStorage.getItem("token") ||
+          localStorage.getItem("alumni_connect_token");
         if (token) {
           socket.emit("authenticate", token);
         }
@@ -312,7 +226,19 @@ export function RoleShell({
     }
   }, [loading, user, router]);
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#fcf9f3] dark:bg-[#0c0e12]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin border-2 border-[#1A1A1A] dark:border-white border-t-[#FF5500]" />
+          <span className="font-mono text-xs tracking-wider text-neutral-600 dark:text-neutral-400">
+            INITIALIZING CORE ROUTING...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   if (!user) return null;
 
   function handleSignOut() {
@@ -320,281 +246,157 @@ export function RoleShell({
     router.push("/login");
   }
 
-  function active(href: string) {
-    return isActive(pathname, href);
-  }
-
-  const handleToggle = (title: string) => {
-    if (collapsed) setCollapsed(false);
-    setOpenSection(openSection === title ? null : title);
+  const isProtocolActive = (href: string) => {
+    if (href === "/dashboard") return pathname === "/dashboard" || pathname === "/";
+    return pathname === href || pathname.startsWith(href + "/");
   };
 
-  const isActiveDropdown = (item: NavItemConfig) => {
-    if (!item.subItems) return false;
-    return item.subItems.some((sub) => active(sub.href));
-  };
+  const displayName = user?.name || "Elena Vance, Ph.D.";
+  const displayRoleLabel =
+    role === "admin"
+      ? "SUPER ADMIN // CORE DISPATCH"
+      : role === "alumni"
+      ? `ALUMNI SPONSOR • COHORT '${user?.classYear ? user.classYear.slice(-2) : "22"}`
+      : `FELLOW / COHORT '${user?.classYear ? user.classYear.slice(-2) : "26"}`;
 
-  const displayName = user?.name ?? "Guest";
-  const displayInitials = user?.initials ?? "G";
-  const displayRole = capitalize(role);
-  const displayYear = user?.classYear ?? "—";
-
-  function sidebarContent(mobile: boolean) {
-    const compact = collapsed && !mobile;
-
-    return (
-      <>
-        <div className={`flex items-center justify-between ${compact ? "justify-center px-2" : "px-6"} pb-4`}>
-          {compact ? (
-            <Link
-              href="/home"
-              aria-label="PRO ALUMN home"
-              className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-heading text-lg font-extrabold tracking-tight text-white shadow-md shadow-blue-600/20"
-            >
-              P
-            </Link>
-          ) : (
-            <>
-              <Link href="/home" className="font-heading text-2xl tracking-tight text-slate-900 dark:text-slate-100 font-extrabold">
-                PRO <span className="text-blue-600 dark:text-blue-400">ALUMN</span>
-              </Link>
-              {mobile && (
-                <button
-                  type="button"
-                  onClick={() => setSidebarOpen(false)}
-                  className="rounded-lg p-1 text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                  aria-label="Close navigation"
-                >
-                  <X size={20} />
-                </button>
-              )}
-            </>
-          )}
+  const AsideNav = ({ isMobile = false }: { isMobile?: boolean }) => (
+    <aside className="h-full w-72 bg-[#F7F4EE] dark:bg-[#12151b] flex flex-col justify-between border-r-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+      <div className="flex flex-col">
+        {/* Aside Header */}
+        <div className="h-16 px-4 flex items-center justify-between bg-[#F7F4EE] dark:bg-[#12151b] border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+          <Link
+            href="/dashboard"
+            onClick={() => isMobile && setSidebarOpen(false)}
+            className="flex items-center gap-2.5"
+          >
+            <span className="flex items-center justify-center w-8 h-8 bg-black text-white dark:bg-white dark:text-black font-mono text-xs font-bold shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff]">
+              PA
+            </span>
+            <div className="flex flex-col">
+              <span className="font-headline text-base tracking-tight text-[#1A1A1A] dark:text-white font-bold leading-none uppercase">
+                PRO-ALUMN
+              </span>
+              <span className="font-mono text-[10px] text-neutral-500 tracking-tight mt-0.5">
+                NETWORK CORE v2.4
+              </span>
+            </div>
+          </Link>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#e5e2dc] dark:bg-[#1c1f26] text-[#1A1A1A] dark:text-neutral-300 border border-[#1A1A1A] dark:border-neutral-700 font-bold">
+              SYS.OK
+            </span>
+            {isMobile && (
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="p-1 border border-[#1A1A1A] dark:border-neutral-700"
+                aria-label="Close navigation"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
         </div>
 
-        <nav className={`flex-1 overflow-y-auto px-3 py-2 space-y-1 ${compact ? "px-2" : ""}`}>
-          {/* Admin Console shortcut — only shown to admins */}
-          {role === "admin" && (
-            <Link
-              href="/admin"
-              onClick={() => mobile && setSidebarOpen(false)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${active("/admin")
-                  ? "bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100"
-                } ${compact ? "justify-center px-0" : ""}`}
-              title={compact ? "Admin Console" : undefined}
-              aria-current={active("/admin") ? "page" : undefined}
-            >
-              <div className="flex items-center gap-3">
-                <MonitorCheck className={`w-5 h-5 shrink-0 ${active("/admin") ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"}`} />
-                {!compact && "Admin Console"}
-              </div>
-            </Link>
-          )}
+        {/* Index Protocols Header */}
+        <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+          <span className="font-headline text-[11px] uppercase font-bold text-neutral-500 tracking-wider">
+            INDEX PROTOCOLS
+          </span>
+          <span className="font-mono text-[11px] text-neutral-500">[07]</span>
+        </div>
 
-          {navConfig.map((item) => {
-            const isStandardLink = !item.subItems;
-            const isExactActive = item.href ? active(item.href) : false;
-            const isDropActive = isActiveDropdown(item);
-
-            const baseItemClasses = `w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${isExactActive || (isDropActive && !openSection)
-                ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
-              } ${compact ? "justify-center px-0" : ""}`;
-
-            if (isStandardLink) {
-              return (
-                <Link
-                  key={item.title}
-                  href={item.href as `/${string}`}
-                  onClick={() => mobile && setSidebarOpen(false)}
-                  className={baseItemClasses}
-                  title={compact ? item.title : undefined}
-                  aria-current={isExactActive ? "page" : undefined}
-                >
-                  <div className="flex items-center gap-3">
-                    <item.icon className={`w-5 h-5 shrink-0 ${isExactActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
-                    {!compact && item.title}
-                  </div>
-                </Link>
-              );
-            }
-
-            const isOpen = openSection === item.title;
+        {/* Navigation List */}
+        <nav className="flex flex-col px-3 gap-1.5" aria-label="System navigation">
+          {PROTOCOLS.map((p) => {
+            const active = isProtocolActive(p.href);
+            // If adminOnly, still visible if user is admin or as preview
+            if (p.adminOnly && role !== "admin") return null;
 
             return (
-              <div key={item.title} className="space-y-1">
-                <button
-                  onClick={() => handleToggle(item.title)}
-                  className={baseItemClasses}
-                  title={compact ? item.title : undefined}
-                  aria-expanded={isOpen}
-                >
-                  <div className="flex items-center gap-3">
-                    <item.icon className={`w-5 h-5 shrink-0 ${isDropActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
-                    {!compact && item.title}
-                  </div>
-                  {!compact && (
-                    isOpen ? (
-                      <ChevronDown className="w-4 h-4 text-slate-400" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4 text-slate-400" />
-                    )
-                  )}
-                </button>
-
-                {!compact && (
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-64 opacity-100 mt-1' : 'max-h-0 opacity-0'
-                      }`}
+              <Link
+                key={p.id}
+                href={p.href}
+                onClick={() => isMobile && setSidebarOpen(false)}
+                className={`flex items-center justify-between px-3 py-2 text-xs font-bold uppercase transition-all duration-150 border-[1.5px] ${
+                  active
+                    ? "bg-black text-white dark:bg-white dark:text-black border-[#1A1A1A] dark:border-neutral-300 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#FFFFFF]"
+                    : "bg-transparent text-neutral-700 dark:text-neutral-300 border-transparent hover:border-[#1A1A1A] dark:hover:border-neutral-700 hover:bg-[#ebe8e2] dark:hover:bg-[#181a20]"
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <span
+                    className={`font-mono text-[11px] ${
+                      active ? "text-[#FF5500]" : "text-neutral-400"
+                    }`}
                   >
-                    <div className="pl-10 pr-2 py-1 space-y-1 border-l-2 border-slate-100 dark:border-slate-800 ml-4">
-                      {item.subItems!.filter((subItem) => {
-                        // Admins are invisible overseers — hide specific user features from their nav
-                        if (role === "admin" && ["/rewards", "/mentorship", "/stories", "/giving"].includes(subItem.href)) return false;
-                        return true;
-                      }).map((subItem) => {
-                        const isSubActive = active(subItem.href);
-                        return (
-                          <Link
-                            key={subItem.title}
-                            href={subItem.href as `/${string}`}
-                            onClick={() => mobile && setSidebarOpen(false)}
-                            aria-current={isSubActive ? "page" : undefined}
-                            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${isSubActive
-                                ? 'text-blue-700 bg-blue-50/50 dark:text-blue-400 dark:bg-blue-500/10 font-semibold'
-                                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/50'
-                              }`}
-                          >
-                            <subItem.icon className="w-4 h-4 opacity-70 shrink-0" />
-                            {subItem.title}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
+                    {p.index}
+                  </span>
+                  <span className="font-headline tracking-tight">{p.title}</span>
+                </span>
+                <span className="font-mono text-xs opacity-70">→</span>
+              </Link>
             );
           })}
         </nav>
+      </div>
 
-        <div className={`mt-auto space-y-4 border-t border-slate-200 dark:border-slate-800 pt-4 bg-slate-50/50 dark:bg-slate-900/50 ${compact ? "px-2 pb-4" : "p-4"}`}>
-          {/* Gamification widget — hidden for admins who are invisible overseers */}
-          {role !== "admin" && (
-            compact ? (
-              <Link
-                href="/rewards"
-                title={`Rewards: ${gamificationData?.totalPoints ?? 0} pts • 🔥 ${gamificationData?.streak?.current ?? 0}d streak`}
-                className="flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 text-amber-700 dark:text-amber-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shadow-xs group"
-              >
-                <Flame className="w-5 h-5 text-orange-500 fill-orange-500/20 group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-bold mt-1 text-slate-900 dark:text-slate-100">
-                  {gamificationData?.totalPoints ?? 0}
-                </span>
-              </Link>
-            ) : (
-              <Link
-                href="/rewards"
-                className="group block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/60 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700/80 rounded-xl p-3 shadow-xs hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-bold tracking-wider text-amber-800 dark:text-amber-400 uppercase">Rewards</span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-100/80 dark:bg-orange-950/60 px-1.5 py-0.5 rounded-md border border-orange-200/60 dark:border-orange-800/40">
-                    <Flame className="w-3 h-3 fill-orange-500 text-orange-500" />
-                    {gamificationData?.streak?.current ?? 0}d streak
-                  </span>
-                </div>
-                <div className="flex items-baseline justify-between">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
-                      {gamificationData?.totalPoints ?? 0}
-                    </span>
-                    <span className="text-xs font-medium text-amber-700 dark:text-amber-500">pts</span>
-                  </div>
-                  <span className="text-[11px] font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                    View <ChevronRight className="w-3 h-3" />
-                  </span>
-                </div>
-              </Link>
-            )
-          )}
+      {/* Aside Footer: Vector Runtime Status & Sign Out */}
+      <div className="p-3.5 flex flex-col gap-2.5 bg-[#EFECE4] dark:bg-[#181a20] border-t-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+        <div className="flex items-center justify-between px-1">
+          <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
+            VECTOR RUNTIME
+          </span>
+          <span className="font-mono text-[10px] text-[#FF5500] font-bold">HNSW:OK</span>
+        </div>
 
-          {/* Admin identity chip — shown instead of gamification widget */}
-          {role === "admin" && !compact && (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/5 dark:bg-slate-100/5 border border-slate-200/60 dark:border-slate-700/60">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              <span className="text-[11px] font-bold tracking-wider text-emerald-700 dark:text-emerald-400 uppercase">Super Admin</span>
+        <div className="p-2.5 bg-white dark:bg-[#12151b] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-between shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333]">
+          <div className="flex flex-col">
+            <span className="font-headline text-[9px] uppercase font-bold text-neutral-500">
+              EMBEDDING DIM
+            </span>
+            <span className="font-mono text-xs font-bold text-[#1A1A1A] dark:text-white">
+              1536_ADA002
+            </span>
+          </div>
+          <div className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_8px_#00E676]" />
+        </div>
+
+        {/* User quick badge & sign out */}
+        <div className="pt-2 border-t border-[#D5CEBF] dark:border-neutral-800 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-mono text-[10px] font-bold border border-[#1A1A1A]">
+              {user.name ? user.name.slice(0, 2).toUpperCase() : "ID"}
             </div>
-          )}
-
-          {/* Profile link — redirects to admin console for admins */}
-          <Link href={role === "admin" ? "/admin" : "/profile"} className={`flex items-center gap-3 rounded-lg py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${compact ? "justify-center" : "px-2 hover:bg-slate-100/80 dark:hover:bg-slate-800/60"}`}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white shadow-sm border-2 border-white dark:border-slate-800 ring-2 ring-slate-100 dark:ring-slate-700">
-              {displayInitials}
+            <div className="truncate">
+              <p className="font-headline text-xs font-bold text-[#1A1A1A] dark:text-white truncate">
+                {user.name}
+              </p>
+              <p className="font-mono text-[9px] text-neutral-500 uppercase truncate">
+                {role}
+              </p>
             </div>
-            {!compact && (
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {displayName}
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  {/* Admins show a clean role label only — no class year */}
-                  {role === "admin" ? "Platform Administrator" : `${displayRole} • ${displayYear}`}
-                </p>
-              </div>
-            )}
-          </Link>
-
-          <Link
-            href="/help"
-            className={`flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${compact
-                ? "justify-center px-0 text-slate-400 hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-200"
-                : "px-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200"
-              }`}
-          >
-            <HelpCircle size={18} className="shrink-0 opacity-75" />
-            {!compact && "Help & Support"}
-          </Link>
-
+          </div>
           <button
-            type="button"
             onClick={handleSignOut}
-            title="Sign out"
-            aria-label="Sign out"
-            className={`flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 cursor-pointer ${compact
-                ? "justify-center px-0 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400"
-                : "px-2 text-slate-600 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/30 dark:hover:text-red-400"
-              }`}
+            title="Sign Out"
+            className="p-1.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#12151b] hover:bg-[#FF5500] hover:text-white transition-colors cursor-pointer"
+            aria-label="Sign Out"
           >
-            <LogOut size={18} className="shrink-0 opacity-75" />
-            {!compact && "Sign out"}
+            <LogOut size={14} />
           </button>
         </div>
-      </>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 dark:border-slate-700 border-t-blue-600" />
       </div>
-    );
-  }
-
-  const sidebarWidth = collapsed ? "w-[72px]" : "w-64";
+    </aside>
+  );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 md:flex ${sidebarWidth} transition-[width] duration-200`}
-      >
-        <div className="flex h-full flex-col py-6">
-          {sidebarContent(false)}
-        </div>
-      </aside>
+    <div className="min-h-screen bg-[#fcf9f3] dark:bg-[#0c0e12] text-[#1c1c18] dark:text-[#f3f0ea] font-sans antialiased">
+      {/* Desktop Fixed Aside Rail */}
+      <div className="hidden lg:block fixed left-0 top-0 h-full z-50">
+        <AsideNav />
+      </div>
 
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {sidebarOpen && (
           <>
@@ -602,91 +404,70 @@ export function RoleShell({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs md:hidden"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs lg:hidden"
               onClick={() => setSidebarOpen(false)}
-              aria-hidden="true"
             />
-            <motion.aside
+            <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 md:hidden"
+              transition={{ type: "spring", damping: 28, stiffness: 280 }}
+              className="fixed inset-y-0 left-0 z-50 lg:hidden shadow-2xl"
             >
-              <div className="flex h-full flex-col py-6">
-                {sidebarContent(true)}
-              </div>
-            </motion.aside>
+              <AsideNav isMobile={true} />
+            </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      <div className={`flex min-h-screen flex-col transition-[padding] duration-200 ${collapsed ? "md:pl-[72px]" : "md:pl-64"}`}>
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 backdrop-blur-md sm:px-6">
-          <div className="flex flex-1 items-center gap-3">
+      {/* Content wrapper offset by 72 (18rem) */}
+      <div className="lg:pl-72 flex flex-col min-h-screen">
+        {/* Top Broadsheet Header */}
+        <header className="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-[#F7F4EE]/95 dark:bg-[#0c0e12]/95 backdrop-blur-md z-40 px-4 sm:px-6 flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+          <div className="flex items-center gap-3 flex-1 max-w-xl">
+            {/* Mobile menu trigger */}
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 md:hidden"
-              aria-label="Open navigation"
+              className="p-2 border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] shadow-[2px_2px_0_#1A1A1A] lg:hidden"
+              aria-label="Open Navigation"
             >
-              <Menu size={22} />
+              <Menu size={18} />
             </button>
 
-            <button
-              type="button"
-              onClick={() => setCollapsed((v) => !v)}
-              className="hidden rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 md:inline-flex"
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              aria-pressed={collapsed}
-            >
-              {collapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
-            </button>
-
-            <GlobalSearch />
+            {/* Global Search integrated */}
+            <div className="flex-1">
+              <GlobalSearch />
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Gamification badges — hidden for admins who are invisible overseers */}
-            {role !== "admin" && (
-              <>
-                <Link
-                  href="/rewards"
-                  className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-2.5 py-1 text-xs font-bold text-amber-600 dark:text-amber-400 hover:scale-105 hover:border-amber-500/50 transition-all shadow-xs"
-                  title="Daily Active Streak"
-                >
-                  <Flame size={15} className="text-orange-500 animate-pulse fill-orange-500/20" />
-                  <span>{gamificationData?.streak?.current ?? 0}d</span>
-                </Link>
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* PGVector Latency Pill */}
+            <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333]">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#00E676] shadow-[0_0_4px_#00E676]" />
+                <span className="font-headline text-[10px] uppercase font-bold text-[#1A1A1A] dark:text-white">
+                  PGVECTOR
+                </span>
+              </div>
+              <span className="text-neutral-400 font-mono text-[10px]">|</span>
+              <span className="font-mono text-[10px] text-neutral-600 dark:text-neutral-400">
+                LATENCY: 14ms
+              </span>
+            </div>
 
-                <Link
-                  href="/rewards"
-                  className="hidden sm:flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 px-2.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:scale-105 hover:border-blue-500/50 transition-all shadow-xs"
-                  title="Alumni Contribution Points"
-                >
-                  <Coins size={14} className="text-blue-500" />
-                  <span>{gamificationData?.totalPoints ?? 0} pts</span>
-                </Link>
-              </>
-            )}
-
-            <ThemeToggle className="shrink-0" />
-
+            {/* Notifications Button */}
             <div className="relative">
               <button
-                type="button"
                 ref={notifTriggerRef}
-                onClick={() => setNotificationsOpen((v) => !v)}
-                className="relative rounded-xl p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 transition-colors"
+                onClick={() => setNotificationsOpen(!notificationsOpen)}
                 aria-label="Notifications"
-                aria-expanded={notificationsOpen}
+                className="relative flex items-center justify-center w-9 h-9 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] dark:hover:bg-[#20242c] transition-colors cursor-pointer"
+                type="button"
               >
-                <Bell size={19} />
+                <Bell size={18} className="text-[#1A1A1A] dark:text-white" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
-                    {unreadCount}
-                  </span>
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#FF5500]" />
                 )}
               </button>
               <NotificationPanel
@@ -694,54 +475,37 @@ export function RoleShell({
                 onClose={() => setNotificationsOpen(false)}
                 triggerRef={notifTriggerRef}
                 notifications={notifications}
-                onMarkAllRead={handleMarkAllRead}
+                onMarkAllRead={markAllRead}
               />
             </div>
 
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700">
-              {displayInitials}
+            {/* Theme Toggle */}
+            <div className="border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333]">
+              <ThemeToggle />
+            </div>
+
+            {/* User Profile Pill */}
+            <div className="flex items-center gap-2.5 pl-2 border-l-[1.5px] border-[#D5CEBF] dark:border-neutral-800">
+              <div className="hidden sm:flex flex-col items-end">
+                <span className="font-headline text-xs font-bold text-[#1A1A1A] dark:text-white leading-tight">
+                  {displayName}
+                </span>
+                <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] uppercase font-bold leading-none mt-1">
+                  {displayRoleLabel}
+                </span>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center border-[1.5px] border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] font-mono text-xs font-bold">
+                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+              </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-8 sm:px-6 lg:px-10">
+        {/* Main Content Viewport */}
+        <main className="w-full pt-16 flex-1 bg-[#fcf9f3] dark:bg-[#0c0e12]">
           {children}
         </main>
       </div>
-
-      <nav
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md md:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-        aria-label="Primary navigation"
-      >
-        <ul className="flex items-stretch">
-          {navConfig.slice(0, 5).map(({ title, href, icon: Icon, subItems }) => {
-            const destHref = href || (subItems ? subItems[0].href : "");
-            const isItemActive = (href && active(href)) || (subItems && subItems.some((s) => active(s.href)));
-
-            return (
-              <li key={title} className="flex-1">
-                <Link
-                  href={destHref as `/${string}`}
-                  aria-current={isItemActive ? "page" : undefined}
-                  className={`flex flex-col items-center gap-0.5 px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${isItemActive
-                      ? "text-blue-600 dark:text-blue-400 font-bold"
-                      : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                    }`}
-                >
-                  <Icon size={19} strokeWidth={isItemActive ? 2.2 : 1.6} />
-                  <span className="text-[10px] leading-none mt-0.5">{title}</span>
-                  {isItemActive && (
-                    <span className="mt-0.5 h-0.5 w-3 rounded-full bg-blue-600 dark:bg-blue-400" />
-                  )}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-
-      <div className="h-16 md:hidden" aria-hidden="true" />
     </div>
   );
 }

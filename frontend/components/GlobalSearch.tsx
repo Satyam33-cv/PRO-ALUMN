@@ -333,13 +333,13 @@ export function GlobalSearch() {
     <div ref={containerRef} className="relative flex-1 max-w-2xl font-sans">
       {/* Search Input Bar */}
       <div
-        className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2 transition-all ${
+        className={`flex items-center gap-2 border-[1.5px] px-3 py-1.5 transition-all ${
           isOpen
-            ? "border-blue-600 bg-white dark:bg-slate-900 ring-2 ring-blue-100 dark:ring-blue-950 shadow-sm"
-            : "border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800"
+            ? "border-[#1A1A1A] dark:border-white bg-white dark:bg-[#12151b] shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#ffffff]"
+            : "border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#F7F4EE] dark:hover:bg-[#20242c]"
         }`}
       >
-        <Search className={`w-4 h-4 shrink-0 ${isOpen ? "text-blue-600" : "text-slate-400"}`} />
+        <Search className={`w-3.5 h-3.5 shrink-0 ${isOpen ? "text-[#FF5500]" : "text-[#1A1A1A] dark:text-neutral-400"}`} />
         <input
           ref={inputRef}
           type="text"
@@ -351,8 +351,8 @@ export function GlobalSearch() {
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Search verified alumni, jobs, reunions, stories... (Cmd+K)"
-          className="w-full bg-transparent text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none"
+          placeholder="Query directory, skills, or vector tokens (e.g. /ai-research)..."
+          className="w-full bg-transparent font-mono text-xs text-[#1A1A1A] dark:text-white placeholder:text-neutral-500 outline-none"
           aria-label="Global search across alumni network"
           autoComplete="off"
         />
@@ -385,7 +385,7 @@ export function GlobalSearch() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.99 }}
             transition={{ duration: 0.14 }}
-            className="absolute left-0 right-0 top-full mt-2 z-50 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
+            className="absolute left-0 right-0 top-full mt-2 z-50 overflow-hidden border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#12151b] shadow-[4px_4px_0_#1A1A1A] dark:shadow-[4px_4px_0_#333]"
             style={{ maxHeight: "calc(85vh - 80px)" }}
           >
             {/* Category Filter Tabs */}
