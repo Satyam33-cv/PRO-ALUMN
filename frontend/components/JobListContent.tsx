@@ -640,6 +640,15 @@ export function JobListContent() {
                         <span className="px-2 py-0.5 bg-neutral-100 border border-black text-neutral-700 font-bold">
                           {job.domain}
                         </span>
+                        {user ? (
+                          <span className="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-bold text-[10px]">
+                            [SLA 48H TRACKING ACTIVE]
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 bg-white border border-black text-neutral-600 font-bold text-[10px]">
+                            [SHOWCASE // READ-ONLY]
+                          </span>
+                        )}
                       </div>
                       <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-black mt-1">
                         {job.title}
@@ -711,14 +720,24 @@ export function JobListContent() {
                       >
                         View Full Requisition
                       </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenReferral(job)}
-                        className="px-4 py-2 bg-black text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-800 transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center space-x-1.5"
-                      >
-                        <span>Request Warm Referral (1-Click)</span>
-                        <span>→</span>
-                      </button>
+                      {user ? (
+                        <button
+                          type="button"
+                          onClick={() => handleOpenReferral(job)}
+                          className="px-4 py-2 bg-black text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-800 transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center space-x-1.5 cursor-pointer"
+                        >
+                          <span>Request Warm Referral (1-Click)</span>
+                          <span>→</span>
+                        </button>
+                      ) : (
+                        <Link
+                          href="/login"
+                          className="px-4 py-2 bg-black text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#FF5500] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center space-x-1.5"
+                        >
+                          <span>Sign In to Request Referral</span>
+                          <span>→</span>
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </article>

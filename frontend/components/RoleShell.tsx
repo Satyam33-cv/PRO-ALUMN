@@ -34,16 +34,16 @@ export interface NavProtocolItem {
 }
 
 const PROTOCOLS: NavProtocolItem[] = [
-  { id: "dashboard", index: "01", title: "Dashboard", href: "/dashboard" },
+  { id: "dashboard", index: "01", title: "Member Dashboard", href: "/dashboard" },
   { id: "directory", index: "02", title: "Alumni Directory", href: "/directory" },
-  { id: "jobs", index: "03", title: "Jobs & Referrals", href: "/jobs" },
-  { id: "mentorship", index: "04", title: "Mentorship Hub", href: "/mentorship" },
+  { id: "jobs", index: "03", title: "Career & Referral Hub", href: "/jobs" },
+  { id: "mentorship", index: "04", title: "Mentorship & Flash 1:1", href: "/mentorship" },
   { id: "events", index: "05", title: "Events & RSVPs", href: "/events" },
   { id: "stories", index: "06", title: "Success Stories", href: "/stories" },
   { id: "education", index: "07", title: "Education & Sprints", href: "/education" },
   { id: "announcements", index: "08", title: "Announcements Wire", href: "/announcements" },
-  { id: "chat", index: "09", title: "Advisory Chat", href: "/chat" },
-  { id: "profile", index: "10", title: "Credential Pass", href: "/profile" },
+  { id: "chat", index: "09", title: "Unified Messaging & Chat", href: "/chat" },
+  { id: "profile", index: "10", title: "My Profile & Digital Pass", href: "/profile" },
   { id: "admin", index: "11", title: "Admin Command Center", href: "/admin", adminOnly: true },
 ];
 
@@ -265,10 +265,10 @@ export function RoleShell({
       : `FELLOW / COHORT '${user?.classYear ? user.classYear.slice(-2) : "26"}`;
 
   const AsideNav = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <aside className="h-full w-72 bg-[#F7F4EE] dark:bg-[#12151b] flex flex-col justify-between border-r-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
-      <div className="flex flex-col">
+    <aside className="h-full w-72 bg-[#F7F4EE] dark:bg-[#12151b] flex flex-col justify-between border-r-[1.5px] border-[#1A1A1A] dark:border-neutral-800 select-none">
+      <div className="flex flex-col flex-1 min-h-0">
         {/* Aside Header */}
-        <div className="h-16 px-4 flex items-center justify-between bg-[#F7F4EE] dark:bg-[#12151b] border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+        <div className="h-16 px-4 flex items-center justify-between bg-[#F7F4EE] dark:bg-[#12151b] border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800 shrink-0">
           <Link
             href="/dashboard"
             onClick={() => isMobile && setSidebarOpen(false)}
@@ -303,7 +303,7 @@ export function RoleShell({
         </div>
 
         {/* Index Protocols Header */}
-        <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+        <div className="px-4 pt-3 pb-1.5 flex items-center justify-between shrink-0">
           <span className="font-headline text-[11px] uppercase font-bold text-neutral-500 tracking-wider">
             INDEX PROTOCOLS
           </span>
@@ -313,7 +313,7 @@ export function RoleShell({
         </div>
 
         {/* Navigation List */}
-        <nav className="flex flex-col px-3 gap-1 overflow-y-auto max-h-[calc(100vh-270px)]" aria-label="System navigation">
+        <nav className="flex flex-col px-2.5 gap-0.5 flex-1 min-h-0 overflow-y-auto" aria-label="System navigation">
           {PROTOCOLS.map((p) => {
             const active = isProtocolActive(p.href);
             // If adminOnly, still visible if user is admin or as preview
@@ -324,23 +324,23 @@ export function RoleShell({
                 key={p.id}
                 href={p.href}
                 onClick={() => isMobile && setSidebarOpen(false)}
-                className={`flex items-center justify-between px-3 py-2 text-xs font-bold uppercase transition-all duration-150 border-[1.5px] ${
+                className={`flex items-center justify-between px-2.5 py-1.5 text-xs font-bold uppercase transition-all duration-150 border-[1.5px] ${
                   active
                     ? "bg-black text-white dark:bg-white dark:text-black border-[#1A1A1A] dark:border-neutral-300 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#FFFFFF]"
                     : "bg-transparent text-neutral-700 dark:text-neutral-300 border-transparent hover:border-[#1A1A1A] dark:hover:border-neutral-700 hover:bg-[#ebe8e2] dark:hover:bg-[#181a20]"
                 }`}
               >
-                <span className="flex items-center gap-2.5">
+                <span className="flex items-center gap-2 min-w-0">
                   <span
-                    className={`font-mono text-[11px] ${
+                    className={`font-mono text-[10px] shrink-0 ${
                       active ? "text-[#FF5500]" : "text-neutral-400"
                     }`}
                   >
                     {p.index}
                   </span>
-                  <span className="font-headline tracking-tight">{p.title}</span>
+                  <span className="font-headline tracking-tight truncate">{p.title}</span>
                 </span>
-                <span className="font-mono text-xs opacity-70">→</span>
+                <span className="font-mono text-xs opacity-70 shrink-0">→</span>
               </Link>
             );
           })}
@@ -348,7 +348,7 @@ export function RoleShell({
       </div>
 
       {/* Aside Footer: Vector Runtime Status & Sign Out */}
-      <div className="p-3.5 flex flex-col gap-2.5 bg-[#EFECE4] dark:bg-[#181a20] border-t-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+      <div className="p-3 flex flex-col gap-2 bg-[#EFECE4] dark:bg-[#181a20] border-t-[1.5px] border-[#1A1A1A] dark:border-neutral-800 shrink-0">
         <div className="flex items-center justify-between px-1">
           <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
             VECTOR RUNTIME

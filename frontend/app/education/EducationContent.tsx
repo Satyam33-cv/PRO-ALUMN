@@ -3,6 +3,7 @@
 import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Terminal,
   Activity,
@@ -312,6 +313,25 @@ export function EducationContent({
       </section>
 
       {/* FEEDBACK BANNERS */}
+      {!user && (
+        <section className="bg-[#D9E021] border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
+          <div className="flex items-center gap-3">
+            <span className="w-3 h-3 rounded-full bg-black animate-pulse shrink-0" />
+            <div>
+              <span className="font-black text-sm uppercase text-black">[ GUEST SHOWCASE MODE ] </span>
+              <span className="text-black font-semibold">
+                Explore open runbooks &amp; curriculum modules. Authenticate to track course completion, unlock premium technical video streams &amp; earn verified alumni badges.
+              </span>
+            </div>
+          </div>
+          <Link
+            href="/login?redirect=/education"
+            className="px-4 py-2 bg-black text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#FF5500] whitespace-nowrap active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all shrink-0"
+          >
+            Authenticate Account →
+          </Link>
+        </section>
+      )}
       {successMsg && (
         <div className="p-3.5 bg-[#D9E021] border-2 border-[#1A1A1A] text-black font-mono text-xs font-black shadow-[3px_3px_0px_#1A1A1A] flex items-center gap-2">
           <CheckCircle2 size={16} />

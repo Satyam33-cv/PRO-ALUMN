@@ -118,9 +118,29 @@ const CANONICAL_MENTORS: MentorFellow[] = [
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
     verified: true,
     domain: "AI / LLM INFRASTRUCTURE",
-    skills: ["LLM Alignment", "PyTorch", "RLHF", "Interpretability"],
+    skills: ["Post-Quantum", "Lattice Cryptography", "zk-SNARKs", "PyTorch"],
     slotsLabel: "Friday Late Slot",
     availableSlots: ["04:00 PM", "04:30 PM"],
+    costFlash: 30,
+    costDeep: 50,
+    isBarter: false,
+  },
+  {
+    id: "mentor-07",
+    recCode: "REC_07",
+    name: "Dr. Alexei Volkov",
+    role: "Quantum Computing Fellow",
+    company: "IBM Quantum / Oxford",
+    cohort: "Class of '17",
+    location: "Zurich, Switzerland",
+    cosineMatch: 95.1,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+    verified: true,
+    domain: "QUANTUM & CRYPTOGRAPHY",
+    skills: ["Qiskit", "Fault-Tolerant Quantum", "Quantum Annealing", "Lattice Cryptography"],
+    slotsLabel: "Monday Morning",
+    availableSlots: ["09:00 AM", "09:30 AM"],
     costFlash: 30,
     costDeep: 50,
     isBarter: false,
@@ -171,6 +191,7 @@ const DOMAINS = [
   "ALL DOMAINS",
   "DISTRIBUTED SYSTEMS",
   "AI / LLM INFRASTRUCTURE",
+  "QUANTUM & CRYPTOGRAPHY",
   "PRODUCT STRATEGY",
   "CAREER PIVOTS",
   "HARDWARE & EMBEDDED",
@@ -304,6 +325,12 @@ export function MentorshipContent() {
 
   // Open booking modal
   const handleOpenBooking = (mentor: MentorFellow, slot?: string) => {
+    if (!user) {
+      if (typeof window !== "undefined") {
+        window.location.href = "/login?redirect=/mentorship";
+      }
+      return;
+    }
     setBookingMentor(mentor);
     setSelectedSlot(slot || mentor.availableSlots[0] || "10:00 AM");
     setAuditTopic("");
@@ -906,12 +933,14 @@ export function MentorshipContent() {
                         className="w-full py-3 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] transition-colors flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <span>
-                          {durationMode.includes("30-Min")
+                          {!user
+                            ? "SIGN IN TO SCHEDULE 1-ON-1"
+                            : durationMode.includes("30-Min")
                             ? "RESERVE 30-MIN DEEP-DIVE"
                             : "RESERVE 15-MIN FLASH"}
                         </span>
                         <span className="font-mono text-xs opacity-80">
-                          ({cost} CR)
+                          {user ? `(${cost} CR)` : "→"}
                         </span>
                       </button>
                     )}
