@@ -1,6 +1,15 @@
 import { JobDetailContent } from "@/components/JobDetailContent";
 import { RoleShell } from "@/components/RoleShell";
 
-export default function JobDetailPage({ params }: { params: { id: string } }) {
-	return <RoleShell><JobDetailContent id={params.id} /></RoleShell>;
+export default async function JobDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }> | { id: string };
+}) {
+  const resolved = await Promise.resolve(params);
+  return (
+    <RoleShell>
+      <JobDetailContent id={resolved.id} />
+    </RoleShell>
+  );
 }

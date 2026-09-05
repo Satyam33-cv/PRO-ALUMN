@@ -165,19 +165,27 @@ export function JobDetailContent({ id }: { id: string }) {
                 {job.description || "This role was shared by a member of the PRO ALUMN network. Reach out directly for more specifics."}
               </div>
 
-              {job.requirements && job.requirements.length > 0 && (
-                <div className="mt-8">
-                  <h3 className="font-display text-lg">Key Requirements</h3>
-                  <ul className="mt-4 space-y-3">
-                    {job.requirements.map((req, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-ink/70">
-                        <CheckCircle2 size={16} className="shrink-0 text-sage mt-0.5" />
-                        <span>{req}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {(() => {
+                const reqs = Array.isArray(job.requirements)
+                  ? job.requirements
+                  : typeof job.requirements === "string" && (job.requirements as string).trim()
+                  ? (job.requirements as string).split(",").map((s) => s.trim()).filter(Boolean)
+                  : [];
+                if (reqs.length === 0) return null;
+                return (
+                  <div className="mt-8">
+                    <h3 className="font-display text-lg">Key Requirements</h3>
+                    <ul className="mt-4 space-y-3">
+                      {reqs.map((req, i) => (
+                        <li key={i} className="flex items-start gap-3 text-sm text-ink/70">
+                          <CheckCircle2 size={16} className="shrink-0 text-sage mt-0.5" />
+                          <span>{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })()}
             </Card>
           </StaggerItem>
 

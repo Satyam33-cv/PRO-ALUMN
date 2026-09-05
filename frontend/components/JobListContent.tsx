@@ -137,34 +137,72 @@ export function JobListContent() {
 
   const jobsList: EnrichedJobItem[] = useMemo(() => {
     if (apiJobs && Array.isArray(apiJobs) && apiJobs.length > 0) {
-      return apiJobs.map((j: Job, idx: number) => {
+      return apiJobs.map((j: any, idx: number) => {
         const similarity = Math.max(82, +(98.5 - idx * 1.5).toFixed(1));
-        const posterInitials = j.postedBy
-          ? j.postedBy
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()
-          : "AL";
+
+        // Safely extract poster name
+        let posterName = "Verified Alumni";
+        if (typeof j.postedBy === "string" && j.postedBy.trim()) {
+          posterName = j.postedBy.trim();
+        } else if (j.postedBy && typeof j.postedBy === "object" && j.postedBy.name) {
+          posterName = String(j.postedBy.name).trim();
+        }
+
+        // Safely compute poster initials
+        const posterInitials = posterName
+          .split(" ")
+          .filter(Boolean)
+          .map((n: string) => n[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase() || "AL";
+
+        // Safely compute cohort / batch
+        let rawBatch = "";
+        if (j.postedBy && typeof j.postedBy === "object" && j.postedBy.batchYear) {
+          rawBatch = String(j.postedBy.batchYear);
+        } else if (j.postedByBatch) {
+          rawBatch = String(j.postedByBatch);
+        }
+        const posterCohort = rawBatch
+          ? `Cohort '${rawBatch.slice(-2)}`
+          : "Verified Fellow";
+
+        // Safely format company and reqCode
+        const safeCompany = (j.company && typeof j.company === "string") ? j.company : "ALUM";
+        const reqCode = `REQ // ${(1000 + idx * 111).toString(16).toUpperCase()}-${safeCompany.slice(0, 4).toUpperCase()}`;
+
+        // Safely normalize requirements / stack
+        let stack: string[] = ["Distributed Systems", "Cloud Infra"];
+        if (Array.isArray(j.requirements) && j.requirements.length > 0) {
+          stack = j.requirements.filter((r: any) => typeof r === "string" && r.trim());
+        } else if (typeof j.requirements === "string" && j.requirements.trim()) {
+          stack = j.requirements.split(",").map((s: string) => s.trim()).filter(Boolean);
+        } else if (typeof j.skills === "string" && j.skills.trim()) {
+          stack = j.skills.split(",").map((s: string) => s.trim()).filter(Boolean);
+        }
+
+        const safeType = j.type || j.jobType || "Full-time";
+        const slotsCount = typeof j.referralSlots === "number" ? j.referralSlots : (j.referralAvailable ? 3 : 0);
+
         return {
-          id: j.id,
-          reqCode: `REQ // ${(1000 + idx * 111).toString(16).toUpperCase()}-${j.company.slice(0, 4).toUpperCase()}`,
-          title: j.title,
-          company: j.company,
+          id: String(j.id || `job-${idx}`),
+          reqCode,
+          title: String(j.title || "Engineering Role"),
+          company: safeCompany,
           location: j.location || (j.remote ? "Remote" : "Onsite"),
-          type: j.type || "Full-time",
-          comp: "COMP: Competitive Alumn Range",
+          type: safeType,
+          comp: j.salaryMin && j.salaryMax ? `COMP: ${j.currency || "INR"} ${j.salaryMin} - ${j.salaryMax}` : "COMP: Competitive Alumn Range",
           similarity,
-          domain: j.type === "Internship" ? "INTERNSHIP & RESEARCH" : "SYSTEMS & DISTRIBUTED",
+          domain: safeType === "Internship" ? "INTERNSHIP & RESEARCH" : "SYSTEMS & DISTRIBUTED",
           description: j.description || "Production engineering role verified through collegiate alumni hiring channels.",
-          stack: j.requirements && j.requirements.length > 0 ? j.requirements : ["Distributed Systems", "Cloud Infra"],
-          slots: j.referralAvailable ? 3 : 0,
-          posterName: j.postedBy || "Verified Alumni",
-          posterCohort: j.postedByBatch ? `Cohort '${j.postedByBatch.slice(-2)}` : "Verified Fellow",
+          stack: stack.length > 0 ? stack : ["Distributed Systems", "Cloud Infra"],
+          slots: slotsCount,
+          posterName,
+          posterCohort,
           posterInitials,
-          remote: j.remote ?? false,
-          referralAvailable: j.referralAvailable ?? true,
+          remote: Boolean(j.remote || safeType.toLowerCase().includes("remote")),
+          referralAvailable: slotsCount > 0 || Boolean(j.referralAvailable),
         };
       });
     }
@@ -641,7 +679,7 @@ export function JobListContent() {
                       <span className="text-[10px] font-bold text-neutral-500 uppercase">
                         STACK:
                       </span>
-                      {job.stack.map((item, sIdx) => (
+                      {(Array.isArray(job.stack) ? job.stack : []).map((item, sIdx) => (
                         <span
                           key={sIdx}
                           className="px-2 py-0.5 bg-white border border-black text-[11px] font-medium"
