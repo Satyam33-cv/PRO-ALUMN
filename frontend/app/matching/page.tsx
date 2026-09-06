@@ -108,12 +108,12 @@ export default function MatchingPage() {
     return (
       <RoleShell>
         <div className="container mx-auto py-24 px-4 text-center flex flex-col items-center">
-          <div className="p-10 rounded-3xl border border-ink/10 bg-white/40 backdrop-blur-xl shadow-xl max-w-md w-full space-y-4">
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 mb-6">
-              <GraduationCap size={32} />
+          <div className="p-8 border-4 border-black bg-white shadow-[6px_6px_0px_#000000] max-w-md w-full space-y-4">
+            <div className="mx-auto w-16 h-16 border-2 border-black bg-[#CCFF00] flex items-center justify-center text-black mb-6 shadow-[2px_2px_0px_#000000]">
+              <GraduationCap size={32} className="stroke-[2.5]" />
             </div>
-            <h2 className="text-2xl font-display text-ink">Student AI Matchmaking</h2>
-            <p className="text-sm text-ink/60 leading-relaxed">
+            <h2 className="text-2xl font-black uppercase tracking-tight text-black">Student AI Matchmaking</h2>
+            <p className="font-mono text-xs text-neutral-600 leading-relaxed">
               Only student accounts can view personalized AI Alumni Career Match rankings based on 384-dimensional vector embeddings.
             </p>
           </div>
@@ -124,31 +124,33 @@ export default function MatchingPage() {
 
   return (
     <RoleShell>
-      <div className="container mx-auto py-10 px-4 max-w-6xl space-y-10">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles size={16} className="text-amber-500" />
-              <span className="font-mono text-xs font-bold text-amber-500 uppercase tracking-widest">
-                384-Dim Vector Matcher
-              </span>
+      <div className="container mx-auto py-10 px-4 max-w-6xl space-y-8">
+        <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000]">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+                <span className="font-mono text-xs font-black text-black uppercase tracking-widest">
+                  [ SECTION 10 // 384-DIM VECTOR MATCHMAKER ]
+                </span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-black">
+                AI Alumni Matches
+              </h1>
+              <p className="mt-1 font-mono text-xs text-neutral-600 max-w-xl leading-relaxed">
+                Profile analyzed against thousands of alumni using semantic embeddings to surface your highest-affinity career mentors.
+              </p>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-display text-ink tracking-tight">
-              AI Alumni Matches
-            </h1>
-            <p className="mt-3 text-sm text-ink/50 max-w-xl leading-relaxed">
-              We've analyzed your profile against thousands of alumni using semantic embeddings to find your perfect career mentors.
-            </p>
+            {!synced && !loading && (
+              <button
+                onClick={handleSync}
+                className="inline-flex items-center gap-2 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] px-6 py-3 font-mono text-xs font-black uppercase text-black transition-all shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+              >
+                <RefreshCw size={14} />
+                <span>Refresh Embeddings</span>
+              </button>
+            )}
           </div>
-          {!synced && !loading && (
-            <button
-              onClick={handleSync}
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-ink px-6 py-3 font-semibold text-white transition-all hover:bg-brass hover:shadow-lg active:scale-95"
-            >
-              <RefreshCw className="transition-transform group-hover:rotate-180" size={16} />
-              <span className="relative z-10 text-sm">Refresh Embeddings</span>
-            </button>
-          )}
         </div>
 
         <AnimatePresence mode="wait">
@@ -158,7 +160,7 @@ export default function MatchingPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="mt-12"
+              className="mt-8 border-4 border-black bg-white shadow-[6px_6px_0px_#000000]"
             >
               <VectorScanner />
             </motion.div>
@@ -167,7 +169,7 @@ export default function MatchingPage() {
               key="results"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-8"
+              className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
             >
               {matches?.alumni?.length ? (
                 matches.alumni.map((a, i) => (
@@ -175,26 +177,22 @@ export default function MatchingPage() {
                     key={a.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="group relative overflow-hidden p-6 rounded-3xl border border-ink/10 bg-white/50 backdrop-blur-xl shadow-sm transition-all hover:shadow-xl hover:border-brass/30 hover:-translate-y-1"
+                    transition={{ delay: i * 0.08 }}
+                    className="group relative p-6 border-3 border-black bg-white shadow-[4px_4px_0px_#000000] hover:-translate-y-1 hover:shadow-[6px_6px_0px_#000000] transition-all flex flex-col justify-between"
                   >
-                    <div className="absolute top-0 right-0 p-6 pointer-events-none opacity-20 group-hover:opacity-100 transition-opacity">
-                      <ArrowUpRight size={80} className="text-brass/10 -mt-6 -mr-6" />
-                    </div>
-
                     <div className="flex items-start justify-between gap-4 relative z-10">
-                      <div className="space-y-4 flex-1">
+                      <div className="space-y-3 flex-1">
                         <div>
-                          <h3 className="font-display text-xl text-ink leading-tight">
+                          <h3 className="text-xl font-black uppercase tracking-tight text-black leading-tight">
                             {a.name}
                           </h3>
-                          <div className="mt-2 space-y-1.5">
-                            <p className="text-xs font-medium text-ink/70 flex items-center gap-2">
-                              <Building size={14} className="text-ink/40" />
-                              <span className="truncate">{a.currentCompany || a.department || "Alumnus"}</span>
+                          <div className="mt-2 space-y-1 font-mono text-xs text-neutral-600">
+                            <p className="flex items-center gap-2">
+                              <Building size={14} className="text-black" />
+                              <span className="truncate font-bold">{a.currentCompany || a.department || "Alumnus"}</span>
                             </p>
-                            <p className="text-xs text-ink/50 flex items-center gap-2">
-                              <Briefcase size={14} className="text-ink/40" />
+                            <p className="flex items-center gap-2">
+                              <Briefcase size={14} className="text-black" />
                               <span className="truncate">{a.jobTitle || a.role || "Member"}</span>
                             </p>
                           </div>
@@ -205,13 +203,13 @@ export default function MatchingPage() {
                             {a.skills.split(",").slice(0, 3).map((skill, idx) => (
                               <span
                                 key={idx}
-                                className="inline-flex rounded-md bg-brass/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-brass border border-brass/20"
+                                className="inline-flex border-2 border-black bg-[#CCFF00] px-2 py-0.5 font-mono text-[9px] font-black uppercase text-black shadow-[1px_1px_0px_#000000]"
                               >
                                 {skill.trim()}
                               </span>
                             ))}
                             {a.skills.split(",").length > 3 && (
-                              <span className="inline-flex rounded-md bg-ink/5 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-ink/40 border border-ink/10">
+                              <span className="inline-flex border-2 border-black bg-neutral-100 px-2 py-0.5 font-mono text-[9px] font-bold uppercase text-black">
                                 +{a.skills.split(",").length - 3}
                               </span>
                             )}
@@ -219,29 +217,29 @@ export default function MatchingPage() {
                         )}
                       </div>
                       
-                      <div className="shrink-0 flex flex-col items-center gap-4">
+                      <div className="shrink-0 flex flex-col items-center gap-2">
                         <MatchRing percentage={Math.round(Number(a.matchScore || a.similarity || 0.85) * 100)} />
                       </div>
                     </div>
 
-                    <div className="mt-6 pt-6 border-t border-ink/5 flex items-center gap-3 relative z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-ink text-paper py-2.5 text-xs font-bold hover:bg-brass transition-colors shadow-md">
-                        <MessageSquare size={14} /> Message
+                    <div className="mt-6 pt-4 border-t-2 border-black flex items-center gap-2 relative z-10">
+                      <button className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer">
+                        <MessageSquare size={13} /> Message
                       </button>
-                      <button className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-ink/20 text-ink bg-white/50 py-2.5 text-xs font-bold hover:border-brass hover:text-brass transition-colors">
-                        View Profile
+                      <button className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-white text-black hover:bg-neutral-100 py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer">
+                        Profile
                       </button>
                     </div>
                   </motion.div>
                 ))
               ) : (
-                <div className="col-span-full py-20 flex flex-col items-center text-center">
-                  <div className="size-20 rounded-full bg-ink/5 flex items-center justify-center text-ink/20 mb-6">
-                    <ScanSearch size={32} />
+                <div className="col-span-full py-20 flex flex-col items-center text-center border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
+                  <div className="size-16 border-2 border-black bg-[#CCFF00] flex items-center justify-center text-black mb-4 shadow-[2px_2px_0px_#000000]">
+                    <ScanSearch size={28} className="stroke-[2.5]" />
                   </div>
-                  <h3 className="font-display text-2xl text-ink">No exact matches yet</h3>
-                  <p className="mt-2 text-sm text-ink/50 max-w-sm">
-                    Ensure your profile is complete with your skills and interests, then click 'Refresh Embeddings' to update your semantic vectors.
+                  <h3 className="font-sans text-xl font-black uppercase text-black">No exact matches yet</h3>
+                  <p className="mt-1 font-mono text-xs text-neutral-500 max-w-sm">
+                    Ensure your profile is complete with your skills and interests, then click &apos;Refresh Embeddings&apos; to update your semantic vectors.
                   </p>
                 </div>
               )}

@@ -835,31 +835,54 @@ export function AdminContent() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-20 font-sans">
+      {/* Tier-2 Operational Boundary Console Banner */}
+      <div className="border-4 border-black bg-[#F7F4EE] p-5 shadow-[6px_6px_0px_#000000]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-black pb-3">
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 bg-[#CCFF00] border-2 border-black" />
+            <span className="font-mono text-xs font-black tracking-widest text-black uppercase">
+              [ ROOT // SUPER-ADMIN COMMAND CONSOLE &amp; SYSTEM TELEMETRY ]
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="border-2 border-black bg-black px-2 py-0.5 font-mono text-[10px] font-black uppercase text-[#CCFF00]">
+              TIER-2 HIGH-DENSITY OPERATIONAL PLANE
+            </span>
+            <span className="border-2 border-black bg-[#00E676] px-2 py-0.5 font-mono text-[10px] font-black uppercase text-black">
+              MAX AUDIT THROUGHPUT
+            </span>
+          </div>
+        </div>
+        <p className="mt-2 font-mono text-xs text-neutral-700">
+          Standardized high-density operational cockpit preserving 15-20 rows/fold audit throughput across multi-tenant moderation, financial ledgers, and database health.
+        </p>
+      </div>
+
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-ink/10 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-black pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400 font-bold">
-              PRO ALUMN Super Admin
+            <span className="flex h-2.5 w-2.5 border border-black bg-[#00E676] animate-pulse" />
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-900 font-black">
+              PRO ALUMN Institutional Command Enclave
             </p>
           </div>
-          <h1 className="mt-1 font-display text-4xl font-bold text-slate-900 dark:text-slate-100">
+          <h1 className="mt-1 font-sans text-4xl font-black uppercase tracking-tight text-black">
             Command Center
           </h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-1 font-mono text-xs text-neutral-600">
             Real-time telemetry, user presence, video market &amp; wallet credit ledger
           </p>
         </div>
 
         {/* Live Health Indicator Pill & Online Users Count */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 text-xs font-mono">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">{onlineUsers.size} Online</span>
-            <span className="text-slate-400">|</span>
-            <Server size={13} className={healthData?.status === "HEALTHY" ? "text-emerald-500" : "text-amber-500"} />
-            <span>DB: {healthData?.latencyMs ? `${healthData.latencyMs}ms` : "Live"}</span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 border-2 border-black bg-white text-xs font-mono shadow-[2px_2px_0px_#000000]">
+            <span className="flex h-2 w-2 bg-[#00E676] animate-ping" />
+            <span className="font-bold text-black">{onlineUsers.size} Online</span>
+            <span className="text-black">|</span>
+            <Server size={13} className={healthData?.status === "HEALTHY" ? "text-emerald-600" : "text-amber-600"} />
+            <span className="font-bold">DB: {healthData?.latencyMs ? `${healthData.latencyMs}ms` : "Live"}</span>
           </div>
 
           <button
@@ -872,7 +895,7 @@ export function AdminContent() {
               reloadPages();
               showToast("Refreshed platform telemetry & moderation queues");
             }}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+            className="p-2 border-2 border-black bg-white hover:bg-black hover:text-[#CCFF00] shadow-[2px_2px_0px_#000000] text-black transition-all cursor-pointer"
             title="Refresh telemetry"
           >
             <RefreshCw size={16} />

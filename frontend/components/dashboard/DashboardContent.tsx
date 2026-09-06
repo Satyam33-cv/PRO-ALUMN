@@ -176,7 +176,7 @@ export function DashboardContent() {
       {/* ========================================================================= */}
       {/* SECTION 00: TELEMETRY & ACADEMIC DOSSIER BANNER */}
       {/* ========================================================================= */}
-      <section className="bg-[#F7F4EE] dark:bg-[#12151b] border-[1.5px] border-[#1A1A1A] dark:border-neutral-800 p-6 lg:p-8 shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#333] relative overflow-hidden">
+      <section className="bg-[#F7F4EE] dark:bg-[#12151b] border-4 border-black p-6 lg:p-8 shadow-[6px_6px_0px_#000000] relative overflow-hidden">
         {/* Architectural Watermark */}
         <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 opacity-5 pointer-events-none select-none font-headline text-[150px] lg:text-[180px] leading-none text-[#1A1A1A] dark:text-white font-bold">
           01
@@ -185,12 +185,12 @@ export function DashboardContent() {
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 relative z-10">
           {/* Student Profile Telemetry */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-            <div className="relative w-16 h-16 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] p-0.5 shrink-0 flex items-center justify-center">
+            <div className="relative w-16 h-16 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] p-0.5 shrink-0 flex items-center justify-center">
               <div className="w-full h-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-headline text-lg font-bold">
                 {userInitials}
               </div>
               <span
-                className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#00E676] border-[1.5px] border-[#1A1A1A] rounded-full shadow-[0_0_6px_#00E676]"
+                className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#00E676] border-2 border-black rounded-full shadow-[0_0_6px_#00E676]"
                 title="Node Online"
               />
             </div>
@@ -203,7 +203,7 @@ export function DashboardContent() {
                 <span className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
                   {cohortText}
                 </span>
-                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#D9E021] text-[#1A1A1A] border border-[#1A1A1A] uppercase font-bold">
+                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#CCFF00] text-black border-2 border-black uppercase font-bold">
                   {roleBadge}
                 </span>
               </div>
@@ -219,7 +219,7 @@ export function DashboardContent() {
           {/* Sync Gauge & Algorithmic Health */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4 xl:pt-0 border-t xl:border-t-0 border-[#D5CEBF] dark:border-neutral-800">
             {/* Vector Completeness Progress */}
-            <div className="bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 p-3.5 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] min-w-[210px]">
+            <div className="bg-white dark:bg-[#181a20] border-2 border-black p-3.5 shadow-[4px_4px_0px_#000000] min-w-[210px]">
               <div className="flex justify-between items-center mb-1.5">
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
                   EMBEDDING SYNC
@@ -228,7 +228,7 @@ export function DashboardContent() {
                   {syncStatus}
                 </span>
               </div>
-              <div className="w-full h-2 bg-[#F7F4EE] dark:bg-[#12151b] border border-[#1A1A1A] dark:border-neutral-700 overflow-hidden p-[1px]">
+              <div className="w-full h-2 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black overflow-hidden p-[1px]">
                 <div
                   className="h-full bg-[#1A1A1A] dark:bg-white transition-all duration-500"
                   style={{ width: syncStatus === "100% SYNCHRONIZED" ? "100%" : "92%" }}
@@ -242,7 +242,7 @@ export function DashboardContent() {
 
             {/* Quick Metric Pills */}
             <div className="grid grid-cols-2 gap-2.5">
-              <div className="bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 p-2.5 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] flex flex-col justify-between">
+              <div className="bg-white dark:bg-[#181a20] border-2 border-black p-2.5 shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500">
                   GAMIFICATION
                 </span>
@@ -257,7 +257,7 @@ export function DashboardContent() {
                 </span>
               </div>
 
-              <div className="bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 p-2.5 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] flex flex-col justify-between">
+              <div className="bg-white dark:bg-[#181a20] border-2 border-black p-2.5 shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500">
                   PENDING REFS
                 </span>
@@ -283,11 +283,11 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         {/* CELL A: HERO BENTO (TOP AI VECTOR MATCHES) - 8 COLS */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="md:col-span-12 xl:col-span-8 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#333] flex flex-col">
+        <div className="md:col-span-12 xl:col-span-8 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col">
           {/* Card Frame Header */}
-          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] px-2 py-0.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] font-bold">
+              <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                 01 // TOPOLOGICAL MATCH
               </span>
               <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
@@ -295,12 +295,12 @@ export function DashboardContent() {
               </h2>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#e5e2dc] dark:bg-[#20242c] border border-[#1A1A1A] dark:border-neutral-700 text-neutral-600 dark:text-neutral-400">
+              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#e5e2dc] dark:bg-[#20242c] border-2 border-black text-neutral-600 dark:text-neutral-400">
                 SPACE: L2_ANGULAR
               </span>
               <button
                 onClick={handleRecompute}
-                className="p-1 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                className="p-1 border-2 border-black bg-white dark:bg-[#181a20] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                 title="Recompute vector matches"
                 type="button"
                 aria-label="Recompute vector matches"
@@ -316,14 +316,14 @@ export function DashboardContent() {
           </div>
 
           {/* Directory Profiles List */}
-          <div className="divide-y-[1.5px] divide-[#1A1A1A] dark:divide-neutral-800">
+          <div className="divide-y-2 divide-black">
             {matches.map((match) => (
               <div
                 key={match.id}
                 className="p-4 sm:p-5 hover:bg-[#F7F4EE]/60 dark:hover:bg-[#15181f] transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-3.5 min-w-0">
-                  <div className="relative w-12 h-12 bg-[#F7F4EE] dark:bg-[#12151b] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[1px_1px_0_#1A1A1A] shrink-0 overflow-hidden">
+                  <div className="relative w-12 h-12 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black shadow-[2px_2px_0px_#000000] shrink-0 overflow-hidden">
                     <img
                       src={match.avatar}
                       alt={match.name}
@@ -342,7 +342,7 @@ export function DashboardContent() {
                       <span className="font-mono text-xs text-neutral-500">
                         • {match.role}
                       </span>
-                      <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#D9E021] border border-[#1A1A1A] text-[#1A1A1A] font-bold">
+                      <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#CCFF00] border-2 border-black text-black font-bold">
                         {match.similarity}
                       </span>
                     </div>
@@ -355,7 +355,7 @@ export function DashboardContent() {
                       {match.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="font-mono text-[10px] px-2 py-0.5 bg-[#EFECE4] dark:bg-[#20242c] border border-[#1A1A1A] dark:border-neutral-700 text-neutral-700 dark:text-neutral-300"
+                          className="font-mono text-[10px] px-2 py-0.5 bg-[#EFECE4] dark:bg-[#20242c] border-2 border-black text-neutral-700 dark:text-neutral-300"
                         >
                           {skill}
                         </span>
@@ -367,12 +367,12 @@ export function DashboardContent() {
                 <div className="flex items-center gap-2 shrink-0 pt-2 lg:pt-0">
                   {match.booked ? (
                     <>
-                      <span className="font-mono text-[10px] px-2 py-1 bg-[#e5e2dc] dark:bg-[#20242c] border border-[#1A1A1A] dark:border-neutral-700 text-neutral-500 font-bold">
+                      <span className="font-mono text-[10px] px-2 py-1 bg-[#e5e2dc] dark:bg-[#20242c] border-2 border-black text-neutral-500 font-bold">
                         SESSION BOOKED
                       </span>
                       <Link
                         href={`/directory?search=${encodeURIComponent(match.name)}`}
-                        className="px-3 py-1.5 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                        className="px-3 py-1.5 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                       >
                         Profile
                       </Link>
@@ -381,13 +381,13 @@ export function DashboardContent() {
                     <>
                       <Link
                         href="/mentorship"
-                        className="px-3 py-1.5 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                        className="px-3 py-1.5 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                       >
                         Flash 15m
                       </Link>
                       <Link
                         href="/jobs"
-                        className="px-3 py-1.5 bg-black text-white dark:bg-white dark:text-black border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center gap-1 cursor-pointer"
+                        className="px-3 py-1.5 bg-black text-white dark:bg-white dark:text-black border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center gap-1 cursor-pointer"
                       >
                         <span>Request Referral</span>
                         <ArrowRight size={13} />
@@ -400,7 +400,7 @@ export function DashboardContent() {
           </div>
 
           {/* Vector Footer Note */}
-          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-2.5 border-t-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex flex-wrap items-center justify-between gap-2">
+          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-2.5 border-t-2 border-black flex flex-wrap items-center justify-between gap-2">
             <span className="font-mono text-[10px] text-neutral-500">
               VECTOR SPACE INDEX REFRESHED: TODAY, 04:00 UTC
             </span>
@@ -417,25 +417,25 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         {/* CELL B: ACTIVE REFERRAL STATE MACHINE - 4 COLS */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#333] flex flex-col justify-between">
+        <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-between">
+            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] px-2 py-0.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] font-bold">
+                <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   02
                 </span>
                 <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
                   Referral Tracker
                 </h2>
               </div>
-              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border border-[#1A1A1A] font-bold">
+              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border-2 border-black font-bold">
                 2 LIVE REQS
               </span>
             </div>
 
             <div className="p-4 sm:p-5 space-y-4">
               {/* Item 1: Google Intern */}
-              <div className="border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 p-3.5 bg-[#EFECE4] dark:bg-[#15181f] space-y-3">
+              <div className="border-2 border-black p-3.5 bg-[#EFECE4] dark:bg-[#15181f] space-y-3 shadow-[3px_3px_0px_#000000]">
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="font-mono text-[10px] text-neutral-500 uppercase">
@@ -448,7 +448,7 @@ export function DashboardContent() {
                       Google Corp • Sponsor: Vikram Aditya
                     </p>
                   </div>
-                  <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#00E676] text-black border border-[#1A1A1A] font-bold">
+                  <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#00E676] text-black border-2 border-black font-bold">
                     DISPATCHED
                   </span>
                 </div>
@@ -459,7 +459,7 @@ export function DashboardContent() {
                     <div className="p-1 bg-[#1A1A1A] text-white font-bold">01 SUB</div>
                     <div className="p-1 bg-[#1A1A1A] text-white font-bold">02 SCRN</div>
                     <div className="p-1 bg-[#FF5500] text-white font-bold">03 DISP</div>
-                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border border-[#1A1A1A] dark:border-neutral-700">
+                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border-2 border-black">
                       04 HIRE
                     </div>
                   </div>
@@ -471,7 +471,7 @@ export function DashboardContent() {
               </div>
 
               {/* Item 2: Meta ML Associate */}
-              <div className="border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 p-3.5 bg-white dark:bg-[#181a20] space-y-3">
+              <div className="border-2 border-black p-3.5 bg-white dark:bg-[#181a20] space-y-3 shadow-[3px_3px_0px_#000000]">
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="font-mono text-[10px] text-neutral-500 uppercase">
@@ -484,7 +484,7 @@ export function DashboardContent() {
                       Meta FAIR • Sponsor: Senior Alumni Sponsor
                     </p>
                   </div>
-                  <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] font-bold">
+                  <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#CCFF00] text-black border-2 border-black font-bold">
                     IN REVIEW
                   </span>
                 </div>
@@ -494,10 +494,10 @@ export function DashboardContent() {
                   <div className="grid grid-cols-4 gap-1 text-center font-mono text-[9px]">
                     <div className="p-1 bg-[#1A1A1A] text-white font-bold">01 SUB</div>
                     <div className="p-1 bg-[#FF5500] text-white font-bold">02 SCRN</div>
-                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border border-[#1A1A1A] dark:border-neutral-700">
+                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border-2 border-black">
                       03 DISP
                     </div>
-                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border border-[#1A1A1A] dark:border-neutral-700">
+                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border-2 border-black">
                       04 HIRE
                     </div>
                   </div>
@@ -513,7 +513,7 @@ export function DashboardContent() {
           <div className="p-4 sm:p-5 pt-0">
             <Link
               href="/jobs"
-              className="block w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+              className="block w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
             >
               + Generate New Referral Escrow
             </Link>
@@ -523,11 +523,11 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         {/* CELL C: MENTORSHIP MICRO-SLOTS & LIVE COUNTDOWN - 4 COLS */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="md:col-span-6 xl:col-span-4 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#333] flex flex-col justify-between">
+        <div className="md:col-span-6 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-between">
+            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] px-2 py-0.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] font-bold">
+                <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   03
                 </span>
                 <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
@@ -542,7 +542,7 @@ export function DashboardContent() {
 
             <div className="p-4 sm:p-5 space-y-4">
               {/* Digital Countdown Timer */}
-              <div className="bg-[#F7F4EE] dark:bg-[#12151b] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 p-4 text-center shadow-[inset_1px_1px_0_#1A1A1A]">
+              <div className="bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black p-4 text-center shadow-[3px_3px_0px_#000000]">
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-widest">
                   COMMENCING IN
                 </span>
@@ -559,7 +559,7 @@ export function DashboardContent() {
               {/* Mentor Details */}
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 border border-[#1A1A1A] dark:border-neutral-700 bg-[#e5e2dc] shrink-0 overflow-hidden">
+                  <div className="w-10 h-10 border-2 border-black bg-[#e5e2dc] shrink-0 overflow-hidden">
                     <img
                       src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80"
                       alt="Ananya Deshmukh"
@@ -575,7 +575,7 @@ export function DashboardContent() {
                     </p>
                   </div>
                 </div>
-                <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400 bg-[#EFECE4] dark:bg-[#15181f] p-2.5 border border-[#D5CEBF] dark:border-neutral-800 leading-relaxed">
+                <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400 bg-[#EFECE4] dark:bg-[#15181f] p-2.5 border-2 border-black leading-relaxed">
                   &ldquo;Discussion on asynchronous state machine handlers in DynamoDB &amp; how to defend your distributed storage honors thesis.&rdquo;
                 </p>
               </div>
@@ -587,14 +587,14 @@ export function DashboardContent() {
               href="https://meet.google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-2 bg-black text-white dark:bg-white dark:text-black border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs font-bold uppercase text-center flex items-center justify-center gap-1.5 transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+              className="flex-1 py-2 bg-black text-white dark:bg-white dark:text-black border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs font-bold uppercase text-center flex items-center justify-center gap-1.5 transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
             >
               <Video size={14} />
               <span>Launch G-Meet</span>
             </a>
             <Link
               href="/mentorship"
-              className="px-3 py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer"
+              className="px-3 py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer"
             >
               Reschedule
             </Link>
@@ -604,18 +604,18 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         {/* CELL D: CAPACITY-GATED EVENTS WIDGET - 4 COLS */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="md:col-span-6 xl:col-span-4 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#333] flex flex-col justify-between">
+        <div className="md:col-span-6 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-between">
+            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] px-2 py-0.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] font-bold">
+                <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   04
                 </span>
                 <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
                   Featured Assemblage
                 </h2>
               </div>
-              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] font-bold uppercase">
+              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#CCFF00] text-black border-2 border-black font-bold uppercase">
                 RSVP CLOSING
               </span>
             </div>
@@ -639,7 +639,7 @@ export function DashboardContent() {
               </div>
 
               {/* Capacity Meter */}
-              <div className="border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 p-3 bg-[#F7F4EE] dark:bg-[#12151b] space-y-1.5">
+              <div className="border-2 border-black p-3 bg-[#F7F4EE] dark:bg-[#12151b] space-y-1.5 shadow-[3px_3px_0px_#000000]">
                 <div className="flex justify-between items-center font-mono text-[10px]">
                   <span className="text-[#1A1A1A] dark:text-white font-bold">
                     CAPACITY REGISTER
@@ -648,7 +648,7 @@ export function DashboardContent() {
                     {reservedCount} / 300 RESERVED ({Math.round((reservedCount / 300) * 100)}%)
                   </span>
                 </div>
-                <div className="w-full h-3 bg-white dark:bg-[#181a20] border border-[#1A1A1A] dark:border-neutral-700 p-[1px] flex gap-[2px]">
+                <div className="w-full h-3 bg-white dark:bg-[#181a20] border-2 border-black p-[1px] flex gap-[2px]">
                   <div
                     className="h-full bg-[#1A1A1A] dark:bg-white transition-all duration-300"
                     style={{ width: `${(reservedCount / 300) * 100}%` }}
@@ -668,7 +668,7 @@ export function DashboardContent() {
           <div className="p-4 sm:p-5 pt-0">
             <button
               onClick={handleToggleRsvp}
-              className={`w-full py-2 border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`w-full py-2 border-2 border-black shadow-[3px_3px_0px_#000000] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer ${
                 rsvpConfirmed
                   ? "bg-[#00E676] text-black"
                   : "bg-black text-white dark:bg-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200"
@@ -693,25 +693,25 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         {/* CELL G: QUICK SYSTEM UTILITY & WALLET LEDGER - 4 COLS */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#333] flex flex-col justify-between">
+        <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-between">
+            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] px-2 py-0.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] font-bold">
+                <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   05
                 </span>
                 <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
                   Ledger &amp; Vector Core
                 </h2>
               </div>
-              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#e5e2dc] dark:bg-[#20242c] border border-[#1A1A1A] dark:border-neutral-700 text-neutral-500">
+              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#e5e2dc] dark:bg-[#20242c] border-2 border-black text-neutral-500">
                 SYS_ID: 1536_L2
               </span>
             </div>
 
             <div className="p-4 sm:p-5 space-y-4">
               {/* Balance Panel */}
-              <div className="flex items-center justify-between p-3.5 bg-[#F7F4EE] dark:bg-[#12151b] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333]">
+              <div className="flex items-center justify-between p-3.5 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black shadow-[3px_3px_0px_#000000]">
                 <div>
                   <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
                     MEMBER CREDIT WALLET
@@ -726,7 +726,7 @@ export function DashboardContent() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="font-mono text-[9px] px-2 py-0.5 bg-[#00E676] border border-[#1A1A1A] text-black font-bold">
+                  <span className="font-mono text-[9px] px-2 py-0.5 bg-[#00E676] border-2 border-black text-black font-bold">
                     ESCROW GOOD
                   </span>
                   <div className="font-mono text-[10px] text-neutral-500 mt-1">
@@ -740,7 +740,7 @@ export function DashboardContent() {
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
                   Recent Cryptographic Records
                 </span>
-                <div className="border border-[#1A1A1A] dark:border-neutral-700 divide-y divide-[#1A1A1A] dark:divide-neutral-700 font-mono text-[10px]">
+                <div className="border-2 border-black divide-y-2 divide-black font-mono text-[10px]">
                   <div className="p-2 flex justify-between items-center bg-white dark:bg-[#181a20]">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[#00E676] font-bold">+30</span>
@@ -777,7 +777,7 @@ export function DashboardContent() {
             <button
               onClick={handleSyncVector}
               disabled={syncingVector}
-              className="w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+              className="w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
               type="button"
             >
               <RefreshCw size={13} className={syncingVector ? "animate-spin text-[#FF5500]" : ""} />
@@ -789,10 +789,10 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         {/* CELL E: NETWORK MILESTONE WIRE - 12 COLS */}
         {/* ----------------------------------------------------------------------- */}
-        <div className="md:col-span-12 xl:col-span-12 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[3px_3px_0_#1A1A1A] dark:shadow-[3px_3px_0_#333] flex flex-col">
-          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-between">
+        <div className="md:col-span-12 xl:col-span-12 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col">
+          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] px-2 py-0.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] font-bold">
+              <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                 06
               </span>
               <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
@@ -801,18 +801,18 @@ export function DashboardContent() {
             </div>
             <Link
               href="/stories"
-              className="font-headline text-xs font-bold px-3 py-1 bg-white dark:bg-[#181a20] border border-[#1A1A1A] dark:border-neutral-700 hover:bg-[#F7F4EE] dark:hover:bg-[#252932] shadow-[1px_1px_0_#1A1A1A] uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              className="font-headline text-xs font-bold px-3 py-1 bg-white dark:bg-[#181a20] border-2 border-black hover:bg-[#F7F4EE] dark:hover:bg-[#252932] shadow-[2px_2px_0px_#000000] uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             >
               + Transmit Story
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-[#1A1A1A] dark:divide-neutral-800">
+          <div className="grid grid-cols-1 lg:grid-cols-2 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black">
             {/* Story 01 */}
             <div className="p-4 sm:p-6 space-y-2.5 hover:bg-[#F7F4EE]/40 dark:hover:bg-[#15181f] transition-colors">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border border-[#1A1A1A] font-bold uppercase">
+                  <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border-2 border-black font-bold uppercase">
                     VENTURE FUNDING
                   </span>
                   <span className="font-mono text-[10px] text-neutral-500">
@@ -822,10 +822,10 @@ export function DashboardContent() {
                 <button
                   type="button"
                   onClick={() => handleUpvote("story1")}
-                  className={`flex items-center gap-1 px-2 py-0.5 border border-[#1A1A1A] text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
+                  className={`flex items-center gap-1 px-2 py-0.5 border-2 border-black text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
                     hasUpvoted.story1
-                      ? "bg-[#D9E021] text-black"
-                      : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#D9E021] hover:text-black"
+                      ? "bg-[#CCFF00] text-black"
+                      : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#CCFF00] hover:text-black"
                   }`}
                 >
                   <ArrowUp size={12} />
@@ -852,7 +852,7 @@ export function DashboardContent() {
             <div className="p-4 sm:p-6 space-y-2.5 hover:bg-[#F7F4EE]/40 dark:hover:bg-[#15181f] transition-colors">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-[10px] px-2 py-0.5 bg-[#1D4ED8] text-white border border-[#1A1A1A] font-bold uppercase">
+                  <span className="font-mono text-[10px] px-2 py-0.5 bg-[#1D4ED8] text-white border-2 border-black font-bold uppercase">
                     OPEN RESEARCH
                   </span>
                   <span className="font-mono text-[10px] text-neutral-500">
@@ -862,10 +862,10 @@ export function DashboardContent() {
                 <button
                   type="button"
                   onClick={() => handleUpvote("story2")}
-                  className={`flex items-center gap-1 px-2 py-0.5 border border-[#1A1A1A] text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
+                  className={`flex items-center gap-1 px-2 py-0.5 border-2 border-black text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
                     hasUpvoted.story2
-                      ? "bg-[#D9E021] text-black"
-                      : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#D9E021] hover:text-black"
+                      ? "bg-[#CCFF00] text-black"
+                      : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#CCFF00] hover:text-black"
                   }`}
                 >
                   <ArrowUp size={12} />

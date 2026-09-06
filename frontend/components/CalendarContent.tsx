@@ -214,58 +214,57 @@ END:VCALENDAR`;
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 pb-16 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-              <CalendarIcon size={24} />
-            </span>
-            <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-slate-100">
+      <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000]">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+              <p className="font-mono text-xs uppercase font-bold tracking-[0.2em] text-black">
+                [ SECTION 09 // CAMPUS SCHEDULE &amp; REUNIONS ]
+              </p>
+            </div>
+            <h1 className="mt-2 text-3xl sm:text-4xl font-black uppercase tracking-tight text-black">
               Events &amp; Reunions Calendar
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-              <ShieldCheck size={12} />
-              PostgreSQL Verified
-            </span>
+            <p className="mt-1 font-mono text-xs text-neutral-600 max-w-2xl">
+              Explore university reunions, alumni webinars, and mentorship sessions. Sync to your personal Google Calendar or Apple iCal with a single click.
+            </p>
           </div>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-            Explore university reunions, alumni webinars, and mentorship sessions. Sync to your personal Google Calendar or Apple iCal with a single click.
-          </p>
-        </div>
 
-        <div className="flex items-center gap-3">
-          {(user?.role === "admin" || user?.role === "alumni" || user?.role === "faculty") && (
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-sm cursor-pointer"
-            >
-              <Plus size={16} />
-              Schedule Event
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            {(user?.role === "admin" || user?.role === "alumni" || user?.role === "faculty") && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] text-black font-mono text-xs font-black uppercase shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+              >
+                <Plus size={16} />
+                Schedule Event
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Status Message */}
       {statusMsg && (
         <div
-          className={`p-4 rounded-xl flex items-center justify-between gap-3 text-sm ${
+          className={`p-4 border-3 border-black font-mono text-xs font-bold uppercase shadow-[4px_4px_0px_#000000] flex items-center justify-between gap-3 ${
             statusMsg.type === "success"
-              ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-              : "bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200 dark:border-red-800"
+              ? "bg-[#00E676] text-black"
+              : "bg-[#FF5500] text-white"
           }`}
         >
           <div className="flex items-center gap-2.5">
             {statusMsg.type === "success" ? (
-              <CheckCircle2 size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <CheckCircle2 size={18} className="shrink-0 stroke-[3]" />
             ) : (
-              <AlertCircle size={18} className="shrink-0 text-red-600 dark:text-red-400" />
+              <AlertCircle size={18} className="shrink-0 stroke-[3]" />
             )}
             <span>{statusMsg.text}</span>
           </div>
           <button
             onClick={() => setStatusMsg(null)}
-            className="text-xs opacity-60 hover:opacity-100 font-bold"
+            className="text-xs font-black cursor-pointer"
           >
             ✕
           </button>
@@ -275,13 +274,13 @@ END:VCALENDAR`;
       {/* Events Grid */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <h2 className="font-mono text-sm font-black uppercase tracking-wider text-black flex items-center gap-2">
             <span>Upcoming Sessions &amp; Meetups ({events.length})</span>
           </h2>
           <button
             onClick={fetchEvents}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 border-2 border-black bg-white text-xs font-mono font-bold uppercase text-black hover:bg-black hover:text-[#CCFF00] shadow-[2px_2px_0px_#000000] transition-all cursor-pointer"
           >
             <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
             <span>Refresh Schedule</span>
@@ -289,21 +288,21 @@ END:VCALENDAR`;
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-sm text-slate-400">
+          <div className="p-12 text-center font-mono text-xs font-bold uppercase text-neutral-500 border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
             Loading university events from database...
           </div>
         ) : events.length === 0 ? (
-          <div className="p-12 text-center space-y-3 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
-            <CalendarCheck size={36} className="mx-auto text-slate-300" />
-            <h3 className="font-semibold text-base text-slate-700 dark:text-slate-300">
+          <div className="p-12 text-center space-y-3 border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
+            <CalendarCheck size={40} className="mx-auto text-black" />
+            <h3 className="font-mono text-sm font-black uppercase text-black">
               No upcoming events scheduled
             </h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            <p className="font-mono text-xs text-neutral-500 max-w-sm mx-auto">
               Check back soon for new webinars, batch reunions, and workshop announcements.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((evt) => {
               const startDateObj = evt.startTime ? new Date(evt.startTime) : null;
               const endDateObj = evt.endTime ? new Date(evt.endTime) : null;
@@ -312,11 +311,11 @@ END:VCALENDAR`;
               return (
                 <div
                   key={evt.id}
-                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:border-blue-500/40 transition-all flex flex-col justify-between space-y-4"
+                  className="bg-white border-3 border-black p-5 shadow-[4px_4px_0px_#000000] flex flex-col justify-between space-y-4"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                      <span className="text-xs font-mono font-black uppercase px-2.5 py-1 border-2 border-black bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]">
                         {startDateObj
                           ? startDateObj.toLocaleDateString("en-US", {
                               weekday: "short",
@@ -327,27 +326,27 @@ END:VCALENDAR`;
                       </span>
 
                       {evt.isRegistered ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
-                          <CheckCircle2 size={12} />
+                        <span className="inline-flex items-center gap-1 text-[11px] font-mono font-black uppercase text-black bg-[#00E676] px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#000000]">
+                          <CheckCircle2 size={12} className="stroke-[3]" />
                           RSVP&apos;d
                         </span>
                       ) : null}
                     </div>
 
-                    <h3 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100 leading-snug">
+                    <h3 className="text-lg font-black uppercase text-black leading-snug">
                       {evt.title}
                     </h3>
 
                     {evt.description && (
-                      <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
+                      <p className="font-mono text-xs text-neutral-600 line-clamp-2">
                         {evt.description}
                       </p>
                     )}
 
-                    <div className="space-y-1.5 pt-2 text-xs text-slate-600 dark:text-slate-400">
+                    <div className="space-y-1.5 pt-2 font-mono text-xs text-neutral-700">
                       {startDateObj && (
                         <div className="flex items-center gap-2">
-                          <Clock size={13} className="text-slate-400" />
+                          <Clock size={13} className="text-black" />
                           <span>
                             {startDateObj.toLocaleTimeString([], {
                               hour: "2-digit",
@@ -364,14 +363,14 @@ END:VCALENDAR`;
                       )}
 
                       <div className="flex items-center gap-2">
-                        <MapPin size={13} className="text-slate-400" />
+                        <MapPin size={13} className="text-black" />
                         <span className="truncate">{evt.location}</span>
                       </div>
 
                       {evt.attending !== undefined && (
                         <div className="flex items-center gap-2">
-                          <Users size={13} className="text-slate-400" />
-                          <span className="text-slate-500 text-[11px]">
+                          <Users size={13} className="text-black" />
+                          <span className="text-[11px] font-bold">
                             {evt.attending} attending {evt.maxCapacity ? `(Limit: ${evt.maxCapacity})` : ""}
                           </span>
                         </div>
@@ -379,15 +378,15 @@ END:VCALENDAR`;
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <div className="pt-3 border-t-2 border-black space-y-2">
                     <div className="flex items-center justify-between gap-2">
                       <button
                         onClick={() => handleToggleRsvp(evt)}
                         disabled={isRsvpBusy}
-                        className={`w-full py-1.5 px-3 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`w-full py-2 px-3 border-2 border-black text-xs font-mono font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${
                           evt.isRegistered
-                            ? "bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-red-950 dark:hover:text-red-400"
-                            : "bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+                            ? "bg-neutral-100 hover:bg-[#FF5500] hover:text-white text-black"
+                            : "bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black"
                         }`}
                       >
                         {isRsvpBusy ? (
@@ -406,12 +405,12 @@ END:VCALENDAR`;
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] pt-1">
+                    <div className="flex items-center justify-between font-mono text-[11px] pt-1">
                       <a
                         href={getGoogleCalendarUrl(evt)}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-blue-600 transition-colors"
+                        className="inline-flex items-center gap-1 font-bold text-black hover:text-[#FF5500] transition-colors"
                       >
                         <ExternalLink size={12} />
                         <span>Google Calendar</span>
@@ -419,7 +418,7 @@ END:VCALENDAR`;
 
                       <button
                         onClick={() => handleDownloadICS(evt)}
-                        className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-blue-600 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 font-bold text-black hover:text-[#FF5500] transition-colors cursor-pointer"
                         title="Download .ics file"
                       >
                         <Download size={12} />

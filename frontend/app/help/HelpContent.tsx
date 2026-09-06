@@ -183,14 +183,14 @@ export function HelpContent({ userSession }: { userSession?: any }) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "RESOLVED":
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"><FiCheck size={12} /> Resolved</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-[#00E676] text-black shadow-[2px_2px_0px_#000000]"><FiCheck size={12} className="stroke-[3]" /> Resolved</span>;
       case "IN_PROGRESS":
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20"><FiClock size={12} /> In Progress</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]"><FiClock size={12} className="stroke-[3]" /> In Progress</span>;
       case "CLOSED":
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-500/15 text-slate-600 dark:text-slate-400 border border-slate-500/20">Closed</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-neutral-200 text-neutral-800 shadow-[2px_2px_0px_#000000]">Closed</span>;
       case "OPEN":
       default:
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20"><FiAlertCircle size={12} /> Open</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]"><FiAlertCircle size={12} className="stroke-[3]" /> Open</span>;
     }
   };
 
@@ -202,29 +202,32 @@ export function HelpContent({ userSession }: { userSession?: any }) {
 
   return (
     <RoleShell role={role}>
-      <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 space-y-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 bg-blue-500/10 dark:bg-blue-500/20 rounded-2xl mb-3 text-blue-600 dark:text-blue-400">
-            <FiLifeBuoy className="w-8 h-8" />
+        <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000]">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+            <p className="font-mono text-xs uppercase font-bold tracking-[0.2em] text-black">
+              [ SECTION 08 // KNOWLEDGE BASE &amp; MEMBER SUPPORT ]
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Help & Support Center
+          <h1 className="mt-2 text-3xl sm:text-4xl font-black uppercase tracking-tight text-black">
+            Help &amp; Support Center
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-base max-w-2xl mx-auto mt-2">
-            Get instant guidance, resolve issues, or submit a support ticket to our administration team.
+          <p className="mt-1 font-mono text-xs text-neutral-600">
+            Get instant guidance, resolve issues, or submit an institutional support ticket to our administration team.
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl max-w-2xl mx-auto mb-8 border border-slate-200 dark:border-slate-700/60 shadow-inner">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setActiveTab("submit")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
               activeTab === "submit"
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
             }`}
           >
             <FiSend className="w-4 h-4" />
@@ -234,10 +237,10 @@ export function HelpContent({ userSession }: { userSession?: any }) {
           <button
             type="button"
             onClick={() => setActiveTab("my-tickets")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
               activeTab === "my-tickets"
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
             }`}
           >
             <FiClock className="w-4 h-4" />
@@ -247,10 +250,10 @@ export function HelpContent({ userSession }: { userSession?: any }) {
           <button
             type="button"
             onClick={() => setActiveTab("faq")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
               activeTab === "faq"
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
             }`}
           >
             <HelpCircle className="w-4 h-4" />
@@ -261,14 +264,14 @@ export function HelpContent({ userSession }: { userSession?: any }) {
             <button
               type="button"
               onClick={() => setActiveTab("admin")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+              className={`flex items-center gap-2 px-5 py-2.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
                 activeTab === "admin"
-                  ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm"
-                  : "text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-bold"
+                  ? "bg-black text-cyan-300 shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                  : "bg-white text-purple-700 hover:bg-purple-50 shadow-[2px_2px_0px_#000000]"
               }`}
             >
               <FiShield className="w-4 h-4" />
-              <span>Admin Tickets</span>
+              <span>Admin Tickets Enclave</span>
             </button>
           )}
         </div>

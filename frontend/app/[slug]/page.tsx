@@ -137,10 +137,10 @@ export default function DynamicCustomPage() {
   const isDraft = page.status === "DRAFT";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#F7F4EE] text-black font-sans selection:bg-[#CCFF00] selection:text-black">
       {/* Draft Warning Banner */}
       {isDraft && (
-        <div className="sticky top-0 z-50 bg-amber-500 text-slate-950 px-4 py-2 text-xs font-bold text-center flex items-center justify-center gap-2 shadow-md">
+        <div className="sticky top-0 z-50 bg-[#FF5500] text-white px-4 py-2 font-mono text-xs font-black uppercase text-center flex items-center justify-center gap-2 border-b-2 border-black shadow-md">
           <Sparkles size={14} />
           <span>ADMIN PREVIEW MODE — This custom page is currently in DRAFT status and invisible to regular users.</span>
           <Link href="/admin" className="underline hover:opacity-80 ml-2">
@@ -151,15 +151,13 @@ export default function DynamicCustomPage() {
 
       <PreLoginNav />
 
-      <main className="pt-24 pb-20 px-6 max-w-5xl mx-auto space-y-16">
+      <main className="pt-24 pb-20 px-6 max-w-5xl mx-auto space-y-12">
         {/* Top Header / Hero */}
-        <section className="text-center space-y-5 pt-8 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
-
+        <section className="text-center space-y-4 pt-8">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1 text-xs font-semibold rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800"
+            className="inline-flex items-center gap-2 px-3.5 py-1 font-mono text-xs font-black uppercase border-2 border-black bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]"
           >
             <Layers className="w-3.5 h-3.5" />
             <span>{page.title}</span>
@@ -169,7 +167,7 @@ export default function DynamicCustomPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.15]"
+            className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-black leading-[1.1]"
           >
             {page.heroTitle || page.title}
           </motion.h1>
@@ -179,7 +177,7 @@ export default function DynamicCustomPage() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed"
+              className="font-mono text-xs sm:text-sm text-neutral-700 max-w-2xl mx-auto leading-relaxed"
             >
               {page.heroSubtitle}
             </motion.p>
@@ -187,7 +185,7 @@ export default function DynamicCustomPage() {
         </section>
 
         {/* Dynamic Blocks Rendering */}
-        <div className="space-y-12">
+        <div className="space-y-10">
           {page.blocks && page.blocks.length > 0 ? (
             page.blocks.map((block, idx) => {
               switch (block.type) {
@@ -195,15 +193,15 @@ export default function DynamicCustomPage() {
                   return (
                     <div
                       key={block.id || idx}
-                      className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white text-center space-y-4 shadow-xl relative overflow-hidden"
+                      className="p-8 sm:p-12 border-4 border-black bg-[#CCFF00] text-black text-center space-y-4 shadow-[6px_6px_0px_#000000]"
                     >
-                      {block.title && <h2 className="text-3xl font-extrabold">{block.title}</h2>}
-                      {block.subtitle && <p className="text-blue-100 max-w-xl mx-auto text-sm sm:text-base">{block.subtitle}</p>}
+                      {block.title && <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight">{block.title}</h2>}
+                      {block.subtitle && <p className="font-mono text-xs sm:text-sm text-neutral-800 max-w-xl mx-auto">{block.subtitle}</p>}
                       {block.ctaText && block.ctaLink && (
                         <div className="pt-2">
                           <Link
                             href={block.ctaLink}
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-blue-700 font-bold text-xs hover:bg-blue-50 transition-all shadow-md"
+                            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-black bg-black text-[#CCFF00] hover:bg-white hover:text-black font-mono text-xs font-black uppercase transition-all shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                           >
                             <span>{block.ctaText}</span>
                             <ArrowRight size={14} />
@@ -217,9 +215,9 @@ export default function DynamicCustomPage() {
                   return (
                     <div
                       key={block.id || idx}
-                      className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-blue-600"
+                      className="p-6 sm:p-10 border-4 border-black bg-white shadow-[6px_6px_0px_#000000] prose prose-neutral max-w-none prose-headings:font-black prose-headings:uppercase prose-a:font-bold prose-a:underline"
                     >
-                      {block.title && <h3 className="text-2xl font-bold mb-4">{block.title}</h3>}
+                      {block.title && <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{block.title}</h3>}
                       <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]}>
                         {block.content || ""}
                       </ReactMarkdown>
@@ -231,39 +229,39 @@ export default function DynamicCustomPage() {
                     <div key={block.id || idx} className="space-y-6">
                       {block.title && (
                         <div className="text-center space-y-1">
-                          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{block.title}</h3>
-                          {block.subtitle && <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{block.subtitle}</p>}
+                          <h3 className="text-2xl font-black uppercase tracking-tight text-black">{block.title}</h3>
+                          {block.subtitle && <p className="font-mono text-xs text-neutral-600">{block.subtitle}</p>}
                         </div>
                       )}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {(block.features || []).map((feat, fIdx) => (
                           <div
                             key={fIdx}
-                            className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-2 hover:border-blue-500/50 transition-all"
+                            className="p-6 border-3 border-black bg-white shadow-[4px_4px_0px_#000000] space-y-3"
                           >
                             <div className="flex items-center justify-between">
-                              <span className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs">
+                              <span className="w-8 h-8 border-2 border-black bg-[#CCFF00] text-black flex items-center justify-center font-mono font-black text-xs shadow-[1px_1px_0px_#000000]">
                                 0{fIdx + 1}
                               </span>
                               {feat.tag && (
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 border border-black bg-neutral-100 text-black">
                                   {feat.tag}
                                 </span>
                               )}
                             </div>
-                            <h4 className="font-bold text-base text-slate-900 dark:text-slate-100">{feat.title}</h4>
-                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{feat.desc}</p>
+                            <h4 className="font-black uppercase text-base text-black">{feat.title}</h4>
+                            <p className="font-mono text-xs text-neutral-600 leading-relaxed">{feat.desc}</p>
                           </div>
                         ))}
                       </div>
                     </div>
                   );
 
-                 case "image":
+                case "image":
                   return (
                     <div key={block.id || idx} className="space-y-2 text-center">
                       {block.imageUrl && (
-                        <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg max-h-[480px] relative">
+                        <div className="border-4 border-black bg-white overflow-hidden shadow-[6px_6px_0px_#000000] max-h-[480px] relative">
                           <Image
                             src={block.imageUrl}
                             alt={block.title || "Showcase image"}
@@ -275,7 +273,7 @@ export default function DynamicCustomPage() {
                         </div>
                       )}
                       {block.imageCaption && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 italic">{block.imageCaption}</p>
+                        <p className="font-mono text-xs text-neutral-600 italic">{block.imageCaption}</p>
                       )}
                     </div>
                   );
@@ -284,16 +282,15 @@ export default function DynamicCustomPage() {
                   return (
                     <div
                       key={block.id || idx}
-                      className="p-8 sm:p-12 rounded-3xl bg-slate-900 dark:bg-slate-900 text-white text-center space-y-4 border border-blue-900/40 shadow-2xl relative overflow-hidden"
+                      className="p-8 sm:p-12 border-4 border-black bg-black text-white text-center space-y-4 shadow-[6px_6px_0px_#000000]"
                     >
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-                      <h3 className="text-2xl sm:text-3xl font-extrabold relative z-10">{block.title || "Ready to Get Started?"}</h3>
-                      <p className="text-sm text-slate-300 max-w-lg mx-auto relative z-10">{block.subtitle || block.content}</p>
+                      <h3 className="text-2xl sm:text-3xl font-black uppercase text-[#CCFF00] tracking-tight">{block.title || "Ready to Get Started?"}</h3>
+                      <p className="font-mono text-xs sm:text-sm text-neutral-300 max-w-lg mx-auto">{block.subtitle || block.content}</p>
                       {block.ctaText && block.ctaLink && (
-                        <div className="pt-2 relative z-10">
+                        <div className="pt-2">
                           <Link
                             href={block.ctaLink}
-                            className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/30 transition-all cursor-pointer"
+                            className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-black bg-[#CCFF00] hover:bg-white text-black font-mono text-xs font-black uppercase shadow-[3px_3px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                           >
                             <span>{block.ctaText}</span>
                             <ArrowRight size={14} />
@@ -307,8 +304,8 @@ export default function DynamicCustomPage() {
                   return (
                     <div key={block.id || idx} className="space-y-4 max-w-3xl mx-auto">
                       <div className="text-center space-y-1 mb-6">
-                        <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{block.title || "Frequently Asked Questions"}</h3>
-                        {block.subtitle && <p className="text-xs text-slate-500">{block.subtitle}</p>}
+                        <h3 className="text-2xl font-black uppercase tracking-tight text-black">{block.title || "Frequently Asked Questions"}</h3>
+                        {block.subtitle && <p className="font-mono text-xs text-neutral-600">{block.subtitle}</p>}
                       </div>
                       <div className="space-y-3">
                         {(block.faqs || []).map((faq, fIdx) => {
@@ -316,20 +313,20 @@ export default function DynamicCustomPage() {
                           return (
                             <div
                               key={fIdx}
-                              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs"
+                              className="border-2 border-black bg-white overflow-hidden shadow-[3px_3px_0px_#000000]"
                             >
                               <button
                                 onClick={() => toggleFaq(fIdx)}
-                                className="w-full p-4 text-left flex items-center justify-between text-sm font-bold text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                                className="w-full p-4 text-left flex items-center justify-between font-mono text-xs font-bold uppercase text-black hover:bg-neutral-50 transition-colors"
                               >
                                 <span>{faq.question}</span>
                                 <ChevronDown
                                   size={16}
-                                  className={`text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                                  className={`text-black transition-transform ${isOpen ? "rotate-180" : ""}`}
                                 />
                               </button>
                               {isOpen && (
-                                <div className="px-4 pb-4 text-xs text-slate-600 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-3 leading-relaxed">
+                                <div className="px-4 pb-4 font-mono text-xs text-neutral-700 border-t-2 border-black pt-3 leading-relaxed bg-neutral-50">
                                   {faq.answer}
                                 </div>
                               )}
@@ -345,7 +342,7 @@ export default function DynamicCustomPage() {
               }
             })
           ) : (
-            <div className="p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-slate-400 text-xs">
+            <div className="p-12 border-4 border-black bg-white shadow-[6px_6px_0px_#000000] text-center font-mono text-xs text-neutral-500 uppercase">
               This page has no content blocks yet. Add blocks from the Admin Page Builder.
             </div>
           )}
@@ -353,7 +350,7 @@ export default function DynamicCustomPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 py-8 px-6 text-center text-xs text-slate-500">
+      <footer className="border-t-2 border-black py-8 px-6 text-center font-mono text-xs text-neutral-600">
         <p>© 2026 PRO ALUMN. All rights reserved.</p>
       </footer>
     </div>

@@ -53,22 +53,19 @@ export const RewardsContent = memo(function RewardsContent() {
   ];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-16">
+    <div className="space-y-8 max-w-7xl mx-auto pb-16 px-4 sm:px-6">
       {/* ================= HERO HEADER ================= */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 text-white p-6 sm:p-10 shadow-2xl">
-        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 -mb-12 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="relative overflow-hidden bg-[#F7F4EE] dark:bg-[#12151b] border-4 border-black text-black dark:text-white p-6 sm:p-10 shadow-[6px_6px_0px_#000000]">
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-              <Sparkles size={14} className="text-amber-400" />
-              Alumni Rewards & Achievements
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-[#CCFF00] border-2 border-black text-xs font-mono font-bold uppercase tracking-wider">
+              <Sparkles size={14} className="text-[#CCFF00]" />
+              ALUMNI REWARDS &amp; ACHIEVEMENTS // PROTOCOL
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-heading">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-headline uppercase text-black dark:text-white">
               Level Up Your Community Impact
             </h1>
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+            <p className="font-mono text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
               Earn points for active logins, mentoring students, sharing opportunities, and keeping your professional profile fresh. Unlock exclusive recognition badges and rise to the top of the leaderboard!
             </p>
           </div>
@@ -76,70 +73,70 @@ export const RewardsContent = memo(function RewardsContent() {
           {/* Quick Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 w-full lg:w-auto">
             {/* Streak Card */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col items-center justify-center text-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500/20 text-orange-400 mb-2">
-                <Flame size={22} className="fill-orange-500/30" />
+            <div className="p-4 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] flex flex-col items-center justify-center text-center">
+              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-[#FF5500] text-white mb-2 shadow-[2px_2px_0px_#000000]">
+                <Flame size={22} className="fill-white" />
               </div>
-              <span className="text-2xl font-black font-heading text-orange-400">{currentStreak} Days</span>
-              <span className="text-[11px] font-medium text-slate-400">Active Streak</span>
+              <span className="text-2xl font-black font-mono text-black dark:text-white">{currentStreak} Days</span>
+              <span className="font-mono text-[10px] uppercase font-bold text-neutral-500">Active Streak</span>
             </div>
 
             {/* Total Points Card */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col items-center justify-center text-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400 mb-2">
+            <div className="p-4 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] flex flex-col items-center justify-center text-center">
+              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-[#CCFF00] text-black mb-2 shadow-[2px_2px_0px_#000000]">
                 <Coins size={22} />
               </div>
-              <span className="text-2xl font-black font-heading text-blue-400">{totalPoints}</span>
-              <span className="text-[11px] font-medium text-slate-400">Total Points</span>
+              <span className="text-2xl font-black font-mono text-black dark:text-white">{totalPoints}</span>
+              <span className="font-mono text-[10px] uppercase font-bold text-neutral-500">Total Points</span>
             </div>
 
             {/* Platform Rank Card */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md col-span-2 sm:col-span-1 flex flex-col items-center justify-center text-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400 mb-2">
+            <div className="p-4 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] col-span-2 sm:col-span-1 flex flex-col items-center justify-center text-center">
+              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-black text-[#CCFF00] mb-2 shadow-[2px_2px_0px_#000000]">
                 <Trophy size={22} />
               </div>
-              <span className="text-2xl font-black font-heading text-amber-400">#{rank}</span>
-              <span className="text-[11px] font-medium text-slate-400">Global Rank</span>
+              <span className="text-2xl font-black font-mono text-black dark:text-white">#{rank}</span>
+              <span className="font-mono text-[10px] uppercase font-bold text-neutral-500">Global Rank</span>
             </div>
           </div>
         </div>
 
         {/* ================= 7-DAY STREAK TRACKER ================= */}
-        <div className="mt-8 pt-6 border-t border-white/10">
+        <div className="mt-8 pt-6 border-t-2 border-black">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
             <div>
-              <p className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                <Calendar size={16} className="text-orange-400" />
+              <p className="font-headline text-sm font-bold uppercase tracking-wider text-black dark:text-white flex items-center gap-2">
+                <Calendar size={16} className="text-[#FF5500]" />
                 7-Day Login Streak Tracker
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="font-mono text-xs text-neutral-600 dark:text-neutral-400">
                 Log in daily to earn +5 points. Complete 7 consecutive days for a massive +25 points reward!
               </p>
             </div>
-            <div className="text-xs text-slate-300 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
-              Longest Record: <span className="font-bold text-orange-400">{longestStreak} days</span>
+            <div className="font-mono text-xs text-black dark:text-white bg-white dark:bg-[#181a20] px-3 py-1.5 border-2 border-black shadow-[2px_2px_0px_#000000]">
+              Longest Record: <span className="font-bold text-[#FF5500]">{longestStreak} days</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-2 sm:gap-4">
+          <div className="grid grid-cols-7 gap-2 sm:gap-3">
             {streakDays.map((item) => (
               <div
                 key={item.day}
-                className={`flex flex-col items-center justify-center p-2 sm:p-3 rounded-2xl border transition-all ${
+                className={`flex flex-col items-center justify-center p-2 sm:p-3 border-2 border-black transition-all ${
                   item.active
-                    ? "bg-orange-500/15 border-orange-500/40 text-orange-300 shadow-sm shadow-orange-500/10"
-                    : "bg-white/5 border-white/5 text-slate-500"
-                } ${item.bonus ? "ring-1 ring-amber-500/40" : ""}`}
+                    ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000] font-bold"
+                    : "bg-white dark:bg-[#181a20] text-neutral-400"
+                } ${item.bonus ? "ring-2 ring-[#FF5500]" : ""}`}
               >
-                <span className="text-[11px] font-semibold">{item.day}</span>
+                <span className="font-mono text-[11px] uppercase font-bold">{item.day}</span>
                 <div className="my-1.5">
                   {item.active ? (
-                    <CheckCircle2 size={18} className="text-orange-400" />
+                    <CheckCircle2 size={18} className="text-black" />
                   ) : (
-                    <div className="h-4 w-4 rounded-full border border-slate-600" />
+                    <div className="h-4 w-4 rounded-full border-2 border-neutral-400" />
                   )}
                 </div>
-                <span className="text-[10px] font-mono font-bold">{item.points}</span>
+                <span className="font-mono text-[10px] font-bold">{item.points}</span>
               </div>
             ))}
           </div>
@@ -147,25 +144,25 @@ export const RewardsContent = memo(function RewardsContent() {
       </div>
 
       {/* ================= NAVIGATION TABS ================= */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+      <div className="flex items-center gap-2 border-b-2 border-black pb-2 overflow-x-auto">
         <button
           onClick={() => setActiveTab("badges")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+          className={`flex items-center gap-2 px-4 py-2 border-2 border-black font-headline text-xs uppercase font-bold transition-all cursor-pointer ${
             activeTab === "badges"
-              ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000]"
+              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#F7F4EE]"
           }`}
         >
           <Award size={16} />
-          Badges & Achievements
+          Badges &amp; Achievements
         </button>
 
         <button
           onClick={() => setActiveTab("leaderboard")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+          className={`flex items-center gap-2 px-4 py-2 border-2 border-black font-headline text-xs uppercase font-bold transition-all cursor-pointer ${
             activeTab === "leaderboard"
-              ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000]"
+              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#F7F4EE]"
           }`}
         >
           <Trophy size={16} />
@@ -174,10 +171,10 @@ export const RewardsContent = memo(function RewardsContent() {
 
         <button
           onClick={() => setActiveTab("history")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+          className={`flex items-center gap-2 px-4 py-2 border-2 border-black font-headline text-xs uppercase font-bold transition-all cursor-pointer ${
             activeTab === "history"
-              ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000]"
+              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#F7F4EE]"
           }`}
         >
           <Coins size={16} />
