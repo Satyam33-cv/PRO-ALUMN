@@ -842,7 +842,7 @@ export function EducationContent({
               CERT
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-[#1A1A1A] text-sm">Elena Vance // Recent Verification</span>
+              <span className="font-black text-[#1A1A1A] text-sm">{user?.name || "Member"} // Recent Verification</span>
               <span className="text-[#8F8A7E] text-[11px]">
                 ISSUED: 2026-03-28 | SPRINT: VECTOR-EMBEDDING-COMPRESSION-99
               </span>
@@ -855,13 +855,13 @@ export function EducationContent({
                   "@context": "https://w3id.org/security/v2",
                   "type": "CryptographicSprintCredential",
                   "issuer": "did:proalumn:authority:0x89F1",
-                  "recipient": "did:proalumn:user:elena-vance",
+                  "recipient": `did:proalumn:user:${user?.id || "member"}`,
                   "sprint": "VECTOR-EMBEDDING-COMPRESSION-99",
                   "signature": "0x9F42..ECDSA_P384_VALID"
                 }, null, 2));
                 const dl = document.createElement("a");
                 dl.setAttribute("href", dataStr);
-                dl.setAttribute("download", "elena_vance_credential.json");
+                dl.setAttribute("download", `${(user?.name || "member").toLowerCase().replace(/[^a-z0-9]/g, "_")}_credential.json`);
                 dl.click();
               }}
               className="px-3.5 py-1.5 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold uppercase hover:bg-[#EFECE4] transition-all cursor-pointer shadow-[1px_1px_0px_#1A1A1A]"

@@ -29,6 +29,7 @@ import {
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
 import { useAuth } from "@/lib/context/AuthContext";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export interface SpotlightStory {
   id: string;
@@ -63,137 +64,6 @@ export interface SpotlightStory {
   actionHref?: string;
 }
 
-const CANONICAL_SPOTLIGHT_STORIES: SpotlightStory[] = [
-  {
-    id: "spotlight-01",
-    index: "02",
-    category: "CAREER",
-    categoryLabel: "CAREER ASCENT",
-    cohort: "COHORT '16",
-    location: "SAN MATEO",
-    topologyTag: "SF",
-    orgName: "SNOWFLAKE",
-    orgBadge: "SNOWFLAKE COMPUTE",
-    initials: "SJ",
-    authorName: "Sarah Jenkins ('16)",
-    headline: "Sarah Jenkins ('16) Elevated To Principal Architect At Snowflake Compute",
-    roleSubtext: "Core Database Storage Group · 8.5 Years Alumni Tenor",
-    quote:
-      '"Author of 4 core patents on columnar partitioning algorithms and SIMD predicate pushdown. Thrilled to announce our team is scaling fast: I\'ve opened 5 dedicated internal referral slots for verified university and master\'s graduates."',
-    metrics: {
-      label1: "REFERRAL SLOTS",
-      value1: "5 OPEN",
-      label2: "LEVEL",
-      value2: "PRINCIPAL IC8",
-      label3: "IMPACT",
-      value3: "98/100",
-      highlightCol: "#2E5BFF",
-    },
-    upvotes: 89,
-    commentsCount: 19,
-    avatarBg: "#CCFF00",
-    avatarColor: "#000000",
-    actionLabel: "ASK FOR REFERRAL",
-    actionHref: "/jobs",
-  },
-  {
-    id: "spotlight-02",
-    index: "03",
-    category: "VENTURE",
-    categoryLabel: "FOUNDER SPOTLIGHT",
-    cohort: "COHORT '17",
-    location: "PALO ALTO",
-    topologyTag: "SF",
-    orgName: "YC W26",
-    orgBadge: "YC W26 BATCH",
-    initials: "DC",
-    authorName: "David Chen ('17)",
-    headline: "David Chen ('17) Co-Founds Neuromorphic Labs (YC W26)",
-    roleSubtext: "Pre-Seed Round: $3.2M · Khosla Ventures & BoxGroup",
-    quote:
-      '"Closing $3.2M pre-seed to fabricate sub-milliwatt event-driven edge inference silicon. We are actively hiring 2 founding kernel engineers from our engineering alumni base who understand RISC-V and analog accelerators."',
-    metrics: {
-      label1: "STACK",
-      value1: "RISC-V / C++20",
-      label2: "EQUITY",
-      value2: "1.5 - 3.0%",
-      label3: "IMPACT",
-      value3: "95/100",
-      highlightCol: "#FF5500",
-    },
-    upvotes: 114,
-    commentsCount: 24,
-    avatarBg: "#FF5500",
-    avatarColor: "#FFFFFF",
-    actionLabel: "BOOK FLASH INTRO",
-    actionHref: "/mentorship",
-  },
-  {
-    id: "spotlight-03",
-    index: "04",
-    category: "RESEARCH",
-    categoryLabel: "RESEARCH BREAKTHROUGH",
-    cohort: "COHORT '21",
-    location: "STANFORD",
-    topologyTag: "SF",
-    orgName: "IEEE S&P 2026",
-    orgBadge: "IEEE S&P 2026",
-    initials: "ER",
-    authorName: "Elena Rostova ('21)",
-    headline: "Elena Rostova ('21) Publishes FIPS 140-3 Post-Quantum Cryptography Paper",
-    roleSubtext: "Dept of Applied Mathematics · Zero-Knowledge Lattice Verifiers",
-    quote:
-      '"Formal machine-checked verification of lattice-based key encapsulation mechanisms under zk-SNARK constraints. The entire Coq and Rust verification pipeline has been open-sourced for peer scrutiny."',
-    metrics: {
-      label1: "ARXIV",
-      value1: "2503.11692",
-      label2: "LICENSE",
-      value2: "MIT / APACHE-2",
-      label3: "IMPACT",
-      value3: "94/100",
-      highlightCol: "#CCFF00",
-    },
-    upvotes: 76,
-    commentsCount: 14,
-    avatarBg: "#2E5BFF",
-    avatarColor: "#FFFFFF",
-    actionLabel: "READ PAPER (ARXIV)",
-    actionHref: "https://arxiv.org",
-  },
-  {
-    id: "spotlight-04",
-    index: "05",
-    category: "INFRASTRUCTURE",
-    categoryLabel: "INFRASTRUCTURE SCALE",
-    cohort: "COHORT '19",
-    location: "SEATTLE",
-    topologyTag: "REMOTE",
-    orgName: "STRIPE",
-    orgBadge: "STRIPE LEDGER",
-    initials: "PS",
-    authorName: "Prateek Shah ('19)",
-    headline: "Prateek Shah ('19) Leads Stripe Core Ledger Migration To Spanner",
-    roleSubtext: "Staff Systems Architect · Financial Infrastructure",
-    quote:
-      '"Over 18 months, our squad safely re-architected and live-migrated 80,000 tx/sec with strict serializability and zero downtime. Documenting the post-mortem and distributed locking tradeoffs on my alumni blog."',
-    metrics: {
-      label1: "QPS",
-      value1: "80,000 / SEC",
-      label2: "AVAILABILITY",
-      value2: "99.9999%",
-      label3: "IMPACT",
-      value3: "99/100",
-      highlightCol: "#2E5BFF",
-    },
-    upvotes: 102,
-    commentsCount: 31,
-    avatarBg: "#000000",
-    avatarColor: "#FFFFFF",
-    actionLabel: "REQUEST 1:1 MENTORSHIP",
-    actionHref: "/mentorship",
-  },
-];
-
 type CategoryFilter =
   | "ALL"
   | "VENTURE"
@@ -212,7 +82,7 @@ export function StoriesContent({
   viewMode?: "showcase" | "member";
 } = {}) {
   const { user } = useAuth();
-  const searchParams = typeof useSearchParams === "function" ? useSearchParams() : null;
+  const searchParams = useSearchParams();
   const queryView = searchParams?.get("view");
   const isMemberView =
     viewModeProp === "member" ||
@@ -227,15 +97,10 @@ export function StoriesContent({
 
   // Pinned Flagship Endorsement state
   const [flagshipEndorsed, setFlagshipEndorsed] = useState(false);
-  const [flagshipCount, setFlagshipCount] = useState(142);
+  const [flagshipCount, setFlagshipCount] = useState(0);
 
   // Local upvote map for responsive feedback
-  const [upvotesState, setUpvotesState] = useState<Record<string, { count: number; voted: boolean }>>({
-    "spotlight-01": { count: 89, voted: false },
-    "spotlight-02": { count: 114, voted: false },
-    "spotlight-03": { count: 76, voted: false },
-    "spotlight-04": { count: 102, voted: false },
-  });
+  const [upvotesState, setUpvotesState] = useState<Record<string, { count: number; voted: boolean }>>({});
 
   // Transmission modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -322,8 +187,8 @@ export function StoriesContent({
       await apiClient.stories.create({
         title,
         story,
-        company: company || "Alumni Venture Guild",
-        role: role || (user?.role === "student" ? "Fellow Researcher" : "Alumni IC / Founder"),
+        company: company.trim() || undefined,
+        role: role.trim() || (user?.role === "student" ? "Student" : "Alumni"),
         imageUrl: imageUrl || undefined,
       });
 
@@ -343,85 +208,111 @@ export function StoriesContent({
     }
   };
 
-  // Convert any live server stories into spotlight format
+  // Convert live server stories into spotlight format
   const serverStoriesFormatted: SpotlightStory[] = useMemo(() => {
     if (!apiStories || !Array.isArray(apiStories)) return [];
-    return (apiStories as any[]).map((s, idx) => ({
-      id: s.id || `srv-${idx}`,
-      index: String(idx + 6).padStart(2, "0"),
-      category: "CAREER" as const,
-      categoryLabel: "FELLOW MILESTONE",
-      cohort: s.batchYear ? `COHORT '${String(s.batchYear).slice(-2)}` : "ALUMNI ROSTER",
-      location: "NETWORK FEED",
-      topologyTag: "REMOTE" as const,
-      orgName: (s.company || "VERIFIED ALUMNI").toUpperCase(),
-      orgBadge: s.company || "ALUMNI AFFILIATE",
-      initials: s.alumni?.name
-        ? s.alumni.name
-            .split(" ")
-            .map((n: string) => n[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase()
-        : "AL",
-      authorName: s.alumni?.name || s.author || "Verified Fellow",
-      headline: s.title,
-      roleSubtext: `${s.role || "Fellow IC"} · ${s.company || "Frontier Tech"}`,
-      quote: `"${s.story || s.excerpt || ""}"`,
-      metrics: {
-        label1: "ATTESTATION",
-        value1: "VERIFIED",
-        label2: "STATUS",
-        value2: "DISPATCHED",
-        label3: "IMPACT",
-        value3: "96/100",
-        highlightCol: "#CCFF00",
-      },
-      upvotes: s.upvoteCount || s.likes || 12,
-      commentsCount: 3,
-      avatarBg: "#000000",
-      avatarColor: "#FFFFFF",
-      actionLabel: "VOUCH / ENDORSE",
-      actionHref: "/directory",
-    }));
+    return (apiStories as any[]).map((s, idx) => {
+      const authorName = s.alumni?.name || s.author || s.authorName || "Verified Fellow";
+      const initials = authorName
+        .split(" ")
+        .map((n: string) => n[0])
+        .filter(Boolean)
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() || "AL";
+      const orgBadge = s.company || s.orgBadge || "ALUMNI AFFILIATE";
+      const orgName = (s.company || s.orgName || "VERIFIED ALUMNI").toUpperCase();
+      const roleText = s.role || "Fellow";
+      const roleSubtext = s.company ? `${roleText} · ${s.company}` : roleText;
+
+      return {
+        id: s.id || `srv-${idx}`,
+        index: String(idx + 1).padStart(2, "0"),
+        category: (s.category || "CAREER") as any,
+        categoryLabel: s.categoryLabel || "FELLOW MILESTONE",
+        cohort: s.batchYear ? `COHORT '${String(s.batchYear).slice(-2)}` : (s.cohort || "ALUMNI ROSTER"),
+        location: s.location || "NETWORK FEED",
+        topologyTag: (s.topologyTag || "REMOTE") as any,
+        orgName,
+        orgBadge,
+        initials,
+        authorName,
+        headline: s.title || s.headline || "",
+        roleSubtext,
+        quote: s.story ? `"${s.story}"` : (s.quote ? s.quote : (s.excerpt ? `"${s.excerpt}"` : "")),
+        metrics: s.metrics || {
+          label1: "ATTESTATION",
+          value1: "VERIFIED",
+          label2: "STATUS",
+          value2: "DISPATCHED",
+          label3: "IMPACT",
+          value3: "96/100",
+          highlightCol: "#CCFF00",
+        },
+        upvotes: s.upvoteCount ?? s.likes ?? s.upvotes ?? 0,
+        commentsCount: s.commentsCount ?? (s.comments?.length ?? 0),
+        avatarBg: s.avatarBg || "#000000",
+        avatarColor: s.avatarColor || "#FFFFFF",
+        actionLabel: s.actionLabel || "VOUCH / ENDORSE",
+        actionHref: s.actionHref || "/directory",
+      };
+    });
   }, [apiStories]);
 
-  // Combined stories pool
+  // Stories pool from API only
   const allStories = useMemo(() => {
-    return [...CANONICAL_SPOTLIGHT_STORIES, ...serverStoriesFormatted];
+    return serverStoriesFormatted;
   }, [serverStoriesFormatted]);
+
+  const flagshipStory = allStories[0] || null;
+
+  // Dynamic category counts
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      ALL: allStories.length,
+      VENTURE: 0,
+      CAREER: 0,
+      RESEARCH: 0,
+      INFRASTRUCTURE: 0,
+      PATENTS: 0,
+      AWARDS: 0,
+    };
+    allStories.forEach((s) => {
+      if (counts[s.category] !== undefined) {
+        counts[s.category]++;
+      }
+    });
+    return counts;
+  }, [allStories]);
 
   // Count of user's dispatches
   const myDispatchesCount = useMemo(() => {
-    if (!user) return 2;
+    if (!user) return 0;
     const userName = (user.name || "").toLowerCase();
-    const count = allStories.filter((s) => {
-      const author = s.authorName.toLowerCase();
-      return (userName && author.includes(userName)) || s.id.startsWith("srv-") || author.includes("vance");
+    const userId = user.id;
+    return allStories.filter((s: any) => {
+      const author = (s.authorName || "").toLowerCase();
+      return (userName && author.includes(userName)) || s.userId === userId || s.authorId === userId;
     }).length;
-    return count > 0 ? count : 2;
   }, [allStories, user]);
 
   // Filtering & Ordering
   const filteredStories = useMemo(() => {
-    return allStories.filter((item) => {
+    return allStories.filter((item: any) => {
       // My Dispatches filter
       if (myDispatchesOnly && user) {
-        const author = item.authorName.toLowerCase();
+        const author = (item.authorName || "").toLowerCase();
         const userName = (user.name || "").toLowerCase();
         const isMine =
           (userName && author.includes(userName)) ||
-          item.id.startsWith("srv-") ||
-          author.includes("vance");
+          item.userId === user.id ||
+          item.authorId === user.id;
         if (!isMine) return false;
       }
 
       // Category filter
-      if (categoryFilter !== "ALL") {
-        if (categoryFilter === "VENTURE" && item.category !== "VENTURE") return false;
-        if (categoryFilter === "CAREER" && item.category !== "CAREER") return false;
-        if (categoryFilter === "RESEARCH" && item.category !== "RESEARCH") return false;
-        if (categoryFilter === "INFRASTRUCTURE" && item.category !== "INFRASTRUCTURE") return false;
+      if (categoryFilter !== "ALL" && item.category !== categoryFilter) {
+        return false;
       }
 
       // Topology filter
@@ -432,10 +323,10 @@ export function StoriesContent({
       // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchTitle = item.headline.toLowerCase().includes(q);
-        const matchAuthor = item.authorName.toLowerCase().includes(q);
-        const matchCompany = item.orgName.toLowerCase().includes(q);
-        const matchQuote = item.quote.toLowerCase().includes(q);
+        const matchTitle = (item.headline || "").toLowerCase().includes(q);
+        const matchAuthor = (item.authorName || "").toLowerCase().includes(q);
+        const matchCompany = (item.orgName || "").toLowerCase().includes(q);
+        const matchQuote = (item.quote || "").toLowerCase().includes(q);
         if (!matchTitle && !matchAuthor && !matchCompany && !matchQuote) return false;
       }
 
@@ -689,150 +580,136 @@ export function StoriesContent({
       {/* ========================================================================= */}
       {/* 3. PINNED FLAGSHIP SPOTLIGHT (FULL-WIDTH BENTO ANCHOR) */}
       {/* ========================================================================= */}
-      <section
-        data-testid="flagship-pinned-story"
-        className="border-4 border-black bg-white shadow-[8px_8px_0px_#000000] overflow-hidden"
-      >
-        {/* Card Header Bar */}
-        <div className="bg-black text-white px-5 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3 font-mono text-xs font-bold">
-          <div className="flex items-center gap-3">
-            <span className="bg-[#CCFF00] text-black px-2 py-0.5 font-black uppercase">
-              01 PINNED ANCHOR
-            </span>
-            <span className="tracking-wide uppercase text-neutral-300">
-              // ANNUAL SPOTLIGHT // COHORT CLUSTER ALPHA
-            </span>
+      {flagshipStory && (
+        <section
+          data-testid="flagship-pinned-story"
+          className="border-4 border-black bg-white shadow-[8px_8px_0px_#000000] overflow-hidden"
+        >
+          {/* Card Header Bar */}
+          <div className="bg-black text-white px-5 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3 font-mono text-xs font-bold">
+            <div className="flex items-center gap-3">
+              <span className="bg-[#CCFF00] text-black px-2 py-0.5 font-black uppercase">
+                01 PINNED ANCHOR
+              </span>
+              <span className="tracking-wide uppercase text-neutral-300">
+                // ANNUAL SPOTLIGHT // {flagshipStory.cohort}
+              </span>
+            </div>
+            <div className="bg-[#FF5500] text-white px-2.5 py-1 text-[11px] uppercase tracking-wider font-extrabold border border-white">
+              {flagshipStory.categoryLabel}
+            </div>
           </div>
-          <div className="bg-[#FF5500] text-white px-2.5 py-1 text-[11px] uppercase tracking-wider font-extrabold border border-white">
-            VENTURE SEED • $10M ROUND CLOSED
-          </div>
-        </div>
 
-        <div className="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Story Content Column */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-              <span className="bg-black text-white px-2 py-1 font-bold">LEAD ARCHITECTS</span>
-              <span className="font-bold text-black underline">Marcus Brody ('18, CEO)</span>
-              <span className="text-neutral-500">&amp;</span>
-              <span className="font-bold text-black underline">Tara Vance ('20, CTO)</span>
+          <div className="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Story Content Column */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                <span className="bg-black text-white px-2 py-1 font-bold">LEAD ARCHITECTS</span>
+                <span className="font-bold text-black underline">{flagshipStory.authorName}</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight font-sans">
+                {flagshipStory.headline}
+              </h2>
+
+              {/* Founder Direct Quote Callout */}
+              <div className="border-l-4 border-black pl-5 py-3 bg-neutral-50 border-y-2 border-r-2 border-black/10">
+                <p className="font-mono text-xs sm:text-sm leading-relaxed text-black/90">
+                  {flagshipStory.quote}
+                </p>
+              </div>
+
+              {/* Metadata Pill Badges */}
+              <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs font-bold">
+                <div className="border-2 border-black px-3 py-1.5 bg-neutral-100 shadow-[1px_1px_0px_#000000]">
+                  ORG: <span className="font-semibold">{flagshipStory.orgName}</span>
+                </div>
+                <div className="border-2 border-black px-3 py-1.5 bg-neutral-100 shadow-[1px_1px_0px_#000000]">
+                  LOCATION: <span className="font-semibold">{flagshipStory.location}</span>
+                </div>
+                <div className="border-2 border-black px-3 py-1.5 bg-[#CCFF00] shadow-[1px_1px_0px_#000000]">
+                  IMPACT: <span className="font-bold">{flagshipStory.metrics.value3}</span>
+                </div>
+              </div>
+
+              {/* Public Interactive Buttons */}
+              <div className="pt-2 flex flex-wrap items-center gap-3 font-mono text-xs font-bold">
+                <button
+                  onClick={handleFlagshipEndorse}
+                  className={`px-5 py-3 border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
+                    flagshipEndorsed
+                      ? "bg-black text-[#CCFF00]"
+                      : "bg-[#CCFF00] text-black hover:bg-black hover:text-white"
+                  }`}
+                >
+                  <span>👍</span>
+                  <span>
+                    {flagshipEndorsed ? "ENDORSED" : "ENDORSE DISPATCH"} (+{flagshipCount || flagshipStory.upvotes})
+                  </span>
+                </button>
+                <Link
+                  href="/jobs"
+                  className="px-5 py-3 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                >
+                  <span>💬 {flagshipStory.commentsCount} COMMENTS &amp; NOTES</span>
+                </Link>
+                <Link
+                  href={flagshipStory.actionHref || "/mentorship"}
+                  className="px-5 py-3 bg-black text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-[#FF5500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5"
+                >
+                  <span>{flagshipStory.actionLabel}</span>
+                  <span>→</span>
+                </Link>
+              </div>
             </div>
 
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight font-sans">
-              Kinetix Robotics Raises $10M Seed For Distributed Actuator Firmwares
-            </h2>
-
-            {/* Founder Direct Quote Callout */}
-            <div className="border-l-4 border-black pl-5 py-3 bg-neutral-50 border-y-2 border-r-2 border-black/10">
-              <p className="font-mono text-xs sm:text-sm leading-relaxed text-black/90">
-                "From our dorm-room autonomous sandbox to 20 manufacturing facilities across North
-                America. How five alumni engineers leveraged PRO-ALUMN referral pipelines to scale
-                high-concurrency ROS2 robotic firmware and complete a syndicate round led by Founders
-                Fund and Sequoia."
-              </p>
-            </div>
-
-            {/* Metadata Pill Badges */}
-            <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs font-bold">
-              <div className="border-2 border-black px-3 py-1.5 bg-neutral-100 shadow-[1px_1px_0px_#000000]">
-                SYNDICATE: <span className="font-semibold">FOUNDERS FUND + SEQUOIA</span>
-              </div>
-              <div className="border-2 border-black px-3 py-1.5 bg-neutral-100 shadow-[1px_1px_0px_#000000]">
-                VALUATION: <span className="font-semibold">$45M POST</span>
-              </div>
-              <div className="border-2 border-black px-3 py-1.5 bg-[#CCFF00] shadow-[1px_1px_0px_#000000]">
-                HIRING: <span className="font-bold">4 FIRMWARE FELLOWS</span>
-              </div>
-            </div>
-
-            {/* Public Interactive Buttons */}
-            <div className="pt-2 flex flex-wrap items-center gap-3 font-mono text-xs font-bold">
-              <button
-                onClick={handleFlagshipEndorse}
-                className={`px-5 py-3 border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
-                  flagshipEndorsed
-                    ? "bg-black text-[#CCFF00]"
-                    : "bg-[#CCFF00] text-black hover:bg-black hover:text-white"
-                }`}
-              >
-                <span>👍</span>
-                <span>
-                  {flagshipEndorsed ? "ENDORSED" : "ENDORSE DISPATCH"} (+{flagshipCount})
+            {/* Technical Schematic Blueprint Box */}
+            <div
+              data-testid="technical-schematic-diagram"
+              className="lg:col-span-5 border-4 border-black bg-neutral-100 p-5 shadow-[4px_4px_0px_#000000]"
+            >
+              <div className="flex items-center justify-between pb-3 border-b-2 border-black font-mono text-xs font-bold uppercase">
+                <span>SCHEMATIC // {flagshipStory.orgBadge}</span>
+                <span className="bg-[#FF5500] text-white px-2 py-0.5 text-[10px]">
+                  {flagshipStory.topologyTag}
                 </span>
-              </button>
-              <Link
-                href="/jobs"
-                className="px-5 py-3 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
-              >
-                <span>💬 38 COMMENTS &amp; NOTES</span>
-              </Link>
-              <Link
-                href="/mentorship"
-                className="px-5 py-3 bg-black text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-[#FF5500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5"
-              >
-                <span>REQUEST FOUNDER INTRO</span>
-                <span>→</span>
-              </Link>
-              <Link
-                href="/jobs"
-                className="text-xs font-mono font-bold underline hover:text-[#FF5500] ml-1"
-              >
-                VIEW 4 OPEN REQUISITIONS
-              </Link>
+              </div>
+
+              {/* Visual Architecture Schematic Frame */}
+              <div className="my-4 bg-white border-2 border-black p-4 font-mono text-[11px] space-y-3">
+                <div className="border border-dashed border-black p-3 bg-neutral-50">
+                  <div className="font-bold text-xs uppercase mb-1 flex items-center justify-between">
+                    <span>[FOCUS AREA]</span>
+                    <span className="w-2 h-2 bg-[#00A859] inline-block" />
+                  </div>
+                  <p className="text-neutral-600">{flagshipStory.roleSubtext}</p>
+                  <div className="mt-2 text-[10px] bg-black text-white px-2 py-0.5 inline-block font-bold">
+                    {flagshipStory.metrics.label1}: {flagshipStory.metrics.value1}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="border border-black p-2 bg-neutral-50">
+                    <div className="font-bold text-[10px] uppercase">{flagshipStory.metrics.label2}</div>
+                    <div className="text-neutral-700 text-[10px]">{flagshipStory.metrics.value2}</div>
+                  </div>
+                  <div className="border border-black p-2 bg-[#CCFF00]/40">
+                    <div className="font-bold text-[10px] uppercase">{flagshipStory.metrics.label3}</div>
+                    <div className="text-neutral-700 text-[10px]">{flagshipStory.metrics.value3}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t-2 border-black/10 flex items-center justify-between font-mono text-[10px] text-neutral-600 font-bold">
+                <span>AUTHOR: {flagshipStory.authorName}</span>
+                <span className="bg-neutral-200 border border-black px-1.5 py-0.5 font-mono">
+                  ID: #{flagshipStory.id.slice(0, 8)}
+                </span>
+              </div>
             </div>
           </div>
-
-          {/* Technical Schematic Blueprint Box */}
-          <div
-            data-testid="technical-schematic-diagram"
-            className="lg:col-span-5 border-4 border-black bg-neutral-100 p-5 shadow-[4px_4px_0px_#000000]"
-          >
-            <div className="flex items-center justify-between pb-3 border-b-2 border-black font-mono text-xs font-bold uppercase">
-              <span>SCHEMATIC // ACTUATOR TOPOLOGY V4.2</span>
-              <span className="bg-[#FF5500] text-white px-2 py-0.5 text-[10px]">
-                CAN-BUS / ROS2
-              </span>
-            </div>
-
-            {/* Visual Architecture Schematic Frame */}
-            <div className="my-4 bg-white border-2 border-black p-4 font-mono text-[11px] space-y-3">
-              <div className="border border-dashed border-black p-3 bg-neutral-50">
-                <div className="font-bold text-xs uppercase mb-1 flex items-center justify-between">
-                  <span>[NODE: CONTROLLER]</span>
-                  <span className="w-2 h-2 bg-[#00A859] inline-block" />
-                </div>
-                <p className="text-neutral-600">STM32H7 Core // Dual Cortex-M7 @ 480MHz</p>
-                <div className="mt-2 text-[10px] bg-black text-white px-2 py-0.5 inline-block font-bold">
-                  LATENCY: 0.12ms
-                </div>
-              </div>
-
-              {/* Interconnect Signal Line */}
-              <div className="text-center font-bold text-xs text-neutral-400">
-                ↓ [HIGH-SPEED ROS2 / DDS LINK] ↓
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <div className="border border-black p-2 bg-neutral-50">
-                  <div className="font-bold text-[10px] uppercase">ACTUATOR CLUSTER A</div>
-                  <div className="text-neutral-500 text-[10px]">Torque: 45Nm (Closed-loop)</div>
-                </div>
-                <div className="border border-black p-2 bg-[#CCFF00]/40">
-                  <div className="font-bold text-[10px] uppercase">ACTUATOR CLUSTER B</div>
-                  <div className="text-neutral-700 text-[10px]">Firmware: PRO-RT-09</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t-2 border-black/10 flex items-center justify-between font-mono text-[10px] text-neutral-600 font-bold">
-              <span>REPO: github/kinetix-firmware</span>
-              <span className="bg-neutral-200 border border-black px-1.5 py-0.5 font-mono">
-                HASH: #8F0A2E
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 4. FILTER PROTOCOL & LIVE INDEX BAR */}
@@ -845,12 +722,12 @@ export function StoriesContent({
         {/* Category Filter Pills */}
         <div className="flex flex-wrap items-center gap-2 font-mono text-xs font-bold">
           {[
-            { id: "ALL", label: `ALL DISPATCHES (${allStories.length + 180})` },
-            { id: "VENTURE", label: "VENTURE & STARTUPS (42)" },
-            { id: "CAREER", label: "CAREER PIVOTS & PROMOTIONS (68)" },
-            { id: "RESEARCH", label: "RESEARCH & PAPERS (34)" },
-            { id: "INFRASTRUCTURE", label: "INFRASTRUCTURE & ARCH (24)" },
-            { id: "AWARDS", label: "FELLOW AWARDS (16)" },
+            { id: "ALL", label: `ALL DISPATCHES (${categoryCounts.ALL})` },
+            { id: "VENTURE", label: `VENTURE & STARTUPS (${categoryCounts.VENTURE})` },
+            { id: "CAREER", label: `CAREER PIVOTS & PROMOTIONS (${categoryCounts.CAREER})` },
+            { id: "RESEARCH", label: `RESEARCH & PAPERS (${categoryCounts.RESEARCH})` },
+            { id: "INFRASTRUCTURE", label: `INFRASTRUCTURE & ARCH (${categoryCounts.INFRASTRUCTURE})` },
+            { id: "AWARDS", label: `FELLOW AWARDS (${categoryCounts.AWARDS})` },
           ].map((cat) => (
             <button
               key={cat.id}
@@ -938,137 +815,177 @@ export function StoriesContent({
       {/* ========================================================================= */}
       <section
         data-testid="showcase-stories-grid"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8"
+        className={filteredStories.length === 0 ? "" : "grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8"}
       >
-        {filteredStories.map((storyItem) => {
-          const localVote = upvotesState[storyItem.id] || {
-            count: storyItem.upvotes,
-            voted: false,
-          };
-
-          return (
-            <article
-              key={storyItem.id}
-              className="border-4 border-black bg-white p-6 sm:p-7 shadow-[4px_4px_0px_#000000] flex flex-col justify-between"
-            >
-              <div>
-                {/* Header badges */}
-                <div className="flex items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-black font-mono text-xs font-bold">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-black text-white px-2 py-0.5">{storyItem.index}</span>
-                    <span className="bg-[#CCFF00] border border-black px-2 py-0.5 uppercase text-black">
-                      {storyItem.categoryLabel}
-                    </span>
-                    <span className="text-neutral-500">
-                      {storyItem.cohort} · {storyItem.location}
-                    </span>
-                  </div>
-                  <span className="border border-black bg-neutral-100 px-2 py-0.5 font-mono text-[11px] uppercase font-bold text-black">
-                    {storyItem.orgName}
-                  </span>
-                </div>
-
-                {/* Fellow Identity & Role */}
-                <div className="flex items-start gap-4 mb-4">
-                  <div
-                    style={{
-                      backgroundColor: storyItem.avatarBg || "#CCFF00",
-                      color: storyItem.avatarColor || "#000000",
-                    }}
-                    className="w-14 h-14 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-center font-black text-xl font-mono shrink-0"
-                  >
-                    {storyItem.initials}
-                  </div>
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight leading-tight hover:underline cursor-pointer">
-                      {storyItem.headline}
-                    </h3>
-                    <p className="font-mono text-xs text-neutral-500 mt-1">
-                      {storyItem.roleSubtext}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Story Quote */}
-                <div className="bg-neutral-50 border-2 border-black/20 p-4 font-mono text-xs sm:text-sm leading-relaxed mb-5">
-                  {storyItem.quote}
-                </div>
-
-                {/* Impact Metrics Strip */}
-                <div className="grid grid-cols-3 gap-2 font-mono text-xs font-bold mb-6">
-                  <div className="border-2 border-black p-2 bg-amber-50 shadow-[1px_1px_0px_#000000]">
-                    <div className="text-[10px] text-neutral-500 uppercase">
-                      {storyItem.metrics.label1}:
-                    </div>
-                    <div className="text-sm font-extrabold text-black truncate">
-                      {storyItem.metrics.value1}
-                    </div>
-                  </div>
-                  <div className="border-2 border-black p-2 bg-neutral-50 shadow-[1px_1px_0px_#000000]">
-                    <div className="text-[10px] text-neutral-500 uppercase">
-                      {storyItem.metrics.label2}:
-                    </div>
-                    <div className="text-xs font-bold text-black truncate">
-                      {storyItem.metrics.value2}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: storyItem.metrics.highlightCol || "#2E5BFF",
-                    }}
-                    className="border-2 border-black p-2 text-white shadow-[1px_1px_0px_#000000]"
-                  >
-                    <div className="text-[10px] text-neutral-200 uppercase">
-                      {storyItem.metrics.label3}:
-                    </div>
-                    <div className="text-sm font-extrabold">
-                      {storyItem.metrics.value3}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Action Strip */}
-              <div className="pt-4 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono text-xs font-bold">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleCardUpvote(storyItem.id)}
-                    className={`px-3 py-1.5 border border-black shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 ${
-                      localVote.voted
-                        ? "bg-black text-[#CCFF00]"
-                        : "bg-neutral-100 hover:bg-black hover:text-white"
-                    }`}
-                  >
-                    <span>👍</span>
-                    <span>{localVote.count} UPVOTES</span>
-                  </button>
-                  <Link
-                    href="/jobs"
-                    className="px-3 py-1.5 border border-black bg-neutral-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-                  >
-                    <span>💬 {storyItem.commentsCount}</span>
-                  </Link>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Link
-                    href={storyItem.actionHref || "/jobs"}
-                    className="px-3.5 py-1.5 bg-[#FF5500] text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
-                  >
-                    {storyItem.actionLabel}
-                  </Link>
+        {filteredStories.length === 0 ? (
+          <div className="border-4 border-black bg-white p-8 sm:p-12 shadow-[4px_4px_0px_#000000]">
+            <EmptyState
+              icon={Sparkles}
+              title={
+                searchQuery || categoryFilter !== "ALL" || topologyFilter !== "ALL" || myDispatchesOnly
+                  ? "No matching dispatches found"
+                  : "No dispatches published yet"
+              }
+              body={
+                searchQuery || categoryFilter !== "ALL" || topologyFilter !== "ALL" || myDispatchesOnly
+                  ? "Try adjusting your filters, clearing your search query, or viewing all categories."
+                  : "Be the first verified fellow to broadcast a peer milestone or venture story to the network."
+              }
+              action={
+                searchQuery || categoryFilter !== "ALL" || topologyFilter !== "ALL" || myDispatchesOnly ? (
                   <button
                     onClick={() => {
-                      showToast(`Kudos sent to ${storyItem.authorName}! ✨`);
+                      setCategoryFilter("ALL");
+                      setTopologyFilter("ALL");
+                      setSearchQuery("");
+                      setMyDispatchesOnly(false);
                     }}
-                    className="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all"
+                    className="px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00]"
                   >
-                    SEND KUDOS
+                    Reset All Filters
                   </button>
+                ) : (
+                  <button
+                    onClick={() => setModalOpen(true)}
+                    className="px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00]"
+                  >
+                    + Transmit Milestone Story
+                  </button>
+                )
+              }
+            />
+          </div>
+        ) : (
+          filteredStories.map((storyItem) => {
+            const localVote = upvotesState[storyItem.id] || {
+              count: storyItem.upvotes,
+              voted: false,
+            };
+
+            return (
+              <article
+                key={storyItem.id}
+                className="border-4 border-black bg-white p-6 sm:p-7 shadow-[4px_4px_0px_#000000] flex flex-col justify-between"
+              >
+                <div>
+                  {/* Header badges */}
+                  <div className="flex items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-black font-mono text-xs font-bold">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-black text-white px-2 py-0.5">{storyItem.index}</span>
+                      <span className="bg-[#CCFF00] border border-black px-2 py-0.5 uppercase text-black">
+                        {storyItem.categoryLabel}
+                      </span>
+                      <span className="text-neutral-500">
+                        {storyItem.cohort} · {storyItem.location}
+                      </span>
+                    </div>
+                    <span className="border border-black bg-neutral-100 px-2 py-0.5 font-mono text-[11px] uppercase font-bold text-black">
+                      {storyItem.orgName}
+                    </span>
+                  </div>
+
+                  {/* Fellow Identity & Role */}
+                  <div className="flex items-start gap-4 mb-4">
+                    <div
+                      style={{
+                        backgroundColor: storyItem.avatarBg || "#CCFF00",
+                        color: storyItem.avatarColor || "#000000",
+                      }}
+                      className="w-14 h-14 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-center font-black text-xl font-mono shrink-0"
+                    >
+                      {storyItem.initials}
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight leading-tight hover:underline cursor-pointer">
+                        {storyItem.headline}
+                      </h3>
+                      <p className="font-mono text-xs text-neutral-500 mt-1">
+                        {storyItem.roleSubtext}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Story Quote */}
+                  <div className="bg-neutral-50 border-2 border-black/20 p-4 font-mono text-xs sm:text-sm leading-relaxed mb-5">
+                    {storyItem.quote}
+                  </div>
+
+                  {/* Impact Metrics Strip */}
+                  <div className="grid grid-cols-3 gap-2 font-mono text-xs font-bold mb-6">
+                    <div className="border-2 border-black p-2 bg-amber-50 shadow-[1px_1px_0px_#000000]">
+                      <div className="text-[10px] text-neutral-500 uppercase">
+                        {storyItem.metrics.label1}:
+                      </div>
+                      <div className="text-sm font-extrabold text-black truncate">
+                        {storyItem.metrics.value1}
+                      </div>
+                    </div>
+                    <div className="border-2 border-black p-2 bg-neutral-50 shadow-[1px_1px_0px_#000000]">
+                      <div className="text-[10px] text-neutral-500 uppercase">
+                        {storyItem.metrics.label2}:
+                      </div>
+                      <div className="text-xs font-bold text-black truncate">
+                        {storyItem.metrics.value2}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        backgroundColor: storyItem.metrics.highlightCol || "#2E5BFF",
+                      }}
+                      className="border-2 border-black p-2 text-white shadow-[1px_1px_0px_#000000]"
+                    >
+                      <div className="text-[10px] text-neutral-200 uppercase">
+                        {storyItem.metrics.label3}:
+                      </div>
+                      <div className="text-sm font-extrabold">
+                        {storyItem.metrics.value3}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </article>
-          );
-        })}
+
+                {/* Bottom Action Strip */}
+                <div className="pt-4 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono text-xs font-bold">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleCardUpvote(storyItem.id)}
+                      className={`px-3 py-1.5 border border-black shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 ${
+                        localVote.voted
+                          ? "bg-black text-[#CCFF00]"
+                          : "bg-neutral-100 hover:bg-black hover:text-white"
+                      }`}
+                    >
+                      <span>👍</span>
+                      <span>{localVote.count} UPVOTES</span>
+                    </button>
+                    <Link
+                      href="/jobs"
+                      className="px-3 py-1.5 border border-black bg-neutral-100 hover:bg-black hover:text-white transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                    >
+                      <span>💬 {storyItem.commentsCount}</span>
+                    </Link>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={storyItem.actionHref || "/jobs"}
+                      className="px-3.5 py-1.5 bg-[#FF5500] text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                    >
+                      {storyItem.actionLabel}
+                    </Link>
+                    <button
+                      onClick={() => {
+                        showToast(`Kudos sent to ${storyItem.authorName}! ✨`);
+                      }}
+                      className="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all"
+                    >
+                      SEND KUDOS
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })
+        )}
       </section>
 
       {/* ========================================================================= */}

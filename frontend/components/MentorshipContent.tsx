@@ -15,7 +15,9 @@ import {
   ChevronDown,
   UserCheck,
   CheckCircle2,
+  Users,
 } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { useAuth } from "@/lib/context/AuthContext";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
@@ -43,149 +45,6 @@ interface MentorFellow {
   costDeep: number;
   isBarter: boolean;
 }
-
-const CANONICAL_MENTORS: MentorFellow[] = [
-  {
-    id: "mentor-01",
-    recCode: "REC_01",
-    name: "Vikram Aditya",
-    role: "Core Cloud Infra",
-    company: "Google L5",
-    cohort: "Class of '19",
-    location: "Mountain View, CA",
-    cosineMatch: 98.4,
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDqaB2q43MXEPXw-cnOOZzKCAwgjv7SLOiuHDOmh9sqvJxzCEuRhHvw6A8ZcPImTkOul08gNLtTpY13SwnddwqGiRuYBcZBu2WRUEctwQjQF3DFPXlzGM8ir_llTYLbcbBI09SN5Fs2hpgPCz5B7DuzoZUOGIixYuNkHNXKid7EgrstQZdh2z6f9320b3qaWNocGHrVpeCYrNg9emJVO9t2GtmWG9GTH6K5j4Esil-KqLOggqXvk0A",
-    verified: true,
-    domain: "DISTRIBUTED SYSTEMS",
-    skills: ["Go", "Rust", "Distributed Locks", "gRPC"],
-    slotsLabel: "3 This Saturday",
-    availableSlots: ["10:00 AM", "10:15 AM", "11:30 AM"],
-    costFlash: 30,
-    costDeep: 50,
-    isBarter: false,
-  },
-  {
-    id: "mentor-02",
-    recCode: "REC_02",
-    name: "Sarah Jenkins",
-    role: "Principal Architect",
-    company: "Snowflake",
-    cohort: "Class of '16",
-    location: "San Francisco, CA",
-    cosineMatch: 96.7,
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDsZr8CopkUFIHwaZqrsF-4j7nTX-qHX4Vz5ECl-dqeud5YTpBy2Cf-8nDXvM3v3hazmL3hTZBuos2ZEvsWGhhlWuchxg96oKS7GFm1Pcpx-Z6RkbYTFt2mZP8PzwTGLW2BXtOrnrCDcBgVTAWshVCgv6DzsFstW3Dy4jy0SZvsWa2aoSq8pDe6pGBCEDCxez6-7kDo_UqKB5vTSvBiZSJIXhvT_ILnHRWHTxNZ-HOPNQ_XRGfP5UU",
-    verified: true,
-    domain: "DISTRIBUTED SYSTEMS",
-    skills: ["Columnar Engines", "C++", "System Design", "Query Optimization"],
-    slotsLabel: "Next Tuesday Evening",
-    availableSlots: ["06:00 PM", "06:15 PM", "06:30 PM"],
-    costFlash: 30,
-    costDeep: 50,
-    isBarter: false,
-  },
-  {
-    id: "mentor-03",
-    recCode: "REC_03",
-    name: "David Chen",
-    role: "YC Alum • 2x Founder",
-    company: "Neuromorphic Labs",
-    cohort: "Class of '17",
-    location: "New York, NY",
-    cosineMatch: 94.2,
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB16Q_VwnoLt_-PRR0bMqNYnUAPY3Y5bSHiW4bGkx0RK_fZtKZq_EmucsdgWwC9XKNCytGBFhHACxebStQJ-CBN_M7hcCK9mfDzuq-7ccMvzRvlZAPuoTwN8eKPdn4TYtnsu8QMrEo-cygoRM0GHs_7Y4riy59H-H3ulzWtF7atOT6gDulct4gvv9iLcwPbLb_inunelonnjiRUXMdmwdUdfbvgyJLJUGyuZq48mK5VSSZYDFBwBpU",
-    verified: true,
-    domain: "PRODUCT STRATEGY",
-    skills: ["Fundraising", "Zero-to-One PM", "Cloudflare", "GTM Strategy"],
-    slotsLabel: "Thursday Afternoon",
-    availableSlots: ["02:00 PM", "02:30 PM"],
-    costFlash: 0,
-    costDeep: 0,
-    isBarter: true,
-  },
-  {
-    id: "mentor-04",
-    recCode: "REC_04",
-    name: "Dr. Elena Rostova",
-    role: "Staff Research Scientist",
-    company: "DeepMind",
-    cohort: "Class of '18",
-    location: "London, UK",
-    cosineMatch: 93.8,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
-    verified: true,
-    domain: "AI / LLM INFRASTRUCTURE",
-    skills: ["Post-Quantum", "Lattice Cryptography", "zk-SNARKs", "PyTorch"],
-    slotsLabel: "Friday Late Slot",
-    availableSlots: ["04:00 PM", "04:30 PM"],
-    costFlash: 30,
-    costDeep: 50,
-    isBarter: false,
-  },
-  {
-    id: "mentor-07",
-    recCode: "REC_07",
-    name: "Dr. Alexei Volkov",
-    role: "Quantum Computing Fellow",
-    company: "IBM Quantum / Oxford",
-    cohort: "Class of '17",
-    location: "Zurich, Switzerland",
-    cosineMatch: 95.1,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
-    verified: true,
-    domain: "QUANTUM & CRYPTOGRAPHY",
-    skills: ["Qiskit", "Fault-Tolerant Quantum", "Quantum Annealing", "Lattice Cryptography"],
-    slotsLabel: "Monday Morning",
-    availableSlots: ["09:00 AM", "09:30 AM"],
-    costFlash: 30,
-    costDeep: 50,
-    isBarter: false,
-  },
-  {
-    id: "mentor-05",
-    recCode: "REC_05",
-    name: "Marcus Vance",
-    role: "Principal Hardware Architect",
-    company: "Apple",
-    cohort: "Class of '15",
-    location: "Cupertino, CA",
-    cosineMatch: 91.5,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
-    verified: true,
-    domain: "HARDWARE & EMBEDDED",
-    skills: ["Silicon Architecture", "Verilog", "RISC-V", "FPGA"],
-    slotsLabel: "Saturday Midday",
-    availableSlots: ["01:00 PM", "01:30 PM"],
-    costFlash: 30,
-    costDeep: 50,
-    isBarter: false,
-  },
-  {
-    id: "mentor-06",
-    recCode: "REC_06",
-    name: "Priya Sundaram",
-    role: "Head of Data Systems",
-    company: "Scale AI",
-    cohort: "Class of '20",
-    location: "San Francisco, CA",
-    cosineMatch: 90.1,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
-    verified: true,
-    domain: "DISTRIBUTED SYSTEMS",
-    skills: ["Data Pipelines", "Vector DBs", "Kafka", "ClickHouse"],
-    slotsLabel: "Wednesday Evening",
-    availableSlots: ["05:00 PM", "05:30 PM"],
-    costFlash: 30,
-    costDeep: 50,
-    isBarter: false,
-  },
-];
 
 const DOMAINS = [
   "ALL DOMAINS",
@@ -222,28 +81,7 @@ export function MentorshipContent() {
   }, [secondsRemaining]);
 
   // Dual Handshake in-escrow pipeline items
-  const [pipelineItems, setPipelineItems] = useState([
-    {
-      id: "escrow-01",
-      name: "Ananya Deshmukh",
-      badge: "Amazon SDE II",
-      topic: "AWS Microservices Architecture & DynamoDB internals",
-      lockedCredits: 30,
-      status: "WAITING MENTOR CONFIRM",
-      statusColor: "text-[#FF5500] bg-white",
-      badgeClass: "bg-[#e5e2dc] text-[#635F57]",
-    },
-    {
-      id: "escrow-02",
-      name: "Siddharth Joshi",
-      badge: "Stripe Core",
-      badgeClass: "bg-[#1D4ED8] text-white",
-      topic: "Staff-plus Interview Loop Preparation & System Archetypes",
-      lockedCredits: 50,
-      status: "AWAITING CALENDAR LOCK",
-      statusColor: "text-[#1A1A1A] bg-[#D9E021]",
-    },
-  ]);
+  const [pipelineItems, setPipelineItems] = useState<any[]>([]);
 
   const [escrowReleased, setEscrowReleased] = useState(false);
   const [releasingEscrow, setReleasingEscrow] = useState(false);
@@ -268,11 +106,72 @@ export function MentorshipContent() {
     "mentorship:list",
     () => apiClient.mentorship.list()
   );
+  const { data: apiAlumni } = useApi(
+    "alumni:mentorship:list",
+    () => apiClient.alumni.list()
+  );
 
-  // Combine canonical mentors with live fetched data if available
-  const allMentors = useMemo(() => {
-    return CANONICAL_MENTORS;
-  }, []);
+  const rawMentorships = useMemo(() => {
+    if (!mentorshipData) return [];
+    if (Array.isArray(mentorshipData)) return mentorshipData;
+    if (Array.isArray((mentorshipData as any).mentorships)) return (mentorshipData as any).mentorships;
+    return [];
+  }, [mentorshipData]);
+
+  useEffect(() => {
+    if (rawMentorships && rawMentorships.length > 0) {
+      const pending = rawMentorships
+        .filter((m: any) => m.status === "PENDING" || m.status === "WAITING_CONFIRM" || m.status === "IN_ESCROW" || m.status === "AWAITING CALENDAR LOCK")
+        .map((m: any) => ({
+          id: m.id,
+          name: m.mentor?.name || m.mentee?.name || m.name || "Mentorship Session",
+          badge: m.mentor?.company || m.badge || "Verified Fellow",
+          topic: m.topic || m.area || m.message || "Mentorship Topic",
+          lockedCredits: m.credits || m.lockedCredits || 30,
+          status: m.statusText || m.status || "WAITING MENTOR CONFIRM",
+          statusColor: m.statusColor || "text-[#FF5500] bg-white",
+          badgeClass: m.badgeClass || "bg-[#e5e2dc] text-[#635F57]",
+        }));
+      setPipelineItems(pending);
+    } else {
+      setPipelineItems([]);
+    }
+  }, [rawMentorships]);
+
+  const activeSession = useMemo(() => {
+    return rawMentorships.find((m: any) => m.status === "IN_FLIGHT" || m.status === "ACTIVE" || m.status === "CONFIRMED") || null;
+  }, [rawMentorships]);
+
+  // Combine backend alumni mentors
+  const allMentors: MentorFellow[] = useMemo(() => {
+    if (!apiAlumni || !Array.isArray(apiAlumni) || apiAlumni.length === 0) {
+      return [];
+    }
+    return apiAlumni
+      .filter((a: any) => a.isMentor !== false)
+      .map((a: any, idx: number): MentorFellow => ({
+        id: a.id || `mentor-${idx}`,
+        recCode: a.recCode || `REC_${String(idx + 1).padStart(2, "0")}`,
+        name: a.name,
+        role: a.role || a.jobTitle || "Mentor",
+        company: a.company || "",
+        cohort: a.batchYear ? `Class of '${String(a.batchYear).slice(-2)}` : (a.cohort || ""),
+        location: a.location || "",
+        cosineMatch: a.cosineMatch ?? 95,
+        avatarUrl:
+          a.avatar ||
+          a.avatarUrl ||
+          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+        verified: Boolean(a.isVerified ?? true),
+        domain: a.domain || (a.department ? a.department.toUpperCase() : "DISTRIBUTED SYSTEMS"),
+        skills: Array.isArray(a.skills) ? a.skills : [],
+        slotsLabel: a.slotsLabel || "Available this week",
+        availableSlots: Array.isArray(a.availableSlots) ? a.availableSlots : ["10:00 AM", "10:15 AM", "11:30 AM"],
+        costFlash: a.costFlash ?? 30,
+        costDeep: a.costDeep ?? 50,
+        isBarter: Boolean(a.isBarter),
+      }));
+  }, [apiAlumni]);
 
   // Filtered mentors list
   const filteredMentors = useMemo(() => {
@@ -505,124 +404,165 @@ export function MentorshipContent() {
             aria-label="Active Session In-Flight"
             className="lg:col-span-7 bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between gap-6 relative"
           >
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center justify-between pb-3 border-b-2 border-[#D5CEBF] gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse shadow-[0_0_8px_#00E676]"></span>
-                  <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
-                    ACTIVE SESSION IN-FLIGHT // COMMENCING SOON
+            {activeSession ? (
+              <div className="flex flex-col gap-5">
+                <div className="flex items-center justify-between pb-3 border-b-2 border-[#D5CEBF] gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse shadow-[0_0_8px_#00E676]"></span>
+                    <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
+                      ACTIVE SESSION IN-FLIGHT // COMMENCING SOON
+                    </span>
+                  </div>
+                  <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#635F57] border-2 border-[#1A1A1A] font-bold">
+                    SESSION ID #{activeSession.id}
                   </span>
                 </div>
-                <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#635F57] border-2 border-[#1A1A1A] font-bold">
-                  SESSION ID #FL-8812
-                </span>
-              </div>
 
-              {/* Countdown Counter Strip */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 bg-[#F7F4EE] border-2 border-[#1A1A1A] gap-4 shadow-[2px_2px_0_#1A1A1A]">
-                <div>
-                  <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                    T-MINUS COUNTDOWN
-                  </span>
-                  <div className="font-mono text-2xl sm:text-3xl tracking-tight text-[#FF5500] font-black flex items-center gap-2 mt-1">
-                    <span id="countdown-val">{formattedCountdown}</span>
-                    <span className="font-mono text-xs text-[#8F8A7E] font-normal">
-                      [LIVE]
+                {/* Countdown Counter Strip */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 bg-[#F7F4EE] border-2 border-[#1A1A1A] gap-4 shadow-[2px_2px_0_#1A1A1A]">
+                  <div>
+                    <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
+                      T-MINUS COUNTDOWN
+                    </span>
+                    <div className="font-mono text-2xl sm:text-3xl tracking-tight text-[#FF5500] font-black flex items-center gap-2 mt-1">
+                      <span id="countdown-val">{formattedCountdown}</span>
+                      <span className="font-mono text-xs text-[#8F8A7E] font-normal">
+                        [LIVE]
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-start sm:items-end">
+                    <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
+                      TYPE &amp; LENGTH
+                    </span>
+                    <span className="text-sm sm:text-base font-bold text-[#1A1A1A] mt-1">
+                      {activeSession.type || "15-Min Architectural Flash"}
                     </span>
                   </div>
                 </div>
-                <div className="flex flex-col items-start sm:items-end">
-                  <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                    TYPE &amp; LENGTH
-                  </span>
-                  <span className="text-sm sm:text-base font-bold text-[#1A1A1A] mt-1">
-                    15-Min Architectural Flash
-                  </span>
-                </div>
-              </div>
 
-              {/* Session Target Details */}
-              <div className="flex items-start gap-4">
-                <div className="relative shrink-0">
-                  <Image
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAju3KKOm1fcHk6g5AE0MET9igxDcSthlxRF9WrXg5KYWnRrDNXFh5NiLymgjUxavDLz1QpAel3iBwAc7j3etdOZJOHFay987GVOyEs9YOXHWQmVcmVBqHxOhS_aRFM_92iGtlD9lJvaPpAYhi71CwERoW-xQSzgkTOVmL1WwgjnYFb6Nqe5yg06RSAucdMqV9jxP4Mg7cuaWQUBbYDB_zGn7_kU31tOS-E6pIX6xXecgQigD-Fn9Q"
-                    alt="Dr. Elias Vance"
-                    width={64}
-                    height={64}
-                    className="w-16 h-16 border-2 border-[#1A1A1A] object-cover shadow-[3px_3px_0_#1A1A1A]"
-                  />
-                  <span className="absolute -bottom-1.5 -right-1.5 font-mono text-[10px] px-1.5 py-0.5 bg-[#1D4ED8] text-white font-extrabold border border-[#1A1A1A]">
-                    VP
-                  </span>
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-base sm:text-lg font-black text-[#1A1A1A]">
-                      Dr. Elias Vance
-                    </span>
-                    <span className="font-mono text-xs px-2 py-0.5 bg-[#e5e2dc] text-[#1A1A1A] border border-[#1A1A1A] font-bold">
-                      Quantix Corp
+                {/* Session Target Details */}
+                <div className="flex items-start gap-4">
+                  <div className="relative shrink-0">
+                    <Image
+                      src={
+                        activeSession.mentor?.avatar ||
+                        activeSession.avatarUrl ||
+                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
+                      }
+                      alt={activeSession.mentor?.name || activeSession.name || "Mentor"}
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 border-2 border-[#1A1A1A] object-cover shadow-[3px_3px_0_#1A1A1A]"
+                    />
+                    <span className="absolute -bottom-1.5 -right-1.5 font-mono text-[10px] px-1.5 py-0.5 bg-[#1D4ED8] text-white font-extrabold border border-[#1A1A1A]">
+                      {activeSession.badge || "PRO"}
                     </span>
                   </div>
-                  <span className="font-mono text-xs text-[#8F8A7E] font-medium mt-0.5">
-                    VP of Engineering // Fellow Cohort &apos;14
-                  </span>
-                  <div className="mt-2.5">
-                    <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider block">
-                      AUDIT TOPIC:
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-base sm:text-lg font-black text-[#1A1A1A]">
+                        {activeSession.mentor?.name || activeSession.name || "Verified Fellow"}
+                      </span>
+                      {(activeSession.mentor?.company || activeSession.company) && (
+                        <span className="font-mono text-xs px-2 py-0.5 bg-[#e5e2dc] text-[#1A1A1A] border border-[#1A1A1A] font-bold">
+                          {activeSession.mentor?.company || activeSession.company}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-mono text-xs text-[#8F8A7E] font-medium mt-0.5">
+                      {activeSession.mentor?.role || activeSession.role || "Verified Fellow"}
                     </span>
-                    <p className="text-sm sm:text-base font-bold text-[#1A1A1A] leading-snug mt-0.5">
-                      Distributed Consensus &amp; Raft Implementations in Go
-                    </p>
+                    <div className="mt-2.5">
+                      <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider block">
+                        AUDIT TOPIC:
+                      </span>
+                      <p className="text-sm sm:text-base font-bold text-[#1A1A1A] leading-snug mt-0.5">
+                        {activeSession.topic || activeSession.area || activeSession.message || "Architectural Review"}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Escrow Pill Indicator */}
-              <div className="p-3 bg-[#EFECE4] border-2 border-[#1A1A1A] flex flex-wrap items-center justify-between gap-2 shadow-[1px_1px_0_#1A1A1A]">
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-[#FF5500] shrink-0" />
-                  <span className="font-mono text-xs text-[#1A1A1A] font-bold">
-                    50 ALUMN-CR HELD IN ESCROW
+                {/* Escrow Pill Indicator */}
+                <div className="p-3 bg-[#EFECE4] border-2 border-[#1A1A1A] flex flex-wrap items-center justify-between gap-2 shadow-[1px_1px_0_#1A1A1A]">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-[#FF5500] shrink-0" />
+                    <span className="font-mono text-xs text-[#1A1A1A] font-bold">
+                      {activeSession.credits || activeSession.lockedCredits || 30} ALUMN-CR HELD IN ESCROW
+                    </span>
+                  </div>
+                  <span className="font-mono text-[11px] text-[#635F57] uppercase font-medium">
+                    Auto-releases upon dual sign-off
                   </span>
                 </div>
-                <span className="font-mono text-[11px] text-[#635F57] uppercase font-medium">
-                  Auto-releases upon dual sign-off
-                </span>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col gap-5">
+                <div className="flex items-center justify-between pb-3 border-b-2 border-[#D5CEBF] gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#8F8A7E]"></span>
+                    <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
+                      ACTIVE SESSION IN-FLIGHT // STANDBY
+                    </span>
+                  </div>
+                  <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#635F57] border-2 border-[#1A1A1A] font-bold">
+                    STANDBY
+                  </span>
+                </div>
+                <div className="p-8 text-center bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col items-center gap-2">
+                  <span className="font-mono text-sm font-bold text-[#1A1A1A]">
+                    NO SESSIONS COMMENCING
+                  </span>
+                  <p className="text-xs text-[#635F57] max-w-md">
+                    You do not currently have an active session in flight. Schedule a 1-on-1 below to connect with verified mentors.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-4 border-t-2 border-[#D5CEBF]">
-              <a
-                href="https://meet.google.com/new"
-                target="_blank"
-                rel="noreferrer"
-                className="flex-1 min-w-[180px] flex items-center justify-center gap-2 px-5 py-3 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#1A1A1A] hover:bg-[#FF5500] hover:text-white transition-all cursor-pointer"
-              >
-                <Video className="w-4 h-4" />
-                <span>LAUNCH GOOGLE MEET</span>
-              </a>
-              <button
-                type="button"
-                onClick={() => setDossierModalOpen(true)}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#1A1A1A] hover:bg-black hover:text-white transition-all cursor-pointer"
-              >
-                <FolderOpen className="w-4 h-4" />
-                <span>PRE-FLIGHT DOSSIER</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setRescheduleSuccess(false);
-                  setRescheduleModalOpen(true);
-                }}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-white text-[#635F57] border-2 border-[#1A1A1A] font-semibold text-xs sm:text-sm hover:text-black hover:bg-[#F7F4EE] transition-all cursor-pointer"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>RESCHEDULE</span>
-              </button>
-            </div>
+            {activeSession ? (
+              <div className="flex flex-wrap items-center gap-3 pt-4 border-t-2 border-[#D5CEBF]">
+                <a
+                  href={activeSession.meetUrl || "https://meet.google.com/new"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 min-w-[180px] flex items-center justify-center gap-2 px-5 py-3 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#1A1A1A] hover:bg-[#FF5500] hover:text-white transition-all cursor-pointer"
+                >
+                  <Video className="w-4 h-4" />
+                  <span>LAUNCH GOOGLE MEET</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setDossierModalOpen(true)}
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#1A1A1A] hover:bg-black hover:text-white transition-all cursor-pointer"
+                >
+                  <FolderOpen className="w-4 h-4" />
+                  <span>PRE-FLIGHT DOSSIER</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRescheduleSuccess(false);
+                    setRescheduleModalOpen(true);
+                  }}
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-white text-[#635F57] border-2 border-[#1A1A1A] font-semibold text-xs sm:text-sm hover:text-black hover:bg-[#F7F4EE] transition-all cursor-pointer"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>RESCHEDULE</span>
+                </button>
+              </div>
+            ) : (
+              <div className="pt-4 border-t-2 border-[#D5CEBF] flex justify-end">
+                <a
+                  href="#mentor-directory"
+                  className="px-4 py-2.5 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] transition-all"
+                >
+                  RESERVE A MENTOR SLOT →
+                </a>
+              </div>
+            )}
           </section>
 
           {/* Pending Dual-Handshake Protocol Card (5 Cols) */}
@@ -705,7 +645,7 @@ export function MentorshipContent() {
                 </span>
               </button>
               <span className="font-mono text-[11px] text-[#8F8A7E] text-center font-medium">
-                Requires cryptographic signature from Elena Vance&apos;s token
+                Requires cryptographic signature from {user?.name || "verified member"}&apos;s token
               </span>
             </div>
           </section>
@@ -798,24 +738,25 @@ export function MentorshipContent() {
           {/* Verified Mentor Cards Grid (3 Columns) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredMentors.length === 0 ? (
-              <div className="col-span-full p-8 sm:p-12 bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0_#1A1A1A] text-center flex flex-col items-center gap-3">
-                <span className="font-mono text-lg font-bold text-[#8F8A7E]">
-                  NO FELLOWS MATCH CRITERIA
-                </span>
-                <p className="text-sm text-[#635F57]">
-                  Try adjusting your search query or selecting &quot;ALL DOMAINS&quot;.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveDomain("ALL DOMAINS");
-                    setSearchQuery("");
-                    setDurationMode("15-Min Flash (30 CR)");
-                  }}
-                  className="mt-2 px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all"
-                >
-                  RESET FILTERS
-                </button>
+              <div className="col-span-full">
+                <EmptyState
+                  icon={Users}
+                  title="NO FELLOWS MATCH CRITERIA"
+                  body="Try adjusting your search query or selecting ALL DOMAINS."
+                  action={
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveDomain("ALL DOMAINS");
+                        setSearchQuery("");
+                        setDurationMode("15-Min Flash (30 CR)");
+                      }}
+                      className="mt-2 px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all"
+                    >
+                      RESET FILTERS
+                    </button>
+                  }
+                />
               </div>
             ) : (
               filteredMentors.map((mentor) => {
@@ -1282,7 +1223,7 @@ export function MentorshipContent() {
             <div className="flex items-center justify-between pb-3 border-b-2 border-[#1A1A1A]">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs px-2 py-0.5 bg-black text-white font-bold">
-                  DOSSIER #FL-8812
+                  DOSSIER #{activeSession?.id || "SESSION"}
                 </span>
                 <span className="text-base sm:text-lg font-black text-[#1A1A1A]">
                   Pre-Flight Architectural Notes
@@ -1304,10 +1245,10 @@ export function MentorshipContent() {
                   TARGET FELLOW:
                 </span>
                 <span className="text-sm font-bold text-[#1A1A1A]">
-                  Dr. Elias Vance (VP of Engineering @ Quantix Corp)
+                  {activeSession?.mentor?.name || activeSession?.name || "Verified Fellow"} ({activeSession?.mentor?.role || activeSession?.role || "Mentor"} @ {activeSession?.mentor?.company || activeSession?.company || "Partner Organization"})
                 </span>
                 <span className="font-mono text-xs text-[#635F57]">
-                  Specialization: Multi-Raft state machines, linearizable storage, zero-allocation buffers.
+                  Specialization: {activeSession?.topic || activeSession?.area || "System Architecture & Engineering Practices"}
                 </span>
               </div>
 
@@ -1324,7 +1265,7 @@ export function MentorshipContent() {
 
               <div className="p-3 bg-[#EFECE4] border-2 border-[#1A1A1A] flex items-center justify-between gap-2 shadow-[1px_1px_0_#1A1A1A]">
                 <span className="font-mono text-xs text-[#635F57] font-medium">
-                  ATTACHED SPEC: raft_consensus_v2.pdf (1.4MB)
+                  ATTACHED SPEC: session_architecture_spec.pdf
                 </span>
                 <span className="font-mono text-[10px] px-2 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] font-black">
                   VERIFIED SHA256
@@ -1355,7 +1296,7 @@ export function MentorshipContent() {
           <div className="w-full max-w-md bg-white border-2 border-[#1A1A1A] shadow-[6px_6px_0_#1A1A1A] p-6 sm:p-8 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-[#1A1A1A]">
               <span className="text-base sm:text-lg font-black text-[#1A1A1A]">
-                Reschedule Session #FL-8812
+                Reschedule Session #{activeSession?.id || ""}
               </span>
               <button
                 type="button"
@@ -1376,7 +1317,7 @@ export function MentorshipContent() {
                   SESSION RESCHEDULED
                 </span>
                 <p className="text-xs sm:text-sm text-[#635F57]">
-                  Dr. Vance&apos;s cal-daemon accepted the update. Escrow lock updated.
+                  Mentor calendar daemon accepted the update. Escrow lock updated.
                 </p>
                 <button
                   type="button"
@@ -1389,7 +1330,7 @@ export function MentorshipContent() {
             ) : (
               <div className="flex flex-col gap-3">
                 <p className="text-xs sm:text-sm text-[#635F57]">
-                  Choose a replacement window for Dr. Elias Vance. Your 50 ALUMN-CR escrow will remain held securely.
+                  Choose a replacement window for {activeSession?.mentor?.name || activeSession?.name || "your mentor"}. Your {activeSession?.credits || activeSession?.lockedCredits || 50} ALUMN-CR escrow will remain held securely.
                 </p>
                 <div className="grid grid-cols-2 gap-2 mt-1">
                   {["Tomorrow 10:00 AM", "Tomorrow 02:30 PM", "Saturday 11:00 AM", "Monday 09:30 AM"].map((timeSlot) => (

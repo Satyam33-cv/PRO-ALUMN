@@ -68,9 +68,9 @@ describe("DirectoryContent", () => {
   it("renders alumni cards after load", () => {
     setupSuccessMocks();
     render(<DirectoryContent />);
-    expect(screen.getByText("Priya Raman")).toBeInTheDocument();
-    expect(screen.getByText("Marcus Chen")).toBeInTheDocument();
-    expect(screen.getByText("Elena Torres")).toBeInTheDocument();
+    expect(screen.getAllByText("Priya Raman")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Marcus Chen")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Elena Torres")[0]).toBeInTheDocument();
   });
 
   it("renders filter buttons after load", () => {
@@ -86,5 +86,18 @@ describe("DirectoryContent", () => {
     render(<DirectoryContent />);
     expect(screen.getByText(/Showing/)).toBeInTheDocument();
     expect(screen.getAllByText(/3/).length).toBeGreaterThan(0);
+  });
+
+  it("renders EmptyState when alumni list is empty", () => {
+    mockUseApi.mockReturnValue({
+      data: [],
+      error: undefined,
+      isLoading: false,
+      isValidating: false,
+      refresh: jest.fn(),
+      mutate: jest.fn(),
+    });
+    render(<DirectoryContent />);
+    expect(screen.getByText("No Alumni Found")).toBeInTheDocument();
   });
 });

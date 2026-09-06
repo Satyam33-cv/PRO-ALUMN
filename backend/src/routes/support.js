@@ -33,7 +33,7 @@ router.post('/', authMiddleware, async (req, res) => {
         if (ticket.user && ticket.user.email) {
           await sendSupportTicketConfirmation(ticket.user.email, ticket.id, ticket.subject);
         }
-        const adminEmail = process.env.ADMIN_EMAIL || 'proalumn@yahoo.com';
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@proalumn.edu';
         if (adminEmail) {
           await sendAdminTicketNotification(adminEmail, ticket);
         }
@@ -45,7 +45,11 @@ router.post('/', authMiddleware, async (req, res) => {
     res.status(201).json({ ticket, message: 'Support ticket submitted successfully' });
   } catch (err) {
     console.error('POST /support error:', err);
-    res.status(500).json({ error: 'Failed to submit support ticket', details: err.message, stack: err.stack });
+    res.status(500).json({
+      error: 'Failed to submit support ticket',
+      details: err.message,
+      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+    });
   }
 });
 

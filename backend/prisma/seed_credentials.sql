@@ -14,12 +14,11 @@ VALUES
   ('badge-top-contributor', 'Top Contributor', 'Ranked in the top 3 on the community leaderboard', '🏆', 300, 'COMMUNITY', NOW())
 ON CONFLICT ("name") DO NOTHING;
 
--- 2. Insert Users Across All 4 Roles
--- Password for all accounts: Admin@12345 / Student@12345 / Faculty@12345 / Alumni@12345
--- Bcrypt Hash (cost factor 10): $2b$10$k1wOQ9x4iWzYnU7fR2aZtehW7O3f5sC3xQ5eT7yU9iW1oP3aS5dG. (Valid hash for all seeds)
+-- NOTE: In production, do NOT insert static accounts with known credentials.
+-- Generate secure hashes using bcrypt or configure SEED_*_PASSWORD in your deployment.
 
 -- ADMIN ACCOUNT
--- Email: proalumn@yahoo.com | Password: Admin@12345
+-- Email: admin@proalumn.edu (Configure your administrative credentials via env)
 INSERT INTO "User" (
   "id", "name", "email", "passwordHash", "role", "isVerified", "isActive",
   "department", "batchYear", "totalPoints", "currentStreak", "longestStreak",
@@ -27,7 +26,7 @@ INSERT INTO "User" (
 ) VALUES (
   'usr-admin-01',
   'Super Admin Administrator',
-  'proalumn@yahoo.com',
+  'admin@proalumn.edu',
   '$2b$10$wO7tZ1aW2eR3tY4uI5oP6eF7gH8jK9lM0nB1vC2xZ3aA4sD5fG6hJ',
   'ADMIN',
   true,

@@ -1,37 +1,51 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Check, Clock3, MapPin, Users, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  Check,
+  Clock3,
+  MapPin,
+  Users,
+  X,
+  ShieldCheck,
+  CheckCircle2,
+  Ticket,
+  Share2,
+} from "lucide-react";
 import { ApiError } from "@/lib/api";
 import { apiClient } from "@/lib/api/client";
-import { Badge, Button, Card, ErrorState, Skeleton } from "@/components/ui";
+import { ErrorState, Skeleton } from "@/components/ui";
 import { useApi } from "@/lib/hooks/useApi";
 import type { EventAttendee } from "@/lib/types";
 
 function formatDate(value?: string) {
   if (!value) return null;
   try {
-    return new Intl.DateTimeFormat("en", { dateStyle: "long", timeStyle: "short" }).format(new Date(value));
+    return new Intl.DateTimeFormat("en", {
+      dateStyle: "full",
+      timeStyle: "short",
+    }).format(new Date(value));
   } catch {
     return value;
   }
 }
 
-function getRoleBadge(role?: string) {
-  const normalized = (role || "").toUpperCase();
-  if (normalized === "ALUMNI") return <Badge tone="success">Alumni</Badge>;
-  if (normalized === "STUDENT") return <Badge tone="accent">Student</Badge>;
-  if (normalized === "FACULTY") return <Badge tone="warning">Faculty</Badge>;
-  if (normalized === "ADMIN") return <Badge tone="neutral">Admin</Badge>;
-  return null;
-}
-
 export function EventDetailContent({ id }: { id: string }) {
-  const { data: event, error, isLoading, refresh } = useApi(`event:${id}`, () => apiClient.events.get(id));
+  const { data: event, error, isLoading, refresh } = useApi(`event:${id}`, () =>
+    apiClient.events.get(id)
+  );
   const [attending, setAttending] = useState(false);
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  };
 
   useEffect(() => {
     if (event) {
@@ -46,15 +60,21 @@ export function EventDetailContent({ id }: { id: string }) {
       if (attending) {
         const result = await apiClient.events.cancelRsvp(id);
         setAttending(result.attending);
-        setStatus("Your RSVP has been cancelled.");
+        setStatus("Your RSVP pass has been released.");
+        showToast("RSVP cancelled");
       } else {
         const result = await apiClient.events.rsvp(id);
         setAttending(result.attending);
-        setStatus("You are confirmed on the guest list!");
+        setStatus("Admission pass confirmed on official enclave roster!");
+        showToast("Admission pass generated!");
       }
       await refresh();
     } catch (requestError) {
-      setStatus(requestError instanceof ApiError ? requestError.message : "We could not update your RSVP.");
+      setStatus(
+        requestError instanceof ApiError
+          ? requestError.message
+          : "We could not update your RSVP."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -62,180 +82,274 @@ export function EventDetailContent({ id }: { id: string }) {
 
   if (isLoading) {
     return (
-      <div className="max-w-3xl space-y-5" aria-busy="true" aria-label="Loading event details">
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-16" />
-        <Skeleton variant="card" className="h-72" />
+      <div className="max-w-4xl mx-auto space-y-6 font-mono">
+        <Skeleton className="h-8 w-36 border-2 border-black" />
+        <div className="border-4 border-black bg-white shadow-[6px_6px_0px_#000000] p-8 space-y-6">
+          <Skeleton className="h-10 w-2/3" />
+          <Skeleton className="h-6 w-1/2" />
+          <Skeleton className="h-44 w-full" />
+        </div>
       </div>
     );
   }
 
   if (error) {
-    return <ErrorState title="Event unavailable" body={error.message} retry={() => void refresh()} />;
+    return (
+      <div className="max-w-2xl mx-auto py-12">
+        <ErrorState
+          title="Assemblage Unavailable"
+          body={error.message || "Could not retrieve event record from registry."}
+          retry={() => void refresh()}
+        />
+      </div>
+    );
   }
 
   if (!event) return null;
 
-  const eventDate = event.date || event.startsAt ? new Date(event.date || event.startsAt!) : null;
-  const displayMonth = event.month || (eventDate ? eventDate.toLocaleString("en", { month: "short" }).toUpperCase() : "EVENT");
-  const displayDay = event.day || (eventDate ? String(eventDate.getDate()) : "--");
-  const displayLocation = event.place || event.location || "Location to be announced";
-  const displayDescription = event.detail || event.description || "Join us for this gathering.";
-  const displayTime = formatDate(event.startsAt || event.date) ?? displayDescription;
+  const eventDate =
+    event.date || event.startsAt ? new Date(event.date || event.startsAt!) : null;
+  const displayMonth =
+    event.month ||
+    (eventDate
+      ? eventDate.toLocaleString("en", { month: "short" }).toUpperCase()
+      : "EVENT");
+  const displayDay =
+    event.day || (eventDate ? String(eventDate.getDate()).padStart(2, "0") : "--");
+  const displayLocation = event.place || event.location || "Main Campus Auditorium";
+  const displayDescription =
+    event.detail ||
+    event.description ||
+    "Official alumni and student gathering hosted by the institution.";
+  const displayTime =
+    formatDate(event.startsAt || event.date) ?? "18:00 EST // Scheduled";
 
   const rsvps = event.rsvps || [];
   const attendeeCount = event._count?.rsvps ?? rsvps.length;
-  const maxCapacity = event.maxCapacity ?? event.capacity;
+  const maxCapacity = event.maxCapacity ?? event.capacity ?? 150;
   const isFull = maxCapacity != null && attendeeCount >= maxCapacity;
+  const capacityPct = Math.min(100, Math.round((attendeeCount / maxCapacity) * 100));
 
   return (
-    <div className="max-w-3xl space-y-8">
-      <Link
-        href="/events"
-        className="inline-flex items-center gap-2 text-sm text-ink-900/55 hover:text-brass-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass-500"
-      >
-        <ArrowLeft size={16} aria-hidden="true" /> Back to events
-      </Link>
-
-      <Card padding="lg" className="mt-2">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="max-w-xl">
-            <Badge tone="warning">Alumni gathering</Badge>
-            <h1 className="mt-4 font-display text-4xl sm:text-5xl leading-tight text-ink-900">{event.title}</h1>
-          </div>
-          <div
-            className="flex h-16 w-16 flex-shrink-0 flex-col items-center justify-center border border-brass-500/40 text-center"
-            aria-label={`Event date: ${displayMonth} ${displayDay}`}
-          >
-            <span className="font-mono text-[10px] text-brass-500">{displayMonth}</span>
-            <span className="font-display text-3xl text-ink-900">{displayDay}</span>
-          </div>
+    <div className="max-w-4xl mx-auto space-y-8 font-mono text-black select-text pb-16">
+      {/* Toast */}
+      {toast && (
+        <div
+          role="status"
+          className="fixed top-6 right-6 z-50 bg-[#CCFF00] text-black border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
+        >
+          <CheckCircle2 size={16} />
+          <span>{toast}</span>
         </div>
+      )}
 
-        <div className="mt-8 space-y-3 border-y border-ink-900/10 py-5 text-sm text-ink-900/65">
-          <p className="flex items-center gap-2">
-            <MapPin size={16} className="text-brass-500 flex-shrink-0" aria-hidden="true" />
-            <span>{displayLocation}</span>
-          </p>
-          <p className="flex items-center gap-2">
-            <Clock3 size={16} className="text-brass-500 flex-shrink-0" aria-hidden="true" />
-            <span>{displayTime}</span>
-          </p>
+      {/* Navigation Breadcrumb */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <Link
+          href="/events"
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+        >
+          <ArrowLeft size={14} /> Back to Events
+        </Link>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="px-2 py-0.5 bg-[#EFECE4] border border-black font-bold uppercase text-neutral-600">
+            ASSEMBLAGE
+          </span>
+          <span className="font-bold text-neutral-400">//</span>
+          <span className="font-bold text-neutral-600">EV-{event.id.slice(0, 6).toUpperCase()}</span>
         </div>
+      </div>
 
-        <p className="mt-8 max-w-2xl text-base leading-7 text-ink-900/70">{displayDescription}</p>
-
-        {/* RSVP Action Bar */}
-        <div className="mt-9 flex flex-wrap items-center gap-4">
-          <Button
-            type="button"
-            variant={attending ? "secondary" : "primary"}
-            iconRight={attending ? X : CalendarDays}
-            onClick={handleToggleRsvp}
-            disabled={isSubmitting || (!attending && isFull)}
-            aria-pressed={attending}
-          >
-            {isSubmitting
-              ? "Updating..."
-              : attending
-              ? "Cancel RSVP"
-              : isFull
-              ? "Event Full"
-              : "RSVP to this event"}
-          </Button>
-
-          {attending && (
-            <span className="inline-flex items-center gap-1.5 text-sm font-medium text-sage-600 bg-sage-500/10 px-3 py-1.5 rounded-full">
-              <Check size={14} aria-hidden="true" /> You are attending
-            </span>
-          )}
-
-          {status ? (
-            <p role="status" aria-live="polite" className="text-sm text-ink-900/65">
-              {status}
-            </p>
-          ) : null}
-        </div>
-      </Card>
-
-      {/* Attendees Section */}
-      <Card padding="lg">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-900/10 pb-4">
+      {/* Main Assemblage Container */}
+      <article className="border-4 border-black bg-white shadow-[6px_6px_0px_#000000] overflow-hidden">
+        {/* Header Bar */}
+        <header className="bg-black text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 border-b-4 border-black">
           <div className="flex items-center gap-2.5">
-            <Users size={20} className="text-brass-500" aria-hidden="true" />
-            <h2 className="font-display text-2xl text-ink-900">Attendees</h2>
-            <Badge tone="neutral">
-              {attendeeCount} {attendeeCount === 1 ? "person" : "people"}
-            </Badge>
-          </div>
-          {maxCapacity != null && (
-            <span className="font-mono text-xs text-ink-900/60">
-              {attendeeCount} / {maxCapacity} spots filled
+            <span className="w-2.5 h-2.5 bg-[#CCFF00] inline-block animate-pulse"></span>
+            <span className="font-bold text-xs tracking-wider uppercase">
+              CONCLAVE SPECIFICATION // TICKETING PROTOCOL
             </span>
-          )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-[#CCFF00] text-black border border-black text-[11px] font-bold uppercase">
+              {event.mode || "PHYSICAL"}
+            </span>
+            <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black text-[11px] font-bold uppercase">
+              {capacityPct}% CAPACITY
+            </span>
+          </div>
+        </header>
+
+        {/* Hero Section */}
+        <div className="p-6 sm:p-8 bg-white border-b-2 border-black">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-6">
+            <div className="flex items-start gap-5">
+              {/* Date Block */}
+              <div className="w-18 h-20 sm:w-22 sm:h-24 bg-black text-white border-3 border-black shadow-[3px_3px_0px_#000000] flex flex-col items-center justify-center shrink-0">
+                <span className="text-[11px] font-bold tracking-widest text-[#CCFF00] uppercase">
+                  {displayMonth}
+                </span>
+                <span className="text-3xl sm:text-4xl font-black font-sans text-white leading-none">
+                  {displayDay}
+                </span>
+              </div>
+
+              {/* Title & Metadata */}
+              <div className="space-y-2">
+                <span className="px-2 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold uppercase text-neutral-600 inline-block">
+                  FLAGSHIP GATHERING
+                </span>
+                <h1 className="text-2xl sm:text-3xl font-black font-sans uppercase tracking-tight text-black">
+                  {event.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-700 pt-1">
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <MapPin size={14} className="text-[#FF5500]" />
+                    <span>{displayLocation}</span>
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <Clock3 size={14} className="text-neutral-500" />
+                    <span>{displayTime}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard?.writeText(window.location.href);
+                showToast("Event link copied to clipboard");
+              }}
+              className="px-3 py-1.5 bg-[#F7F4EE] hover:bg-black hover:text-white border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] transition-colors flex items-center gap-1.5 cursor-pointer self-start"
+            >
+              <Share2 size={13} /> Share
+            </button>
+          </div>
+
+          {/* Capacity Meter Bar */}
+          <div className="mt-6 pt-4 border-t-2 border-neutral-200 space-y-2">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-neutral-600 uppercase">AUDITORIUM ENCLAVE SEATING:</span>
+              <span className="text-black">
+                {attendeeCount} OF {maxCapacity} SEATS RESERVED
+              </span>
+            </div>
+            <div className="w-full bg-[#F7F4EE] border-2 border-black h-3 overflow-hidden p-0.5">
+              <div
+                className="bg-black h-full transition-all duration-500"
+                style={{ width: `${capacityPct}%` }}
+              ></div>
+            </div>
+          </div>
         </div>
 
-        {rsvps.length === 0 ? (
-          <div className="py-10 text-center text-sm text-ink-900/55">
-            <Users size={32} className="mx-auto mb-2 text-ink-900/25" aria-hidden="true" />
-            <p className="font-medium text-ink-900/80">No RSVPs yet</p>
-            <p className="mt-1 text-xs">Be the first to RSVP and let fellow members know you will be there!</p>
+        {/* Description Section */}
+        <section className="p-6 sm:p-8 bg-[#F7F4EE] border-b-2 border-black space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 bg-black inline-block"></span>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-600">
+              PROGRAM OVERVIEW & ITINERARY
+            </h2>
           </div>
-        ) : (
-          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3" role="list" aria-label="Event attendee list">
-            {rsvps.map((rsvp) => {
-              const u: EventAttendee = rsvp.user || { id: rsvp.userId, name: "Attendee" };
-              const initials = (u.name || "A")
-                .split(" ")
-                .map((n) => n[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase();
+          <p className="text-sm sm:text-base leading-relaxed text-neutral-800 font-sans whitespace-pre-wrap">
+            {displayDescription}
+          </p>
 
-              const subtitle = [
-                u.jobTitle && u.currentCompany ? `${u.jobTitle} at ${u.currentCompany}` : u.jobTitle || u.currentCompany,
-                u.department,
-                u.batchYear ? `'${String(u.batchYear).slice(-2)}` : null,
-              ]
-                .filter(Boolean)
-                .join(" · ");
+          {/* RSVP Action Box */}
+          <div className="pt-4 flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              onClick={handleToggleRsvp}
+              disabled={isSubmitting || (!attending && isFull)}
+              className={`px-6 py-3 border-2 border-black text-xs font-bold uppercase shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 ${
+                attending
+                  ? "bg-black text-[#CCFF00] hover:bg-neutral-900"
+                  : isFull
+                  ? "bg-neutral-200 text-neutral-500 cursor-not-allowed shadow-none"
+                  : "bg-[#CCFF00] text-black hover:bg-black hover:text-[#CCFF00]"
+              }`}
+            >
+              <Ticket size={16} />
+              <span>
+                {isSubmitting
+                  ? "Updating Pass..."
+                  : attending
+                  ? "Cancel Reservation Pass"
+                  : isFull
+                  ? "Auditorium Full"
+                  : "Claim Admission Pass →"}
+              </span>
+            </button>
 
-              return (
-                <div
-                  key={rsvp.userId}
-                  role="listitem"
-                  className="flex items-center gap-3.5 rounded-lg border border-ink-900/10 bg-paper-100/50 p-3 transition hover:border-brass-500/40"
-                >
-                  {u.avatarUrl ? (
-                    <img
-                      src={u.avatarUrl}
-                      alt=""
-                      className="h-10 w-10 flex-shrink-0 rounded-full object-cover border border-ink-900/10"
-                    />
-                  ) : (
-                    <div
-                      className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brass-500/15 font-mono text-xs font-semibold text-brass-600"
-                      aria-hidden="true"
-                    >
+            {attending && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 bg-emerald-100 text-emerald-900 border border-emerald-800">
+                <Check size={14} /> ADMISSION GRANTED // PASS ISSUED
+              </span>
+            )}
+
+            {status && (
+              <p role="status" className="text-xs font-bold text-[#FF5500]">
+                {status}
+              </p>
+            )}
+          </div>
+        </section>
+
+        {/* Attendees Section */}
+        <section className="p-6 sm:p-8 bg-white space-y-4">
+          <div className="flex items-center justify-between border-b-2 border-black pb-3">
+            <div className="flex items-center gap-2">
+              <Users size={18} className="text-[#FF5500]" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-black">
+                CONFIRMED ATTENDEE ROSTER ({attendeeCount})
+              </h2>
+            </div>
+            <span className="text-[11px] text-neutral-500 font-bold uppercase">
+              LIVE NETWORK ROSTER
+            </span>
+          </div>
+
+          {rsvps.length === 0 ? (
+            <div className="p-8 text-center bg-[#F7F4EE] border-2 border-black text-xs space-y-2">
+              <p className="font-bold uppercase text-black">NO ATTENDEES ENROLLED YET</p>
+              <p className="text-neutral-600 font-sans">
+                Claim your pass above to be registered as the first confirmed participant on the guest list!
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {rsvps.map((rsvp) => {
+                const u: EventAttendee = rsvp.user || { id: rsvp.userId, name: "Attendee" };
+                const initials = (u.name || "A")
+                  .split(" ")
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase();
+
+                return (
+                  <div
+                    key={rsvp.userId}
+                    className="p-3 bg-[#F7F4EE] border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center gap-3"
+                  >
+                    <div className="w-9 h-9 bg-black text-[#CCFF00] border border-black flex items-center justify-center font-bold text-xs shrink-0">
                       {initials}
                     </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate text-sm font-medium text-ink-900">{u.name}</span>
-                      {getRoleBadge(u.role)}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-sans font-bold text-xs text-black truncate">{u.name}</p>
+                      <p className="text-[10px] text-neutral-600 truncate uppercase">
+                        {u.jobTitle ? `${u.jobTitle} • ` : ""}
+                        {u.currentCompany || u.department || "Member"}
+                      </p>
                     </div>
-                    {subtitle ? (
-                      <p className="truncate text-xs text-ink-900/60 mt-0.5">{subtitle}</p>
-                    ) : null}
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </Card>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </article>
     </div>
   );
 }

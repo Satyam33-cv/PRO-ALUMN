@@ -6,6 +6,8 @@ import { useAuth } from "@/lib/context/AuthContext";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
 import type { Job } from "@/lib/api/types";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Briefcase } from "lucide-react";
 
 interface EnrichedJobItem {
   id: string;
@@ -27,89 +29,6 @@ interface EnrichedJobItem {
   referralAvailable?: boolean;
 }
 
-const CANONICAL_JOBS: EnrichedJobItem[] = [
-  {
-    id: "job-01",
-    reqCode: "REQ // 8820-GOOG",
-    title: "Senior Infrastructure Engineer (Spanner Core)",
-    company: "Google Cloud",
-    location: "Sunnyvale, CA (Hybrid / US-Remote Eligible)",
-    type: "Full-time",
-    comp: "COMP: $340K - $420K TC",
-    similarity: 98.4,
-    domain: "SYSTEMS & DISTRIBUTED",
-    description:
-      "Direct ingestion into Cloud Spanner's Paxos consensus layer and distributed query execution fabric. Seeking systems programmers with demonstrated mastery in deterministic state machines and zero-copy RPC architectures.",
-    stack: ["Rust", "Distributed Consensus", "Kubernetes", "Spanner"],
-    slots: 4,
-    posterName: "Vikram Aditya",
-    posterCohort: "Cohort '19 // L5 SRE",
-    posterInitials: "VA",
-    remote: true,
-    referralAvailable: true,
-  },
-  {
-    id: "job-02",
-    reqCode: "REQ // 7041-SNOW",
-    title: "Principal Storage Architect (Columnar Engine)",
-    company: "Snowflake",
-    location: "San Mateo, CA (100% US / CAN Remote)",
-    type: "Full-time",
-    comp: "COMP: $410K - $520K TC",
-    similarity: 96.7,
-    domain: "SYSTEMS & DISTRIBUTED",
-    description:
-      "Lead the architectural evolution of Snowflake's vectorized metadata micro-partition format. Focus on AVX-512 / NEON hardware intrinsics, multi-tier distributed caching, and zero-stall write amplification dampening.",
-    stack: ["C++20", "SIMD Vectorization", "Query Planning"],
-    slots: 5,
-    posterName: "Sarah Jenkins",
-    posterCohort: "Cohort '16 // Principal IC",
-    posterInitials: "SJ",
-    remote: true,
-    referralAvailable: true,
-  },
-  {
-    id: "job-03",
-    reqCode: "REQ // 3319-STRP",
-    title: "Core Transaction Ledger Architect",
-    company: "Stripe",
-    location: "Seattle, WA (Hybrid / Remote Option)",
-    type: "Full-time",
-    comp: "COMP: $380K - $490K TC",
-    similarity: 94.8,
-    domain: "FINTECH & CRYPTO",
-    description:
-      "Scale Stripe's immutable double-entry money movement platform processing $1T+ in annual run-rate. Strong emphasis on deterministic multi-region consensus, idempotent webhook queues, and formal TLA+ specifications.",
-    stack: ["Distributed Transactions", "Java", "Kafka", "ACID"],
-    slots: 2,
-    posterName: "Siddharth Joshi",
-    posterCohort: "Cohort '17 // Staff IC",
-    posterInitials: "SJ",
-    remote: true,
-    referralAvailable: true,
-  },
-  {
-    id: "job-04",
-    reqCode: "REQ // 0914-NEURO",
-    title: "Founding AI Hardware Firmware Engineer",
-    company: "Neuromorphic Labs (YC W26)",
-    location: "San Francisco, CA (Onsite)",
-    type: "Full-time",
-    comp: "COMP: $190K - $240K + 1.25% EQUITY",
-    similarity: 94.2,
-    domain: "SILICON & FIRMWARE",
-    description:
-      "Building next-gen analog in-memory compute silicon for edge transformer evaluation. You will write bare-metal firmware, custom RISC-V extensions, and LLVM toolchains to execute quantized sparsity maps directly on wafer.",
-    stack: ["RISC-V", "Chisel", "Verilog", "C++"],
-    slots: 3,
-    posterName: "David Chen",
-    posterCohort: "Cohort '17 // Co-Founder",
-    posterInitials: "DC",
-    remote: false,
-    referralAvailable: true,
-  },
-];
-
 export function JobListContent() {
   const { user } = useAuth();
 
@@ -124,7 +43,7 @@ export function JobListContent() {
   // Referral Modal state
   const [selectedJob, setSelectedJob] = useState<EnrichedJobItem | null>(null);
   const [referralNote, setReferralNote] = useState("");
-  const [resumeUrl, setResumeUrl] = useState("https://github.com/vishwesh-ai");
+  const [resumeUrl, setResumeUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -169,11 +88,11 @@ export function JobListContent() {
           : "Verified Fellow";
 
         // Safely format company and reqCode
-        const safeCompany = (j.company && typeof j.company === "string") ? j.company : "ALUM";
-        const reqCode = `REQ // ${(1000 + idx * 111).toString(16).toUpperCase()}-${safeCompany.slice(0, 4).toUpperCase()}`;
+        const safeCompany = (j.company && typeof j.company === "string") ? j.company : "";
+        const reqCode = `REQ // ${(1000 + idx * 111).toString(16).toUpperCase()}-${(safeCompany.slice(0, 4) || "ROLE").toUpperCase()}`;
 
         // Safely normalize requirements / stack
-        let stack: string[] = ["Distributed Systems", "Cloud Infra"];
+        let stack: string[] = [];
         if (Array.isArray(j.requirements) && j.requirements.length > 0) {
           stack = j.requirements.filter((r: any) => typeof r === "string" && r.trim());
         } else if (typeof j.requirements === "string" && j.requirements.trim()) {
@@ -192,11 +111,11 @@ export function JobListContent() {
           company: safeCompany,
           location: j.location || (j.remote ? "Remote" : "Onsite"),
           type: safeType,
-          comp: j.salaryMin && j.salaryMax ? `COMP: ${j.currency || "INR"} ${j.salaryMin} - ${j.salaryMax}` : "COMP: Competitive Alumn Range",
+          comp: j.salaryMin && j.salaryMax ? `COMP: ${j.currency || "INR"} ${j.salaryMin} - ${j.salaryMax}` : (j.comp || j.salary ? String(j.comp || j.salary) : "Competitive"),
           similarity,
-          domain: safeType === "Internship" ? "INTERNSHIP & RESEARCH" : "SYSTEMS & DISTRIBUTED",
-          description: j.description || "Production engineering role verified through collegiate alumni hiring channels.",
-          stack: stack.length > 0 ? stack : ["Distributed Systems", "Cloud Infra"],
+          domain: j.domain || (safeType === "Internship" ? "INTERNSHIP & RESEARCH" : "SYSTEMS & DISTRIBUTED"),
+          description: j.description || "",
+          stack,
           slots: slotsCount,
           posterName,
           posterCohort,
@@ -206,7 +125,7 @@ export function JobListContent() {
         };
       });
     }
-    return CANONICAL_JOBS;
+    return [];
   }, [apiJobs]);
 
   // Filtered jobs
@@ -617,7 +536,14 @@ export function JobListContent() {
 
           {/* Requisition Cards List */}
           <div className="flex flex-col gap-6">
-            {filteredJobs.map((job) => {
+            {filteredJobs.length === 0 ? (
+              <EmptyState
+                icon={Briefcase}
+                title="No Requisitions Found"
+                body="No job requisitions match your search query or active filter selection."
+              />
+            ) : (
+              filteredJobs.map((job) => {
               const isHigh = job.similarity >= 95;
               return (
                 <article
@@ -742,7 +668,8 @@ export function JobListContent() {
                   </div>
                 </article>
               );
-            })}
+            })
+            )}
           </div>
         </div>
 
@@ -758,74 +685,14 @@ export function JobListContent() {
                 </span>
               </div>
               <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold">
-                2 ACTIVE
+                0 ACTIVE
               </span>
             </div>
 
             {/* In-flight Referrals List */}
             <div className="flex flex-col gap-3 mt-1">
-              {/* Item 1 */}
-              <div className="bg-[#fcf9f3] p-3 border-2 border-black shadow-[2px_2px_0px_#000000] flex flex-col gap-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold">
-                    DISPATCHED
-                  </span>
-                  <span className="text-[10px] text-neutral-500">SLOT: 1 of 2</span>
-                </div>
-                <div>
-                  <div className="font-bold text-sm text-black">
-                    Sr. Infrastructure Intern
-                  </div>
-                  <div className="text-[11px] text-neutral-600">
-                    Google Core • Host: Vikram Aditya
-                  </div>
-                </div>
-                {/* Progress bar */}
-                <div className="space-y-1 pt-1">
-                  <div className="flex justify-between text-[10px]">
-                    <span className="text-neutral-600">Status: Direct HR Conduit Injected</span>
-                    <span className="text-emerald-600 font-bold">STG 03/04</span>
-                  </div>
-                  <div className="w-full h-2 bg-neutral-200 border border-black overflow-hidden">
-                    <div className="bg-black h-full w-3/4"></div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-1 text-[10px] text-neutral-500">
-                  <span>ATS ID: REQ-8820-A1</span>
-                  <span className="text-[#FF5500] font-bold">ETA: 14h to Call</span>
-                </div>
-              </div>
-
-              {/* Item 2 */}
-              <div className="bg-[#fcf9f3] p-3 border-2 border-black shadow-[2px_2px_0px_#000000] flex flex-col gap-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="px-2 py-0.5 bg-[#D9E021] text-black border border-black text-[10px] font-bold">
-                    IN SCREENING
-                  </span>
-                  <span className="text-[10px] text-neutral-500">SLOT: 2 of 2</span>
-                </div>
-                <div>
-                  <div className="font-bold text-sm text-black">
-                    ML Research Associate
-                  </div>
-                  <div className="text-[11px] text-neutral-600">
-                    Meta FAIR • Host: Dr. Marcus Vance
-                  </div>
-                </div>
-                {/* Progress bar */}
-                <div className="space-y-1 pt-1">
-                  <div className="flex justify-between text-[10px]">
-                    <span className="text-neutral-600">Status: Alumni Packet Review</span>
-                    <span className="text-[#FF5500] font-bold">STG 02/04</span>
-                  </div>
-                  <div className="w-full h-2 bg-neutral-200 border border-black overflow-hidden">
-                    <div className="bg-black h-full w-1/2"></div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-1 text-[10px] text-neutral-500">
-                  <span>SLA Timer: 22h remaining</span>
-                  <span className="font-bold text-black">REVIEW IN-PROGRESS</span>
-                </div>
+              <div className="p-4 bg-[#fcf9f3] border-2 border-dashed border-neutral-300 text-center text-xs font-mono text-neutral-500">
+                No active referral dispatches in progress. Request a referral from an open requisition on the left.
               </div>
             </div>
 

@@ -107,11 +107,7 @@ export default function RegisterPage() {
     try {
       const cohortYear = parseInt(values.cohort.replace(/\D/g, ""), 10);
 
-      // batchYear/department are already accepted by POST /auth/register on
-      // the backend but aren't in the RegisterInput type yet — extending
-      // inline here. Worth adding them to RegisterInput properly so this
-      // cast can go away.
-      const payload: RegisterInput & { batchYear?: number; department?: string } = {
+      const payload: RegisterInput = {
         name: values.fullName.trim(),
         email: values.email.trim(),
         password: values.password,
@@ -119,6 +115,7 @@ export default function RegisterPage() {
         currentCompany: undefined,
         batchYear: Number.isFinite(cohortYear) ? cohortYear : undefined,
         department: values.discipline.trim() || undefined,
+        referredByCode: values.referralCode.trim() || undefined,
       };
 
       const session = await apiClient.auth.register(payload);
@@ -359,7 +356,7 @@ export default function RegisterPage() {
                       className="w-full bg-transparent border-2 border-black p-3 font-mono text-xs font-semibold uppercase tracking-wider focus:ring-0"
                     />
                     <p className="font-mono text-[10px] text-neutral-500">
-                      NOT YET LINKED TO AN ACCOUNT — WIRING THIS UP IS A BACKEND FOLLOW-UP.
+                      VALID CODES CREDIT YOUR SPONSOR ONCE YOUR PROFILE IS APPROVED. UNKNOWN CODES ARE IGNORED.
                     </p>
                   </div>
 
@@ -401,13 +398,28 @@ export default function RegisterPage() {
                     </svg>
                     <span>SIGN UP VIA GOOGLE</span>
                   </button>
+
+                  <p className="font-mono text-[10px] text-neutral-600 text-center uppercase mt-2">
+                    By registering, you agree to our{" "}
+                    <Link href="/terms" className="font-bold underline text-black hover:text-[#FF5500]">
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="/privacy" className="font-bold underline text-black hover:text-[#FF5500]">
+                      Privacy Policy
+                    </Link>.
+                  </p>
                 </div>
               )}
             </form>
           </div>
 
-          <footer className="pt-8 mt-6 border-t border-black/20 font-mono text-[10px] text-neutral-600 uppercase">
+          <footer className="pt-6 mt-6 border-t border-black/20 font-mono text-[10px] text-neutral-600 uppercase flex flex-wrap items-center justify-between gap-2">
             <span>YOUR PASSWORD IS HASHED — WE NEVER STORE IT IN PLAIN TEXT.</span>
+            <div className="flex gap-3">
+              <Link href="/privacy" className="hover:underline">Privacy</Link>
+              <Link href="/terms" className="hover:underline">Terms</Link>
+            </div>
           </footer>
         </section>
 

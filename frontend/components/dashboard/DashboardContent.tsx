@@ -481,7 +481,7 @@ export function DashboardContent() {
                       ML Research Associate
                     </h3>
                     <p className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
-                      Meta FAIR • Sponsor: Elena Vance, Ph.D.
+                      Meta FAIR • Sponsor: Senior Alumni Sponsor
                     </p>
                   </div>
                   <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] font-bold">

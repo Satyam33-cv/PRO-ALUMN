@@ -35,20 +35,107 @@ jest.mock("@/lib/auth", () => ({
   getToken: () => "mock-jwt-token",
 }));
 
+const mockUseApi = jest.fn();
+jest.mock("@/lib/hooks/useApi", () => ({
+  useApi: (...args: unknown[]) => mockUseApi(...args),
+}));
+
 // Mock apiClient
+import { apiClient } from "@/lib/api/client";
+
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     chat: {
-      list: jest.fn().mockResolvedValue({ threads: [] }),
+      list: jest.fn(),
       sendMessage: jest.fn().mockResolvedValue({ id: "server-msg-1", text: "ok" }),
       getThread: jest.fn().mockResolvedValue({ messages: [] }),
     },
   },
 }));
 
+const mockThreads = [
+  {
+    id: "thread-1",
+    name: "Sarah Jenkins",
+    title: "Principal Architect @ Snowflake",
+    cohort: "COHORT '16",
+    pgp: "PGP: 0x9AF4..C21",
+    category: "1:1",
+    statusBadge: "ACTIVE P2P",
+    statusColor: "bg-[#ffdbcf] text-[#a63500]",
+    lastMessage: "Benchmarking SIMD pass complete on Snowflake cluster.",
+    subTag: "FL-9021",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    isEscrowActive: true,
+    escrowAmount: 30,
+  },
+  {
+    id: "thread-2",
+    name: "David Chen",
+    title: "Founder @ Neuromorphic Labs",
+    cohort: "COHORT '17",
+    pgp: "PGP: 0x8BC1..A19",
+    category: "FOUNDER",
+    statusBadge: "ACTIVE P2P",
+    statusColor: "bg-[#ffdbcf] text-[#a63500]",
+    lastMessage: "Reviewing YC W26 cohort silicon schematics for Neuromorphic processing.",
+    subTag: "FL-8812",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    isEscrowActive: false,
+    escrowAmount: 0,
+  },
+  {
+    id: "thread-3",
+    name: "Ananya Deshmukh",
+    title: "Quantum Compiler Fellow @ Q-Core",
+    cohort: "COHORT '19",
+    pgp: "PGP: 0x7CD3..B04",
+    category: "1:1",
+    statusBadge: "STANDBY",
+    statusColor: "bg-[#e5e2dc] text-[#635F57]",
+    lastMessage: "Awaiting pulse calibration benchmarks.",
+    subTag: "FL-7703",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+    isEscrowActive: false,
+    escrowAmount: 0,
+  },
+];
+
+const mockThread1Messages = [
+  {
+    id: "msg-1",
+    senderId: "sarah",
+    senderName: "Sarah Jenkins",
+    senderCohort: "COHORT '16",
+    time: "10:38 AM",
+    text: "Reviewing the vectorized batch dispatch for query predicate evaluations.",
+    sent: false,
+    signature: "SIG_0x42FA",
+    codeSnippet: {
+      filename: "SNOWFLAKE_COLUMN_STORE // OPT_V4.RS",
+      tag: "ASM//SIMD",
+      code: "pub struct VectorizedRegisterBatch;\n#[target_feature(enable = \"avx512f\")]\nunsafe fn eval_batch() { ... }",
+    },
+    attachment: {
+      name: "diff_bench_avx512_run09.json",
+      metric: "+14.8% MFLOPS",
+    },
+  },
+];
+
 describe("ChatContent (Unified Messaging & Advisory Conduit)", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseApi.mockReturnValue({
+      data: { threads: mockThreads },
+      error: undefined,
+      isLoading: false,
+      isValidating: false,
+      refresh: jest.fn(),
+      mutate: jest.fn(),
+    });
+    (apiClient.chat.getThread as jest.Mock).mockResolvedValue({ messages: mockThread1Messages });
+    (apiClient.chat.list as jest.Mock).mockResolvedValue({ threads: mockThreads });
   });
 
   it("renders the telemetry sub-header strip and node indicators", () => {
@@ -95,7 +182,7 @@ describe("ChatContent (Unified Messaging & Advisory Conduit)", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders smart contract enclave notice, code artifacts, and diff benchmarks", () => {
+  it("renders smart contract enclave notice, code artifacts, and diff benchmarks", async () => {
     render(<ChatContent />);
 
     // System enclave notice
@@ -104,7 +191,7 @@ describe("ChatContent (Unified Messaging & Advisory Conduit)", () => {
 
     // Code snippet artifact
     expect(
-      screen.getByText("SNOWFLAKE_COLUMN_STORE // OPT_V4.RS")
+      await screen.findByText("SNOWFLAKE_COLUMN_STORE // OPT_V4.RS")
     ).toBeInTheDocument();
     expect(screen.getByText("ASM//SIMD")).toBeInTheDocument();
     expect(
@@ -151,6 +238,36 @@ describe("ChatContent (Unified Messaging & Advisory Conduit)", () => {
     });
   });
 
+  it("surfaces error banner and marks message as failed when transmission fails", async () => {
+    (apiClient.chat.sendMessage as jest.Mock).mockRejectedValueOnce(
+      new Error("Transmission conduit timeout")
+    );
+
+    render(<ChatContent />);
+
+    // Wait for thread to load
+    expect(await screen.findByText("SNOWFLAKE_COLUMN_STORE // OPT_V4.RS")).toBeInTheDocument();
+
+    const textarea = screen.getByPlaceholderText(
+      /Draft message or attach cryptographic code artifact.../i
+    );
+    const sendBtn = screen.getByRole("button", { name: /TRANSMIT/i });
+
+    fireEvent.change(textarea, { target: { value: "Payload intended to fail" } });
+    fireEvent.click(sendBtn);
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(screen.getByText("Transmission conduit timeout")).toBeInTheDocument();
+      expect(screen.getByText("TRANSMISSION FAILED")).toBeInTheDocument();
+    });
+
+    // Dismiss error banner
+    const dismissBtn = screen.getByRole("button", { name: /DISMISS/i });
+    fireEvent.click(dismissBtn);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
   it("executes smart contract escrow disbursement with confirmation", async () => {
     render(<ChatContent />);
 
@@ -181,5 +298,22 @@ describe("ChatContent (Unified Messaging & Advisory Conduit)", () => {
     expect(screen.queryByText(/giving/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/donate/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/philanthropy/i)).not.toBeInTheDocument();
+  });
+
+  it("renders EmptyState when no active threads exist", () => {
+    mockUseApi.mockReturnValue({
+      data: { threads: [] },
+      error: undefined,
+      isLoading: false,
+      isValidating: false,
+      refresh: jest.fn(),
+      mutate: jest.fn(),
+    });
+    (apiClient.chat.getThread as jest.Mock).mockResolvedValue({ messages: [] });
+    render(<ChatContent />);
+
+    expect(screen.getByText("No Active Conversations")).toBeInTheDocument();
+    expect(screen.getByText("No conversation channels indexed.")).toBeInTheDocument();
+    expect(screen.getByText("Browse Directory →")).toBeInTheDocument();
   });
 });

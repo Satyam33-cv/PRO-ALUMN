@@ -32,10 +32,17 @@ jest.mock("@/lib/context/AuthContext", () => ({
   }),
 }));
 
+const mockUseApi = jest.fn();
+jest.mock("@/lib/hooks/useApi", () => ({
+  useApi: (...args: unknown[]) => mockUseApi(...args),
+}));
+
+import { apiClient } from "@/lib/api/client";
+
 jest.mock("@/lib/api/client", () => ({
   apiClient: {
     stories: {
-      list: jest.fn().mockResolvedValue([]),
+      list: jest.fn(),
       create: jest.fn().mockResolvedValue({ id: "story-new" }),
       vote: jest.fn().mockResolvedValue({ hasVoted: true }),
     },
@@ -45,7 +52,84 @@ jest.mock("@/lib/api/client", () => ({
   },
 }));
 
+const mockStories = [
+  {
+    id: "story-1",
+    index: "01",
+    category: "VENTURE",
+    categoryLabel: "VENTURE & STARTUPS",
+    cohort: "COHORT '16",
+    location: "SF / PALO ALTO",
+    topologyTag: "SF",
+    orgName: "KINETIX ROBOTICS",
+    orgBadge: "ACTUATOR TOPOLOGY V4.2",
+    authorName: "Kinetix Robotics",
+    headline: "Kinetix Robotics Raises $10M Seed For Distributed Actuator Firmwares",
+    role: "Founding Team",
+    story: "Industrial robotics infrastructure powered by distributed hardware telemetry.",
+    upvotes: 420,
+    commentsCount: 18,
+    metrics: {
+      label1: "ATTESTATION",
+      value1: "SERIES A",
+      label2: "CAPITAL",
+      value2: "$10.0M",
+      label3: "LEAD",
+      value3: "SEQUOIA",
+      highlightCol: "#CCFF00",
+    },
+  },
+  {
+    id: "story-2",
+    index: "02",
+    category: "CAREER",
+    categoryLabel: "CAREER ACCELERATION",
+    cohort: "COHORT '16",
+    location: "NYC / MANHATTAN",
+    topologyTag: "NYC",
+    orgName: "SNOWFLAKE COMPUTE",
+    orgBadge: "SNOWFLAKE",
+    authorName: "Sarah Jenkins",
+    headline: "Sarah Jenkins ('16) Elevated To Principal Architect At Snowflake Compute",
+    role: "Principal Architect",
+    company: "Snowflake",
+    story: "Promoted to Principal Architect leading the distributed query engine team.",
+    upvotes: 312,
+    commentsCount: 14,
+  },
+  {
+    id: "story-3",
+    index: "03",
+    category: "VENTURE",
+    categoryLabel: "VENTURE & STARTUPS",
+    cohort: "COHORT '17",
+    location: "SF / BAY AREA",
+    topologyTag: "SF",
+    orgName: "NEUROMORPHIC LABS",
+    orgBadge: "YC W26",
+    authorName: "David Chen",
+    headline: "David Chen ('17) Co-Founds Neuromorphic Labs (YC W26)",
+    role: "Co-Founder & CEO",
+    company: "Neuromorphic Labs",
+    story: "Building neuromorphic chips for edge intelligence.",
+    upvotes: 189,
+    commentsCount: 8,
+  },
+];
+
 describe("StoriesContent (Stitch Screen 10 Success Spotlight Wall)", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseApi.mockReturnValue({
+      data: mockStories,
+      error: undefined,
+      isLoading: false,
+      isValidating: false,
+      refresh: jest.fn(),
+      mutate: jest.fn(),
+    });
+  });
+
   it("renders the Member Console protocol masthead, omnibar, and telemetry counters", () => {
     render(<StoriesContent />);
 
@@ -67,8 +151,8 @@ describe("StoriesContent (Stitch Screen 10 Success Spotlight Wall)", () => {
     render(<StoriesContent />);
 
     expect(
-      screen.getByText(/Kinetix Robotics Raises \$10M Seed For Distributed Actuator Firmwares/i)
-    ).toBeInTheDocument();
+      screen.getAllByText(/Kinetix Robotics Raises \$10M Seed For Distributed Actuator Firmwares/i).length
+    ).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/SCHEMATIC \/\/ ACTUATOR TOPOLOGY V4.2/i)).toBeInTheDocument();
 
     const endorseBtn = screen.getByRole("button", { name: /ENDORSE DISPATCH/i });
@@ -92,7 +176,7 @@ describe("StoriesContent (Stitch Screen 10 Success Spotlight Wall)", () => {
   it("filters stories using category pills", () => {
     render(<StoriesContent />);
 
-    const ventureFilter = screen.getByText(/VENTURE & STARTUPS/i);
+    const ventureFilter = screen.getByRole("button", { name: /VENTURE & STARTUPS/i });
     fireEvent.click(ventureFilter);
 
     // David Chen should remain visible
@@ -144,5 +228,21 @@ describe("StoriesContent (Stitch Screen 10 Success Spotlight Wall)", () => {
     fireEvent.click(myDispatchesBtn);
     // Button toggles active styling
     expect(myDispatchesBtn).toHaveClass("bg-black");
+  });
+
+  it("renders EmptyState when API returns no stories", () => {
+    mockUseApi.mockReturnValue({
+      data: [],
+      error: undefined,
+      isLoading: false,
+      isValidating: false,
+      refresh: jest.fn(),
+      mutate: jest.fn(),
+    });
+    render(<StoriesContent />);
+
+    expect(screen.getByText(/No dispatches published yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/Be the first verified fellow to broadcast a peer milestone/i)).toBeInTheDocument();
+    expect(screen.queryByTestId("flagship-pinned-story")).not.toBeInTheDocument();
   });
 });

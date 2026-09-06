@@ -23,10 +23,8 @@ import {
 import { apiClient } from "@/lib/api/client";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { EventItem } from "@/lib/api/types";
+import { EmptyState } from "@/components/ui/EmptyState";
 
-// ============================================================================
-// CANONICAL SEED ASSEMBLAGES (Matching Stitch Export)
-// ============================================================================
 interface EnrichedAssemblage {
   id: string;
   ticketCode: string;
@@ -48,157 +46,13 @@ interface EnrichedAssemblage {
   isRegistered?: boolean;
 }
 
-const CANONICAL_ASSEMBLAGES: EnrichedAssemblage[] = [
-  {
-    id: "event-gala-2026",
-    ticketCode: "HG-9924",
-    title: "Homecoming & Tech Gala 2026: Autonomous Systems & Next-Gen Compute",
-    category: "reunion",
-    categoryLabel: "FLAGSHIP REUNIONS",
-    format: "HYBRID",
-    dateFormatted: "OCTOBER 15, 2026",
-    timeFormatted: "18:00 EST • MAIN AUDITORIUM",
-    location: "Campus Pavilion, Robotics Center Hall A",
-    hallName: "ROBOTICS HALL A",
-    description:
-      "The marquee gathering of engineering leadership, robotics researchers, and founding alumni. Highlighting breakthrough paradigms in neuromorphic processors, verified distributed databases, and high-concurrency micro-architectures.",
-    totalCapacity: 300,
-    reservedCount: 184,
-    hostName: "Dr. Arvind Kulkarni",
-    hostRole: "Dean of Faculty",
-    hostInitials: "AK",
-    keynotes: [
-      { name: "Dr. Elena Vance", role: "Fellow '22 / MIT Lab", initials: "EV", bgClass: "bg-black text-white" },
-      { name: "Vikram Aditya", role: "Google Cloud SRE", initials: "VA", bgClass: "bg-[#2E5BFF] text-white" },
-      { name: "Sarah Jenkins", role: "Snowflake Arch", initials: "SJ", bgClass: "bg-[#FF5500] text-white" },
-    ],
-    isRegistered: true,
-  },
-  {
-    id: "event-sf-mixer",
-    ticketCode: "SF-1108",
-    title: "SF Tech Alumni Mixer & Cocktails",
-    category: "mixer",
-    categoryLabel: "REGIONAL MIXERS",
-    format: "PHYSICAL",
-    dateFormatted: "NOVEMBER 12, 2026",
-    timeFormatted: "19:00 PST • SOMA BAYFRONT",
-    location: "Mission Bay Bayfront Pavilion, San Francisco, CA",
-    hallName: "BAYFRONT TERRACE",
-    description:
-      "Informal networking salon for San Francisco Bay Area alumni working in foundational AI, semiconductor fabrication, and cloud infrastructure.",
-    totalCapacity: 150,
-    reservedCount: 132,
-    hostName: "Marcus Brody",
-    hostRole: "CTO, Kinetix Robotics",
-    hostInitials: "MB",
-    isRegistered: true,
-  },
-  {
-    id: "event-dist-fireside",
-    ticketCode: "VIR-402",
-    title: "Distributed Systems Architecture Fireside",
-    category: "technical",
-    categoryLabel: "TECHNICAL SALONS & WORKSHOPS",
-    format: "VIRTUAL",
-    dateFormatted: "NOVEMBER 22, 2026",
-    timeFormatted: "14:00 EST • ENCRYPTED STREAM",
-    location: "Encrypted Google Meet Session (Mutual TLS)",
-    hallName: "VIRTUAL ENCLAVE #42",
-    description:
-      "Technical deep-dive on Paxos vs Raft consensus invariants under simulated network partition attacks, with live Jepsen test suite inspection.",
-    totalCapacity: 500,
-    reservedCount: 468,
-    hostName: "Dr. Rajesh Verma",
-    hostRole: "MIT Distributed Systems Lab",
-    hostInitials: "RV",
-    isRegistered: true,
-  },
-  {
-    id: "event-zurich-consensus",
-    ticketCode: "ZH-8812",
-    title: "Global Distributed Consensus Summit",
-    category: "technical",
-    categoryLabel: "TECHNICAL SALONS & WORKSHOPS",
-    format: "HYBRID",
-    dateFormatted: "DECEMBER 04, 2026",
-    timeFormatted: "09:30 CET • ETH ZURICH AUDITORIUM",
-    location: "ETH Zurich Main Building & Encrypted Relay",
-    hallName: "AMPHITHEATER 03",
-    description:
-      "Technical summit uniting research fellows from ETH Zurich, Cambridge, and Stanford to formalize post-quantum cryptographic primitives in Raft clusters.",
-    totalCapacity: 220,
-    reservedCount: 178,
-    hostName: "Elena Rostova",
-    hostRole: "Senior Cryptographer, Stanford",
-    hostInitials: "ER",
-  },
-  {
-    id: "event-nyc-quant",
-    ticketCode: "NY-3019",
-    title: "NYC Quantitative Engineering Breakfast",
-    category: "mixer",
-    categoryLabel: "REGIONAL MIXERS",
-    format: "PHYSICAL",
-    dateFormatted: "DECEMBER 11, 2026",
-    timeFormatted: "08:00 EST • MIDTOWN EXECUTIVE CLUB",
-    location: "Midtown Executive Club, New York, NY",
-    hallName: "PENTHOUSE SALON B",
-    description:
-      "Low-latency algorithmic trading infrastructure, kernel bypass networking (Solarflare OpenOnload), and deterministic execution pipelines.",
-    totalCapacity: 80,
-    reservedCount: 71,
-    hostName: "Prateek Shah",
-    hostRole: "Staff Systems Engineer, Stripe",
-    hostInitials: "PS",
-  },
-  {
-    id: "event-founders-roundtable",
-    ticketCode: "FR-5541",
-    title: "Founders & Venture Roundtable: Pre-Seed to Series A",
-    category: "roundtable",
-    categoryLabel: "RESEARCH & ROUNDTABLES",
-    format: "PHYSICAL",
-    dateFormatted: "JANUARY 18, 2027",
-    timeFormatted: "17:30 PST • FOUNDERS COVE",
-    location: "Palo Alto Innovation Commons, CA",
-    hallName: "COUNCIL CHAMBER",
-    description:
-      "Closed-door briefing for alumni founders raising institutional capital with direct feedback from tier-one venture partners and fellow syndicate leads.",
-    totalCapacity: 60,
-    reservedCount: 54,
-    hostName: "David Chen",
-    hostRole: "Founder, Neuromorphic Labs (YC W26)",
-    hostInitials: "DC",
-  },
-  {
-    id: "event-robotics-hack",
-    ticketCode: "BOS-902",
-    title: "Robotics & Embedded Firmware 48H Hackathon",
-    category: "technical",
-    categoryLabel: "TECHNICAL SALONS & WORKSHOPS",
-    format: "HYBRID",
-    dateFormatted: "FEBRUARY 06, 2027",
-    timeFormatted: "10:00 EST • BOSTON HARDWARE LAB",
-    location: "Seaport Innovation Enclave, Boston, MA",
-    hallName: "HARDWARE BAY 01",
-    description:
-      "48-hour hands-on sprint testing real-time ROS2 microcontrollers, CAN-BUS hardware controllers, and embedded Rust state machines.",
-    totalCapacity: 120,
-    reservedCount: 96,
-    hostName: "Tara Vance",
-    hostRole: "Robotics Lead, Kinetix",
-    hostInitials: "TV",
-  },
-];
-
 export function EventListContent() {
   const router = useRouter();
   const { user } = useAuth();
   const [, startTransition] = useTransition();
 
   // State
-  const [assemblages, setAssemblages] = useState<EnrichedAssemblage[]>(CANONICAL_ASSEMBLAGES);
+  const [assemblages, setAssemblages] = useState<EnrichedAssemblage[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [activeFormat, setActiveFormat] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -244,41 +98,41 @@ export function EventListContent() {
     apiClient.events
       .list()
       .then((apiEvents: EventItem[]) => {
-        if (Array.isArray(apiEvents) && apiEvents.length > 0) {
-          setAssemblages((prev) => {
-            const existingIds = new Set(prev.map((e) => e.id));
-            const newMapped: EnrichedAssemblage[] = apiEvents
-              .filter((e) => !existingIds.has(e.id))
-              .map((e, idx) => ({
-                id: e.id,
-                ticketCode: `EV-${1000 + idx}`,
-                title: e.title,
-                category: (e.category as any) || "technical",
-                categoryLabel:
-                  e.category === "reunion"
-                    ? "FLAGSHIP REUNIONS"
-                    : e.category === "career"
-                    ? "REGIONAL MIXERS"
-                    : "TECHNICAL SALONS & WORKSHOPS",
-                format: e.mode === "VIRTUAL" ? "VIRTUAL" : e.mode === "HYBRID" ? "HYBRID" : "PHYSICAL",
-                dateFormatted: e.date || e.startsAt || "UPCOMING 2026",
-                timeFormatted: e.startsAt ? `${new Date(e.startsAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} EST` : "18:00 EST",
-                location: e.location || e.place || "Campus Pavilion",
-                hallName: "CONFERENCE HALL",
-                description: e.description || e.detail || "Academic conference and alumni networking session.",
-                totalCapacity: e.capacity || e.maxCapacity || 100,
-                reservedCount: e.attending || 12,
-                hostName: "Verified Fellow",
-                hostRole: "Alumni Association",
-                hostInitials: "AL",
-                isRegistered: Boolean(e.hasRsvp || e.isRegistered),
-              }));
-            return [...prev, ...newMapped];
-          });
+        if (Array.isArray(apiEvents)) {
+          const mapped: EnrichedAssemblage[] = apiEvents.map((e, idx) => ({
+            id: e.id,
+            ticketCode: (e as any).ticketCode || `EV-${1000 + idx}`,
+            title: e.title,
+            category: (e.category as any) || "technical",
+            categoryLabel:
+              (e.category as string) === "reunion"
+                ? "FLAGSHIP REUNIONS"
+                : (e.category as string) === "career" || (e.category as string) === "mixer"
+                ? "REGIONAL MIXERS"
+                : (e.category as string) === "roundtable"
+                ? "RESEARCH & ROUNDTABLES"
+                : "TECHNICAL SALONS & WORKSHOPS",
+            format: e.mode === "VIRTUAL" ? "VIRTUAL" : e.mode === "HYBRID" ? "HYBRID" : "PHYSICAL",
+            dateFormatted: e.date || e.startsAt || "UPCOMING",
+            timeFormatted: e.startsAt
+              ? `${new Date(e.startsAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} EST`
+              : "18:00 EST",
+            location: e.location || (e as any).place || "Campus Pavilion",
+            hallName: (e as any).hallName || "CONFERENCE HALL",
+            description: e.description || (e as any).detail || "",
+            totalCapacity: e.capacity || (e as any).maxCapacity || 100,
+            reservedCount: e.attending || 0,
+            hostName: (e as any).hostName || "Verified Fellow",
+            hostRole: (e as any).hostRole || "Alumni Association",
+            hostInitials: (e as any).hostInitials || "AL",
+            keynotes: (e as any).keynotes,
+            isRegistered: Boolean((e as any).hasRsvp || (e as any).isRegistered),
+          }));
+          setAssemblages(mapped);
         }
       })
       .catch(() => {
-        // Graceful fallback to canonical assemblages
+        setAssemblages([]);
       });
   }, []);
 
@@ -384,14 +238,13 @@ export function EventListContent() {
     });
   };
 
-  const flagshipGala = assemblages.find((e) => e.id === "event-gala-2026") || assemblages[0];
-  const flagshipCapacityPct = Math.round(
-    (flagshipGala.reservedCount / flagshipGala.totalCapacity) * 100
-  );
-  const flagshipSeatsRemaining = Math.max(
-    0,
-    flagshipGala.totalCapacity - flagshipGala.reservedCount
-  );
+  const flagshipGala = assemblages.find((e) => e.id === "event-gala-2026") || assemblages[0] || null;
+  const flagshipCapacityPct = flagshipGala
+    ? Math.round((flagshipGala.reservedCount / (flagshipGala.totalCapacity || 1)) * 100)
+    : 0;
+  const flagshipSeatsRemaining = flagshipGala
+    ? Math.max(0, flagshipGala.totalCapacity - flagshipGala.reservedCount)
+    : 0;
 
   return (
     <div className="flex flex-col w-full font-sans selection:bg-[#CCFF00] selection:text-black space-y-10">
@@ -482,7 +335,7 @@ export function EventListContent() {
               </span>
             </div>
             <div className="my-2">
-              <span className="text-3xl sm:text-4xl font-black text-black font-sans leading-none">12</span>
+              <span className="text-3xl sm:text-4xl font-black text-black font-sans leading-none">{assemblages.length}</span>
               <span className="text-xs font-bold text-neutral-600 block mt-1">Upcoming Global</span>
             </div>
             <div className="w-full bg-[#F7F4EE] border border-black h-2 overflow-hidden">
@@ -546,6 +399,7 @@ export function EventListContent() {
       </header>
 
       {/* 3. HERO FLAGSHIP EVENT SECTION */}
+      {flagshipGala && (
       <section className="border-4 border-black bg-white shadow-[6px_6px_0px_#000000] relative">
         <div className="bg-black text-white px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
           <div className="flex items-center gap-2">
@@ -729,6 +583,7 @@ export function EventListContent() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 4. DRAWER 02: YOUR REGISTERED PASSES & ENCLAVE ADMISSIONS */}
       <section id="drawer-registered-passes" className="flex flex-col gap-4">
@@ -802,42 +657,31 @@ export function EventListContent() {
                     </div>
 
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                      {pass.id === "event-sf-mixer" ? (
-                        <button
-                          onClick={() => handleCancelPass(pass.id)}
-                          className="px-2 py-1 bg-red-100 text-red-700 hover:bg-red-200 border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] cursor-pointer"
-                          type="button"
-                        >
-                          1-Click Cancel &amp; Release
-                        </button>
-                      ) : pass.id === "event-dist-fireside" ? (
+                      {pass.format === "VIRTUAL" ? (
                         <a
                           href="https://meet.google.com"
                           target="_blank"
                           rel="noreferrer"
                           className="px-2 py-1 bg-black text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] flex items-center gap-1"
                         >
-                          <span>Join Rehearsal</span>
+                          <span>Join Stream</span>
                           <ExternalLink size={10} />
                         </a>
                       ) : (
                         <>
+                          <button
+                            onClick={() => handleCancelPass(pass.id)}
+                            className="px-2 py-1 bg-red-100 text-red-700 hover:bg-red-200 border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] cursor-pointer"
+                            type="button"
+                          >
+                            Cancel Pass
+                          </button>
                           <button
                             onClick={() => setSelectedPassForQr(pass)}
                             className="px-2 py-1 bg-[#F7F4EE] hover:bg-neutral-200 border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] cursor-pointer"
                             type="button"
                           >
                             Pass PDF
-                          </button>
-                          <button
-                            onClick={() => {
-                              setToastMessage(`✓ Pass #${pass.ticketCode} synchronized with cryptographic enclave.`);
-                              setTimeout(() => setToastMessage(null), 2500);
-                            }}
-                            className="px-2 py-1 bg-white hover:bg-neutral-100 border border-black text-[#2E5BFF] font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] cursor-pointer"
-                            type="button"
-                          >
-                            Re-Sync
                           </button>
                         </>
                       )}
@@ -929,22 +773,25 @@ export function EventListContent() {
 
         {/* 6. DYNAMIC 2-COLUMN EVENT FEED GRID */}
         {filteredAssemblages.length === 0 ? (
-          <div className="p-12 bg-white border-2 border-black text-center font-mono text-xs space-y-2">
-            <p className="font-bold text-black uppercase text-sm">NO ASSEMBLAGES MATCH QUERY PARAMETERS</p>
-            <p className="text-neutral-600">Try switching your category filter or resetting your search term.</p>
-            <button
-              onClick={() => {
-                setActiveCategory("ALL");
-                setActiveFormat("ALL");
-                setSearchQuery("");
-              }}
-              className="mt-2 px-4 py-2 bg-black text-[#CCFF00] border border-black font-bold uppercase cursor-pointer"
-            >
-              Reset Filters
-            </button>
-          </div>
+          <EmptyState
+            icon={Calendar}
+            title="NO ASSEMBLAGES MATCH QUERY PARAMETERS"
+            body="Try switching your category filter or resetting your search term."
+            action={
+              <button
+                onClick={() => {
+                  setActiveCategory("ALL");
+                  setActiveFormat("ALL");
+                  setSearchQuery("");
+                }}
+                className="mt-2 px-4 py-2 bg-black text-[#CCFF00] border border-black font-bold uppercase cursor-pointer"
+              >
+                Reset Filters
+              </button>
+            }
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div data-testid="assemblage-grid" className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredAssemblages.map((item) => {
               const capacityPct = Math.round((item.reservedCount / item.totalCapacity) * 100);
               const seatsLeft = Math.max(0, item.totalCapacity - item.reservedCount);
@@ -1284,7 +1131,7 @@ export function EventListContent() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-500 font-bold">CALENDAR TARGET:</span>
-                  <span className="font-bold text-black">{user?.email || "alumnus@alumni.edu"}</span>
+                  <span className="font-bold text-black">{user?.email || "Primary Account"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-500 font-bold">SYNC STATUS:</span>

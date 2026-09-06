@@ -108,4 +108,20 @@ describe("JobListContent", () => {
       expect(screen.getByText("Research Analyst")).toBeInTheDocument();
     });
   });
+
+  it("renders EmptyState when no jobs are returned", () => {
+    mockUseApi.mockReturnValue({
+      data: [],
+      error: undefined,
+      isLoading: false,
+      loading: false,
+      isValidating: false,
+      refresh: jest.fn(),
+      reload: jest.fn(),
+      refetch: jest.fn(),
+      mutate: jest.fn(),
+    });
+    render(<JobListContent />);
+    expect(screen.getByText("No Requisitions Found")).toBeInTheDocument();
+  });
 });

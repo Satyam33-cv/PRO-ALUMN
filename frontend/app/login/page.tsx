@@ -230,9 +230,12 @@ export default function LoginPage() {
             </div>
 
             {/* Left Bottom Legal Bar */}
-            <div className="pt-6 mt-6 border-t-[1.5px] border-[#D5CEBF]/40 dark:border-neutral-800 flex flex-wrap items-center justify-between text-neutral-500 font-mono text-[11px]">
-              <span>STRICT CONFIDENTIALITY: ZERO ACCESS TELEMETRY EXPORT</span>
-              <span>RFC-6749 ENFORCED</span>
+            <div className="pt-6 mt-6 border-t-[1.5px] border-[#D5CEBF]/40 dark:border-neutral-800 flex flex-wrap items-center justify-between text-neutral-500 font-mono text-[11px] gap-2">
+              <span>ZERO ACCESS TELEMETRY EXPORT</span>
+              <div className="flex gap-3">
+                <Link href="/privacy" className="hover:underline hover:text-[#FF5500]">Privacy Policy</Link>
+                <Link href="/terms" className="hover:underline hover:text-[#FF5500]">Terms of Service</Link>
+              </div>
             </div>
           </div>
 

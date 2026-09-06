@@ -8,6 +8,8 @@
     "start": "node src/server.js",
     "start:migrate": "prisma migrate deploy --schema ./prisma/schema.prisma && node src/server.js",
     "seed": "node src/seed.js",
+    "seed:clean": "node src/scripts/cleanup-seed-accounts.js --delete",
+    "seed:rotate": "node src/scripts/cleanup-seed-accounts.js --rotate",
     "build": "prisma generate --schema ./prisma/schema.prisma && prisma db push --schema ./prisma/schema.prisma",
     "postinstall": "prisma generate --schema ./prisma/schema.prisma",
     "prisma:generate": "prisma generate --schema ./prisma/schema.prisma",

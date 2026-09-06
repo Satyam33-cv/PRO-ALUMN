@@ -123,6 +123,9 @@ export type RegisterInput = LoginInput & {
   name: string;
   role?: "STUDENT" | "ALUMNI" | "FACULTY";
   currentCompany?: string;
+  batchYear?: number;
+  department?: string;
+  referredByCode?: string;
 };
 
 export type ReferralStatus = "pending" | "accepted" | "rejected" | "referred" | "hired";

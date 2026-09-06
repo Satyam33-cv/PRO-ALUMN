@@ -54,17 +54,123 @@ jest.mock("@/lib/api/client", () => ({
 
 import { MentorshipContent } from "@/components/MentorshipContent";
 
-function setupMocks() {
-  mockUseApi.mockReturnValue({
-    data: { mentorships: [] },
-    error: undefined,
-    isLoading: false,
-    loading: false,
-    isValidating: false,
-    refresh: jest.fn(),
-    reload: jest.fn(),
-    refetch: jest.fn(),
-    mutate: jest.fn(),
+const mockMentorships = [
+  {
+    id: "FL-8812",
+    status: "IN_FLIGHT",
+    type: "15-Min Architectural Flash",
+    name: "Dr. Elias Vance",
+    role: "Founding Systems Architect",
+    company: "Quantix Systems",
+    topic: "Distributed Consensus & Raft Implementations in Go",
+    credits: 30,
+    lockedCredits: 30,
+    countdown: "04:18",
+    mentor: {
+      id: "mentor-vance",
+      name: "Dr. Elias Vance",
+      role: "Founding Systems Architect",
+      company: "Quantix Systems",
+      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    },
+  },
+  {
+    id: "REV-9011",
+    status: "PENDING",
+    name: "Dr. Sarah Jenkins",
+    topic: "LSM Tree Compaction Under Extreme Write Skew",
+    badge: "Snowflake Compute",
+    lockedCredits: 30,
+    statusText: "WAITING MENTOR CONFIRM",
+  },
+];
+
+const mockMentors = [
+  {
+    id: "mentor-1",
+    name: "Vikram Aditya",
+    role: "Staff Engineer",
+    company: "Google Cloud",
+    batchYear: 2018,
+    domain: "DISTRIBUTED SYSTEMS",
+    skills: ["Raft", "Go", "K8s"],
+    availableSlots: ["10:15 AM", "02:00 PM"],
+    isMentor: true,
+  },
+  {
+    id: "mentor-2",
+    name: "Sarah Jenkins",
+    role: "Principal Architect",
+    company: "Snowflake",
+    batchYear: 2016,
+    domain: "DATABASE ENGINES",
+    skills: ["LSM", "Rust", "Distributed Query"],
+    availableSlots: ["11:00 AM", "03:30 PM"],
+    isMentor: true,
+  },
+  {
+    id: "mentor-3",
+    name: "David Chen",
+    role: "Co-Founder & CEO",
+    company: "Neuromorphic Labs",
+    batchYear: 2017,
+    domain: "HARDWARE / ASICS",
+    skills: ["Verilog", "RISC-V", "Accelerators"],
+    availableSlots: ["09:30 AM", "01:00 PM"],
+    isMentor: true,
+  },
+  {
+    id: "mentor-4",
+    name: "Dr. Elena Rostova",
+    role: "Research Scientist",
+    company: "Stanford AI Lab",
+    batchYear: 2019,
+    domain: "AI / LLM INFRASTRUCTURE",
+    skills: ["Attention", "Speculative Decoding"],
+    availableSlots: ["04:00 PM"],
+    isMentor: true,
+  },
+];
+
+function setupMocks(mentorships: any = mockMentorships, mentors: any = mockMentors) {
+  mockUseApi.mockImplementation((key: string) => {
+    if (key === "mentorship:list") {
+      return {
+        data: mentorships,
+        error: undefined,
+        isLoading: false,
+        loading: false,
+        isValidating: false,
+        refresh: jest.fn(),
+        reload: jest.fn(),
+        refetch: jest.fn(),
+        mutate: jest.fn(),
+      };
+    }
+    if (key === "alumni:mentorship:list") {
+      return {
+        data: mentors,
+        error: undefined,
+        isLoading: false,
+        loading: false,
+        isValidating: false,
+        refresh: jest.fn(),
+        reload: jest.fn(),
+        refetch: jest.fn(),
+        mutate: jest.fn(),
+      };
+    }
+    return {
+      data: null,
+      error: undefined,
+      isLoading: false,
+      loading: false,
+      isValidating: false,
+      refresh: jest.fn(),
+      reload: jest.fn(),
+      refetch: jest.fn(),
+      mutate: jest.fn(),
+    };
   });
 }
 
@@ -184,5 +290,12 @@ describe("MentorshipContent (Stitch Screen 7 Neobrutalist Redesign)", () => {
     await waitFor(() => {
       expect(screen.getByText(/Dual cryptographic signature accepted. 30 CR released./i)).toBeInTheDocument();
     });
+  });
+
+  test("renders standby and EmptyState when no active session or mentors are returned", () => {
+    setupMocks([], []);
+    render(<MentorshipContent />);
+    expect(screen.getByText("ACTIVE SESSION IN-FLIGHT // STANDBY")).toBeInTheDocument();
+    expect(screen.getByText("NO FELLOWS MATCH CRITERIA")).toBeInTheDocument();
   });
 });

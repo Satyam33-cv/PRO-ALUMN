@@ -47,7 +47,7 @@ export const CANONICAL_HUBS: HubPreset[] = [
     zoom: 11,
     color: "#FF5500",
     textColor: "#FFFFFF",
-    fellows: "Sarah Jenkins (Snowflake), David Chen (Neuromorphic Labs), Elena Rostova (Stanford)",
+    fellows: "Sarah Jenkins (Snowflake), David Chen (Neuromorphic Labs), Alex Rivera (Stanford)",
   },
   {
     id: "NYC",
@@ -57,7 +57,7 @@ export const CANONICAL_HUBS: HubPreset[] = [
     zoom: 11,
     color: "#2E5BFF",
     textColor: "#FFFFFF",
-    fellows: "Ananya Deshmukh (AWS), Marcus Vance (Datadog), Zoe Miller (Jane Street)",
+    fellows: "Ananya Deshmukh (AWS), Michael Chang (Datadog), Zoe Miller (Jane Street)",
   },
   {
     id: "SEA",

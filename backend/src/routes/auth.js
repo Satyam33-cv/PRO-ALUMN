@@ -88,6 +88,7 @@ router.post('/register', async (req, res) => {
       name, email, password, role = 'STUDENT',
       phone, batchYear, department, rollNumber,
       currentCompany, jobTitle, location, linkedinUrl, bio,
+      referredByCode,
     } = req.body;
 
     // Validation
@@ -114,6 +115,21 @@ router.post('/register', async (req, res) => {
     });
     if (existing) return res.status(409).json({ error: 'Email already registered' });
 
+    // Validate referral code, if provided — only store it if it belongs to a real,
+    // active sponsor and isn't the user referring themselves. An invalid/unknown
+    // code is silently dropped rather than blocking registration.
+    let sponsorCode = null;
+    if (referredByCode && typeof referredByCode === 'string' && referredByCode.trim()) {
+      const normalizedCode = referredByCode.trim().toUpperCase();
+      const sponsor = await prisma.user.findUnique({
+        where: { referralCode: normalizedCode },
+        select: { id: true, isActive: true, email: true },
+      });
+      if (sponsor && sponsor.isActive && sponsor.email.toLowerCase() !== email.toLowerCase()) {
+        sponsorCode = normalizedCode;
+      }
+    }
+
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -125,6 +141,7 @@ router.post('/register', async (req, res) => {
         phone, batchYear: batchYear ? parseInt(batchYear) : null,
         department, rollNumber, currentCompany, jobTitle, location, linkedinUrl, bio,
         referralCode,
+        referredByCode: sponsorCode,
       },
       select: {
         id: true, name: true, email: true, role: true, phone: true, avatarUrl: true,
@@ -223,7 +240,7 @@ router.get(
         return res.status(500).json({ 
           error: 'Authentication failed', 
           details: err.message,
-          stack: err.stack 
+          ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
         });
       }
       if (!user) {

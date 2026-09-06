@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/context/AuthContext";
 import { ProfileEditModal } from "@/components/ui/ProfileEditModal";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { apiClient } from "@/lib/api/client";
 import { useApi } from "@/lib/hooks/useApi";
 
@@ -51,37 +52,6 @@ interface TimelineEvent {
   description?: string;
   attestedBy?: string;
 }
-
-const CANONICAL_TIMELINE: TimelineEvent[] = [
-  {
-    role: "Principal AI Systems Architect",
-    company: "Quantix Labs // San Francisco, CA & Remote",
-    range: "2023 — PRESENT",
-    description: "Leading distributed compilation engines for 100k+ GPU clusters. Designed tensor mesh routing protocols saving 18% all-to-all communication overhead.",
-    attestedBy: "Marc Andreessen (Venture Lead), Dr. T. Zhao (CTO)",
-  },
-  {
-    role: "Staff Research Scientist",
-    company: "Google Brain / Alphabet // Mountain View, CA",
-    range: "2021 — 2023",
-    description: "Researched speculative decoding and SIMD tensor offloading primitives for Gemini Core. Managed 4 resident research fellows.",
-    attestedBy: "Google Alumni Root Node #891",
-  },
-  {
-    role: "Postdoctoral Research Fellow",
-    company: "Stanford University // Palo Alto, CA",
-    range: "2019 — 2021",
-    description: "Investigated sparse attention mechanics and hardware co-design under Prof. K. Olukotun. Recipient of the National AI Hardware Fellowship.",
-    attestedBy: "Stanford Registrar Signature Chain",
-  },
-  {
-    role: "Ph.D. in Computer Systems & B.S. EE",
-    company: "Somaiya Network Founding Member Institute // Class of 2019",
-    range: "2014 — 2019",
-    description: "Summa Cum Laude. Dissertation: Zero-Cost Latency Reduction in Distributed Linear Algebra Accelerators.",
-    attestedBy: "Institutional Faculty Attestation #440",
-  },
-];
 
 function TimelineModal({
   onClose,
@@ -245,14 +215,7 @@ export function ProfileContent() {
   const [certificates, setCertificates] = useState<Array<{ name: string; url: string }>>([]);
 
   // Skills state
-  const [skills, setSkills] = useState<string[]>([
-    "Distributed Systems",
-    "SIMD Microkernels",
-    "Zero-Knowledge Proofs",
-    "PostgreSQL / pgvector",
-    "High-Concurrency Go",
-    "Tensor Parallelism",
-  ]);
+  const [skills, setSkills] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState("");
   const newSkillInputRef = useRef<HTMLInputElement>(null);
 
@@ -343,12 +306,12 @@ export function ProfileContent() {
       "@context": "https://schema.org",
       "@type": "EducationalOccupationalCredential",
       credentialSubject: {
-        id: user?.id || "FELLOW-7492",
-        name: user?.name || "Elena Vance",
-        email: user?.email || "elena.vance@quantix.io",
+        id: user?.id || "MEMBER",
+        name: user?.name || "Member",
+        email: user?.email || "",
         role: fullProfile?.role || user?.role || "alumni",
-        department: fullProfile?.department || user?.department || "Computer Engineering",
-        batchYear: fullProfile?.batchYear || user?.classYear || "2022",
+        department: fullProfile?.department || user?.department || "",
+        batchYear: fullProfile?.batchYear || user?.classYear || "",
       },
       issuer: {
         name: "PRO-ALUMN Decentralized Consensus Network",
@@ -496,11 +459,16 @@ export function ProfileContent() {
     }
   };
 
-  const currentTimeline: TimelineEvent[] = fullProfile?.timeline
-    ? Array.isArray(fullProfile.timeline)
-      ? fullProfile.timeline
-      : JSON.parse(fullProfile.timeline as string)
-    : CANONICAL_TIMELINE;
+  const currentTimeline: TimelineEvent[] = useMemo(() => {
+    if (!fullProfile?.timeline) return [];
+    try {
+      return Array.isArray(fullProfile.timeline)
+        ? fullProfile.timeline
+        : JSON.parse(fullProfile.timeline as string);
+    } catch {
+      return [];
+    }
+  }, [fullProfile?.timeline]);
 
   const handleAddTimelineEvent = async (event: TimelineEvent) => {
     const newTimeline = [event, ...currentTimeline];
@@ -561,14 +529,16 @@ export function ProfileContent() {
       .slice(0, 2)
       .join("")
       .toUpperCase() ||
-    "EV";
+    "MB";
 
-  const fellowUid = `FELLOW-${user.id ? user.id.slice(0, 4).toUpperCase() : "7492"}-${
-    user.name?.split(" ")[0].toUpperCase() || "VANCE"
+  const fellowUid = `FELLOW-${user.id ? user.id.slice(0, 4).toUpperCase() : "MEMBER"}-${
+    user.name?.split(" ")[0].toUpperCase() || "MEMBER"
   }`;
-  const cohortYear = fullProfile?.batchYear || user.classYear || "22";
-  const userRoleDisplay = fullProfile?.jobTitle || fullProfile?.role || user.role || "Principal AI Systems Architect";
-  const userCompanyDisplay = fullProfile?.currentCompany || "Quantix Systems";
+  const cohortYear = fullProfile?.batchYear || user.classYear || "";
+  const userRoleDisplay =
+    fullProfile?.jobTitle ||
+    (fullProfile?.role ? fullProfile.role.toUpperCase() : (user.role ? user.role.toUpperCase() : "Member"));
+  const userCompanyDisplay = fullProfile?.currentCompany || "Independent / Unaffiliated";
 
   return (
     <div className="w-full space-y-6 font-mono text-black pb-16">
@@ -812,7 +782,7 @@ export function ProfileContent() {
                   ) : (
                     <div className="flex items-start justify-between gap-2">
                       <p className="italic">
-                        &ldquo;{bio || "Specializing in distributed systems, modern web topology, and peer-to-peer engineering protocols."}&rdquo;
+                        &ldquo;{bio || "No bio added yet. Click edit to introduce yourself."}&rdquo;
                       </p>
                       <button
                         type="button"
@@ -1077,52 +1047,68 @@ export function ProfileContent() {
               </div>
             </div>
 
-            <div className="relative pl-6 flex flex-col gap-6 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-black">
-              {currentTimeline.map((item, idx) => (
-                <div key={idx} className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-3 group">
-                  <div
-                    className={`absolute -left-[29px] top-1.5 w-3.5 h-3.5 border-2 border-black ${
-                      idx === 0 ? "bg-[#FF5500]" : idx === 1 ? "bg-black" : "bg-[#F7F4EE]"
-                    }`}
-                  ></div>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base font-black uppercase text-black">{item.role}</span>
-                      {idx === 0 && (
-                        <span className="px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold">
-                          CURRENT
-                        </span>
+            {currentTimeline.length === 0 ? (
+              <EmptyState
+                title="No Career Milestones Added"
+                body="Chronicle your professional trajectory, faculty appointments, or systems delivered."
+                action={
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingTimeline(true)}
+                    className="px-3 py-1.5 bg-[#FF5500] text-white border border-black text-xs font-bold shadow-[2px_2px_0px_#1A1A1A] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                  >
+                    + ADD MILESTONE
+                  </button>
+                }
+              />
+            ) : (
+              <div className="relative pl-6 flex flex-col gap-6 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-black">
+                {currentTimeline.map((item, idx) => (
+                  <div key={idx} className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-3 group">
+                    <div
+                      className={`absolute -left-[29px] top-1.5 w-3.5 h-3.5 border-2 border-black ${
+                        idx === 0 ? "bg-[#FF5500]" : idx === 1 ? "bg-black" : "bg-[#F7F4EE]"
+                      }`}
+                    ></div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-black uppercase text-black">{item.role}</span>
+                        {idx === 0 && (
+                          <span className="px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold">
+                            CURRENT
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-neutral-600 font-bold">{item.company}</div>
+                      {item.description && (
+                        <p className="text-xs text-neutral-800 mt-1 max-w-xl leading-relaxed font-sans">
+                          {item.description}
+                        </p>
+                      )}
+                      {item.attestedBy && (
+                        <div className="mt-1 flex items-center gap-1.5 text-[11px] text-neutral-500 font-bold">
+                          <ShieldCheck size={14} className="text-[#FF5500]" />
+                          <span>ATTESTED BY: {item.attestedBy}</span>
+                        </div>
                       )}
                     </div>
-                    <div className="text-xs text-neutral-600 font-bold">{item.company}</div>
-                    {item.description && (
-                      <p className="text-xs text-neutral-800 mt-1 max-w-xl leading-relaxed font-sans">
-                        {item.description}
-                      </p>
-                    )}
-                    {item.attestedBy && (
-                      <div className="mt-1 flex items-center gap-1.5 text-[11px] text-neutral-500 font-bold">
-                        <ShieldCheck size={14} className="text-[#FF5500]" />
-                        <span>ATTESTED BY: {item.attestedBy}</span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2 shrink-0 self-start">
+                      <span className="text-xs font-bold text-black bg-[#F7F4EE] px-2 py-1 border border-black">
+                        {item.range}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTimelineEvent(idx)}
+                        className="p-1 text-neutral-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Remove milestone"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 self-start">
-                    <span className="text-xs font-bold text-black bg-[#F7F4EE] px-2 py-1 border border-black">
-                      {item.range}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTimelineEvent(idx)}
-                      className="p-1 text-neutral-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Remove milestone"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* ---------------- 04 // ENDORSEMENT STICKERS FLAIR ---------------- */}

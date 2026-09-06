@@ -9,6 +9,8 @@ import { useApi } from "@/lib/hooks/useApi";
 import { useAuth } from "@/lib/context/AuthContext";
 import type { Alumni } from "@/lib/api/types";
 import type { HubPreset } from "@/components/DirectoryMap";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Users } from "lucide-react";
 
 // Dynamic import for Leaflet map to prevent SSR window issues
 const DirectoryMap = dynamic(() => import("@/components/DirectoryMap"), {
@@ -42,120 +44,6 @@ interface FellowItem {
   avatarColor?: string;
 }
 
-const CANONICAL_FELLOWS: FellowItem[] = [
-  {
-    id: "f-01",
-    name: "Vikram Aditya",
-    role: "Senior Software Engineer (L5)",
-    company: "Google Cloud",
-    department: "Distributed Systems & Raft",
-    batch: "2018",
-    location: "Bengaluru Node",
-    initials: "VA",
-    bio: '"Specializing in multi-region Spanner deployments and Kubernetes core runtimes. Mentored 14 fellows, opened 4 internal referral slots."',
-    skills: ["Go", "Rust", "Distributed Systems", "gRPC", "Kubernetes"],
-    match: 98.4,
-    referralSlots: 4,
-    isMentor: true,
-    isVerified: true,
-    actionType: "referral",
-    avatarBg: "#000000",
-    avatarColor: "#FFFFFF",
-  },
-  {
-    id: "f-02",
-    name: "Sarah Jenkins",
-    role: "Principal Architect",
-    company: "Snowflake Compute",
-    department: "Query Execution & SIMD Engines",
-    batch: "2016",
-    location: "San Mateo / SF Node",
-    initials: "SJ",
-    bio: '"Author of 4 core patents on columnar query pushdown. Passionate about helping system researchers transition to principal staff IC roles."',
-    skills: ["Columnar Engines", "C++20", "System Design", "SIMD Optimization"],
-    match: 96.7,
-    referralSlots: 5,
-    isMentor: true,
-    isVerified: true,
-    actionType: "referral",
-    avatarBg: "#CCFF00",
-    avatarColor: "#000000",
-  },
-  {
-    id: "f-03",
-    name: "David Chen",
-    role: "Co-Founder & CEO",
-    company: "Neuromorphic Labs (YC W26)",
-    department: "RISC-V Custom Silicon",
-    batch: "2017",
-    location: "Palo Alto Node",
-    initials: "DC",
-    bio: '"Closed $3.2M seed for ultra-low-power edge ML silicon. Actively hiring 2 founding firmware engineers from university alumni base."',
-    skills: ["RISC-V", "Chisel / Verilog", "Firmware", "Zero-to-One Startups"],
-    match: 94.2,
-    hiring: true,
-    isMentor: false,
-    isVerified: true,
-    actionType: "founder",
-    avatarBg: "#FF5500",
-    avatarColor: "#FFFFFF",
-  },
-  {
-    id: "f-04",
-    name: "Dr. Elena Rostova",
-    role: "Postdoctoral Research Fellow",
-    company: "Stanford AI Lab",
-    department: "Applied Math & Post-Quantum",
-    batch: "2021",
-    location: "Stanford / SF Node",
-    initials: "ER",
-    bio: '"Published 2 IEEE papers on lattice cryptography. Advising alumni on graduate research grants and doctoral program admissions."',
-    skills: ["Post-Quantum", "Lattice Cryptography", "zk-SNARKs", "Rust"],
-    match: 92.8,
-    isMentor: true,
-    isVerified: true,
-    actionType: "research",
-    avatarBg: "#2E5BFF",
-    avatarColor: "#FFFFFF",
-  },
-  {
-    id: "f-05",
-    name: "Prateek Shah",
-    role: "Staff Systems Architect",
-    company: "Stripe",
-    department: "Core Financial Ledger & Spanner",
-    batch: "2019",
-    location: "Seattle Node",
-    initials: "PS",
-    bio: '"Led migration of Stripe multi-region ledger to strict serializability. Happy to conduct mock system architecture rounds."',
-    skills: ["Distributed DBs", "Java", "High-Throughput", "Consensus"],
-    match: 91.5,
-    referralSlots: 3,
-    isMentor: true,
-    isVerified: true,
-    actionType: "referral",
-    avatarBg: "#000000",
-    avatarColor: "#FFFFFF",
-  },
-  {
-    id: "f-06",
-    name: "Ananya Deshmukh",
-    role: "Senior Product Manager",
-    company: "Figma",
-    department: "Collaborative Canvas Engine",
-    batch: "2020",
-    location: "New York Node",
-    initials: "AD",
-    bio: '"Former engineer turned product lead. Mentoring women in systems and infrastructure tech careers."',
-    skills: ["Product Strategy", "Wasm", "Design Systems", "WebGPU"],
-    match: 89.1,
-    isMentor: true,
-    isVerified: true,
-    actionType: "mentorship",
-    avatarBg: "#CCFF00",
-    avatarColor: "#000000",
-  },
-];
 
 const PRESET_CLUSTERS = [
   { label: "ALL INSTITUTIONS", query: "" },
@@ -217,9 +105,9 @@ export function DirectoryContent({
     fellows: string;
   }>({
     id: "GLOBAL",
-    name: "Global Pool (142 Hubs)",
-    count: 1248,
-    fellows: "Vikram Aditya (Google Cloud), Sarah Jenkins (Snowflake), Prateek Shah (Stripe)",
+    name: "Global Pool",
+    count: 0,
+    fellows: "",
   });
 
   // Modal State
@@ -240,7 +128,7 @@ export function DirectoryContent({
     return () => clearTimeout(handler);
   }, [query]);
 
-  // Combine backend alumni with canonical fellows
+  // Combine backend alumni with real data
   const allFellows: FellowItem[] = useMemo(() => {
     if (apiAlumni && Array.isArray(apiAlumni) && apiAlumni.length > 0) {
       const mapped = apiAlumni.map((a: Alumni, idx: number) => {
@@ -257,20 +145,18 @@ export function DirectoryContent({
         return {
           id: a.id,
           name: a.name,
-          role: a.role || a.jobTitle || "Alumni Fellow",
-          company: a.company || "Frontier Tech Lab",
-          department: a.department || "Applied Engineering",
-          batch: String(a.batch || a.batchYear || "2020"),
-          location: a.location || "Global Node",
+          role: a.role || a.jobTitle || "Alumni",
+          company: a.company || "",
+          department: a.department || "",
+          batch: String(a.batch || a.batchYear || ""),
+          location: a.location || "",
           initials,
-          bio:
-            a.bio ||
-            `Alumnus specializing in ${a.department || "systems architecture"} with active industry verification.`,
-          skills: a.skills && a.skills.length > 0 ? a.skills : ["Systems", "Architecture", "Engineering"],
+          bio: a.bio || "",
+          skills: a.skills && a.skills.length > 0 ? a.skills : [],
           match,
           referralSlots: a.isMentor ? 3 : undefined,
-          isMentor: a.isMentor ?? true,
-          isVerified: a.isVerified ?? true,
+          isMentor: Boolean(a.isMentor),
+          isVerified: Boolean(a.isVerified),
           actionType: a.isMentor ? ("mentorship" as const) : ("referral" as const),
           avatarBg: idx % 3 === 0 ? "#000000" : idx % 3 === 1 ? "#CCFF00" : "#FF5500",
           avatarColor: idx % 3 === 1 ? "#000000" : "#FFFFFF",
@@ -278,7 +164,7 @@ export function DirectoryContent({
       });
       return mapped;
     }
-    return CANONICAL_FELLOWS;
+    return [];
   }, [apiAlumni]);
 
   // Filtered fellows
@@ -333,7 +219,7 @@ export function DirectoryContent({
   }, [allFellows, debouncedQuery, category, cohort, company, acceptingMentees, providesReferrals]);
 
   // Total and shown count
-  const totalCount = allFellows.length > 6 ? allFellows.length : 1248;
+  const totalCount = allFellows.length;
   const shownCount = filteredFellows.length;
 
   const handleOpenReferral = (fellow: FellowItem, type: "referral" | "mentorship") => {
@@ -383,10 +269,10 @@ export function DirectoryContent({
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#1A1A1A] font-mono text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#CCFF00] inline-block"></span>
-              <span className="tracking-tight font-bold uppercase">{user?.name || "Dr. Elena Vance"}</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#CCFF00] inline-block"></span>
+              <span className="tracking-tight font-bold uppercase">{user?.name || "Verified Member"}</span>
               <span className="text-neutral-500">//</span>
-              <span className="text-[#CCFF00] font-bold">FELLOW &apos;22</span>
+              <span className="text-[#CCFF00] font-bold">{user ? "VERIFIED ALUMNI" : "EXPLORER"}</span>
             </div>
           </div>
         </section>
@@ -854,103 +740,6 @@ export function DirectoryContent({
               setViewMode("grid");
             }}
           />
-
-          {/* Cluster Intelligence & Live Node Roster */}
-          <div className="border-2 border-black bg-[#fcf9f3] p-4 shadow-[4px_4px_0px_#000000]">
-            <div className="flex items-center justify-between border-b border-black pb-3 mb-4 font-mono">
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-sm uppercase">
-                  CLUSTER INTELLIGENCE & LIVE NODE ROSTER
-                </span>
-                <span className="px-2 py-0.5 bg-black text-white text-[10px] font-bold">
-                  {selectedHub.name.toUpperCase()}
-                </span>
-              </div>
-              <span className="text-xs text-neutral-600 hidden sm:inline">
-                [ ACTIVE SELECTION: SHOWING KEY CONTRIBUTORS ]
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
-              {/* Highlight Fellow 1 */}
-              <div className="p-3 bg-white border border-black flex flex-col justify-between space-y-2 shadow-[2px_2px_0px_#000000]">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-9 h-9 bg-black text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
-                    VA
-                  </div>
-                  <div>
-                    <div className="font-bold text-xs text-black">Vikram Aditya</div>
-                    <div className="text-[10px] text-neutral-600">Google Cloud • Bengaluru Node</div>
-                  </div>
-                </div>
-                <p className="text-[11px] text-neutral-800">
-                  Distributed Systems, Spanner, Kubernetes. 4 referral slots open.
-                </p>
-                <div className="flex items-center justify-between pt-2 border-t border-neutral-200 text-[10px]">
-                  <span className="font-bold text-emerald-600">AI MATCH: 98.4%</span>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenReferral(CANONICAL_FELLOWS[0], "referral")}
-                    className="px-2 py-0.5 bg-[#FF5500] text-white font-bold hover:bg-orange-600"
-                  >
-                    REQUEST →
-                  </button>
-                </div>
-              </div>
-
-              {/* Highlight Fellow 2 */}
-              <div className="p-3 bg-white border border-black flex flex-col justify-between space-y-2 shadow-[2px_2px_0px_#000000]">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-9 h-9 bg-[#CCFF00] text-black font-bold flex items-center justify-center text-xs flex-shrink-0">
-                    SJ
-                  </div>
-                  <div>
-                    <div className="font-bold text-xs text-black">Sarah Jenkins</div>
-                    <div className="text-[10px] text-neutral-600">Snowflake • San Mateo / SF Node</div>
-                  </div>
-                </div>
-                <p className="text-[11px] text-neutral-800">
-                  Columnar Query Engines, SIMD, C++20. Mentoring accepted.
-                </p>
-                <div className="flex items-center justify-between pt-2 border-t border-neutral-200 text-[10px]">
-                  <span className="font-bold text-emerald-600">AI MATCH: 96.7%</span>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenReferral(CANONICAL_FELLOWS[1], "referral")}
-                    className="px-2 py-0.5 bg-[#FF5500] text-white font-bold hover:bg-orange-600"
-                  >
-                    REQUEST →
-                  </button>
-                </div>
-              </div>
-
-              {/* Highlight Fellow 3 */}
-              <div className="p-3 bg-white border border-black flex flex-col justify-between space-y-2 shadow-[2px_2px_0px_#000000]">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-9 h-9 bg-neutral-800 text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
-                    PS
-                  </div>
-                  <div>
-                    <div className="font-bold text-xs text-black">Prateek Shah</div>
-                    <div className="text-[10px] text-neutral-600">Stripe • Seattle Infra Node</div>
-                  </div>
-                </div>
-                <p className="text-[11px] text-neutral-800">
-                  Core Transaction Ledger, 80k tx/s, ACID. 3 referral slots.
-                </p>
-                <div className="flex items-center justify-between pt-2 border-t border-neutral-200 text-[10px]">
-                  <span className="font-bold text-emerald-600">AI MATCH: 91.5%</span>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenReferral(CANONICAL_FELLOWS[4], "referral")}
-                    className="px-2 py-0.5 bg-[#FF5500] text-white font-bold hover:bg-orange-600"
-                  >
-                    REQUEST →
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </section>
       )}
 
@@ -963,7 +752,16 @@ export function DirectoryContent({
         }`}
         data-purpose="alumni-directory-cards"
       >
-        {filteredFellows.map((fellow, idx) => {
+        {filteredFellows.length === 0 ? (
+          <div className="col-span-full">
+            <EmptyState
+              icon={Users}
+              title="No Alumni Found"
+              body="No verified alumni match the current search criteria or active filters."
+            />
+          </div>
+        ) : (
+          filteredFellows.map((fellow, idx) => {
           const indexNum = String(idx + 1).padStart(2, "0");
           const isHighMatch = fellow.match >= 95;
           return (
@@ -1105,7 +903,8 @@ export function DirectoryContent({
               </div>
             </article>
           );
-        })}
+        })
+      )}
       </section>
 
       {/* ============================================================ */}

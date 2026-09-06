@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
-  ArrowUpRight,
   BriefcaseBusiness,
   MapPin,
   CalendarDays,
@@ -16,13 +14,12 @@ import {
   CheckCircle2,
   Clock,
   Send,
-  X,
+  Sparkles,
 } from "lucide-react";
-import { Card, Badge, Skeleton, ErrorState } from "@/components/ui";
+import { ErrorState, Skeleton } from "@/components/ui";
 import { useAuth } from "@/lib/context/AuthContext";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
-import { fadeIn, slideUp, staggerContainer, StaggerItem } from "@/lib/motion";
 
 export function JobDetailContent({ id }: { id: string }) {
   const { user } = useAuth();
@@ -65,7 +62,7 @@ export function JobDetailContent({ id }: { id: string }) {
         resumeUrl: uploadedUrl || (user as { resumeUrl?: string } | null)?.resumeUrl || undefined,
       });
       setReferralStatus("submitted");
-      showToast("Referral request successfully sent to alumni!");
+      showToast("Referral request transmitted to verified alumni conduit!");
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : "Request submitted! Status: Pending";
       showToast(errorMsg);
@@ -77,28 +74,23 @@ export function JobDetailContent({ id }: { id: string }) {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-4xl py-8 px-4 space-y-8">
-        <Skeleton className="h-6 w-32" />
-        <Card padding="lg" className="space-y-6">
-          <div className="flex items-center gap-4">
-            <Skeleton className="h-16 w-16 rounded-xl" />
-            <div className="space-y-2">
-              <Skeleton className="h-8 w-64" />
-              <Skeleton className="h-4 w-40" />
-            </div>
-          </div>
-          <Skeleton className="h-32 w-full" />
-        </Card>
+      <div className="max-w-4xl mx-auto space-y-6 font-mono">
+        <Skeleton className="h-8 w-32 border-2 border-black" />
+        <div className="border-4 border-black bg-white shadow-[6px_6px_0px_#000000] p-8 space-y-6">
+          <Skeleton className="h-10 w-3/4" />
+          <Skeleton className="h-6 w-1/3" />
+          <Skeleton className="h-40 w-full" />
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="mx-auto max-w-2xl py-12 px-4">
+      <div className="max-w-2xl mx-auto py-12">
         <ErrorState
-          title="Job unavailable"
-          body={error.message || "We couldn't fetch this job right now."}
+          title="Job Requisition Unavailable"
+          body={error.message || "We could not fetch this job right now."}
           retry={() => void refresh()}
         />
       </div>
@@ -109,99 +101,156 @@ export function JobDetailContent({ id }: { id: string }) {
 
   const isStudent = user?.role === "student" || (user?.role as string) === "STUDENT";
 
-  return (
-    <div className="relative mx-auto max-w-4xl py-6 px-4 sm:px-6 lg:px-8 pb-32">
-      <Link
-        href="/jobs"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-ink/50 transition-colors hover:text-brass"
-      >
-        <ArrowLeft size={16} />
-        Back to Jobs
-      </Link>
+  const reqs = Array.isArray(job.requirements)
+    ? job.requirements
+    : typeof job.requirements === "string" && (job.requirements as string).trim()
+    ? (job.requirements as string).split(",").map((s) => s.trim()).filter(Boolean)
+    : [];
 
-      <motion.div
-        initial={fadeIn.initial}
-        animate={fadeIn.animate}
-        className="mt-8"
-      >
-        <div className="flex flex-col md:flex-row md:items-start gap-6 justify-between">
-          <div className="flex items-center gap-5">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brass/15 text-brass shadow-inner border border-brass/20">
-              <BriefcaseBusiness size={28} />
-            </div>
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-sage">
-                {job.company}
-              </p>
-              <h1 className="mt-1 font-display text-3xl sm:text-4xl text-ink leading-tight">
-                {job.title}
-              </h1>
-              <div className="mt-2 flex flex-wrap items-center gap-3">
-                <Badge tone="neutral">{job.type}</Badge>
-                {job.remote && <Badge tone="accent">Remote</Badge>}
-                {job.referralAvailable && (
-                  <span className="inline-flex items-center rounded-full bg-sage/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-sage border border-sage/20">
-                    <UserCheck size={10} className="mr-1.5" /> Referral Available
+  return (
+    <div className="max-w-4xl mx-auto space-y-8 font-mono text-black select-text pb-16">
+      {/* Toast Alert */}
+      {toast && (
+        <div
+          role="status"
+          className="fixed top-6 right-6 z-50 bg-[#CCFF00] text-black border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
+        >
+          <CheckCircle2 size={16} />
+          <span>{toast}</span>
+        </div>
+      )}
+
+      {/* Navigation & Header Breadcrumb */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <Link
+          href="/jobs"
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+        >
+          <ArrowLeft size={14} /> Back to Job Board
+        </Link>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="px-2 py-0.5 bg-[#EFECE4] border border-black font-bold uppercase text-neutral-600">
+            OPP-DISPATCH
+          </span>
+          <span className="font-bold text-neutral-400">//</span>
+          <span className="font-bold text-neutral-600">REQ-{job.id.slice(0, 6).toUpperCase()}</span>
+        </div>
+      </div>
+
+      {/* Main Job Container */}
+      <article className="border-4 border-black bg-white shadow-[6px_6px_0px_#000000] overflow-hidden">
+        {/* Banner Strip */}
+        <header className="bg-black text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 border-b-4 border-black">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 bg-[#00FF66] inline-block animate-pulse"></span>
+            <span className="font-bold text-xs tracking-wider uppercase">
+              OPPORTUNITY CONDUIT // VERIFIED ALUMNI POSTING
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-[#CCFF00] text-black border border-black text-[11px] font-bold uppercase">
+              {job.type}
+            </span>
+            {job.remote && (
+              <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black text-[11px] font-bold uppercase">
+                REMOTE
+              </span>
+            )}
+          </div>
+        </header>
+
+        {/* Hero Section */}
+        <div className="p-6 sm:p-8 bg-white border-b-2 border-black">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F7F4EE] border-3 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center shrink-0">
+                <BriefcaseBusiness size={32} className="text-black" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#FF5500]">
+                  {job.company}
+                </p>
+                <h1 className="text-2xl sm:text-3xl font-black font-sans uppercase tracking-tight text-black">
+                  {job.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600 pt-1">
+                  <span className="flex items-center gap-1 font-bold">
+                    <MapPin size={13} /> {job.location}
                   </span>
-                )}
+                  {job.referralAvailable && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-900 font-bold text-[10px] uppercase">
+                      <UserCheck size={12} /> Direct Referral Open
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard?.writeText(window.location.href);
+                showToast("Job link copied to clipboard");
+              }}
+              className="px-3 py-1.5 bg-[#F7F4EE] hover:bg-black hover:text-white border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] transition-colors flex items-center gap-1.5 cursor-pointer self-start"
+            >
+              <Share2 size={13} /> Share
+            </button>
           </div>
         </div>
-      </motion.div>
 
-      <motion.div
-        variants={staggerContainer}
-        initial="initial"
-        animate="animate"
-        className="mt-10 grid gap-8 lg:grid-cols-3"
-      >
-        <div className="space-y-8 lg:col-span-2">
-          {/* Main Content */}
-          <StaggerItem>
-            <Card padding="lg" className="h-full">
-              <h2 className="font-display text-xl">About the role</h2>
-              <div className="mt-4 text-sm leading-7 text-ink/70 whitespace-pre-wrap">
-                {job.description || "This role was shared by a member of the PRO ALUMN network. Reach out directly for more specifics."}
+        {/* Body Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+          {/* Main Description */}
+          <div className="lg:col-span-2 p-6 sm:p-8 space-y-8 border-b-2 lg:border-b-0 lg:border-r-2 border-black">
+            {/* Description */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 bg-black inline-block"></span>
+                <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-700">
+                  POSITION SPECIFICATION & CONTEXT
+                </h2>
               </div>
+              <p className="text-sm leading-relaxed text-neutral-800 font-sans whitespace-pre-wrap">
+                {job.description ||
+                  "This requisition was posted directly by a member of the PRO ALUMN alumni network. Reach out directly with a referral inquiry for internal consideration."}
+              </p>
+            </section>
 
-              {(() => {
-                const reqs = Array.isArray(job.requirements)
-                  ? job.requirements
-                  : typeof job.requirements === "string" && (job.requirements as string).trim()
-                  ? (job.requirements as string).split(",").map((s) => s.trim()).filter(Boolean)
-                  : [];
-                if (reqs.length === 0) return null;
-                return (
-                  <div className="mt-8">
-                    <h3 className="font-display text-lg">Key Requirements</h3>
-                    <ul className="mt-4 space-y-3">
-                      {reqs.map((req, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-ink/70">
-                          <CheckCircle2 size={16} className="shrink-0 text-sage mt-0.5" />
-                          <span>{req}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })()}
-            </Card>
-          </StaggerItem>
+            {/* Requirements */}
+            {reqs.length > 0 && (
+              <section className="space-y-3 pt-4 border-t-2 border-neutral-200">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 bg-[#FF5500] inline-block"></span>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-700">
+                    KEY CANDIDATE REQUIREMENTS
+                  </h2>
+                </div>
+                <ul className="space-y-2">
+                  {reqs.map((req, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-xs text-neutral-800 font-sans">
+                      <span className="w-4 h-4 bg-black text-[#CCFF00] border border-black flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                        ✓
+                      </span>
+                      <span>{req}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
-          {/* Referral Section (If Student & Available) */}
-          {isStudent && job.referralAvailable && referralStatus === "none" && (
-            <StaggerItem>
-              <Card padding="lg" className="border-brass/30 bg-brass/5">
-                <div className="flex items-center gap-3 mb-6">
-                  <UserCheck size={24} className="text-brass" />
-                  <div>
-                    <h2 className="font-display text-xl text-ink">Ask for a referral</h2>
-                    <p className="text-xs text-ink/60">An alumni at {job.company} can refer you internally</p>
-                  </div>
+            {/* Referral Form (Student Action) */}
+            {isStudent && job.referralAvailable && referralStatus === "none" && (
+              <section className="p-6 bg-[#F7F4EE] border-2 border-black space-y-4 shadow-[4px_4px_0px_#000000]">
+                <div className="flex items-center gap-2 border-b border-black pb-3">
+                  <UserCheck size={18} className="text-[#FF5500]" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-black">
+                    REQUEST DIRECT ALUMNI REFERRAL
+                  </span>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4">
+                  {/* File Upload Dropzone */}
                   <div
                     onDragOver={(e) => {
                       e.preventDefault();
@@ -215,22 +264,20 @@ export function JobDetailContent({ id }: { id: string }) {
                       if (file) setResumeFile(file);
                     }}
                     onClick={() => fileInputRef.current?.click()}
-                    className={`flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
-                      dragOver
-                        ? "border-brass bg-brass/10"
-                        : "border-ink/20 bg-white/60 hover:border-brass/50 hover:bg-brass/5"
+                    className={`flex cursor-pointer flex-col items-center gap-2 p-6 text-center border-2 border-dashed border-black transition-colors ${
+                      dragOver ? "bg-[#CCFF00]" : "bg-white hover:bg-neutral-50"
                     }`}
                   >
-                    <Upload size={28} className={dragOver ? "text-brass" : "text-ink/40"} />
+                    <Upload size={22} className="text-black" />
                     {resumeFile ? (
                       <div>
-                        <p className="text-sm font-semibold text-ink">{resumeFile.name}</p>
-                        <p className="text-xs text-sage mt-1">Ready to upload</p>
+                        <p className="text-xs font-bold text-black">{resumeFile.name}</p>
+                        <p className="text-[10px] text-emerald-700 font-bold uppercase">Ready for transmission</p>
                       </div>
                     ) : (
                       <>
-                        <p className="text-sm font-semibold text-ink/80">Drop your resume here</p>
-                        <p className="text-xs text-ink/45">Accepted formats: .pdf, .docx</p>
+                        <p className="text-xs font-bold text-black uppercase">DROP RESUME (PDF / DOCX)</p>
+                        <p className="text-[10px] text-neutral-500 uppercase">Or click to select from system</p>
                       </>
                     )}
                     <input
@@ -245,161 +292,105 @@ export function JobDetailContent({ id }: { id: string }) {
                     />
                   </div>
 
+                  {/* Note Input */}
                   <div>
-                    <label
-                      htmlFor="referral-note"
-                      className="block text-xs font-bold uppercase tracking-wider text-ink/60"
-                    >
-                      Why are you a good fit?
+                    <label htmlFor="referral-note" className="block text-[11px] font-bold uppercase text-neutral-700 mb-1">
+                      Candidate Briefing Note:
                     </label>
                     <textarea
                       id="referral-note"
-                      rows={4}
+                      rows={3}
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
-                      placeholder="Write a brief note to the alumni to give them context for the referral..."
-                      className="mt-2 w-full resize-none rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition-all placeholder:text-ink/30 focus:border-brass focus:ring-2 focus:ring-brass/20 shadow-sm"
+                      placeholder="Summarize your key projects, GPA, or relevant systems built..."
+                      className="w-full bg-white border-2 border-black p-3 text-xs font-mono outline-none focus:ring-0 shadow-inner"
                     />
                   </div>
 
                   <button
+                    type="button"
                     onClick={handleSubmitReferral}
                     disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-ink px-6 py-4 text-sm font-bold text-paper transition-all hover:bg-brass hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+                    className="w-full py-3 px-4 bg-[#FF5500] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     {isSubmitting ? (
-                      <span className="flex items-center gap-2">
-                        <Clock className="animate-spin" size={18} /> Submitting...
-                      </span>
+                      <>
+                        <Clock size={16} className="animate-spin" />
+                        <span>Transmitting Packet...</span>
+                      </>
                     ) : (
                       <>
-                        <Send size={18} /> Send Referral Request
+                        <Send size={16} />
+                        <span>Transmit Referral Request →</span>
                       </>
                     )}
                   </button>
                 </div>
-              </Card>
-            </StaggerItem>
-          )}
+              </section>
+            )}
 
-          {referralStatus === "submitted" && (
-            <StaggerItem>
-              <Card padding="lg" className="border-sage/30 bg-sage/5 flex flex-col items-center text-center py-12">
-                <div className="size-16 rounded-full bg-sage/20 flex items-center justify-center text-sage mb-4">
-                  <CheckCircle2 size={32} />
+            {referralStatus === "submitted" && (
+              <div className="p-6 bg-[#CCFF00] border-2 border-black text-black space-y-2 shadow-[4px_4px_0px_#000000]">
+                <div className="flex items-center gap-2 font-bold text-xs uppercase">
+                  <CheckCircle2 size={18} />
+                  <span>TRANSMISSION CONFIRMED</span>
                 </div>
-                <h3 className="font-display text-2xl">Request Sent!</h3>
-                <p className="text-sm text-ink/60 mt-2 max-w-sm">
-                  Your referral request has been forwarded to the alumni at {job.company}. You will be notified via email when they respond.
+                <p className="text-xs font-sans text-neutral-800">
+                  Your referral portfolio has been routed to the alumni at {job.company}. You will receive a system notification once reviewed.
                 </p>
-              </Card>
-            </StaggerItem>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          <StaggerItem>
-            <Card padding="md" className="space-y-4">
-              <h3 className="font-mono text-xs uppercase tracking-wider text-ink/50 mb-4">At a Glance</h3>
-              
-              <div className="flex items-center gap-3">
-                <div className="flex size-9 rounded-lg bg-ink/5 items-center justify-center text-ink/60">
-                  <MapPin size={16} />
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-ink/40 tracking-wider">Location</p>
-                  <p className="text-sm font-medium">{job.location}</p>
-                </div>
               </div>
-
-              <div className="flex items-center gap-3">
-                <div className="flex size-9 rounded-lg bg-ink/5 items-center justify-center text-ink/60">
-                  <CalendarDays size={16} />
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-ink/40 tracking-wider">Posted</p>
-                  <p className="text-sm font-medium">{job.posted}</p>
-                </div>
-              </div>
-
-              {job.postedBy && (
-                <div className="flex items-center gap-3">
-                  <div className="flex size-9 rounded-lg bg-ink/5 items-center justify-center text-ink/60">
-                    <UserCheck size={16} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] uppercase font-bold text-ink/40 tracking-wider">Shared By</p>
-                    <p className="text-sm font-medium">
-                      {job.postedBy} {job.postedByBatch ? `('${job.postedByBatch.slice(-2)})` : ""}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </Card>
-          </StaggerItem>
-
-          <StaggerItem>
-            <Card padding="md">
-              <h3 className="font-mono text-xs uppercase tracking-wider text-ink/50 mb-3">Company Insights</h3>
-              <div className="flex items-center gap-3 p-3 rounded-lg border border-ink/10 hover:border-brass hover:bg-brass/5 transition-colors cursor-pointer">
-                <Building2 size={18} className="text-ink/40" />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold">{job.company}</p>
-                  <p className="text-[10px] text-ink/50 uppercase tracking-wider">12 Alumni working here</p>
-                </div>
-                <ArrowUpRight size={16} className="text-ink/30" />
-              </div>
-            </Card>
-          </StaggerItem>
-        </div>
-      </motion.div>
-
-      {/* Sticky Bottom Apply Bar */}
-      {isStudent && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-ink/10 bg-white/80 p-4 backdrop-blur-xl md:hidden">
-          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
-            <div className="hidden sm:block">
-              <p className="font-bold text-sm truncate">{job.title}</p>
-              <p className="text-xs text-ink/50">{job.company}</p>
-            </div>
-            <div className="flex flex-1 sm:flex-none gap-3">
-              <button
-                className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-ink/20 text-ink hover:bg-ink/5 transition-colors"
-                aria-label="Share Job"
-              >
-                <Share2 size={18} />
-              </button>
-              <button
-                onClick={() => {
-                  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-                }}
-                className="flex-1 rounded-xl bg-ink px-6 text-sm font-bold text-paper transition-colors hover:bg-brass shadow-lg active:scale-95"
-              >
-                Apply Now
-              </button>
-            </div>
+            )}
           </div>
-        </div>
-      )}
 
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-24 right-6 sm:bottom-6 z-[60] flex items-center gap-3 rounded-xl bg-ink px-5 py-4 text-sm font-semibold text-paper shadow-2xl"
-          >
-            <CheckCircle2 size={18} className="text-sage" />
-            {toast}
-            <button onClick={() => setToast(null)} className="ml-2 text-ink/40 hover:text-white">
-              <X size={16} />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Sidebar */}
+          <aside className="p-6 sm:p-8 bg-[#F7F4EE] space-y-6">
+            <div className="space-y-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-600 border-b-2 border-black pb-2">
+                REQUISITION METRICS
+              </h3>
+
+              <div className="space-y-3 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-neutral-300">
+                  <span className="text-neutral-500 font-bold uppercase">LOCATION:</span>
+                  <span className="font-bold text-black">{job.location}</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-neutral-300">
+                  <span className="text-neutral-500 font-bold uppercase">WORK MODE:</span>
+                  <span className="font-bold text-black">{job.remote ? "REMOTE / DISTRIBUTED" : "ON-SITE"}</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-neutral-300">
+                  <span className="text-neutral-500 font-bold uppercase">DATE POSTED:</span>
+                  <span className="font-bold text-black">{job.posted || "RECENT"}</span>
+                </div>
+                {job.postedBy && (
+                  <div className="flex justify-between items-center py-1 border-b border-neutral-300">
+                    <span className="text-neutral-500 font-bold uppercase">SHARED BY:</span>
+                    <span className="font-bold text-black">
+                      {job.postedBy} {job.postedByBatch ? `('${job.postedByBatch.slice(-2)})` : ""}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 bg-white border-2 border-black space-y-2 shadow-[2px_2px_0px_#000000]">
+              <div className="flex items-center gap-2 font-bold text-xs uppercase text-black">
+                <Building2 size={16} className="text-[#FF5500]" />
+                <span>INSTITUTIONAL FOOTPRINT</span>
+              </div>
+              <p className="text-[11px] font-sans text-neutral-700">
+                Verified alumni actively work at {job.company}. Connect via the Directory to expand your internal network.
+              </p>
+              <Link
+                href={`/directory?company=${encodeURIComponent(job.company)}`}
+                className="inline-block pt-1 font-mono text-[11px] font-bold text-[#FF5500] hover:underline uppercase"
+              >
+                Browse Company Alumni →
+              </Link>
+            </div>
+          </aside>
+        </div>
+      </article>
     </div>
   );
 }

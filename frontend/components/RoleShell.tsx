@@ -256,7 +256,7 @@ export function RoleShell({
     return pathname === basePath || pathname.startsWith(basePath + "/");
   };
 
-  const displayName = user?.name || "Elena Vance, Ph.D.";
+  const displayName = user?.name || "Member";
   const displayRoleLabel =
     role === "admin"
       ? "SUPER ADMIN // CORE DISPATCH"
