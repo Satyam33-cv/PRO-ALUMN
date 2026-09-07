@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Lock,
   Check,
@@ -16,6 +17,8 @@ import {
   UserCheck,
   CheckCircle2,
   Users,
+  MessageSquare,
+  Loader2,
 } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useAuth } from "@/lib/context/AuthContext";
@@ -39,11 +42,19 @@ interface MentorFellow {
   verified: boolean;
   domain: string;
   skills: string[];
+  /** Skills they can teach you (their offered ∩ your wanted) */
+  canTeachMe: string[];
+  /** Skills you can teach them (your offered ∩ their wanted) */
+  iCanTeachThem: string[];
+  isPerfectMatch: boolean;
+  score: number;
   slotsLabel: string;
   availableSlots: string[];
   costFlash: number;
   costDeep: number;
   isBarter: boolean;
+  freeVideos?: number;
+  totalVideos?: number;
 }
 
 const DOMAINS = [
@@ -58,9 +69,11 @@ const DOMAINS = [
 
 export function MentorshipContent() {
   const { user } = useAuth();
+  const router = useRouter();
   const [activeDomain, setActiveDomain] = useState("ALL DOMAINS");
   const [durationMode, setDurationMode] = useState<DurationMode>("15-Min Flash (30 CR)");
   const [searchQuery, setSearchQuery] = useState("");
+  const [messagingId, setMessagingId] = useState<string | null>(null);
 
   // Countdown timer for active session
   const [secondsRemaining, setSecondsRemaining] = useState(787); // ~13 mins 7 secs
@@ -101,14 +114,15 @@ export function MentorshipContent() {
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
   const [rescheduleSuccess, setRescheduleSuccess] = useState(false);
 
-  // Live Backend Data Fetching
-  const { data: mentorshipData, refresh: refreshMentorship } = useApi(
-    "mentorship:list",
-    () => apiClient.mentorship.list()
+  // Live Backend Data Fetching — skill-swap is the primary discovery source
+  const skillSwapKey = user?.id ? `matching:skill-swap:${user.id}` : "matching:skill-swap";
+  const { data: skillSwapData, loading: skillSwapLoading } = useApi(
+    skillSwapKey,
+    () => apiClient.matching.skillSwap()
   );
-  const { data: apiAlumni } = useApi(
-    "alumni:mentorship:list",
-    () => apiClient.alumni.list()
+  const { data: mentorshipData, refresh: refreshMentorship } = useApi(
+    user?.id ? `mentorship:list:${user.id}` : "mentorship:list",
+    () => apiClient.mentorship.list()
   );
 
   const rawMentorships = useMemo(() => {
@@ -142,63 +156,102 @@ export function MentorshipContent() {
     return rawMentorships.find((m: any) => m.status === "IN_FLIGHT" || m.status === "ACTIVE" || m.status === "CONFIRMED") || null;
   }, [rawMentorships]);
 
-  // Combine backend alumni mentors
+  // Map skill-swap API response → MentorFellow cards
   const allMentors: MentorFellow[] = useMemo(() => {
-    if (!apiAlumni || !Array.isArray(apiAlumni) || apiAlumni.length === 0) {
-      return [];
-    }
-    return apiAlumni
-      .filter((a: any) => a.isMentor !== false)
-      .map((a: any, idx: number): MentorFellow => ({
-        id: a.id || `mentor-${idx}`,
-        recCode: a.recCode || `REC_${String(idx + 1).padStart(2, "0")}`,
-        name: a.name,
-        role: a.role || a.jobTitle || "Mentor",
-        company: a.company || "",
-        cohort: a.batchYear ? `Class of '${String(a.batchYear).slice(-2)}` : (a.cohort || ""),
-        location: a.location || "",
-        cosineMatch: a.cosineMatch ?? 95,
+    const matches = (skillSwapData as any)?.matches;
+    if (!Array.isArray(matches) || matches.length === 0) return [];
+
+    return matches.map((m: any, idx: number): MentorFellow => {
+      const canTeachMe: string[] = Array.isArray(m.canTeachMe) ? m.canTeachMe : [];
+      const iCanTeachThem: string[] = Array.isArray(m.iCanTeachThem) ? m.iCanTeachThem : [];
+      // Fallback chips from raw comma strings if arrays empty
+      const offeredFallback = typeof m.skillsOffered === "string"
+        ? m.skillsOffered.split(",").map((s: string) => s.trim()).filter(Boolean)
+        : [];
+      const skills = canTeachMe.length > 0 ? canTeachMe : offeredFallback;
+
+      return {
+        id: m.id || `swap-${idx}`,
+        recCode: m.isPerfectMatch ? "PERFECT" : `SWAP_${String(idx + 1).padStart(2, "0")}`,
+        name: m.name || "Member",
+        role: m.jobTitle || m.role || "Member",
+        company: m.currentCompany || m.company || "",
+        cohort: m.batchYear ? `Class of '${String(m.batchYear).slice(-2)}` : "",
+        location: m.department || "",
+        cosineMatch: Math.min(99, Math.round((m.score || 1) * 12)), // display only
         avatarUrl:
-          a.avatar ||
-          a.avatarUrl ||
+          m.avatarUrl ||
+          m.avatar ||
           "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
-        verified: Boolean(a.isVerified ?? true),
-        domain: a.domain || (a.department ? a.department.toUpperCase() : "DISTRIBUTED SYSTEMS"),
-        skills: Array.isArray(a.skills) ? a.skills : [],
-        slotsLabel: a.slotsLabel || "Available this week",
-        availableSlots: Array.isArray(a.availableSlots) ? a.availableSlots : ["10:00 AM", "10:15 AM", "11:30 AM"],
-        costFlash: a.costFlash ?? 30,
-        costDeep: a.costDeep ?? 50,
-        isBarter: Boolean(a.isBarter),
-      }));
-  }, [apiAlumni]);
+        verified: true,
+        domain: m.department ? String(m.department).toUpperCase() : "SKILL SWAP",
+        skills,
+        canTeachMe,
+        iCanTeachThem,
+        isPerfectMatch: Boolean(m.isPerfectMatch),
+        score: Number(m.score) || 0,
+        slotsLabel: m.totalVideos > 0 ? `${m.totalVideos} video${m.totalVideos === 1 ? "" : "s"}` : "Message to connect",
+        availableSlots: [],
+        costFlash: 0,
+        costDeep: 0,
+        isBarter: true,
+        freeVideos: m.freeVideos,
+        totalVideos: m.totalVideos,
+      };
+    });
+  }, [skillSwapData]);
 
   // Filtered mentors list
   const filteredMentors = useMemo(() => {
     return allMentors.filter((mentor) => {
-      // Domain filter
       if (activeDomain !== "ALL DOMAINS" && mentor.domain !== activeDomain) {
         return false;
       }
 
-      // Barter filter
-      if (durationMode === "0-CR Barter" && !mentor.isBarter) {
-        return false;
-      }
-
-      // Text search query
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
         const matchesName = mentor.name.toLowerCase().includes(query);
         const matchesCompany = mentor.company.toLowerCase().includes(query);
         const matchesRole = mentor.role.toLowerCase().includes(query);
-        const matchesSkills = mentor.skills.some((s) => s.toLowerCase().includes(query));
+        const matchesSkills =
+          mentor.canTeachMe.some((s) => s.toLowerCase().includes(query)) ||
+          mentor.iCanTeachThem.some((s) => s.toLowerCase().includes(query)) ||
+          mentor.skills.some((s) => s.toLowerCase().includes(query));
         return matchesName || matchesCompany || matchesRole || matchesSkills;
       }
 
       return true;
     });
-  }, [allMentors, activeDomain, durationMode, searchQuery]);
+  }, [allMentors, activeDomain, searchQuery]);
+
+  /** Create (or open) a chat thread and deep-link into /chat?thread=… */
+  const handleMessage = async (mentor: MentorFellow) => {
+    if (!user) {
+      if (typeof window !== "undefined") {
+        window.location.href = "/login?redirect=/mentorship";
+      }
+      return;
+    }
+    setMessagingId(mentor.id);
+    try {
+      const res = await apiClient.chat.createThread(mentor.id);
+      const threadId =
+        (res as any)?.thread?.id ||
+        (res as any)?.id ||
+        (res as any)?.threadId;
+      if (threadId) {
+        router.push(`/chat?thread=${encodeURIComponent(String(threadId))}`);
+      } else {
+        // Fallback: open chat with userId param
+        router.push(`/chat?userId=${encodeURIComponent(mentor.id)}&recipient=${encodeURIComponent(mentor.name)}`);
+      }
+    } catch (err) {
+      console.error("Failed to create chat thread:", err);
+      router.push(`/chat?userId=${encodeURIComponent(mentor.id)}&recipient=${encodeURIComponent(mentor.name)}`);
+    } finally {
+      setMessagingId(null);
+    }
+  };
 
   // Handle Dual-Handshake Completion Trigger
   const handleConfirmAndReleaseEscrow = async () => {
@@ -236,35 +289,32 @@ export function MentorshipContent() {
     setBookingSuccess(false);
   };
 
-  // Submit booking
+  // Submit booking via real mentorship.create endpoint
   const handleConfirmBooking = async () => {
     if (!bookingMentor || !auditTopic.trim()) return;
     setIsSubmittingBooking(true);
+    setBookingTxHash("");
 
     try {
-      await apiClient.mentorship.create({
+      const res = await apiClient.mentorship.create({
         mentorId: bookingMentor.id,
         area: auditArea,
         message: `[${durationMode}] Slot: ${selectedSlot} - Topic: ${auditTopic.trim()}`,
         durationMins: durationMode.includes("30-Min") ? 30 : 15,
         isDirectSwap: durationMode === "0-CR Barter",
       });
-
-      const randomHash = `0x${Array.from({ length: 12 }, () =>
-        Math.floor(Math.random() * 16).toString(16)
-      ).join("")}...${Array.from({ length: 4 }, () =>
-        Math.floor(Math.random() * 16).toString(16)
-      ).join("")}`;
-
-      setBookingTxHash(randomHash);
+      const id =
+        (res as any)?.mentorship?.id ||
+        (res as any)?.id ||
+        "";
+      setBookingTxHash(id ? `Request ${id}` : "Request submitted");
       setBookingSuccess(true);
       refreshMentorship();
     } catch (err: unknown) {
-      console.error("Booking failed, operating with fallback verification:", err);
-      // Fallback verification for demo fidelity
-      const randomHash = `0x8F92...B314`;
-      setBookingTxHash(randomHash);
-      setBookingSuccess(true);
+      console.error("Mentorship create failed:", err);
+      const msg = err instanceof Error ? err.message : "Could not create mentorship request";
+      setBookingTxHash(msg);
+      setBookingSuccess(false);
     } finally {
       setIsSubmittingBooking(false);
     }
@@ -735,57 +785,62 @@ export function MentorshipContent() {
             </div>
           </div>
 
-          {/* Verified Mentor Cards Grid (3 Columns) */}
+          {/* Skill-swap partner cards (from GET /matching/skill-swap) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredMentors.length === 0 ? (
+            {skillSwapLoading ? (
+              <div className="col-span-full flex items-center justify-center py-16 gap-3 font-mono text-sm text-[#8F8A7E]">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Finding skill-swap partners…
+              </div>
+            ) : filteredMentors.length === 0 ? (
               <div className="col-span-full">
                 <EmptyState
                   icon={Users}
-                  title="NO FELLOWS MATCH CRITERIA"
-                  body="Try adjusting your search query or selecting ALL DOMAINS."
+                  title="NO SKILL-SWAP MATCHES YET"
+                  body="Add skills you want to learn (and skills you can offer) in your profile. Matches appear when someone else’s offered skills overlap yours."
                   action={
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveDomain("ALL DOMAINS");
-                        setSearchQuery("");
-                        setDurationMode("15-Min Flash (30 CR)");
-                      }}
-                      className="mt-2 px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all"
-                    >
-                      RESET FILTERS
-                    </button>
+                    <div className="flex flex-wrap gap-2 justify-center mt-2">
+                      <Link
+                        href="/complete-profile"
+                        className="px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all"
+                      >
+                        UPDATE PROFILE SKILLS
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveDomain("ALL DOMAINS");
+                          setSearchQuery("");
+                        }}
+                        className="px-4 py-2 bg-white text-black font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#F7F4EE] cursor-pointer transition-all"
+                      >
+                        RESET FILTERS
+                      </button>
+                    </div>
                   }
                 />
               </div>
             ) : (
               filteredMentors.map((mentor) => {
-                const cost =
-                  durationMode === "30-Min Deep-Dive (50 CR)"
-                    ? mentor.costDeep
-                    : durationMode === "0-CR Barter"
-                    ? 0
-                    : mentor.costFlash;
-
                 return (
                   <article
                     key={mentor.id}
                     className="bg-white border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A] p-5 sm:p-6 flex flex-col justify-between gap-5 relative group hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#1A1A1A] transition-all"
                   >
                     <div className="flex flex-col gap-4">
-                      {/* Header Tag & Cosine Match Badge */}
+                      {/* Header Tag & Match Badge */}
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold shadow-[1px_1px_0_#1A1A1A]">
                           {mentor.recCode}
                         </span>
                         <span
                           className={`font-mono text-xs px-2 py-0.5 border-2 border-[#1A1A1A] font-black shadow-[1px_1px_0_#1A1A1A] ${
-                            mentor.cosineMatch >= 95
+                            mentor.isPerfectMatch
                               ? "bg-[#D9E021] text-black"
                               : "bg-[#e5e2dc] text-[#1A1A1A]"
                           }`}
                         >
-                          {mentor.cosineMatch}% COSINE MATCH
+                          {mentor.isPerfectMatch ? "PERFECT SWAP" : `SCORE ${mentor.score}`}
                         </span>
                       </div>
 
@@ -804,87 +859,102 @@ export function MentorshipContent() {
                               {mentor.name}
                             </h3>
                             {mentor.verified && (
-                              <span title="Verified Fellow">
+                              <span title="Verified">
                                 <UserCheck className="w-4 h-4 text-[#1D4ED8] shrink-0" />
                               </span>
                             )}
                           </div>
                           <span className="text-xs sm:text-sm text-[#1A1A1A] font-bold truncate mt-0.5">
-                            {mentor.company} // {mentor.role}
+                            {[mentor.company, mentor.role].filter(Boolean).join(" // ") || "Member"}
                           </span>
                           <span className="font-mono text-[11px] text-[#8F8A7E] font-medium mt-0.5">
-                            {mentor.cohort} • {mentor.location}
+                            {[mentor.cohort, mentor.location].filter(Boolean).join(" • ") || "—"}
                           </span>
                         </div>
                       </div>
 
-                      {/* Focus Skills Tags */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {mentor.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="font-mono text-[11px] px-2 py-0.5 bg-[#F7F4EE] text-[#1A1A1A] border border-[#1A1A1A] font-medium shadow-[1px_1px_0_#1A1A1A]"
-                          >
-                            {skill}
+                      {/* Skills they can teach you */}
+                      {mentor.canTeachMe.length > 0 && (
+                        <div className="flex flex-col gap-1.5">
+                          <span className="font-mono text-[10px] uppercase font-bold text-[#8F8A7E] tracking-wider">
+                            They can teach you
                           </span>
-                        ))}
-                      </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {mentor.canTeachMe.map((skill) => (
+                              <span
+                                key={`offer-${skill}`}
+                                className="font-mono text-[11px] px-2 py-0.5 bg-[#D9E021] text-[#1A1A1A] border border-[#1A1A1A] font-medium shadow-[1px_1px_0_#1A1A1A]"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
-                      {/* Availability & Slots */}
-                      <div className="p-3 bg-[#EFECE4] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[1px_1px_0_#1A1A1A]">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-[11px] text-[#8F8A7E] uppercase font-bold tracking-wider">
-                            SLOTS AVAILABLE
+                      {/* Skills you can teach them */}
+                      {mentor.iCanTeachThem.length > 0 && (
+                        <div className="flex flex-col gap-1.5">
+                          <span className="font-mono text-[10px] uppercase font-bold text-[#8F8A7E] tracking-wider">
+                            You can teach them
                           </span>
-                          <span className="font-mono text-xs text-[#FF5500] font-black">
-                            {mentor.slotsLabel}
-                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {mentor.iCanTeachThem.map((skill) => (
+                              <span
+                                key={`want-${skill}`}
+                                className="font-mono text-[11px] px-2 py-0.5 bg-[#F7F4EE] text-[#1A1A1A] border border-[#1A1A1A] font-medium shadow-[1px_1px_0_#1A1A1A]"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {mentor.availableSlots.map((slot) => (
-                            <button
-                              key={slot}
-                              type="button"
-                              onClick={() => handleOpenBooking(mentor, slot)}
-                              className="flex-1 min-w-[70px] py-1.5 px-2 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] font-mono text-xs font-bold text-center hover:bg-black hover:text-white transition-colors cursor-pointer shadow-[1px_1px_0_#1A1A1A]"
-                            >
-                              {slot}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                      )}
+
+                      {/* Fallback generic skills */}
+                      {mentor.canTeachMe.length === 0 &&
+                        mentor.iCanTeachThem.length === 0 &&
+                        mentor.skills.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5">
+                            {mentor.skills.map((skill) => (
+                              <span
+                                key={skill}
+                                className="font-mono text-[11px] px-2 py-0.5 bg-[#F7F4EE] text-[#1A1A1A] border border-[#1A1A1A] font-medium shadow-[1px_1px_0_#1A1A1A]"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                     </div>
 
-                    {/* Bottom Action Trigger */}
-                    {mentor.isBarter && durationMode === "0-CR Barter" ? (
+                    {/* Primary action: Message → Chat deep-link */}
+                    <div className="flex flex-col gap-2">
                       <button
                         type="button"
-                        onClick={() => handleOpenBooking(mentor)}
-                        className="w-full py-3 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#1A1A1A] hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                        onClick={() => handleMessage(mentor)}
+                        disabled={messagingId === mentor.id}
+                        className="w-full py-3 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                       >
-                        <span>APPLY FOR ADVICE</span>
-                        <span className="font-mono text-xs opacity-80">
-                          (APPLICATION ONLY)
-                        </span>
+                        {messagingId === mentor.id ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>OPENING CHAT…</span>
+                          </>
+                        ) : (
+                          <>
+                            <MessageSquare className="w-4 h-4" />
+                            <span>{user ? "MESSAGE" : "SIGN IN TO MESSAGE"}</span>
+                          </>
+                        )}
                       </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenBooking(mentor)}
-                        className="w-full py-3 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                      <Link
+                        href={`/directory/${mentor.id}`}
+                        className="w-full py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold text-xs text-center shadow-[2px_2px_0_#1A1A1A] hover:bg-[#F7F4EE] transition-colors"
                       >
-                        <span>
-                          {!user
-                            ? "SIGN IN TO SCHEDULE 1-ON-1"
-                            : durationMode.includes("30-Min")
-                            ? "RESERVE 30-MIN DEEP-DIVE"
-                            : "RESERVE 15-MIN FLASH"}
-                        </span>
-                        <span className="font-mono text-xs opacity-80">
-                          {user ? `(${cost} CR)` : "→"}
-                        </span>
-                      </button>
-                    )}
+                        VIEW PROFILE
+                      </Link>
+                    </div>
                   </article>
                 );
               })

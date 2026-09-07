@@ -1,20 +1,19 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   BriefcaseBusiness,
   MapPin,
-  CalendarDays,
   UserCheck,
   Share2,
-  Upload,
   Building2,
   CheckCircle2,
-  Clock,
-  Send,
-  Sparkles,
+  ExternalLink,
+  MessageSquare,
+  Loader2,
 } from "lucide-react";
 import { ErrorState, Skeleton } from "@/components/ui";
 import { useAuth } from "@/lib/context/AuthContext";
@@ -23,54 +22,55 @@ import { apiClient } from "@/lib/api/client";
 
 export function JobDetailContent({ id }: { id: string }) {
   const { user } = useAuth();
+  const router = useRouter();
   const { data: job, error, isLoading, refresh } = useApi(`job:${id}`, () =>
     apiClient.jobs.get(id)
   );
 
-  const [referralStatus, setReferralStatus] = useState<"none" | "pending" | "submitted">("none");
-  const [note, setNote] = useState("");
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [dragOver, setDragOver] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [messaging, setMessaging] = useState(false);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3500);
   }, []);
 
-  const handleSubmitReferral = useCallback(async () => {
-    if (!job) return;
-    setIsSubmitting(true);
-    setReferralStatus("pending");
-
-    try {
-      let uploadedUrl: string | undefined = undefined;
-      if (resumeFile) {
-        try {
-          const res = await apiClient.uploads.resume(resumeFile);
-          uploadedUrl = res.url;
-        } catch (uploadErr) {
-          console.debug("Resume upload skipped:", uploadErr);
-        }
-      }
-
-      await apiClient.referrals.create({
-        jobId: job.id,
-        studentNote: note || undefined,
-        resumeUrl: uploadedUrl || (user as { resumeUrl?: string } | null)?.resumeUrl || undefined,
-      });
-      setReferralStatus("submitted");
-      showToast("Referral request transmitted to verified alumni conduit!");
-    } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : "Request submitted! Status: Pending";
-      showToast(errorMsg);
-      setReferralStatus("submitted");
-    } finally {
-      setIsSubmitting(false);
+  /** Message the alumni who posted this job (if we have their id) */
+  const handleMessagePoster = useCallback(async () => {
+    const posterId = (job as any)?.postedById || (job as any)?.userId || (job as any)?.authorId;
+    if (!user) {
+      router.push(`/login?redirect=/jobs/${id}`);
+      return;
     }
-  }, [job, note, resumeFile, user, showToast]);
+    if (!posterId) {
+      // No poster id — open directory filtered by company
+      router.push(`/directory?company=${encodeURIComponent((job as any)?.company || "")}`);
+      return;
+    }
+    setMessaging(true);
+    try {
+      const res = await apiClient.chat.createThread(String(posterId));
+      const threadId =
+        (res as any)?.thread?.id || (res as any)?.id || (res as any)?.threadId;
+      if (threadId) {
+        router.push(`/chat?thread=${encodeURIComponent(String(threadId))}`);
+      } else {
+        router.push(
+          `/chat?userId=${encodeURIComponent(String(posterId))}&recipient=${encodeURIComponent(
+            (job as any)?.postedBy || "Alumni"
+          )}`
+        );
+      }
+    } catch {
+      router.push(
+        `/chat?userId=${encodeURIComponent(String(posterId))}&recipient=${encodeURIComponent(
+          (job as any)?.postedBy || "Alumni"
+        )}`
+      );
+    } finally {
+      setMessaging(false);
+    }
+  }, [job, user, router, id]);
 
   if (isLoading) {
     return (
@@ -98,8 +98,6 @@ export function JobDetailContent({ id }: { id: string }) {
   }
 
   if (!job) return null;
-
-  const isStudent = user?.role === "student" || (user?.role as string) === "STUDENT";
 
   const reqs = Array.isArray(job.requirements)
     ? job.requirements
@@ -177,9 +175,9 @@ export function JobDetailContent({ id }: { id: string }) {
                   <span className="flex items-center gap-1 font-bold">
                     <MapPin size={13} /> {job.location}
                   </span>
-                  {job.referralAvailable && (
+                  {(job as any).applyLink && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-900 font-bold text-[10px] uppercase">
-                      <UserCheck size={12} /> Direct Referral Open
+                      <ExternalLink size={12} /> External Apply Available
                     </span>
                   )}
                 </div>
@@ -239,107 +237,54 @@ export function JobDetailContent({ id }: { id: string }) {
               </section>
             )}
 
-            {/* Referral Form (Student Action) */}
-            {isStudent && job.referralAvailable && referralStatus === "none" && (
-              <section className="p-6 bg-[#F7F4EE] border-2 border-black space-y-4 shadow-[4px_4px_0px_#000000]">
-                <div className="flex items-center gap-2 border-b border-black pb-3">
-                  <UserCheck size={18} className="text-[#FF5500]" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-black">
-                    REQUEST DIRECT ALUMNI REFERRAL
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  {/* File Upload Dropzone */}
-                  <div
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setDragOver(true);
-                    }}
-                    onDragLeave={() => setDragOver(false)}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setDragOver(false);
-                      const file = e.dataTransfer.files?.[0];
-                      if (file) setResumeFile(file);
-                    }}
-                    onClick={() => fileInputRef.current?.click()}
-                    className={`flex cursor-pointer flex-col items-center gap-2 p-6 text-center border-2 border-dashed border-black transition-colors ${
-                      dragOver ? "bg-[#CCFF00]" : "bg-white hover:bg-neutral-50"
-                    }`}
-                  >
-                    <Upload size={22} className="text-black" />
-                    {resumeFile ? (
-                      <div>
-                        <p className="text-xs font-bold text-black">{resumeFile.name}</p>
-                        <p className="text-[10px] text-emerald-700 font-bold uppercase">Ready for transmission</p>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="text-xs font-bold text-black uppercase">DROP RESUME (PDF / DOCX)</p>
-                        <p className="text-[10px] text-neutral-500 uppercase">Or click to select from system</p>
-                      </>
-                    )}
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      className="sr-only"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) setResumeFile(file);
-                      }}
-                    />
-                  </div>
-
-                  {/* Note Input */}
-                  <div>
-                    <label htmlFor="referral-note" className="block text-[11px] font-bold uppercase text-neutral-700 mb-1">
-                      Candidate Briefing Note:
-                    </label>
-                    <textarea
-                      id="referral-note"
-                      rows={3}
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                      placeholder="Summarize your key projects, GPA, or relevant systems built..."
-                      className="w-full bg-white border-2 border-black p-3 text-xs font-mono outline-none focus:ring-0 shadow-inner"
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleSubmitReferral}
-                    disabled={isSubmitting}
-                    className="w-full py-3 px-4 bg-[#FF5500] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Clock size={16} className="animate-spin" />
-                        <span>Transmitting Packet...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send size={16} />
-                        <span>Transmit Referral Request →</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </section>
-            )}
-
-            {referralStatus === "submitted" && (
-              <div className="p-6 bg-[#CCFF00] border-2 border-black text-black space-y-2 shadow-[4px_4px_0px_#000000]">
-                <div className="flex items-center gap-2 font-bold text-xs uppercase">
-                  <CheckCircle2 size={18} />
-                  <span>TRANSMISSION CONFIRMED</span>
-                </div>
-                <p className="text-xs font-sans text-neutral-800">
-                  Your referral portfolio has been routed to the alumni at {job.company}. You will receive a system notification once reviewed.
-                </p>
+            {/* Apply + Message Alumni CTAs (no referral pipeline) */}
+            <section className="p-6 bg-[#F7F4EE] border-2 border-black space-y-4 shadow-[4px_4px_0px_#000000]">
+              <div className="flex items-center gap-2 border-b border-black pb-3">
+                <UserCheck size={18} className="text-[#FF5500]" />
+                <span className="text-xs font-bold uppercase tracking-wider text-black">
+                  Next steps
+                </span>
               </div>
-            )}
+              <p className="text-xs font-sans text-neutral-700">
+                Apply on the company site, or message alumni who work there for informal advice.
+                There is no tracked referral workflow — conversations live in Chat.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                {(job as any).applyLink ? (
+                  <a
+                    href={(job as any).applyLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-3 px-4 bg-[#FF5500] hover:bg-orange-600 text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <ExternalLink size={16} />
+                    Apply on company site
+                  </a>
+                ) : (
+                  <div className="flex-1 py-3 px-4 bg-neutral-200 text-neutral-600 border-2 border-black font-mono font-bold text-xs uppercase flex items-center justify-center gap-2">
+                    No external apply link
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={handleMessagePoster}
+                  disabled={messaging}
+                  className="flex-1 py-3 px-4 bg-black hover:bg-[#1A1A1A] text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                >
+                  {messaging ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      Opening chat…
+                    </>
+                  ) : (
+                    <>
+                      <MessageSquare size={16} />
+                      Message alumni in Chat
+                    </>
+                  )}
+                </button>
+              </div>
+            </section>
           </div>
 
           {/* Sidebar */}
