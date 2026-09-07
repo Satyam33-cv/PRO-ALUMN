@@ -82,7 +82,7 @@ function scoreCandidate(student, candidate, cosineSim) {
 // Student-facing: top 5 alumni by composite score against the student's profile.
 // Query params: department, company (both narrow the eligible pool, they never
 // re-rank it), minScore (override MIN_SIMILARITY).
-router.get('/top-alumni', authenticate, requireRole('STUDENT'), async (req, res) => {
+router.get('/top-alumni', authenticate, async (req, res) => {
   try {
     const student = await getUserContext(req.user.id);
     if (!student) return res.status(404).json({ error: 'User not found' });
