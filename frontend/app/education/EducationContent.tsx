@@ -253,10 +253,10 @@ export function EducationContent({
         <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="bg-black text-white px-2.5 py-1 font-bold shadow-[2px_2px_0px_#1A1A1A]">
-              [ PILLAR // 07 ]
+              [ Education ]
             </span>
             <span className="uppercase text-[#FF5500] font-black tracking-wider">
-              ACADEMIC REPOSITORY &amp; SPECIALIZED RUNTIMES
+              Learning
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -271,10 +271,10 @@ export function EducationContent({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-1">
           <div>
             <h1 className="text-3xl sm:text-5xl font-black text-[#1A1A1A] tracking-tight">
-              Education &amp; Technical Sprint Center
+              Education & sprints
             </h1>
             <p className="text-sm sm:text-base text-[#635F57] max-w-4xl mt-2 leading-relaxed">
-              High-velocity engineering protocols, tactical interview blueprints, and peer-reviewed architectural case studies verified by alumni fellows.
+              Short technical sprints and masterclasses from alumni.
             </p>
           </div>
 
@@ -349,7 +349,7 @@ export function EducationContent({
       <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 font-mono">
         <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
           <div className="flex items-center justify-between text-[#8F8A7E]">
-            <span className="text-[11px] font-bold">METRIC // 01</span>
+            <span className="text-[11px] font-bold">Sprints</span>
             <Terminal size={18} className="text-[#1A1A1A]" />
           </div>
           <div className="my-3">
@@ -364,7 +364,7 @@ export function EducationContent({
 
         <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
           <div className="flex items-center justify-between text-[#8F8A7E]">
-            <span className="text-[11px] font-bold">METRIC // 02</span>
+            <span className="text-[11px] font-bold">Completion</span>
             <Activity size={18} className="text-[#1A1A1A]" />
           </div>
           <div className="my-3">
@@ -382,7 +382,7 @@ export function EducationContent({
 
         <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
           <div className="flex items-center justify-between text-[#8F8A7E]">
-            <span className="text-[11px] font-bold">METRIC // 03</span>
+            <span className="text-[11px] font-bold">Credits</span>
             <Coins size={18} className="text-[#FF5500]" />
           </div>
           <div className="my-3">
@@ -399,15 +399,15 @@ export function EducationContent({
 
         <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#1D4ED8]">INTEGRITY // V4</span>
+            <span className="text-[11px] font-bold text-[#1D4ED8]">Integrity</span>
             <ShieldCheck size={18} className="text-[#1D4ED8]" />
           </div>
           <div className="my-3">
             <span className="text-base sm:text-lg font-black text-[#1A1A1A] leading-tight block">
-              Anti-Cheat Watchdog
+              Session checks
             </span>
             <span className="text-xs text-[#635F57] block mt-1 leading-relaxed">
-              FIPS 140-3 Cryptographic active process tracing with zero false positives.
+              Basic activity checks during live sessions.
             </span>
           </div>
           <div className="flex items-center justify-between pt-2 bg-[#F7F4EE] border border-[#1A1A1A] px-2.5 py-1 text-[11px]">
@@ -531,7 +531,7 @@ export function EducationContent({
               <span className="text-[#8F8A7E] uppercase font-bold">ACTIVE REPOSITORY</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-[#1A1A1A] tracking-tight mt-1">
-              Curated Engineering Sprints
+              Engineering sprints
             </h2>
           </div>
 
@@ -625,7 +625,7 @@ export function EducationContent({
                     className="px-4 py-2 bg-black text-white border-2 border-[#1A1A1A] font-bold uppercase hover:bg-[#FF5500] transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
                     type="button"
                   >
-                    ENROLL RUNTIME →
+                    Enroll →
                   </button>
                 </div>
               </div>
@@ -643,7 +643,7 @@ export function EducationContent({
               <span className="text-[#8F8A7E] uppercase font-bold">ALUMNI MASTERCLASSES</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-[#1A1A1A] tracking-tight mt-1">
-              Technical Masterclasses &amp; Video Runbooks
+              Masterclasses & videos
             </h2>
             <p className="text-sm text-[#635F57] max-w-2xl mt-0.5">
               Watch deep-dive walkthroughs uploaded by verified alumni fellows or redeem your ALUMN-CR points.
@@ -773,7 +773,7 @@ export function EducationContent({
           <div className="flex items-center gap-2">
             <span className="bg-black text-white px-2.5 py-0.5 font-bold">INDEX // 03</span>
             <span className="text-[#FF5500] font-black uppercase">
-              PROOF OF COMPLETION &amp; WATCHDOG ARCHITECTURE
+              Completion
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -789,7 +789,7 @@ export function EducationContent({
                 <span>STAGE 01 // TELEMETRY</span>
                 <Cpu size={16} className="text-[#1A1A1A]" />
               </div>
-              <h4 className="text-lg font-black text-[#1A1A1A]">Heartbeat Watchdog</h4>
+              <h4 className="text-lg font-black text-[#1A1A1A]">Activity check</h4>
               <p className="text-xs text-[#635F57] leading-relaxed">
                 Continuous keystroke entropy and interactive terminal session checks verify human execution. Minimum threshold: &gt;90% active retention.
               </p>
@@ -806,7 +806,7 @@ export function EducationContent({
                 <span>STAGE 02 // VALIDATION</span>
                 <ShieldCheck size={16} className="text-[#1A1A1A]" />
               </div>
-              <h4 className="text-lg font-black text-[#1A1A1A]">Peer Code Review Sign-Off</h4>
+              <h4 className="text-lg font-black text-[#1A1A1A]">Peer review</h4>
               <p className="text-xs text-[#635F57] leading-relaxed">
                 Two calibrated alumni fellows grade commit diffs against unit test coverage, AST linting, and benchmark latency guarantees.
               </p>
@@ -823,7 +823,7 @@ export function EducationContent({
                 <span>STAGE 03 // CREDENTIAL</span>
                 <Award size={16} className="text-[#1A1A1A]" />
               </div>
-              <h4 className="text-lg font-black text-[#1A1A1A]">Cryptographic Certificate</h4>
+              <h4 className="text-lg font-black text-[#1A1A1A]">Certificate</h4>
               <p className="text-xs text-[#635F57] leading-relaxed">
                 ECDSA P-384 signed root with immutable ledger timestamp. Downloadable JSON-LD and PDF cryptographic credentials.
               </p>

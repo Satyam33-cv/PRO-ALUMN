@@ -260,7 +260,7 @@ export function EventListContent() {
         <div className="flex items-center gap-2">
           <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse" />
           <span className="font-extrabold text-black uppercase tracking-wider">
-            [PILLAR // 04] PROTOCOL 05 // SYNCHRONOUS ALUMNI REUNIONS &amp; HARDWARE CAPACITY LOCKS
+            Events
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -283,17 +283,17 @@ export function EventListContent() {
           <div className="flex flex-col gap-2 max-w-4xl">
             <div className="flex items-center gap-2 font-mono text-xs">
               <span className="px-2 py-0.5 bg-[#CCFF00] text-black font-extrabold border border-black uppercase shadow-[1px_1px_0px_#000000]">
-                ASSEMBLAGE ENGINE
+                Events
               </span>
               <span className="text-neutral-500 font-semibold">
                 HASH // CLUSTER_TXN_0x9924
               </span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black text-black tracking-tight font-sans">
-              Events, Reunions &amp; Capacity RSVPs
+              Events & reunions
             </h1>
             <p className="text-sm sm:text-base text-neutral-700 mt-1 leading-relaxed font-sans">
-              Capacity-gated 1-click registration using serializable database transactions to guarantee zero overbooking. Seamless sync with Google Calendar and offline encrypted QR wallet admission.
+              Browse upcoming alumni events and RSVP in one click.
             </p>
           </div>
 
@@ -329,7 +329,7 @@ export function EventListContent() {
           {/* Metric 01 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">ACTIVE ASSEMBLAGES</span>
+              <span className="text-[10px] font-bold uppercase">Upcoming events</span>
               <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F4EE] text-black font-bold border border-black">
                 01
               </span>
@@ -346,7 +346,7 @@ export function EventListContent() {
           {/* Metric 02 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">SECURED PASSES</span>
+              <span className="text-[10px] font-bold uppercase">Your passes</span>
               <span className="text-[10px] px-1.5 py-0.5 bg-[#CCFF00] text-black font-bold border border-black">
                 ACTIVE
               </span>
@@ -365,7 +365,7 @@ export function EventListContent() {
           {/* Metric 03 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">ATOMIC INTEGRITY</span>
+              <span className="text-[10px] font-bold uppercase">Open seats</span>
               <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F4EE] text-[#2E5BFF] font-bold border border-black">
                 ACID
               </span>
@@ -382,7 +382,7 @@ export function EventListContent() {
           {/* Metric 04 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">MEDIAN ATTENDANCE</span>
+              <span className="text-[10px] font-bold uppercase">Typical turnout</span>
               <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F4EE] text-black font-bold border border-black">
                 TELEMETRY
               </span>
@@ -405,7 +405,7 @@ export function EventListContent() {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse" />
             <span className="font-extrabold uppercase tracking-widest text-[#CCFF00]">
-              ANNUAL FLAGSHIP ASSEMBLAGE // COHORT CLUSTER ALPHA
+              Featured event
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -525,7 +525,7 @@ export function EventListContent() {
 
               <div className="flex items-center justify-between text-[11px] text-neutral-600 font-bold">
                 <span>{flagshipSeatsRemaining} SEATS REMAINING</span>
-                <span className="text-neutral-500 uppercase">ZERO-OVERBOOK GUARANTEE</span>
+                <span className="text-neutral-500 uppercase">Limited seats</span>
               </div>
             </div>
 
@@ -547,7 +547,7 @@ export function EventListContent() {
                 type="button"
               >
                 <CheckCircle2 size={18} className="text-[#00E676]" />
-                <span>RSVP CONFIRMED • PASS IN WALLET</span>
+                <span>RSVP confirmed</span>
               </button>
 
               <div className="grid grid-cols-3 gap-2">
@@ -576,7 +576,7 @@ export function EventListContent() {
                   type="button"
                 >
                   <QrCode size={14} className="text-black" />
-                  <span className="text-[10px]">VIEW QR PASS</span>
+                  <span className="text-[10px]">View pass</span>
                 </button>
               </div>
             </div>
@@ -593,7 +593,7 @@ export function EventListContent() {
               DRAWER // 02
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-black font-sans tracking-tight">
-              Your Registered Passes &amp; Enclave Admissions
+              Your event passes
             </h2>
           </div>
           <div className="flex items-center gap-2 font-mono text-xs text-neutral-600 font-bold">
@@ -604,8 +604,8 @@ export function EventListContent() {
 
         {registeredPasses.length === 0 ? (
           <div className="p-8 bg-white border-2 border-black text-center font-mono text-xs">
-            <p className="font-bold text-neutral-600">No active passes in your offline wallet.</p>
-            <p className="text-neutral-500 mt-1">Register for an assemblage below to generate your cryptographic admission badge.</p>
+            <p className="font-bold text-neutral-600">You have no event passes yet.</p>
+            <p className="text-neutral-500 mt-1">RSVP to an event below to get a pass.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -702,13 +702,13 @@ export function EventListContent() {
         )}
       </section>
 
-      {/* 5. BROWSE ASSEMBLAGES & FILTER PROTOCOL */}
+      {/* 5. BROWSE ASSEMBLAGES & Filters */}
       <section className="flex flex-col gap-6">
         <div className="flex flex-col gap-4 border-2 border-black bg-[#F7F4EE] p-4 sm:p-6 shadow-[4px_4px_0px_#000000] font-mono text-xs">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black pb-2">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">FILTER PROTOCOL</span>
-              <span className="font-bold text-neutral-600 uppercase">CAPACITY INDEX QUERYING</span>
+              <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">Filters</span>
+              <span className="font-bold text-neutral-600 uppercase">Browse events</span>
             </div>
             <span className="text-neutral-500 font-bold">
               QUERY EXEC: 1.2ms (SERIALIZABLE CACHE)
@@ -747,7 +747,7 @@ export function EventListContent() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Query assemblages by title, hall enclave, or fellow keywords..."
+                placeholder="Search events by title or location…"
                 className="w-full bg-white border-2 border-black px-3 py-2 text-xs font-mono text-black placeholder:text-neutral-500 focus:outline-none focus:bg-[#FFFDE7]"
               />
               <span className="absolute right-3 top-2.5 px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] text-neutral-600 font-bold pointer-events-none">
@@ -775,7 +775,7 @@ export function EventListContent() {
         {filteredAssemblages.length === 0 ? (
           <EmptyState
             icon={Calendar}
-            title="NO ASSEMBLAGES MATCH QUERY PARAMETERS"
+            title="No events match your filters"
             body="Try switching your category filter or resetting your search term."
             action={
               <button
@@ -868,7 +868,7 @@ export function EventListContent() {
                   <div className="pt-4 border-t-2 border-black space-y-3 font-mono text-xs">
                     <div className="space-y-1">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-neutral-500 font-bold uppercase">CAPACITY LOCK</span>
+                        <span className="text-neutral-500 font-bold uppercase">Capacity</span>
                         <span className="font-black text-black">
                           {item.reservedCount} / {item.totalCapacity} ({capacityPct}%)
                         </span>
@@ -883,7 +883,7 @@ export function EventListContent() {
                       </div>
                       <div className="flex items-center justify-between text-[10px] text-neutral-600 font-semibold">
                         <span>{seatsLeft} SEATS REMAINING</span>
-                        <span className="text-[#00A859] font-bold">SERIALIZABLE TXN</span>
+                        <span className="text-[#00A859] font-bold">Open</span>
                       </div>
                     </div>
 
@@ -904,7 +904,7 @@ export function EventListContent() {
                           type="button"
                         >
                           <Ticket size={14} />
-                          <span>1-CLICK RSVP PROTOCOL →</span>
+                          <span>RSVP →</span>
                         </button>
                       )}
 
@@ -1108,7 +1108,7 @@ export function EventListContent() {
           <div className="relative w-full max-w-md bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col gap-4 font-mono text-xs">
             <div className="flex items-center justify-between border-b-2 border-black pb-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-[#2E5BFF] text-white font-bold">CALENDAR PROTOCOL</span>
+                <span className="px-2 py-0.5 bg-[#2E5BFF] text-white font-bold">Calendar</span>
                 <span className="font-extrabold text-black font-sans uppercase">Google Calendar Sync</span>
               </div>
               <button
