@@ -191,96 +191,174 @@ router.post('/sync-me', authenticate, async (req, res) => {
   }
 });
 
+// =================== SKILL SWAP HELPERS ===================
+function parseSkills(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.map((s) => String(s).trim()).filter(Boolean);
+  return String(val)
+    .split(/[,;\n]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function normalizeSkill(s) {
+  return s.trim().toLowerCase().replace(/\.js$/i, '');
+}
+
+function intersection(listA, listB) {
+  const setB = new Set(listB.map((s) => s.trim().toLowerCase()).filter(Boolean));
+  const setBNorm = new Set(listB.map((s) => normalizeSkill(s)).filter(Boolean));
+
+  const matched = [];
+  const seen = new Set();
+  for (const item of listA) {
+    const trimmed = item.trim();
+    const lower = trimmed.toLowerCase();
+    const norm = normalizeSkill(trimmed);
+    if (!lower || seen.has(lower)) continue;
+
+    if (setB.has(lower) || setBNorm.has(norm)) {
+      seen.add(lower);
+      matched.push(trimmed);
+    }
+  }
+  return matched;
+}
+
+function extractOfferedSkills(u) {
+  const explicit = parseSkills(u.skillsOffered);
+  if (explicit.length > 0) return explicit;
+  return parseSkills(u.skills);
+}
+
+function extractWantedSkills(u) {
+  const explicit = parseSkills(u.skillsWanted);
+  if (explicit.length > 0) return explicit;
+  return parseSkills(u.interests);
+}
+
 // =================== GET /api/matching/skill-swap ===================
-// Find users whose skillsOffered match the current user's skillsWanted (and vice-versa)
-// Also returns their uploaded video counts for the Skill Swap UI
+// Find approved & verified peers where there is real skill overlap:
+// - They offer what current user wants, or
+// - Current user offers what they want
+// Transparent, explainable, pure read endpoint with no side-effects or invented theater.
 router.get('/skill-swap', authenticate, async (req, res) => {
   try {
-    const currentUser = await prisma.user.findUnique({
+    const current = await prisma.user.findUnique({
       where: { id: req.user.id },
-      select: { id: true, skillsOffered: true, skillsWanted: true },
+      select: {
+        id: true,
+        department: true,
+        skills: true,
+        skillsOffered: true,
+        skillsWanted: true,
+        interests: true,
+      },
     });
 
-    if (!currentUser) return res.status(404).json({ error: 'User not found' });
+    if (!current) return res.status(401).json({ error: 'Unauthorized' });
 
-    const myWanted = (currentUser.skillsWanted || '')
-      .split(',')
-      .map(s => s.trim().toLowerCase())
-      .filter(Boolean);
-    const myOffered = (currentUser.skillsOffered || '')
-      .split(',')
-      .map(s => s.trim().toLowerCase())
-      .filter(Boolean);
+    const limit = Math.min(Math.max(Number(req.query.limit) || 12, 1), 30);
+    const minScore = Number.isFinite(Number(req.query.minScore)) ? Number(req.query.minScore) : 1;
+    const skillFilter = req.query.skill ? String(req.query.skill).trim().toLowerCase() : null;
+    const deptFilter = req.query.department ? String(req.query.department).trim() : null;
 
-    if (myWanted.length === 0) {
-      return res.json({ matches: [], message: 'Add skills you want to learn in your profile to find swap partners.' });
+    const myOffered = extractOfferedSkills(current);
+    const myWanted = extractWantedSkills(current);
+
+    if (myWanted.length === 0 && myOffered.length === 0) {
+      return res.json({
+        matches: [],
+        message: 'Add skills you offer or skills you want to learn to your profile to find skill swap partners.',
+      });
     }
 
-    // Find all active, verified users (except self) who have skillsOffered populated
     const candidates = await prisma.user.findMany({
       where: {
         id: { not: req.user.id },
-        isActive: true,
+        profileStatus: 'APPROVED',
         isVerified: true,
-        skillsOffered: { not: null },
+        isActive: true,
+        ...(deptFilter ? { department: { equals: deptFilter, mode: 'insensitive' } } : {}),
       },
       select: {
-        id: true, name: true, avatarUrl: true, role: true,
-        batchYear: true, department: true, currentCompany: true, jobTitle: true,
-        skillsOffered: true, skillsWanted: true,
-        videos: {
-          where: { status: 'APPROVED' },
-          select: { id: true, price: true },
-        },
+        id: true,
+        name: true,
+        department: true,
+        currentCompany: true,
+        jobTitle: true,
+        role: true,
+        avatarUrl: true,
+        skillsOffered: true,
+        skillsWanted: true,
+        skills: true,
+        interests: true,
       },
     });
 
-    // Score each candidate: how many of their offered skills match my wanted skills
-    const scored = candidates.map(c => {
-      const theirOffered = (c.skillsOffered || '')
-        .split(',')
-        .map(s => s.trim().toLowerCase())
-        .filter(Boolean);
-      const theirWanted = (c.skillsWanted || '')
-        .split(',')
-        .map(s => s.trim().toLowerCase())
-        .filter(Boolean);
+    const results = [];
 
-      // Skills they can teach me (their offered ∩ my wanted)
-      const canTeachMe = theirOffered.filter(s => myWanted.includes(s));
-      // Skills I can teach them (my offered ∩ their wanted) — for "perfect match" detection
-      const iCanTeachThem = myOffered.filter(s => theirWanted.includes(s));
-      const isPerfectMatch = canTeachMe.length > 0 && iCanTeachThem.length > 0;
+    for (const c of candidates) {
+      const offered = extractOfferedSkills(c);
+      const wanted = extractWantedSkills(c);
 
-      const freeVideos = c.videos.filter(v => v.price === 0).length;
-      const premiumVideos = c.videos.filter(v => v.price > 0).length;
-      const totalVideos = c.videos.length;
+      const theyOfferYou = intersection(myWanted, offered);
+      const youOfferThem = intersection(myOffered, wanted);
 
-      return {
+      const raw = theyOfferYou.length + youOfferThem.length;
+      if (raw < minScore) continue;
+
+      // Optional skill filter
+      if (skillFilter) {
+        const all = [...theyOfferYou, ...youOfferThem].map((s) => s.toLowerCase());
+        const normFilter = normalizeSkill(skillFilter);
+        const hasSkill = all.some((s) => s === skillFilter || normalizeSkill(s) === normFilter);
+        if (!hasSkill) continue;
+      }
+
+      const isSharedDept = Boolean(
+        current.department &&
+        c.department &&
+        current.department.trim().toLowerCase() === c.department.trim().toLowerCase()
+      );
+
+      const score = Math.min(raw, 6) + (isSharedDept ? 0.5 : 0);
+
+      const reasons = [];
+      if (theyOfferYou.length > 0 && youOfferThem.length > 0) {
+        reasons.push('Mutual 2-way skill swap');
+      }
+      if (theyOfferYou.length > 0) {
+        reasons.push(`Offers: ${theyOfferYou.slice(0, 3).join(', ')}`);
+      }
+      if (youOfferThem.length > 0) {
+        reasons.push(`Wants: ${youOfferThem.slice(0, 3).join(', ')} from you`);
+      }
+      if (isSharedDept) {
+        reasons.push(`Same department (${c.department})`);
+      }
+
+      results.push({
         id: c.id,
         name: c.name,
-        avatarUrl: c.avatarUrl,
-        role: c.role,
-        batchYear: c.batchYear,
-        department: c.department,
-        currentCompany: c.currentCompany,
-        jobTitle: c.jobTitle,
-        skillsOffered: c.skillsOffered,
-        skillsWanted: c.skillsWanted,
-        canTeachMe,
-        iCanTeachThem,
-        isPerfectMatch,
-        freeVideos,
-        premiumVideos,
-        totalVideos,
-        score: canTeachMe.length + (isPerfectMatch ? 5 : 0), // bonus for perfect match
-      };
-    })
-    .filter(c => c.score > 0) // Only show candidates who can teach me something
-    .sort((a, b) => b.score - a.score) // Best matches first
-    .slice(0, 20);
+        department: c.department || null,
+        company: c.currentCompany || null,
+        currentCompany: c.currentCompany || null,
+        jobTitle: c.jobTitle || null,
+        role: c.role || null,
+        avatarUrl: c.avatarUrl || null,
+        score,
+        matchScore: Math.min(100, Math.round((score / 6.5) * 100)),
+        skillsTheyOfferYou: theyOfferYou,
+        skillsYouOfferThem: youOfferThem,
+        sharedDepartment: isSharedDept,
+        isMutualSwap: theyOfferYou.length > 0 && youOfferThem.length > 0,
+        reasons,
+      });
+    }
 
-    res.json({ matches: scored });
+    results.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+    res.json({ matches: results.slice(0, limit) });
   } catch (err) {
     console.error('GET /matching/skill-swap error:', err);
     res.status(500).json({ error: 'Failed to find skill swap matches' });

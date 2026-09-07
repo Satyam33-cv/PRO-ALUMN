@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import type { Alumni, AuthSession, EventItem, EventDetailItem, Job, LoginInput, ReferralRequest, RegisterInput, User } from "./types";
+import type { Alumni, AuthSession, EventItem, EventDetailItem, Job, LoginInput, ReferralRequest, RegisterInput, SkillSwapMatch, User } from "./types";
 
 export const apiClient = {
   auth: {
@@ -392,8 +392,17 @@ export const apiClient = {
     topAlumni: async (): Promise<{ student: unknown; alumni: unknown[] }> => {
       return await apiFetch<{ student: unknown; alumni: unknown[] }>({ method: "GET", url: "/matching/top-alumni" });
     },
-    skillSwap: async (): Promise<{ matches: unknown[] }> => {
-      return await apiFetch<{ matches: unknown[] }>({ method: "GET", url: "/matching/skill-swap" });
+    skillSwap: async (params?: { limit?: number; skill?: string; department?: string; minScore?: number }): Promise<{ matches: SkillSwapMatch[]; message?: string }> => {
+      const searchParams = new URLSearchParams();
+      if (params?.limit) searchParams.set("limit", String(params.limit));
+      if (params?.skill) searchParams.set("skill", params.skill);
+      if (params?.department) searchParams.set("department", params.department);
+      if (params?.minScore) searchParams.set("minScore", String(params.minScore));
+      const qs = searchParams.toString();
+      return await apiFetch<{ matches: SkillSwapMatch[]; message?: string }>({
+        method: "GET",
+        url: `/matching/skill-swap${qs ? `?${qs}` : ""}`,
+      });
     },
   },
   mentorship: {

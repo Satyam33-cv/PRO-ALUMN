@@ -240,3 +240,23 @@ export type Newsletter = {
   updatedAt?: string;
 };
 
+// =================== SKILL SWAP MATCHING ===================
+export type SkillSwapMatch = {
+  id: string;
+  name: string;
+  department?: string | null;
+  company?: string | null;
+  currentCompany?: string | null;
+  jobTitle?: string | null;
+  role?: string | null;
+  avatarUrl?: string | null;
+  score: number;
+  matchScore: number;
+  skillsTheyOfferYou: string[];
+  skillsYouOfferThem: string[];
+  sharedDepartment: boolean;
+  isMutualSwap: boolean;
+  reasons: string[];
+};
+
+
