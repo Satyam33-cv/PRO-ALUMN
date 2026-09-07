@@ -138,12 +138,30 @@ router.post('/verify-evidence', authenticate, async (req, res) => {
         idCardUrl: idCardUrl || user.idCardUrl,
         rejectionReason: null,
       },
+      select: {
+        id: true, name: true, email: true, role: true, profileStatus: true,
+        verificationMethod: true, isVerified: true,
+      },
     });
+
+    // Re-issue JWT so middleware sees PENDING (not stale INCOMPLETE)
+    const jwt = require('jsonwebtoken');
+    const token = jwt.sign(
+      {
+        id: updated.id,
+        email: updated.email,
+        role: updated.role,
+        profileStatus: updated.profileStatus,
+      },
+      process.env.JWT_SECRET || 'dev-secret-change-me',
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
 
     res.json({
       success: true,
       message: 'Verification evidence submitted. Your profile is now under campus admin review.',
       user: updated,
+      token,
     });
   } catch (err) {
     console.error('POST /users/verify-evidence error:', err);

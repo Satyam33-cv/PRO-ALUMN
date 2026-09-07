@@ -259,7 +259,7 @@ export function RoleShell({
 
   const displayName = user?.name || "Member";
   const displayRoleLabel =
-    role === "admin"
+    String(role).toLowerCase() === "admin"
       ? "SUPER ADMIN // CORE DISPATCH"
       : role === "alumni"
       ? `ALUMNI SPONSOR • COHORT '${user?.classYear ? user.classYear.slice(-2) : "22"}`
@@ -309,7 +309,7 @@ export function RoleShell({
             INDEX PROTOCOLS
           </span>
           <span className="font-mono text-[11px] text-neutral-500">
-            [{PROTOCOLS.filter((p) => !p.adminOnly || role === "admin").length.toString().padStart(2, "0")}]
+            [{PROTOCOLS.filter((p) => !p.adminOnly || String(role).toLowerCase() === "admin").length.toString().padStart(2, "0")}]
           </span>
         </div>
 
@@ -318,7 +318,7 @@ export function RoleShell({
           {PROTOCOLS.map((p) => {
             const active = isProtocolActive(p.href);
             // If adminOnly, still visible if user is admin or as preview
-            if (p.adminOnly && role !== "admin") return null;
+            if (p.adminOnly && String(role).toLowerCase() !== "admin") return null;
 
             return (
               <Link

@@ -23,6 +23,7 @@ import {
   Lock,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
+import { saveSession, getSession } from "@/lib/auth";
 
 interface CompleteProfileUser {
   name?: string | null;
@@ -162,6 +163,18 @@ export default function CompleteProfilePage() {
       });
 
       if (res.success) {
+        const tok = (res as { token?: string }).token;
+        if (tok) {
+          const prev = getSession() || {};
+          saveSession({
+            ...prev,
+            token: tok,
+            user: (res as { user?: unknown }).user || (prev as { user?: unknown }).user,
+          } as Parameters<typeof saveSession>[0]);
+          if (typeof document !== "undefined") {
+            document.cookie = `pro-alumn_token=${tok}; path=/; max-age=${7 * 24 * 3600}; SameSite=Lax`;
+          }
+        }
         showToast("Payment verified! Profile submitted for admin approval.");
         router.push("/verify-profile");
       } else {

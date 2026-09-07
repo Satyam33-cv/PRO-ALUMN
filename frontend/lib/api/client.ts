@@ -12,13 +12,17 @@ export const apiClient = {
     me: async (): Promise<User> => {
       return await apiFetch<{ user: User }>({ method: "GET", url: "/users/me" }).then((res) => res.user);
     },
+    /** One-time: promote current user to ADMIN if no admin exists yet */
+    bootstrapAdmin: async (): Promise<{ success: boolean; token?: string; user?: User; message?: string }> => {
+      return await apiFetch({ method: "POST", url: "/auth/bootstrap-admin" });
+    },
   },
   users: {
     updateProfile: async (data: Partial<User>) => {
       return await apiFetch<{ user: User }>({ method: "PATCH", url: "/users/me", data }).then((res) => res.user);
     },
     verifyEvidence: async (data: { method: "college_email" | "id_upload" | "otp"; collegeEmail?: string; idCardUrl?: string; otp?: string }) => {
-      return await apiFetch<{ success: boolean; message: string; user: User }>({ method: "POST", url: "/users/verify-evidence", data });
+      return await apiFetch<{ success: boolean; message: string; user: User; token?: string }>({ method: "POST", url: "/users/verify-evidence", data });
     },
   },
   uploads: {

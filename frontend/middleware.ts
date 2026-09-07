@@ -65,7 +65,8 @@ export async function middleware(request: NextRequest) {
   const userRole = payload.role?.toUpperCase();
   if (pathname.startsWith("/admin")) {
     if (userRole !== "ADMIN") {
-      return NextResponse.redirect(new URL("/home", request.url));
+      // Non-admins cannot open admin; send them to the member home
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
     return NextResponse.next();
   }
@@ -108,7 +109,7 @@ export async function middleware(request: NextRequest) {
   // APPROVED → full access; prevent looping back to holding screens
   if (profileStatus === "APPROVED") {
     if (pathname === "/complete-profile" || pathname === "/verify-profile") {
-      return NextResponse.redirect(new URL("/home", request.url));
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
 
