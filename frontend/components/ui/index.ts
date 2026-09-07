@@ -6,3 +6,4 @@ export { EmptyState } from "./EmptyState";
 export { Skeleton } from "./Skeleton";
 export { ErrorState } from "./ErrorState";
 export { ProfileEditModal, type ProfileEditModalProps } from "./ProfileEditModal";
+export { PageShell } from "./PageShell";
