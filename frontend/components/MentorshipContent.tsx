@@ -26,7 +26,7 @@ import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
 
 // Duration and Credit Modes
-type DurationMode = "15-Min Flash (30 CR)" | "30-Min Deep-Dive (50 CR)" | "0-CR Barter";
+type DurationMode = "15 min" | "30 min" | "Free swap";
 
 interface MentorFellow {
   id: string;
@@ -71,7 +71,7 @@ export function MentorshipContent() {
   const { user } = useAuth();
   const router = useRouter();
   const [activeDomain, setActiveDomain] = useState("ALL DOMAINS");
-  const [durationMode, setDurationMode] = useState<DurationMode>("15-Min Flash (30 CR)");
+  const [durationMode, setDurationMode] = useState<DurationMode>("15 min");
   const [searchQuery, setSearchQuery] = useState("");
   const [messagingId, setMessagingId] = useState<string | null>(null);
 
@@ -253,7 +253,7 @@ export function MentorshipContent() {
     }
   };
 
-  // Handle Dual-Handshake Completion Trigger
+  // Handle Confirm both sides Completion Trigger
   const handleConfirmAndReleaseEscrow = async () => {
     setReleasingEscrow(true);
     try {
@@ -301,7 +301,7 @@ export function MentorshipContent() {
         area: auditArea,
         message: `[${durationMode}] Slot: ${selectedSlot} - Topic: ${auditTopic.trim()}`,
         durationMins: durationMode.includes("30-Min") ? 30 : 15,
-        isDirectSwap: durationMode === "0-CR Barter",
+        isDirectSwap: durationMode === "Free swap",
       });
       const id =
         (res as any)?.mentorship?.id ||
@@ -325,32 +325,10 @@ export function MentorshipContent() {
       {/* ========================================================================= */}
       {/* System Protocol Marquee / Top Telemetry Strip                             */}
       {/* ========================================================================= */}
-      <div className="w-full bg-[#EFECE4] px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between border-b-2 border-[#1A1A1A] shadow-[0_2px_0_#1A1A1A] gap-3">
-        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs px-2 py-0.5 bg-[#FF5500] text-white shadow-[1px_1px_0_#1A1A1A] font-extrabold tracking-wider">
-              P-04
-            </span>
-            <span className="font-sans text-xs sm:text-sm uppercase tracking-wider text-[#1A1A1A] font-extrabold">
-              PROTOCOL 04 // ASYNCHRONOUS &amp; SYNCHRONOUS EXPERT EXCHANGE
-            </span>
-          </div>
-          <span className="hidden md:inline-block text-[#D5CEBF] font-mono text-xs">|</span>
-          <div className="hidden md:flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_8px_#00E676] animate-pulse"></span>
-            <span className="font-mono text-xs font-semibold text-[#635F57]">
-              TOPOLOGICAL MATCHER: ONLINE (&lt;24ms)
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-xs text-[#8F8A7E] hidden sm:inline">
-            SESSION DISPATCH ROUTER:
-          </span>
-          <span className="font-mono text-xs px-2.5 py-1 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] font-bold">
-            TLS_1.3 // ENCLAVE_SECURE
-          </span>
-        </div>
+      <div className="w-full bg-[#EFECE4] px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between border-b-2 border-black gap-3">
+        <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#635F57]">
+          Mentorship &amp; skill swap
+        </p>
       </div>
 
       <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
@@ -366,15 +344,15 @@ export function MentorshipContent() {
           <div className="flex flex-wrap items-center justify-between gap-3 relative z-10">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono text-xs px-2.5 py-1 bg-black text-white font-bold tracking-wider">
-                PILLAR // 03
+                Mentorship
               </span>
               <span className="font-mono text-xs text-[#8F8A7E] font-medium">
-                HNSW_COSINE_SIMILARITY_v2
+                
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs px-2.5 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-bold shadow-[2px_2px_0_#1A1A1A]">
-                ESCROW INTEGRITY: VERIFIED
+                Verified mentors
               </span>
             </div>
           </div>
@@ -382,71 +360,21 @@ export function MentorshipContent() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
             <div className="max-w-3xl flex flex-col gap-2">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1A1A1A] tracking-tight">
-                Mentorship &amp; Flash 1-on-1 Sessions
+                Mentorship & skill swap
               </h1>
               <p className="text-sm sm:text-base text-[#635F57] leading-relaxed">
-                Sub-30ms topological matching connects scholars and candidates with verified technical fellows for 15-minute architectural audits, resume breakdowns, and 30-minute career roadmaps.
+                Find alumni who can teach skills you want, or book a short 1-on-1 session.
               </p>
             </div>
-            <div className="flex flex-col items-start md:items-end gap-1 shrink-0 bg-[#F7F4EE] p-3 sm:p-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                ESCROW LIQUIDITY POOL
-              </span>
-              <div className="flex items-baseline gap-2">
-                <span className="font-black text-2xl sm:text-3xl text-[#1A1A1A] tracking-tight">
-                  2,450
-                </span>
-                <span className="font-mono text-xs text-[#FF5500] font-black">
-                  ALUMN-CR
-                </span>
-              </div>
             </div>
           </div>
 
           {/* Quick Telemetry Badges Strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t-2 border-[#D5CEBF] relative z-10">
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                ACTIVE FELLOWS
-              </span>
-              <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                148 Available
-              </span>
-            </div>
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                SUBSIDIZED PASSES
-              </span>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                  2 Remaining
-                </span>
-                <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A]">
-                  FREE TIER
-                </span>
-              </div>
-            </div>
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                ESCROW PROTECTION
-              </span>
-              <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                Dual-Handshake
-              </span>
-            </div>
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                MEDIAN AUDIT TIME
-              </span>
-              <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                14.8 Minutes
-              </span>
-            </div>
-          </div>
+          
         </header>
 
         {/* ========================================================================= */}
-        {/* Top Bento Row: In-Flight Session & Dual-Handshake Pipeline                 */}
+        {/* Top Bento Row: In-Flight Session & Confirm both sides Pipeline                 */}
         {/* ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* In-Flight Session Card (7 Cols) */}
@@ -553,7 +481,7 @@ export function MentorshipContent() {
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#8F8A7E]"></span>
                     <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
-                      ACTIVE SESSION IN-FLIGHT // STANDBY
+                      Active session
                     </span>
                   </div>
                   <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#635F57] border-2 border-[#1A1A1A] font-bold">
@@ -562,10 +490,10 @@ export function MentorshipContent() {
                 </div>
                 <div className="p-8 text-center bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col items-center gap-2">
                   <span className="font-mono text-sm font-bold text-[#1A1A1A]">
-                    NO SESSIONS COMMENCING
+                    No active session
                   </span>
                   <p className="text-xs text-[#635F57] max-w-md">
-                    You do not currently have an active session in flight. Schedule a 1-on-1 below to connect with verified mentors.
+                    You do not have an active session. Book one below.
                   </p>
                 </div>
               </div>
@@ -609,21 +537,21 @@ export function MentorshipContent() {
                   href="#mentor-directory"
                   className="px-4 py-2.5 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] transition-all"
                 >
-                  RESERVE A MENTOR SLOT →
+                  Book a session →
                 </a>
               </div>
             )}
           </section>
 
-          {/* Pending Dual-Handshake Protocol Card (5 Cols) */}
+          {/* Pending Confirm both sides Protocol Card (5 Cols) */}
           <section
-            aria-label="Pending Dual-Handshake Pipeline"
+            aria-label="Pending Confirm both sides Pipeline"
             className="lg:col-span-5 bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between gap-6"
           >
             <div className="flex flex-col gap-5">
               <div className="flex items-center justify-between pb-3 border-b-2 border-[#D5CEBF]">
                 <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
-                  PENDING DUAL-HANDSHAKE PIPELINE
+                  Pending requests
                 </span>
                 <span className="font-mono text-xs px-2.5 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-black shadow-[1px_1px_0_#1A1A1A]">
                   {pipelineItems.length} IN ESCROW
@@ -690,12 +618,12 @@ export function MentorshipContent() {
                 <ShieldCheck className="w-4 h-4" />
                 <span>
                   {releasingEscrow
-                    ? "TRANSMITTING SIGNATURE..."
+                    ? "Confirming…"
                     : "CONFIRM SESSION COMPLETION & RELEASE ESCROW"}
                 </span>
               </button>
               <span className="font-mono text-[11px] text-[#8F8A7E] text-center font-medium">
-                Requires cryptographic signature from {user?.name || "verified member"}&apos;s token
+                Waiting for confirmation from {user?.name || "verified member"}&apos;s token
               </span>
             </div>
           </section>
@@ -709,10 +637,10 @@ export function MentorshipContent() {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  [SUB-ROUTINE 04.2]
+                  
                 </span>
                 <h2 className="text-xl sm:text-2xl font-black text-[#1A1A1A]">
-                  Book a Flash 1-on-1 Session
+                  Book a session
                 </h2>
               </div>
               <p className="text-xs sm:text-sm text-[#635F57]">
@@ -722,7 +650,7 @@ export function MentorshipContent() {
 
             {/* Duration / Type Switcher */}
             <div className="inline-flex bg-white p-1 border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] gap-1 flex-wrap">
-              {(["15-Min Flash (30 CR)", "30-Min Deep-Dive (50 CR)", "0-CR Barter"] as DurationMode[]).map((mode) => (
+              {(["15 min", "30 min", "Free swap"] as DurationMode[]).map((mode) => (
                 <button
                   key={mode}
                   type="button"
@@ -766,7 +694,7 @@ export function MentorshipContent() {
             {/* Filter Topology Chips */}
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-mono text-xs text-[#8F8A7E] uppercase mr-1 font-extrabold tracking-wider">
-                FILTER TOPOLOGY:
+                Filter:
               </span>
               {DOMAINS.map((domain) => (
                 <button
@@ -962,122 +890,7 @@ export function MentorshipContent() {
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* Credit Economy & Escrow Ledger State Diagram Section                      */}
-        {/* ========================================================================= */}
-        <section
-          aria-label="Credit Economy & Hardware Enclave Escrow"
-          className="bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[4px_4px_0_#1A1A1A] flex flex-col gap-6"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-2 border-[#D5CEBF]">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-xs px-2.5 py-1 bg-black text-white font-bold">
-                LEDGER PROTOCOL
-              </span>
-              <h2 className="text-lg sm:text-xl font-black text-[#1A1A1A] uppercase tracking-tight">
-                Credit Economy &amp; Hardware Enclave Escrow
-              </h2>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                YOUR ESCROW BALANCE:
-              </span>
-              <span className="font-mono text-xs px-3 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-black shadow-[2px_2px_0_#1A1A1A]">
-                120 ALUMN-CR
-              </span>
-            </div>
-          </div>
 
-          {/* State Diagram Stepper */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Step 1 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 01
-                </span>
-                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white font-black border border-[#1A1A1A]">
-                  -50 CR
-                </span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Scholar Requests Session
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Balance deducted from active wallet. Transferred directly to cryptographic escrow register.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 02
-                </span>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D9E021] border border-[#1A1A1A]"></span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Held in Secure Enclave
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Protected under FIPS 140-3 enclave. Neither party can prematurely seize funds until verification.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 03
-                </span>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1D4ED8] border border-[#1A1A1A]"></span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Dual-Handshake Sign-Off
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Both mentor &amp; student transmit digital receipt tokens at meeting conclusion.
-              </p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 04
-                </span>
-                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#00E676] text-[#1A1A1A] font-black border border-[#1A1A1A]">
-                  +50 CR
-                </span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Released to Mentor
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Full release into Fellow&apos;s redeemable balance. Automatic reputation coefficient bump.
-              </p>
-            </div>
-          </div>
-
-          {/* Guarantee Footer Strip */}
-          <div className="p-3.5 bg-[#EFECE4] border-2 border-[#1A1A1A] flex flex-wrap items-center justify-between gap-3 shadow-[1px_1px_0_#1A1A1A]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <ShieldCheck className="w-4 h-4 text-[#1A1A1A] shrink-0" />
-              <span className="text-xs sm:text-sm font-bold text-[#1A1A1A]">
-                CANCELLATION INTEGRITY GUARANTEE:
-              </span>
-              <span className="text-xs sm:text-sm text-[#635F57]">
-                If mentor cancels or fails to join within 5 minutes, 100% Escrow Refund is instantaneous.
-              </span>
-            </div>
-            <Link
-              href="/support"
-              className="font-mono text-xs text-[#1A1A1A] font-black underline hover:text-[#FF5500] tracking-wider"
-            >
-              AUDIT LEDGER RULES →
-            </Link>
-          </div>
-        </section>
       </div>
 
       {/* ========================================================================= */}
@@ -1089,21 +902,21 @@ export function MentorshipContent() {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_8px_#00E676]"></span>
               <span className="font-sans text-xs text-[#1A1A1A] uppercase tracking-wider font-extrabold">
-                CLUSTER STATE: OPTIMAL
+                Ready
               </span>
             </div>
             <span className="text-[#D5CEBF] font-mono text-xs">|</span>
             <span className="font-mono text-xs text-[#635F57]">
-              POSTGRES 16.2 / PGVECTOR 0.6.0
+              
             </span>
             <span className="text-[#D5CEBF] font-mono text-xs">|</span>
             <span className="font-mono text-xs text-[#635F57]">
-              SECURITY ENCLAVE: ACTIVE [FIPS 140-3]
+              
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs text-[#8F8A7E]">
-              AUTH SESSION TOKEN:
+              
             </span>
             <span className="font-mono text-xs px-2 py-0.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] font-black shadow-[1px_1px_0_#1A1A1A]">
               0x8F92...B314
@@ -1180,9 +993,9 @@ export function MentorshipContent() {
                     </span>
                   </div>
                   <span className="font-mono text-xs px-2.5 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-black">
-                    {durationMode === "30-Min Deep-Dive (50 CR)"
+                    {durationMode === "30 min"
                       ? "50 ALUMN-CR"
-                      : durationMode === "0-CR Barter"
+                      : durationMode === "Free swap"
                       ? "0 CR BARTER"
                       : "30 ALUMN-CR"}
                   </span>
