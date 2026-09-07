@@ -383,17 +383,17 @@ export function DirectoryContent({
       {/* ============================================================ */}
       <div className="border-2 border-black bg-white p-3 shadow-[3px_3px_0px_#1A1A1A] flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
         <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 bg-[#1D4ED8] text-white font-bold text-[10px]">SPATIAL INDEX</span>
-          <span className="font-bold uppercase text-black">Cluster Quick-Jumps:</span>
+          <span className="px-2 py-0.5 bg-black text-white font-bold text-[10px]">LOCATION</span>
+          <span className="font-bold uppercase text-black">Filter by city:</span>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           {[
-            { label: "Global (1,248)", city: "" },
-            { label: "Bengaluru (142)", city: "Bengaluru" },
-            { label: "San Francisco (88)", city: "San Francisco" },
-            { label: "New York (64)", city: "New York" },
-            { label: "Seattle (42)", city: "Seattle" },
-            { label: "London (35)", city: "London" },
+            { label: "All locations", city: "" },
+            { label: "Bengaluru", city: "Bengaluru" },
+            { label: "San Francisco", city: "San Francisco" },
+            { label: "New York", city: "New York" },
+            { label: "Seattle", city: "Seattle" },
+            { label: "London", city: "London" },
           ].map((c) => (
             <button
               key={c.label}
@@ -415,102 +415,18 @@ export function DirectoryContent({
       </div>
 
       {/* ============================================================ */}
-      {/* BEGIN: TelemetryStrip (4-Column KPI Stats) */}
-      {/* ============================================================ */}
-      <section
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono"
-        data-purpose="telemetry-kpis"
-      >
-        {/* KPI 1 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">[ TEL_01 // VERIFIED FELLOWS ]</span>
-            <span className="w-2.5 h-2.5 bg-black"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">1,248</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              ACCREDITED ALUMNI MEMBERS
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>COHORTS &apos;14 - &apos;25</span>
-            <span className="bg-[#CCFF00] border border-black px-1.5 py-0.5 font-bold">
-              LIVE INDEX
-            </span>
-          </div>
-        </div>
-
-        {/* KPI 2 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">[ TEL_02 // PLACEMENT REACH ]</span>
-            <span className="w-2.5 h-2.5 bg-[#FF5500]"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">42+</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              TIER-1 TECH & RESEARCH LABS
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>2024-2026 AUDIT</span>
-            <span className="bg-white border border-black px-1.5 py-0.5 font-bold">+18% YoY</span>
-          </div>
-        </div>
-
-        {/* KPI 3 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">[ TEL_03 // REFERRAL LIQUIDITY ]</span>
-            <span className="w-2.5 h-2.5 bg-[#2E5BFF]"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">88.4%</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              WARM INTRO CONVERSION RATE
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>VERIFIED VOUCHERS</span>
-            <span className="bg-black text-white border border-black px-1.5 py-0.5 font-bold">
-              100% AUDITED
-            </span>
-          </div>
-        </div>
-
-        {/* KPI 4 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">Search status</span>
-            <span className="w-2.5 h-2.5 bg-black"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">11.8ms</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              Profile search
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>Directory search</span>
-            <span className="bg-[#CCFF00] border border-black px-1.5 py-0.5 font-bold">OPTIMAL</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
       {/* BEGIN: FilterTopologyAndTabs */}
       {/* ============================================================ */}
       <section className="space-y-4" data-purpose="directory-filters">
         {/* Main Category Tabs */}
         <div className="flex flex-wrap gap-2 font-mono text-xs">
           {[
-            { id: "ALL", label: "ALL FELLOWS", count: 1248 },
-            { id: "SYSTEMS & CLOUD INFRA", label: "SYSTEMS & CLOUD INFRA", count: 412 },
-            { id: "AI & LLM KERNELS", label: "AI & LLM KERNELS", count: 326 },
-            { id: "HARDWARE & ROBOTICS", label: "HARDWARE & ROBOTICS", count: 184 },
-            { id: "FINTECH & CRYPTO", label: "FINTECH & CRYPTO", count: 162 },
-            { id: "ACADEMIC & POSTDOC", label: "ACADEMIC & POSTDOC", count: 164 },
+            { id: "ALL", label: "All" },
+            { id: "SYSTEMS & CLOUD INFRA", label: "Systems & cloud" },
+            { id: "AI & LLM KERNELS", label: "AI & ML" },
+            { id: "HARDWARE & ROBOTICS", label: "Hardware & robotics" },
+            { id: "FINTECH & CRYPTO", label: "Fintech" },
+            { id: "ACADEMIC & POSTDOC", label: "Academic" },
           ].map((tab) => {
             const isActive = category === tab.id;
             return (
@@ -524,7 +440,7 @@ export function DirectoryContent({
                     : "bg-white text-black hover:bg-neutral-100"
                 }`}
               >
-                {tab.label} ({tab.count})
+                {tab.label}
               </button>
             );
           })}
