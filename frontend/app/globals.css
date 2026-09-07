@@ -4,14 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tier 1 neo-brutalist tokens (DESIGN_SYSTEM.md) */
+/* Dual-tone: black / white + orange accent */
 :root {
-  --canvas: #f7f4ef;
+  --canvas: #ffffff;
   --surface: #ffffff;
-  --ink: #1a1a1a;
-  --muted: #635f57;
-  --lime: #ccff00;
-  --orange: #ff5500;
+  --muted-bg: #f5f5f5;
+  --ink: #000000;
+  --muted: #525252;
+  --accent: #ff5500;
+  --accent-hover: #e04b00;
   --border: #000000;
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
@@ -30,14 +31,14 @@ body {
 }
 
 ::selection {
-  background: var(--lime);
-  color: #000000;
+  background: var(--accent);
+  color: #ffffff;
 }
 
 a { color: inherit; text-decoration: none; }
 
 *:focus-visible {
-  outline: 2px solid var(--orange);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -57,15 +58,23 @@ a { color: inherit; text-decoration: none; }
   }
 
   .nb-btn {
-    @apply inline-flex items-center justify-center gap-2 border-2 border-black bg-black px-4 py-2.5 font-mono text-xs font-bold uppercase text-white shadow-[2px_2px_0_#000000] transition-all hover:bg-[#ff5500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+    @apply inline-flex items-center justify-center gap-2 border-2 border-black bg-[#ff5500] px-4 py-2.5 font-mono text-xs font-bold uppercase text-white shadow-[2px_2px_0_#000000] transition-all hover:bg-[#e04b00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
   }
 
   .nb-btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 border-2 border-black bg-white px-4 py-2.5 font-mono text-xs font-bold uppercase text-black shadow-[2px_2px_0_#000000] transition-all hover:bg-[#f7f4ef] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+    @apply inline-flex items-center justify-center gap-2 border-2 border-black bg-white px-4 py-2.5 font-mono text-xs font-bold uppercase text-black shadow-[2px_2px_0_#000000] transition-all hover:bg-[#f5f5f5] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+  }
+
+  .nb-btn-dark {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-black bg-black px-4 py-2.5 font-mono text-xs font-bold uppercase text-white shadow-[2px_2px_0_#000000] transition-all hover:bg-[#ff5500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
   }
 
   .nb-chip {
-    @apply inline-flex border border-black bg-[#f7f4ef] px-2 py-0.5 font-mono text-[10px] font-bold uppercase;
+    @apply inline-flex border border-black bg-[#f5f5f5] px-2 py-0.5 font-mono text-[10px] font-bold uppercase;
+  }
+
+  .nb-chip-accent {
+    @apply inline-flex border border-black bg-[#ff5500] px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-white;
   }
 
   .masonry-grid {
@@ -88,8 +97,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--canvas); }
-::-webkit-scrollbar-thumb { background: #1a1a1a; border: 2px solid var(--canvas); }
+::-webkit-scrollbar-track { background: #ffffff; }
+::-webkit-scrollbar-thumb { background: #000000; border: 2px solid #ffffff; }
 ::-webkit-scrollbar-thumb:hover { background: #ff5500; }
 
 .leaflet-popup-content-wrapper {
