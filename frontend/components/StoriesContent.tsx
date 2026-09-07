@@ -229,7 +229,7 @@ export function StoriesContent({
         id: s.id || `srv-${idx}`,
         index: String(idx + 1).padStart(2, "0"),
         category: (s.category || "CAREER") as any,
-        categoryLabel: s.categoryLabel || "FELLOW MILESTONE",
+        categoryLabel: s.categoryLabel || "Story",
         cohort: s.batchYear ? `COHORT '${String(s.batchYear).slice(-2)}` : (s.cohort || "ALUMNI ROSTER"),
         location: s.location || "NETWORK FEED",
         topologyTag: (s.topologyTag || "REMOTE") as any,
@@ -253,7 +253,7 @@ export function StoriesContent({
         commentsCount: s.commentsCount ?? (s.comments?.length ?? 0),
         avatarBg: s.avatarBg || "#000000",
         avatarColor: s.avatarColor || "#FFFFFF",
-        actionLabel: s.actionLabel || "VOUCH / ENDORSE",
+        actionLabel: s.actionLabel || "Endorse",
         actionHref: s.actionHref || "/directory",
       };
     });
@@ -399,10 +399,10 @@ export function StoriesContent({
             <div className="flex flex-col gap-2 max-w-3xl">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-mono text-[11px] font-bold uppercase tracking-wider border border-black">
-                  [PILLAR // 05] PROTOCOL 06
+                  Stories
                 </span>
                 <span className="font-mono text-xs text-neutral-600 uppercase">
-                  VERIFIED MILESTONES &amp; VENTURE DISPATCHES
+                  Alumni stories
                 </span>
                 <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#EFECE4] border border-neutral-400 rounded-full">
                   <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
@@ -413,7 +413,7 @@ export function StoriesContent({
                 Success Spotlight Wall &amp; Peer Chronicles
               </h1>
               <p className="font-mono text-xs sm:text-sm text-neutral-700 max-w-2xl leading-relaxed">
-                Peer-attested achievements, career pivots, venture funding rounds, and research breakthroughs from verified alumni fellows. Transparent cryptographic upvoting and direct mentorship routing.
+                Milestones and career stories from verified alumni. Endorse people you know.
               </p>
             </div>
 
@@ -500,7 +500,7 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_01 // MILESTONES ]</span>
+              <span className="text-neutral-500">Milestones</span>
               <span className="w-3 h-3 bg-black" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
@@ -520,7 +520,7 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_02 // VENTURE CAPITAL ]</span>
+              <span className="text-neutral-500">Funding</span>
               <span className="w-3 h-3 bg-[#FF5500]" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
@@ -540,7 +540,7 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_03 // ATTESTATIONS ]</span>
+              <span className="text-neutral-500">Endorsements</span>
               <span className="w-3 h-3 bg-[#2E5BFF]" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
@@ -560,7 +560,7 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_04 // CONVERSIONS ]</span>
+              <span className="text-neutral-500">Referrals</span>
               <span className="w-3 h-3 bg-black" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
@@ -801,7 +801,7 @@ export function StoriesContent({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-white border-4 border-black p-3.5 pl-4 text-xs font-mono font-bold placeholder:text-neutral-400 focus:outline-none focus:ring-0 focus:border-black shadow-[4px_4px_0px_#000000]"
-            placeholder="SEARCH BY FELLOW NAME, COMPANY (SNOWFLAKE, GOOGLE, STRIPE), OR RESEARCH TOKEN..."
+            placeholder="Search by name or company…"
             type="text"
           />
           <div className="absolute right-3.5 top-3.5 font-mono text-xs font-bold bg-[#CCFF00] border border-black px-2 py-0.5">
@@ -978,7 +978,7 @@ export function StoriesContent({
                       }}
                       className="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all"
                     >
-                      SEND KUDOS
+                      Kudos
                     </button>
                   </div>
                 </div>
@@ -999,7 +999,7 @@ export function StoriesContent({
           <div className="flex items-center gap-2">
             <span className="bg-black text-white px-2 py-0.5">SYS_SPEC // RFC-088</span>
             <span className="uppercase">
-              PEER ATTESTATION PROTOCOL &amp; MILESTONE VERIFICATION PIPELINE
+              How verification works
             </span>
           </div>
           <span className="bg-[#CCFF00] border border-black px-2 py-0.5 text-[11px] text-black">
@@ -1010,7 +1010,7 @@ export function StoriesContent({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
           <div className="border-2 border-black p-4 bg-neutral-50 space-y-2 shadow-[2px_2px_0px_#000000]">
             <div className="text-[#FF5500] font-bold text-[11px] uppercase">
-              01 // CRYPTOGRAPHIC VOUCHING
+              01 // Verification
             </div>
             <h4 className="font-black text-sm uppercase text-black font-sans">
               CONSENSUS ATTESTATIONS
@@ -1026,10 +1026,10 @@ export function StoriesContent({
 
           <div className="border-2 border-black p-4 bg-neutral-50 space-y-2 shadow-[2px_2px_0px_#000000]">
             <div className="text-[#2E5BFF] font-bold text-[11px] uppercase">
-              02 // ZERO-NOISE MODERATION
+              02 // Quality filter
             </div>
             <h4 className="font-black text-sm uppercase text-black font-sans">
-              PGVECTOR SEMANTIC INDEXING
+              Smart ranking
             </h4>
             <p className="text-neutral-600 leading-relaxed text-[11px]">
               Dispatches are vector-ranked against alumni career trajectories and domain expertise to
@@ -1042,7 +1042,7 @@ export function StoriesContent({
 
           <div className="border-2 border-black p-4 bg-neutral-50 space-y-2 shadow-[2px_2px_0px_#000000]">
             <div className="text-black font-bold text-[11px] uppercase">
-              03 // TALENT LIQUIDITY DROPS
+              03 // Rewards
             </div>
             <h4 className="font-black text-sm uppercase text-black font-sans">
               +100 ALUMN-CR REWARD
@@ -1061,7 +1061,7 @@ export function StoriesContent({
         <div className="mt-6 pt-4 border-t-2 border-dashed border-black/30 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] text-neutral-600 font-bold">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 bg-[#00A859]" />
-            <span>POSTGRES 16.2 / PGVECTOR 0.6.0 COMPILED</span>
+            <span></span>
           </div>
           <div className="bg-black text-white px-2 py-0.5">SECURITY ENCLAVE: ACTIVE [FIPS 140-3]</div>
         </div>
@@ -1079,7 +1079,7 @@ export function StoriesContent({
             <span className="w-3 h-3 rounded-full bg-[#CCFF00] border-2 border-black animate-pulse" />
             <div>
               <span className="font-bold text-black uppercase tracking-wider">
-                MEMBER CHRONICLE PROTOCOL ACTIVE // ROLE: {user?.role || "FELLOW"}
+                Signed in as {user?.role || "FELLOW"}
               </span>
               <p className="text-neutral-600 text-[11px] mt-0.5">
                 Dispatch your milestone breakthrough to earn +100 ALUMN-CR and peer attestations.
