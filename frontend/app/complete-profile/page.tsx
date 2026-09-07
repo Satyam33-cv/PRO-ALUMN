@@ -206,7 +206,7 @@ export default function CompleteProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F7F4EE] text-black font-mono">
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] text-black font-mono">
         <div className="flex items-center gap-3 p-6 border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
           <RefreshCw className="animate-spin text-black" size={24} />
           <span className="text-sm font-black uppercase tracking-wider">Checking verification credentials...</span>
@@ -216,11 +216,11 @@ export default function CompleteProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F4EE] text-black flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-[#FFFFFF] text-black flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-2xl w-full mx-auto space-y-6">
         {/* Header Branding */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#CCFF00] border-2 border-black text-black text-xs font-mono font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FF5500] border-2 border-black text-white text-xs font-mono font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
             <ShieldCheck size={14} />
             <span>ALUMNI TRUST &amp; VERIFICATION GATE</span>
           </div>
@@ -236,7 +236,7 @@ export default function CompleteProfilePage() {
         <div className="flex items-center justify-center gap-3">
           <div
             className={`flex items-center gap-2 px-4 py-1.5 border-2 border-black text-xs font-black uppercase tracking-wider transition-all ${
-              step === 1 ? "bg-black text-white shadow-[3px_3px_0px_#CCFF00]" : "bg-white text-neutral-600 shadow-[2px_2px_0px_#000000]"
+              step === 1 ? "bg-black text-white shadow-[3px_3px_0px_#FF5500]" : "bg-white text-neutral-600 shadow-[2px_2px_0px_#000000]"
             }`}
           >
             <span>1. Profile Details</span>
@@ -244,7 +244,7 @@ export default function CompleteProfilePage() {
           <ArrowRight size={14} className="text-black" />
           <div
             className={`flex items-center gap-2 px-4 py-1.5 border-2 border-black text-xs font-black uppercase tracking-wider transition-all ${
-              step === 2 ? "bg-black text-white shadow-[3px_3px_0px_#CCFF00]" : "bg-white text-neutral-600 shadow-[2px_2px_0px_#000000]"
+              step === 2 ? "bg-black text-white shadow-[3px_3px_0px_#FF5500]" : "bg-white text-neutral-600 shadow-[2px_2px_0px_#000000]"
             }`}
           >
             <span>2. Identity Verification</span>
@@ -300,7 +300,7 @@ export default function CompleteProfilePage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Aditi Sharma"
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     />
                   </div>
 
@@ -316,7 +316,7 @@ export default function CompleteProfilePage() {
                       max={2035}
                       value={batchYear}
                       onChange={(e) => setBatchYear(parseInt(e.target.value) || 2024)}
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-mono font-black outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-mono font-black outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     />
                   </div>
                 </div>
@@ -327,7 +327,7 @@ export default function CompleteProfilePage() {
                     <select
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     >
                       <option value="Computer Engineering">Computer Engineering</option>
                       <option value="Information Technology">Information Technology</option>
@@ -347,7 +347,7 @@ export default function CompleteProfilePage() {
                       value={linkedinUrl}
                       onChange={(e) => setLinkedinUrl(e.target.value)}
                       placeholder="https://linkedin.com/in/username"
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-mono text-[11px] font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-mono text-[11px] font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     />
                   </div>
                 </div>
@@ -363,7 +363,7 @@ export default function CompleteProfilePage() {
                       value={currentCompany}
                       onChange={(e) => setCurrentCompany(e.target.value)}
                       placeholder="e.g. Google, Microsoft, Startup, or Student"
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     />
                   </div>
 
@@ -377,7 +377,7 @@ export default function CompleteProfilePage() {
                       value={jobTitle}
                       onChange={(e) => setJobTitle(e.target.value)}
                       placeholder="e.g. Software Development Engineer II"
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     />
                   </div>
                 </div>
@@ -393,7 +393,7 @@ export default function CompleteProfilePage() {
                       value={skillsOffered}
                       onChange={(e) => setSkillsOffered(e.target.value)}
                       placeholder="e.g. React, Next.js, System Design, Python"
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     />
                   </div>
 
@@ -407,7 +407,7 @@ export default function CompleteProfilePage() {
                       value={skillsWanted}
                       onChange={(e) => setSkillsWanted(e.target.value)}
                       placeholder="e.g. AI Agents, Kubernetes, Product Strategy"
-                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                      className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-bold outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                     />
                   </div>
                 </div>
@@ -419,12 +419,12 @@ export default function CompleteProfilePage() {
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     placeholder="Briefly describe your career background or what you hope to achieve on the alumni network..."
-                    className="w-full px-3.5 py-2.5 border-2 border-black bg-[#F7F4EE] text-black font-medium leading-relaxed outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
+                    className="w-full px-3.5 py-2.5 border-2 border-black bg-[#FFFFFF] text-black font-medium leading-relaxed outline-none focus:bg-white focus:shadow-[2px_2px_0px_#000000]"
                   />
                 </div>
 
                 {/* Optional Referral Code Box */}
-                <div className="p-4 border-2 border-black bg-[#CCFF00]/20 space-y-2 shadow-[3px_3px_0px_#000000]">
+                <div className="p-4 border-2 border-black bg-[#FF5500]/20 space-y-2 shadow-[3px_3px_0px_#000000]">
                   <label className="block font-mono text-xs font-black uppercase tracking-wider text-black flex items-center gap-1.5">
                     <Gift size={14} className="text-black" />
                     Referral / Invite Code (Optional)
@@ -445,7 +445,7 @@ export default function CompleteProfilePage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full flex items-center justify-center gap-2 py-3 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] text-black font-mono font-black uppercase tracking-wider text-sm shadow-[4px_4px_0px_#000000] hover:shadow-[1px_1px_0px_#000000] transition-all disabled:opacity-50 cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 py-3 border-3 border-black bg-[#FF5500] hover:bg-black hover:text-white text-black font-mono font-black uppercase tracking-wider text-sm shadow-[4px_4px_0px_#000000] hover:shadow-[1px_1px_0px_#000000] transition-all disabled:opacity-50 cursor-pointer"
                   >
                     <span>{submitting ? "Saving Profile..." : "Continue to Verification Step"}</span>
                     <ArrowRight size={15} />
@@ -463,9 +463,9 @@ export default function CompleteProfilePage() {
               {/* Branch A: Paid Verification (Razorpay) */}
               {config.mode === "paid" && (
                 <div className="space-y-5">
-                  <div className="p-5 border-3 border-black bg-[#F7F4EE] shadow-[4px_4px_0px_#000000] space-y-3">
+                  <div className="p-5 border-3 border-black bg-[#FFFFFF] shadow-[4px_4px_0px_#000000] space-y-3">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 border-2 border-black bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]">
+                      <div className="p-3 border-2 border-black bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]">
                         <CreditCard size={24} />
                       </div>
                       <div>
@@ -480,7 +480,7 @@ export default function CompleteProfilePage() {
                     </div>
 
                     {hasPaid && (
-                      <div className="p-3 border-2 border-black bg-[#00E676]/20 text-emerald-950 text-xs flex items-center gap-2 font-bold">
+                      <div className="p-3 border-2 border-black bg-[#FF5500]/20 text-emerald-950 text-xs flex items-center gap-2 font-bold">
                         <CheckCircle2 size={16} className="text-emerald-800 shrink-0" />
                         <span>Previous verification fee confirmed. Resubmitting will NOT charge you again.</span>
                       </div>
@@ -491,7 +491,7 @@ export default function CompleteProfilePage() {
                     <button
                       onClick={handlePaidVerification}
                       disabled={submitting}
-                      className="w-full py-3.5 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] text-black font-mono font-black uppercase tracking-wider text-sm shadow-[4px_4px_0px_#000000] hover:shadow-[1px_1px_0px_#000000] transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full py-3.5 border-3 border-black bg-[#FF5500] hover:bg-black hover:text-white text-black font-mono font-black uppercase tracking-wider text-sm shadow-[4px_4px_0px_#000000] hover:shadow-[1px_1px_0px_#000000] transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                     >
                       <Lock size={16} />
                       <span>
@@ -535,7 +535,7 @@ export default function CompleteProfilePage() {
                         onClick={() => setFreeMethod(m.id as "college_email" | "id_upload" | "otp")}
                         className={`flex flex-col items-center justify-center p-3 border-2 border-black text-xs font-mono font-black uppercase transition-all cursor-pointer ${
                           freeMethod === m.id
-                            ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000]"
+                            ? "bg-[#FF5500] text-white shadow-[3px_3px_0px_#000000]"
                             : "bg-white text-neutral-600 hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
                         }`}
                       >
@@ -547,7 +547,7 @@ export default function CompleteProfilePage() {
 
                   {/* Free Option 1: College Email Domain */}
                   {freeMethod === "college_email" && (
-                    <div className="p-4 border-2 border-black bg-[#F7F4EE] space-y-3 text-xs shadow-[3px_3px_0px_#000000]">
+                    <div className="p-4 border-2 border-black bg-[#FFFFFF] space-y-3 text-xs shadow-[3px_3px_0px_#000000]">
                       <label className="block font-mono text-xs font-black uppercase tracking-wider text-black">Institutional Email Address</label>
                       <p className="text-[11px] text-neutral-700 font-medium">
                         Must end with an accredited institutional domain (e.g. <code className="font-mono font-bold bg-white px-1 border border-black text-black">@somaiya.edu</code>, <code className="font-mono font-bold bg-white px-1 border border-black text-black">.edu</code>, or <code className="font-mono font-bold bg-white px-1 border border-black text-black">.ac.in</code>).
@@ -564,7 +564,7 @@ export default function CompleteProfilePage() {
 
                   {/* Free Option 2: ID Card Upload */}
                   {freeMethod === "id_upload" && (
-                    <div className="p-4 border-2 border-black bg-[#F7F4EE] space-y-3 text-xs shadow-[3px_3px_0px_#000000]">
+                    <div className="p-4 border-2 border-black bg-[#FFFFFF] space-y-3 text-xs shadow-[3px_3px_0px_#000000]">
                       <label className="block font-mono text-xs font-black uppercase tracking-wider text-black">Institutional ID Card URL / Document</label>
                       <p className="text-[11px] text-neutral-700 font-medium">
                         Provide a link to your uploaded student ID or graduation certificate for visual inspection by campus administrators.
@@ -581,10 +581,10 @@ export default function CompleteProfilePage() {
 
                   {/* Free Option 3: OTP */}
                   {freeMethod === "otp" && (
-                    <div className="p-4 border-2 border-black bg-[#F7F4EE] space-y-3 text-xs shadow-[3px_3px_0px_#000000]">
+                    <div className="p-4 border-2 border-black bg-[#FFFFFF] space-y-3 text-xs shadow-[3px_3px_0px_#000000]">
                       <label className="block font-mono text-xs font-black uppercase tracking-wider text-black">6-Digit Verification PIN (OTP)</label>
                       <p className="text-[11px] text-neutral-700 font-medium">
-                        Enter the 6-digit confirmation code sent to your registered contact (Test code: <code className="font-mono font-bold bg-[#CCFF00] px-1 border border-black text-black">123456</code>).
+                        Enter the 6-digit confirmation code sent to your registered contact (Test code: <code className="font-mono font-bold bg-[#FF5500] px-1 border border-black text-black">123456</code>).
                       </p>
                       <input
                         type="text"
@@ -601,7 +601,7 @@ export default function CompleteProfilePage() {
                     <button
                       onClick={handleFreeVerification}
                       disabled={submitting}
-                      className="w-full py-3.5 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] text-black font-mono font-black uppercase tracking-wider text-sm shadow-[4px_4px_0px_#000000] hover:shadow-[1px_1px_0px_#000000] transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full py-3.5 border-3 border-black bg-[#FF5500] hover:bg-black hover:text-white text-black font-mono font-black uppercase tracking-wider text-sm shadow-[4px_4px_0px_#000000] hover:shadow-[1px_1px_0px_#000000] transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                     >
                       <CheckCircle2 size={16} />
                       <span>{submitting ? "Verifying Credentials..." : "Submit Verification for Admin Review"}</span>
@@ -628,7 +628,7 @@ export default function CompleteProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 border-3 border-black bg-[#00E676] text-black text-xs font-mono font-black uppercase tracking-wider shadow-[4px_4px_0px_#000000] flex items-center gap-2"
+              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 border-3 border-black bg-[#FF5500] text-black text-xs font-mono font-black uppercase tracking-wider shadow-[4px_4px_0px_#000000] flex items-center gap-2"
             >
               <CheckCircle2 size={16} className="text-black" />
               <span>{toast}</span>

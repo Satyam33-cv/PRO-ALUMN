@@ -112,7 +112,7 @@ export default function MatchingPage() {
       <RoleShell>
         <div className="container mx-auto py-24 px-4 text-center flex flex-col items-center">
           <div className="p-8 border-4 border-black bg-white shadow-[6px_6px_0px_#000000] max-w-md w-full space-y-4">
-            <div className="mx-auto w-16 h-16 border-2 border-black bg-[#CCFF00] flex items-center justify-center text-black mb-6 shadow-[2px_2px_0px_#000000]">
+            <div className="mx-auto w-16 h-16 border-2 border-black bg-[#FF5500] flex items-center justify-center text-black mb-6 shadow-[2px_2px_0px_#000000]">
               <GraduationCap size={32} className="stroke-[2.5]" />
             </div>
             <h2 className="text-2xl font-black uppercase tracking-tight text-black">Student AI Matchmaking</h2>
@@ -132,7 +132,7 @@ export default function MatchingPage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+                <span className="h-2 w-2 bg-[#FF5500] border border-black" />
                 <span className="font-mono text-xs font-black text-black uppercase tracking-widest">
                   [ SECTION 10 // 384-DIM VECTOR MATCHMAKER ]
                 </span>
@@ -147,7 +147,7 @@ export default function MatchingPage() {
             {!synced && !loading && (
               <button
                 onClick={handleSync}
-                className="inline-flex items-center gap-2 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] px-6 py-3 font-mono text-xs font-black uppercase text-black transition-all shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                className="inline-flex items-center gap-2 border-3 border-black bg-[#FF5500] hover:bg-black hover:text-white px-6 py-3 font-mono text-xs font-black uppercase text-black transition-all shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
               >
                 <RefreshCw size={14} />
                 <span>Refresh Embeddings</span>
@@ -207,7 +207,7 @@ export default function MatchingPage() {
                             {a.reasons.map((reason, rIdx) => (
                               <span
                                 key={rIdx}
-                                className="inline-flex border border-black bg-[#D9E021] text-black px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase shadow-[1px_1px_0px_#000000]"
+                                className="inline-flex border border-black bg-[#FF5500] text-white px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase shadow-[1px_1px_0px_#000000]"
                               >
                                 {reason}
                               </span>
@@ -224,7 +224,7 @@ export default function MatchingPage() {
                             {a.sharedSkills.map((skill, sIdx) => (
                               <span
                                 key={sIdx}
-                                className="inline-flex border border-black bg-[#CCFF00] px-1.5 py-0.5 font-mono text-[9px] font-bold text-black"
+                                className="inline-flex border border-black bg-[#FF5500] px-1.5 py-0.5 font-mono text-[9px] font-bold text-black"
                               >
                                 {skill}
                               </span>
@@ -252,7 +252,7 @@ export default function MatchingPage() {
                     <div className="mt-6 pt-4 border-t-2 border-black flex items-center gap-2 relative z-10">
                       <Link
                         href={`/chat?userId=${a.id}&recipient=${encodeURIComponent(a.name)}`}
-                        className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer text-center"
+                        className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-black text-[#FF5500] hover:bg-[#FF5500] hover:text-black py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer text-center"
                       >
                         <MessageSquare size={13} /> Message
                       </Link>
@@ -267,7 +267,7 @@ export default function MatchingPage() {
                 ))
               ) : (
                 <div className="col-span-full py-20 flex flex-col items-center text-center border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
-                  <div className="size-16 border-2 border-black bg-[#CCFF00] flex items-center justify-center text-black mb-4 shadow-[2px_2px_0px_#000000]">
+                  <div className="size-16 border-2 border-black bg-[#FF5500] flex items-center justify-center text-black mb-4 shadow-[2px_2px_0px_#000000]">
                     <ScanSearch size={28} className="stroke-[2.5]" />
                   </div>
                   <h3 className="font-sans text-xl font-black uppercase text-black">No exact matches yet</h3>

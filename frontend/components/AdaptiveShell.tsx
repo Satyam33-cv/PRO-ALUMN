@@ -26,7 +26,7 @@ export function AdaptiveShell({
   // If initial auth token is resolving, render minimal clean brutalist loader
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fcf9f3] text-black flex flex-col justify-between selection:bg-[#CCFF00]">
+      <div className="min-h-screen bg-[#FFFFFF] text-black flex flex-col justify-between selection:bg-[#FF5500]">
         <PublicHeader activeRoute={activeRoute} />
         <main className="flex-1 flex items-center justify-center p-8">
           <div className="p-8 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col items-center gap-3 font-mono text-xs">
@@ -45,7 +45,7 @@ export function AdaptiveShell({
 
   // Unauthenticated visitor or Forced Showcase (Public Guest): render full-width broadsheet layout
   return (
-    <div className="min-h-screen bg-[#fcf9f3] text-black flex flex-col justify-between selection:bg-[#CCFF00] selection:text-black">
+    <div className="min-h-screen bg-[#FFFFFF] text-black flex flex-col justify-between selection:bg-[#FF5500] selection:text-white">
       {/* 1. Public Global Showcase Header */}
       <PublicHeader activeRoute={activeRoute} />
 
@@ -66,7 +66,7 @@ export function AdaptiveShell({
             <p className="text-neutral-700 text-xs leading-relaxed font-mono">
               Federated alumni intelligence, career verification, and peer mentorship protocol for tier-one universities and technical faculties.
             </p>
-            <div className="inline-flex items-center px-2 py-0.5 border border-black bg-black text-[#CCFF00] text-[10px] font-bold">
+            <div className="inline-flex items-center px-2 py-0.5 border border-black bg-black text-[#FF5500] text-[10px] font-bold">
               SECURE ENCLAVE ACTIVE
             </div>
           </div>
@@ -144,7 +144,7 @@ export function AdaptiveShell({
               <div className="p-2.5 bg-white border-2 border-black space-y-1 text-[10px] shadow-[2px_2px_0px_#000000]">
                 <div className="flex justify-between">
                   <span className="text-neutral-500 font-bold">NODE:</span>
-                  <span className="bg-black text-[#CCFF00] px-1 font-bold">ALPHA-01</span>
+                  <span className="bg-black text-[#FF5500] px-1 font-bold">ALPHA-01</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-500 font-bold">LATENCY:</span>
@@ -167,7 +167,7 @@ export function AdaptiveShell({
               © 2026 PRO-ALUMN CONSORTIUM. ALL RIGHTS RESERVED. PRINTED DIGITALLY.
             </div>
             <div className="flex items-center space-x-3">
-              <span className="px-2 py-0.5 bg-[#CCFF00] text-black border border-black font-bold text-[10px]">
+              <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black font-bold text-[10px]">
                 EDITION 14.8.2
               </span>
               <span className="text-[10px] uppercase tracking-wider font-semibold">

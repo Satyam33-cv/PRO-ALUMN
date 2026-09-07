@@ -247,21 +247,21 @@ export function EducationContent({
   };
 
   return (
-    <div className="flex flex-col w-full bg-[#FCF9F3] text-[#1A1A1A] font-sans selection:bg-[#D9E021] selection:text-black space-y-10">
+    <div className="flex flex-col w-full bg-[#FFFFFF] text-[#0A0A0A] font-sans selection:bg-[#FF5500] selection:text-white space-y-10">
       {/* 1. TOP CONTEXT HEADER */}
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="bg-black text-white px-2.5 py-1 font-bold shadow-[2px_2px_0px_#1A1A1A]">
-              [ PILLAR // 07 ]
+            <span className="bg-black text-white px-2.5 py-1 font-bold shadow-[2px_2px_0px_#0A0A0A]">
+              [ Education ]
             </span>
             <span className="uppercase text-[#FF5500] font-black tracking-wider">
-              ACADEMIC REPOSITORY &amp; SPECIALIZED RUNTIMES
+              Learning
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[1px_1px_0px_#1A1A1A] font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse shadow-[0_0_8px_#00E676]" />
+            <span className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#FFFFFF] text-[#0A0A0A] border-2 border-[#0A0A0A] shadow-[1px_1px_0px_#0A0A0A] font-bold">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse shadow-[0_0_8px_#FF5500]" />
               SYS_HASH: 0x89F1..E312
             </span>
             <span className="text-[#8F8A7E] font-semibold">EPOCH: 2026.Q2</span>
@@ -270,25 +270,25 @@ export function EducationContent({
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-1">
           <div>
-            <h1 className="text-3xl sm:text-5xl font-black text-[#1A1A1A] tracking-tight">
-              Education &amp; Technical Sprint Center
+            <h1 className="text-3xl sm:text-5xl font-black text-[#0A0A0A] tracking-tight">
+              Education & sprints
             </h1>
             <p className="text-sm sm:text-base text-[#635F57] max-w-4xl mt-2 leading-relaxed">
-              High-velocity engineering protocols, tactical interview blueprints, and peer-reviewed architectural case studies verified by alumni fellows.
+              Short technical sprints and masterclasses from alumni.
             </p>
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0 font-mono text-xs flex-wrap">
             <button
               onClick={() => setIsSyllabusModalOpen(true)}
-              className="px-4 py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#F7F4EE] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+              className="px-4 py-2.5 bg-white text-[#0A0A0A] border-2 border-[#0A0A0A] shadow-[3px_3px_0px_#0A0A0A] hover:bg-[#FFFFFF] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
               type="button"
             >
               Protocol Archive
             </button>
             <button
               onClick={handleSyncRunbook}
-              className="px-4 py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#F7F4EE] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2.5 bg-white text-[#0A0A0A] border-2 border-[#0A0A0A] shadow-[3px_3px_0px_#0A0A0A] hover:bg-[#FFFFFF] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer flex items-center gap-1.5"
               type="button"
             >
               <RefreshCw size={13} />
@@ -302,7 +302,7 @@ export function EducationContent({
                   setShowVideoModal(true);
                 }
               }}
-              className="px-4 py-2.5 bg-black text-white border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#FF5500] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2.5 bg-black text-white border-2 border-[#0A0A0A] shadow-[3px_3px_0px_#0A0A0A] hover:bg-[#FF5500] font-bold uppercase transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer flex items-center gap-1.5"
               type="button"
             >
               <Plus size={14} />
@@ -314,7 +314,7 @@ export function EducationContent({
 
       {/* FEEDBACK BANNERS */}
       {!user && (
-        <section className="bg-[#D9E021] border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
+        <section className="bg-[#FF5500] border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
           <div className="flex items-center gap-3">
             <span className="w-3 h-3 rounded-full bg-black animate-pulse shrink-0" />
             <div>
@@ -333,13 +333,13 @@ export function EducationContent({
         </section>
       )}
       {successMsg && (
-        <div className="p-3.5 bg-[#D9E021] border-2 border-[#1A1A1A] text-black font-mono text-xs font-black shadow-[3px_3px_0px_#1A1A1A] flex items-center gap-2">
+        <div className="p-3.5 bg-[#FF5500] border-2 border-[#0A0A0A] text-white font-mono text-xs font-black shadow-[3px_3px_0px_#0A0A0A] flex items-center gap-2">
           <CheckCircle2 size={16} />
           <span>{successMsg}</span>
         </div>
       )}
       {errorMsg && (
-        <div className="p-3.5 bg-[#FF5500] border-2 border-[#1A1A1A] text-white font-mono text-xs font-bold shadow-[3px_3px_0px_#1A1A1A] flex items-center gap-2">
+        <div className="p-3.5 bg-[#FF5500] border-2 border-[#0A0A0A] text-white font-mono text-xs font-bold shadow-[3px_3px_0px_#0A0A0A] flex items-center gap-2">
           <Lock size={16} />
           <span>{errorMsg}</span>
         </div>
@@ -347,42 +347,42 @@ export function EducationContent({
 
       {/* 2. 4 METRIC BENTO CARDS */}
       <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 font-mono">
-        <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
+        <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[4px_4px_0px_#0A0A0A] flex flex-col justify-between">
           <div className="flex items-center justify-between text-[#8F8A7E]">
-            <span className="text-[11px] font-bold">METRIC // 01</span>
-            <Terminal size={18} className="text-[#1A1A1A]" />
+            <span className="text-[11px] font-bold">Sprints</span>
+            <Terminal size={18} className="text-[#0A0A0A]" />
           </div>
           <div className="my-3">
-            <span className="text-4xl sm:text-5xl font-black text-[#1A1A1A] leading-none">48</span>
+            <span className="text-4xl sm:text-5xl font-black text-[#0A0A0A] leading-none">48</span>
             <span className="text-xs font-bold text-[#635F57] block mt-1.5 uppercase">Active Protocols</span>
           </div>
-          <div className="flex items-center justify-between pt-2 bg-[#F7F4EE] border border-[#1A1A1A] px-2.5 py-1 text-[11px]">
+          <div className="flex items-center justify-between pt-2 bg-[#FFFFFF] border border-[#0A0A0A] px-2.5 py-1 text-[11px]">
             <span className="text-[#635F57] font-bold uppercase">SYSTEM PIPELINE</span>
-            <span className="text-[#1A1A1A] font-black">+12 THIS CYCLE</span>
+            <span className="text-[#0A0A0A] font-black">+12 THIS CYCLE</span>
           </div>
         </div>
 
-        <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
+        <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[4px_4px_0px_#0A0A0A] flex flex-col justify-between">
           <div className="flex items-center justify-between text-[#8F8A7E]">
-            <span className="text-[11px] font-bold">METRIC // 02</span>
-            <Activity size={18} className="text-[#1A1A1A]" />
+            <span className="text-[11px] font-bold">Completion</span>
+            <Activity size={18} className="text-[#0A0A0A]" />
           </div>
           <div className="my-3">
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl sm:text-5xl font-black text-[#1A1A1A] leading-none">92%</span>
-              <span className="text-xs text-[#00E676] font-black">▲ 4.8%</span>
+              <span className="text-4xl sm:text-5xl font-black text-[#0A0A0A] leading-none">92%</span>
+              <span className="text-xs text-[#FF5500] font-black">▲ 4.8%</span>
             </div>
             <span className="text-xs font-bold text-[#635F57] block mt-1.5 uppercase">Completion Velocity</span>
           </div>
-          <div className="flex items-center justify-between pt-2 bg-[#F7F4EE] border border-[#1A1A1A] px-2.5 py-1 text-[11px]">
+          <div className="flex items-center justify-between pt-2 bg-[#FFFFFF] border border-[#0A0A0A] px-2.5 py-1 text-[11px]">
             <span className="text-[#635F57] font-bold uppercase">MEAN TIME TO MERGE</span>
-            <span className="text-[#1A1A1A] font-black">11.4 DAYS</span>
+            <span className="text-[#0A0A0A] font-black">11.4 DAYS</span>
           </div>
         </div>
 
-        <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
+        <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[4px_4px_0px_#0A0A0A] flex flex-col justify-between">
           <div className="flex items-center justify-between text-[#8F8A7E]">
-            <span className="text-[11px] font-bold">METRIC // 03</span>
+            <span className="text-[11px] font-bold">Credits</span>
             <Coins size={18} className="text-[#FF5500]" />
           </div>
           <div className="my-3">
@@ -391,44 +391,44 @@ export function EducationContent({
             </span>
             <span className="text-xs font-bold text-[#635F57] block mt-1.5 uppercase">ALUMN-CR Balance</span>
           </div>
-          <div className="flex items-center justify-between pt-2 bg-[#F7F4EE] border border-[#1A1A1A] px-2.5 py-1 text-[11px]">
+          <div className="flex items-center justify-between pt-2 bg-[#FFFFFF] border border-[#0A0A0A] px-2.5 py-1 text-[11px]">
             <span className="text-[#635F57] font-bold uppercase">STAKING POOL</span>
-            <span className="text-[#1A1A1A] font-black">VAL: $42,000 EQ</span>
+            <span className="text-[#0A0A0A] font-black">VAL: $42,000 EQ</span>
           </div>
         </div>
 
-        <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between">
+        <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[4px_4px_0px_#0A0A0A] flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#1D4ED8]">INTEGRITY // V4</span>
-            <ShieldCheck size={18} className="text-[#1D4ED8]" />
+            <span className="text-[11px] font-bold text-[#000000]">Integrity</span>
+            <ShieldCheck size={18} className="text-[#000000]" />
           </div>
           <div className="my-3">
-            <span className="text-base sm:text-lg font-black text-[#1A1A1A] leading-tight block">
-              Anti-Cheat Watchdog
+            <span className="text-base sm:text-lg font-black text-[#0A0A0A] leading-tight block">
+              Session checks
             </span>
             <span className="text-xs text-[#635F57] block mt-1 leading-relaxed">
-              FIPS 140-3 Cryptographic active process tracing with zero false positives.
+              Basic activity checks during live sessions.
             </span>
           </div>
-          <div className="flex items-center justify-between pt-2 bg-[#F7F4EE] border border-[#1A1A1A] px-2.5 py-1 text-[11px]">
+          <div className="flex items-center justify-between pt-2 bg-[#FFFFFF] border border-[#0A0A0A] px-2.5 py-1 text-[11px]">
             <span className="text-[#635F57] font-bold uppercase">AUDIT STATUS</span>
-            <span className="inline-flex items-center gap-1.5 text-[#1A1A1A] font-black">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_6px_#00E676]" /> ACTIVE
+            <span className="inline-flex items-center gap-1.5 text-[#0A0A0A] font-black">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] shadow-[0_0_6px_#FF5500]" /> ACTIVE
             </span>
           </div>
         </div>
       </section>
 
       {/* 3. FLAGSHIP HERO SPRINT SECTION (SPRINT 01) */}
-      <section className="bg-[#F7F4EE] border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[5px_5px_0px_#1A1A1A] flex flex-col xl:flex-row gap-8">
+      <section className="bg-[#FFFFFF] border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[5px_5px_0px_#0A0A0A] flex flex-col xl:flex-row gap-8">
         <div className="flex-1 flex flex-col justify-between gap-6">
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
               <span className="bg-black text-white px-2.5 py-0.5 font-bold">[ SPRINT 01 ]</span>
-              <span className="bg-white border-2 border-[#1A1A1A] text-[#1A1A1A] px-2.5 py-0.5 font-bold shadow-[1px_1px_0px_#1A1A1A]">
+              <span className="bg-white border-2 border-[#0A0A0A] text-[#0A0A0A] px-2.5 py-0.5 font-bold shadow-[1px_1px_0px_#0A0A0A]">
                 [ 14 DAYS ]
               </span>
-              <span className="bg-[#D9E021] border-2 border-[#1A1A1A] text-black px-2.5 py-0.5 font-black shadow-[1px_1px_0px_#1A1A1A]">
+              <span className="bg-[#FF5500] border-2 border-[#0A0A0A] text-white px-2.5 py-0.5 font-black shadow-[1px_1px_0px_#0A0A0A]">
                 [ 120 ALUMN-CR EARNED ]
               </span>
               <span className="text-[#8F8A7E] font-mono ml-auto hidden sm:inline">
@@ -437,12 +437,12 @@ export function EducationContent({
             </div>
 
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#1A1A1A] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-[#0A0A0A] tracking-tight">
                 Zero to Tech Lead: Distributed Systems Transition Protocol
               </h2>
               <div className="flex items-center gap-2 mt-1.5 font-mono text-xs">
                 <span className="text-[#8F8A7E] font-bold uppercase">LEAD ARCHITECT:</span>
-                <span className="font-black text-[#1A1A1A]">Dr. Elias Vance (Quantix Corp, Class of &apos;14)</span>
+                <span className="font-black text-[#0A0A0A]">Dr. Elias Vance (Quantix Corp, Class of &apos;14)</span>
               </div>
             </div>
 
@@ -450,18 +450,18 @@ export function EducationContent({
               14-day rigorous pathway with operational engineering templates, Raft consensus algorithm code review, live concurrency benchmarks, and real-time fault-injection architectures deployed against distributed state machines.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white border-2 border-[#1A1A1A] p-4 shadow-[2px_2px_0px_#1A1A1A] font-mono text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white border-2 border-[#0A0A0A] p-4 shadow-[2px_2px_0px_#0A0A0A] font-mono text-xs">
               <div>
                 <span className="text-[10px] text-[#8F8A7E] font-bold uppercase block">SYLLABUS MODULES</span>
-                <span className="font-black text-[#1A1A1A] text-sm">6 CORE / 2 CAPSTONE</span>
+                <span className="font-black text-[#0A0A0A] text-sm">6 CORE / 2 CAPSTONE</span>
               </div>
               <div>
                 <span className="text-[10px] text-[#8F8A7E] font-bold uppercase block">CODE REVIEWS</span>
-                <span className="font-black text-[#1A1A1A] text-sm">2 PEER VERIFIED</span>
+                <span className="font-black text-[#0A0A0A] text-sm">2 PEER VERIFIED</span>
               </div>
               <div>
                 <span className="text-[10px] text-[#8F8A7E] font-bold uppercase block">TARGET CADENCE</span>
-                <span className="font-black text-[#1A1A1A] text-sm">12 HRS / WEEK</span>
+                <span className="font-black text-[#0A0A0A] text-sm">12 HRS / WEEK</span>
               </div>
             </div>
           </div>
@@ -469,7 +469,7 @@ export function EducationContent({
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={() => handleEnroll("Zero to Tech Lead: Distributed Systems Transition Protocol")}
-              className="px-6 py-3 bg-[#FF5500] text-white border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] hover:bg-black font-mono text-xs sm:text-sm font-black uppercase transition-all cursor-pointer flex items-center gap-2"
+              className="px-6 py-3 bg-[#FF5500] text-white border-2 border-[#0A0A0A] shadow-[3px_3px_0px_#0A0A0A] hover:bg-black font-mono text-xs sm:text-sm font-black uppercase transition-all cursor-pointer flex items-center gap-2"
               type="button"
             >
               <span>START SPRINT PROTOCOL</span>
@@ -477,13 +477,13 @@ export function EducationContent({
             </button>
             <button
               onClick={() => setIsSyllabusModalOpen(true)}
-              className="px-4 py-3 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:bg-[#EFECE4] font-mono text-xs font-bold uppercase transition-all cursor-pointer"
+              className="px-4 py-3 bg-white text-[#0A0A0A] border-2 border-[#0A0A0A] shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#F5F5F5] font-mono text-xs font-bold uppercase transition-all cursor-pointer"
               type="button"
             >
               Inspect Syllabus PDF [4.2MB]
             </button>
             <div className="flex items-center gap-2 font-mono text-xs text-[#635F57] ml-auto">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse" />
               <span>CURRENTLY ENROLLED: 64 ALUMNI FELLOWS</span>
             </div>
           </div>
@@ -491,26 +491,26 @@ export function EducationContent({
 
         {/* Blueprint chamber with actual high-res schematic */}
         <div className="w-full xl:w-96 flex flex-col gap-3">
-          <div className="bg-white border-2 border-[#1A1A1A] p-1.5 shadow-[3px_3px_0px_#1A1A1A]">
+          <div className="bg-white border-2 border-[#0A0A0A] p-1.5 shadow-[3px_3px_0px_#0A0A0A]">
             <Image
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi3MDpbWU9Ft-yZXXhjI4dXtOuRd8fZ0uKGKKxvHK9I9Wr6FRP0I5KbcoewsIpPUCcTkMZwapXaRgkm0uvgom6hV00ejxil69BQFDHH-ulHqvCse7tavDjIDBsB2MXWwIMaQe1Er51CJAHRIJf3IJtq2iPW5twDht4iK72Jc6K14eR9Ok0iNBL_tWVPvhGwYLCKicrEu7iwKelh592oBmzjsF7DMyWyjuAArLnzw5InoXbN2o4aN0"
               alt="Technical workspace schematic showing distributed systems architecture diagrams"
               width={384}
               height={208}
-              className="w-full h-52 object-cover border border-[#1A1A1A]"
+              className="w-full h-52 object-cover border border-[#0A0A0A]"
             />
-            <div className="p-2 bg-[#F7F4EE] border-t border-[#1A1A1A] mt-1 flex justify-between items-center font-mono text-[11px]">
+            <div className="p-2 bg-[#FFFFFF] border-t border-[#0A0A0A] mt-1 flex justify-between items-center font-mono text-[11px]">
               <span className="text-[#8F8A7E] font-bold">CHAMBER // CAPSTONE PREVIEW</span>
-              <span className="font-black text-[#1A1A1A]">RAFT-CLUSTER-V2.GO</span>
+              <span className="font-black text-[#0A0A0A]">RAFT-CLUSTER-V2.GO</span>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-[#1A1A1A] p-3.5 shadow-[2px_2px_0px_#1A1A1A] flex flex-col gap-2 font-mono text-xs">
+          <div className="bg-white border-2 border-[#0A0A0A] p-3.5 shadow-[2px_2px_0px_#0A0A0A] flex flex-col gap-2 font-mono text-xs">
             <div className="flex justify-between items-center">
               <span className="text-[#8F8A7E] font-bold uppercase">SPRINT EXECUTION TIMELINE</span>
               <span className="text-[#FF5500] font-black">DAY 01 OF 14</span>
             </div>
-            <div className="w-full bg-[#e5e2dc] border border-[#1A1A1A] h-2.5 overflow-hidden">
+            <div className="w-full bg-[#e5e2dc] border border-[#0A0A0A] h-2.5 overflow-hidden">
               <div className="bg-[#FF5500] h-full w-[14%]" />
             </div>
             <div className="flex justify-between text-[10px] text-[#8F8A7E] font-bold">
@@ -530,40 +530,40 @@ export function EducationContent({
               <span className="bg-black text-white px-2.5 py-0.5 font-bold">INDEX // 02</span>
               <span className="text-[#8F8A7E] uppercase font-bold">ACTIVE REPOSITORY</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#1A1A1A] tracking-tight mt-1">
-              Curated Engineering Sprints
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0A0A0A] tracking-tight mt-1">
+              Engineering sprints
             </h2>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
             <button
               onClick={() => setSelectedSprintCategory("all")}
-              className={`px-3.5 py-1.5 border-2 border-[#1A1A1A] font-bold uppercase transition-all shadow-[2px_2px_0px_#1A1A1A] cursor-pointer ${
-                selectedSprintCategory === "all" ? "bg-black text-white" : "bg-white text-[#1A1A1A] hover:bg-[#F7F4EE]"
+              className={`px-3.5 py-1.5 border-2 border-[#0A0A0A] font-bold uppercase transition-all shadow-[2px_2px_0px_#0A0A0A] cursor-pointer ${
+                selectedSprintCategory === "all" ? "bg-black text-white" : "bg-white text-[#0A0A0A] hover:bg-[#FFFFFF]"
               }`}
             >
               ALL SPRINTS
             </button>
             <button
               onClick={() => setSelectedSprintCategory("cryptography")}
-              className={`px-3.5 py-1.5 border-2 border-[#1A1A1A] font-bold uppercase transition-all shadow-[2px_2px_0px_#1A1A1A] cursor-pointer ${
-                selectedSprintCategory === "cryptography" ? "bg-black text-white" : "bg-white text-[#1A1A1A] hover:bg-[#F7F4EE]"
+              className={`px-3.5 py-1.5 border-2 border-[#0A0A0A] font-bold uppercase transition-all shadow-[2px_2px_0px_#0A0A0A] cursor-pointer ${
+                selectedSprintCategory === "cryptography" ? "bg-black text-white" : "bg-white text-[#0A0A0A] hover:bg-[#FFFFFF]"
               }`}
             >
               CRYPTOGRAPHY
             </button>
             <button
               onClick={() => setSelectedSprintCategory("distributed")}
-              className={`px-3.5 py-1.5 border-2 border-[#1A1A1A] font-bold uppercase transition-all shadow-[2px_2px_0px_#1A1A1A] cursor-pointer ${
-                selectedSprintCategory === "distributed" ? "bg-black text-white" : "bg-white text-[#1A1A1A] hover:bg-[#F7F4EE]"
+              className={`px-3.5 py-1.5 border-2 border-[#0A0A0A] font-bold uppercase transition-all shadow-[2px_2px_0px_#0A0A0A] cursor-pointer ${
+                selectedSprintCategory === "distributed" ? "bg-black text-white" : "bg-white text-[#0A0A0A] hover:bg-[#FFFFFF]"
               }`}
             >
               DISTRIBUTED ENGINES
             </button>
             <button
               onClick={() => setSelectedSprintCategory("silicon")}
-              className={`px-3.5 py-1.5 border-2 border-[#1A1A1A] font-bold uppercase transition-all shadow-[2px_2px_0px_#1A1A1A] cursor-pointer ${
-                selectedSprintCategory === "silicon" ? "bg-black text-white" : "bg-white text-[#1A1A1A] hover:bg-[#F7F4EE]"
+              className={`px-3.5 py-1.5 border-2 border-[#0A0A0A] font-bold uppercase transition-all shadow-[2px_2px_0px_#0A0A0A] cursor-pointer ${
+                selectedSprintCategory === "silicon" ? "bg-black text-white" : "bg-white text-[#0A0A0A] hover:bg-[#FFFFFF]"
               }`}
             >
               SILICON &amp; FIRMWARE
@@ -575,23 +575,23 @@ export function EducationContent({
           {filteredSprints.map((sprint) => (
             <div
               key={sprint.id}
-              className="bg-white border-2 border-[#1A1A1A] p-6 shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between hover:shadow-[6px_6px_0px_#1A1A1A] transition-all group"
+              className="bg-white border-2 border-[#0A0A0A] p-6 shadow-[4px_4px_0px_#0A0A0A] flex flex-col justify-between hover:shadow-[6px_6px_0px_#0A0A0A] transition-all group"
             >
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="bg-[#F7F4EE] border border-[#1A1A1A] text-[#1A1A1A] px-2 py-0.5 font-bold shadow-[1px_1px_0px_#1A1A1A]">
+                  <span className="bg-[#FFFFFF] border border-[#0A0A0A] text-[#0A0A0A] px-2 py-0.5 font-bold shadow-[1px_1px_0px_#0A0A0A]">
                     [ {sprint.sprintNum} // {sprint.durationDays} DAYS ]
                   </span>
                   <span className="text-[#FF5500] font-black">+{sprint.creditsEarned} ALUMN-CR</span>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-black text-[#1A1A1A] group-hover:text-[#FF5500] transition-colors leading-snug">
+                  <h3 className="text-xl font-black text-[#0A0A0A] group-hover:text-[#FF5500] transition-colors leading-snug">
                     {sprint.title}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-1 font-mono text-xs">
                     <span className="text-[#8F8A7E] font-bold uppercase">FELLOW:</span>
-                    <span className="font-black text-[#1A1A1A]">{sprint.fellow} ({sprint.fellowTitle})</span>
+                    <span className="font-black text-[#0A0A0A]">{sprint.fellow} ({sprint.fellowTitle})</span>
                   </div>
                 </div>
 
@@ -601,19 +601,19 @@ export function EducationContent({
 
                 <div className="flex flex-wrap gap-1.5 font-mono text-xs">
                   {sprint.tags.map((tag) => (
-                    <span key={tag} className="px-2 py-0.5 bg-[#F7F4EE] border border-[#1A1A1A] text-[#635F57] text-[11px] font-semibold">
+                    <span key={tag} className="px-2 py-0.5 bg-[#FFFFFF] border border-[#0A0A0A] text-[#635F57] text-[11px] font-semibold">
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-4 mt-6 bg-[#F7F4EE] border-2 border-[#1A1A1A] p-4 flex flex-col gap-2.5 font-mono text-xs">
+              <div className="pt-4 mt-6 bg-[#FFFFFF] border-2 border-[#0A0A0A] p-4 flex flex-col gap-2.5 font-mono text-xs">
                 <div className="flex justify-between items-center">
                   <span className="text-[#8F8A7E] font-bold uppercase">COHORT PROGRESSION</span>
-                  <span className="font-black text-[#1A1A1A]">{sprint.passRate}</span>
+                  <span className="font-black text-[#0A0A0A]">{sprint.passRate}</span>
                 </div>
-                <div className="w-full bg-[#e5e2dc] border border-[#1A1A1A] h-2">
+                <div className="w-full bg-[#e5e2dc] border border-[#0A0A0A] h-2">
                   <div className="bg-black h-full" style={{ width: sprint.passRate.split("%")[0] + "%" }} />
                 </div>
                 <div className="flex justify-between items-center mt-1 pt-1">
@@ -622,10 +622,10 @@ export function EducationContent({
                   </span>
                   <button
                     onClick={() => handleEnroll(sprint.title)}
-                    className="px-4 py-2 bg-black text-white border-2 border-[#1A1A1A] font-bold uppercase hover:bg-[#FF5500] transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
+                    className="px-4 py-2 bg-black text-white border-2 border-[#0A0A0A] font-bold uppercase hover:bg-[#FF5500] transition-all cursor-pointer shadow-[2px_2px_0px_#0A0A0A]"
                     type="button"
                   >
-                    ENROLL RUNTIME →
+                    Enroll →
                   </button>
                 </div>
               </div>
@@ -635,32 +635,32 @@ export function EducationContent({
       </section>
 
       {/* 5. VIDEO LEARNING REPOSITORY & TECHNICAL TALKS (PRESERVING FULL BACKEND INTEGRATION) */}
-      <section className="bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[4px_4px_0_#1A1A1A] flex flex-col gap-6">
-        <div className="flex flex-wrap items-end justify-between gap-4 pb-4 border-b-2 border-[#D5CEBF]">
+      <section className="bg-white border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[4px_4px_0_#0A0A0A] flex flex-col gap-6">
+        <div className="flex flex-wrap items-end justify-between gap-4 pb-4 border-b-2 border-[#D4D4D4]">
           <div>
             <div className="flex items-center gap-2 font-mono text-xs">
               <span className="bg-black text-white px-2.5 py-0.5 font-bold">LIBRARY // VIDEOS</span>
               <span className="text-[#8F8A7E] uppercase font-bold">ALUMNI MASTERCLASSES</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#1A1A1A] tracking-tight mt-1">
-              Technical Masterclasses &amp; Video Runbooks
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0A0A0A] tracking-tight mt-1">
+              Masterclasses & videos
             </h2>
             <p className="text-sm text-[#635F57] max-w-2xl mt-0.5">
               Watch deep-dive walkthroughs uploaded by verified alumni fellows or redeem your ALUMN-CR points.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 font-mono text-xs bg-[#F7F4EE] border-2 border-[#1A1A1A] p-3 shadow-[2px_2px_0px_#1A1A1A]">
+          <div className="flex items-center gap-3 font-mono text-xs bg-[#FFFFFF] border-2 border-[#0A0A0A] p-3 shadow-[2px_2px_0px_#0A0A0A]">
             <Coins size={18} className="text-[#FF5500]" />
             <span className="text-[#8F8A7E] font-bold">STAKED BALANCE:</span>
-            <span className="text-base font-black text-[#1A1A1A]">{currentBalance} pts</span>
+            <span className="text-base font-black text-[#0A0A0A]">{currentBalance} pts</span>
           </div>
         </div>
 
         {initialVideos.length === 0 ? (
-          <div className="bg-[#F7F4EE] border-2 border-[#1A1A1A] p-8 sm:p-12 text-center shadow-[3px_3px_0px_#1A1A1A] font-mono flex flex-col items-center gap-2">
+          <div className="bg-[#FFFFFF] border-2 border-[#0A0A0A] p-8 sm:p-12 text-center shadow-[3px_3px_0px_#0A0A0A] font-mono flex flex-col items-center gap-2">
             <Play size={36} className="text-[#8F8A7E] mb-1" />
-            <p className="font-black text-sm text-[#1A1A1A]">NO SUBMITTED MASTERCLASSES RECORDED YET</p>
+            <p className="font-black text-sm text-[#0A0A0A]">NO SUBMITTED MASTERCLASSES RECORDED YET</p>
             <p className="text-xs text-[#635F57]">
               Be the first alumni fellow to submit an architectural runbook video.
             </p>
@@ -672,7 +672,7 @@ export function EducationContent({
                   setShowVideoModal(true);
                 }
               }}
-              className="mt-3 px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all"
+              className="mt-3 px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#0A0A0A] shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#FF5500] cursor-pointer transition-all"
             >
               + SUBMIT FIRST RUNBOOK
             </button>
@@ -686,21 +686,21 @@ export function EducationContent({
               return (
                 <div
                   key={video.id}
-                  className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] flex flex-col justify-between overflow-hidden group hover:shadow-[6px_6px_0px_#1A1A1A] transition-all"
+                  className="bg-white border-2 border-[#0A0A0A] shadow-[4px_4px_0px_#0A0A0A] flex flex-col justify-between overflow-hidden group hover:shadow-[6px_6px_0px_#0A0A0A] transition-all"
                 >
                   {/* Thumbnail / Header */}
-                  <div className="relative aspect-video w-full bg-neutral-900 border-b-2 border-[#1A1A1A] flex flex-col justify-between p-3 overflow-hidden">
+                  <div className="relative aspect-video w-full bg-neutral-900 border-b-2 border-[#0A0A0A] flex flex-col justify-between p-3 overflow-hidden">
                     <div className="flex justify-between items-start z-10">
                       {isFree ? (
-                        <span className="px-2 py-0.5 bg-[#00E676] text-black border border-[#1A1A1A] font-mono text-[10px] font-black">
+                        <span className="px-2 py-0.5 bg-[#FF5500] text-black border border-[#0A0A0A] font-mono text-[10px] font-black">
                           FREE SKILL
                         </span>
                       ) : isUnlocked ? (
-                        <span className="px-2 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] font-mono text-[10px] font-black flex items-center gap-1">
+                        <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-[#0A0A0A] font-mono text-[10px] font-black flex items-center gap-1">
                           <CheckCircle2 size={11} /> UNLOCKED
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-[#1A1A1A] font-mono text-[10px] font-black flex items-center gap-1">
+                        <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-[#0A0A0A] font-mono text-[10px] font-black flex items-center gap-1">
                           <Coins size={11} /> {video.priceInCredits} PTS
                         </span>
                       )}
@@ -718,7 +718,7 @@ export function EducationContent({
                         onClick={() => setPlayingVideo(video)}
                         className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border-none"
                       >
-                        <div className="w-12 h-12 bg-[#D9E021] border-2 border-[#1A1A1A] flex items-center justify-center shadow-[2px_2px_0px_#1A1A1A]">
+                        <div className="w-12 h-12 bg-[#FF5500] border-2 border-[#0A0A0A] flex items-center justify-center shadow-[2px_2px_0px_#0A0A0A]">
                           <Play size={22} className="text-black ml-0.5 fill-black" />
                         </div>
                       </button>
@@ -729,7 +729,7 @@ export function EducationContent({
                         className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/75 p-3 text-center cursor-pointer border-none"
                       >
                         <Lock size={22} className="text-white mb-1.5" />
-                        <span className="font-mono text-xs font-bold text-white bg-[#FF5500] px-3 py-1 border border-[#1A1A1A] shadow-[1px_1px_0px_#1A1A1A]">
+                        <span className="font-mono text-xs font-bold text-white bg-[#FF5500] px-3 py-1 border border-[#0A0A0A] shadow-[1px_1px_0px_#0A0A0A]">
                           Unlock for {video.priceInCredits} pts
                         </span>
                       </button>
@@ -742,17 +742,17 @@ export function EducationContent({
                       {video.description || "Comprehensive hands-on engineering walkthrough."}
                     </p>
 
-                    <div className="flex items-center justify-between pt-3 border-t border-[#D5CEBF] mt-4 font-mono text-xs">
+                    <div className="flex items-center justify-between pt-3 border-t border-[#D4D4D4] mt-4 font-mono text-xs">
                       <div className="flex items-center gap-1.5">
                         <UserIcon size={12} className="text-[#8F8A7E]" />
-                        <span className="text-[11px] font-bold text-[#1A1A1A] truncate max-w-[120px]">
+                        <span className="text-[11px] font-bold text-[#0A0A0A] truncate max-w-[120px]">
                           {video.uploader?.name || "Verified Fellow"}
                         </span>
                       </div>
                       {isUnlocked && (
                         <button
                           onClick={() => setPlayingVideo(video)}
-                          className="font-bold text-[#1A1A1A] hover:text-[#FF5500] flex items-center gap-1 text-[11px] cursor-pointer"
+                          className="font-bold text-[#0A0A0A] hover:text-[#FF5500] flex items-center gap-1 text-[11px] cursor-pointer"
                         >
                           <span>Watch</span>
                           <Play size={10} className="fill-current" />
@@ -768,67 +768,67 @@ export function EducationContent({
       </section>
 
       {/* 6. PROOF OF COMPLETION & WATCHDOG ARCHITECTURE (INDEX 03) */}
-      <section className="bg-[#F7F4EE] border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[5px_5px_0px_#1A1A1A] flex flex-col gap-6">
+      <section className="bg-[#FFFFFF] border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[5px_5px_0px_#0A0A0A] flex flex-col gap-6">
         <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
           <div className="flex items-center gap-2">
             <span className="bg-black text-white px-2.5 py-0.5 font-bold">INDEX // 03</span>
             <span className="text-[#FF5500] font-black uppercase">
-              PROOF OF COMPLETION &amp; WATCHDOG ARCHITECTURE
+              Completion
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_8px_#00E676]" />
-            <span className="font-bold text-[#1A1A1A]">ATTESTATION PROTOCOL: SEC_ECDSA_P384</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] shadow-[0_0_8px_#FF5500]" />
+            <span className="font-bold text-[#0A0A0A]">ATTESTATION PROTOCOL: SEC_ECDSA_P384</span>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between">
+          <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[3px_3px_0px_#0A0A0A] flex flex-col justify-between">
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between font-mono text-[10px] text-[#8F8A7E] font-bold">
                 <span>STAGE 01 // TELEMETRY</span>
-                <Cpu size={16} className="text-[#1A1A1A]" />
+                <Cpu size={16} className="text-[#0A0A0A]" />
               </div>
-              <h4 className="text-lg font-black text-[#1A1A1A]">Heartbeat Watchdog</h4>
+              <h4 className="text-lg font-black text-[#0A0A0A]">Activity check</h4>
               <p className="text-xs text-[#635F57] leading-relaxed">
                 Continuous keystroke entropy and interactive terminal session checks verify human execution. Minimum threshold: &gt;90% active retention.
               </p>
             </div>
-            <div className="mt-4 p-2 bg-[#F7F4EE] border border-[#1A1A1A] flex items-center justify-between font-mono text-xs">
+            <div className="mt-4 p-2 bg-[#FFFFFF] border border-[#0A0A0A] flex items-center justify-between font-mono text-xs">
               <span className="text-[#8F8A7E] font-bold">WATCHDOG STATUS</span>
-              <span className="text-[#00E676] font-black">MONITORED: OK</span>
+              <span className="text-[#FF5500] font-black">MONITORED: OK</span>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between">
+          <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[3px_3px_0px_#0A0A0A] flex flex-col justify-between">
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between font-mono text-[10px] text-[#8F8A7E] font-bold">
                 <span>STAGE 02 // VALIDATION</span>
-                <ShieldCheck size={16} className="text-[#1A1A1A]" />
+                <ShieldCheck size={16} className="text-[#0A0A0A]" />
               </div>
-              <h4 className="text-lg font-black text-[#1A1A1A]">Peer Code Review Sign-Off</h4>
+              <h4 className="text-lg font-black text-[#0A0A0A]">Peer review</h4>
               <p className="text-xs text-[#635F57] leading-relaxed">
                 Two calibrated alumni fellows grade commit diffs against unit test coverage, AST linting, and benchmark latency guarantees.
               </p>
             </div>
-            <div className="mt-4 p-2 bg-[#F7F4EE] border border-[#1A1A1A] flex items-center justify-between font-mono text-xs">
+            <div className="mt-4 p-2 bg-[#FFFFFF] border border-[#0A0A0A] flex items-center justify-between font-mono text-xs">
               <span className="text-[#8F8A7E] font-bold">SIGN-OFF QUORUM</span>
-              <span className="text-[#1A1A1A] font-black">2 OF 2 FELLOWS</span>
+              <span className="text-[#0A0A0A] font-black">2 OF 2 FELLOWS</span>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[3px_3px_0px_#1A1A1A] flex flex-col justify-between">
+          <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[3px_3px_0px_#0A0A0A] flex flex-col justify-between">
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between font-mono text-[10px] text-[#8F8A7E] font-bold">
                 <span>STAGE 03 // CREDENTIAL</span>
-                <Award size={16} className="text-[#1A1A1A]" />
+                <Award size={16} className="text-[#0A0A0A]" />
               </div>
-              <h4 className="text-lg font-black text-[#1A1A1A]">Cryptographic Certificate</h4>
+              <h4 className="text-lg font-black text-[#0A0A0A]">Certificate</h4>
               <p className="text-xs text-[#635F57] leading-relaxed">
                 ECDSA P-384 signed root with immutable ledger timestamp. Downloadable JSON-LD and PDF cryptographic credentials.
               </p>
             </div>
-            <div className="mt-4 p-2 bg-[#F7F4EE] border border-[#1A1A1A] flex items-center justify-between font-mono text-xs">
+            <div className="mt-4 p-2 bg-[#FFFFFF] border border-[#0A0A0A] flex items-center justify-between font-mono text-xs">
               <span className="text-[#8F8A7E] font-bold">VALIDITY PROOF</span>
               <span className="text-[#FF5500] font-black">FIPS 140-3 COMPLIANT</span>
             </div>
@@ -836,13 +836,13 @@ export function EducationContent({
         </div>
 
         {/* Verification Card Sample */}
-        <div className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[3px_3px_0px_#1A1A1A] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
+        <div className="bg-white border-2 border-[#0A0A0A] p-5 shadow-[3px_3px_0px_#0A0A0A] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-black text-white border-2 border-[#1A1A1A] flex items-center justify-center font-black text-sm shadow-[1px_1px_0px_#1A1A1A]">
+            <div className="w-11 h-11 bg-black text-white border-2 border-[#0A0A0A] flex items-center justify-center font-black text-sm shadow-[1px_1px_0px_#0A0A0A]">
               CERT
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-[#1A1A1A] text-sm">{user?.name || "Member"} // Recent Verification</span>
+              <span className="font-black text-[#0A0A0A] text-sm">{user?.name || "Member"} // Recent Verification</span>
               <span className="text-[#8F8A7E] text-[11px]">
                 ISSUED: 2026-03-28 | SPRINT: VECTOR-EMBEDDING-COMPRESSION-99
               </span>
@@ -864,14 +864,14 @@ export function EducationContent({
                 dl.setAttribute("download", `${(user?.name || "member").toLowerCase().replace(/[^a-z0-9]/g, "_")}_credential.json`);
                 dl.click();
               }}
-              className="px-3.5 py-1.5 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold uppercase hover:bg-[#EFECE4] transition-all cursor-pointer shadow-[1px_1px_0px_#1A1A1A]"
+              className="px-3.5 py-1.5 bg-[#FFFFFF] text-[#0A0A0A] border-2 border-[#0A0A0A] font-bold uppercase hover:bg-[#F5F5F5] transition-all cursor-pointer shadow-[1px_1px_0px_#0A0A0A]"
               type="button"
             >
               Download JSON-LD Key
             </button>
             <button
               onClick={() => setIsSignatureModalOpen(true)}
-              className="px-4 py-1.5 bg-black text-white border-2 border-[#1A1A1A] font-bold uppercase hover:bg-[#FF5500] transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
+              className="px-4 py-1.5 bg-black text-white border-2 border-[#0A0A0A] font-bold uppercase hover:bg-[#FF5500] transition-all cursor-pointer shadow-[2px_2px_0px_#0A0A0A]"
               type="button"
             >
               Verify Signature →
@@ -881,9 +881,9 @@ export function EducationContent({
       </section>
 
       {/* 7. PERSISTENT TELEMETRY FOOTER FROM STITCH */}
-      <footer className="w-full bg-[#EFECE4] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] p-4 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
+      <footer className="w-full bg-[#F5F5F5] border-2 border-[#0A0A0A] shadow-[3px_3px_0px_#0A0A0A] p-4 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs">
         <div className="flex items-center gap-3">
-          <span className="bg-black text-white px-2.5 py-1 font-bold shadow-[1px_1px_0px_#1A1A1A]">
+          <span className="bg-black text-white px-2.5 py-1 font-bold shadow-[1px_1px_0px_#0A0A0A]">
             PRO-ALUMN NET CORE
           </span>
           <span className="text-[#635F57] font-medium">
@@ -891,10 +891,10 @@ export function EducationContent({
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 text-[#1A1A1A] font-bold">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_6px_#00E676]" /> NODE: READY
+          <span className="inline-flex items-center gap-1.5 text-[#0A0A0A] font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] shadow-[0_0_6px_#FF5500]" /> NODE: READY
           </span>
-          <span className="text-[#D5CEBF]">|</span>
+          <span className="text-[#D4D4D4]">|</span>
           <span className="text-[#8F8A7E]">SESSION: #EV-9942-FELLOW</span>
         </div>
       </footer>
@@ -904,15 +904,15 @@ export function EducationContent({
       {/* Modal 1: Upload Video Form */}
       {showVideoModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="relative w-full max-w-xl bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[8px_8px_0px_#1A1A1A] flex flex-col font-mono text-xs max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b-2 border-[#1A1A1A] pb-3 mb-4">
+          <div className="relative w-full max-w-xl bg-white border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[8px_8px_0px_#0A0A0A] flex flex-col font-mono text-xs max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b-2 border-[#0A0A0A] pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <span className="px-2 py-0.5 bg-black text-white font-bold">[ SUBMISSION PORTAL ]</span>
-                <h3 className="font-black text-[#1A1A1A] text-base uppercase">Submit Technical Video</h3>
+                <h3 className="font-black text-[#0A0A0A] text-base uppercase">Submit Technical Video</h3>
               </div>
               <button
                 onClick={() => setShowVideoModal(false)}
-                className="p-1 border border-[#1A1A1A] hover:bg-[#F7F4EE] cursor-pointer"
+                className="p-1 border border-[#0A0A0A] hover:bg-[#FFFFFF] cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -920,19 +920,19 @@ export function EducationContent({
 
             <form onSubmit={handleVideoSubmit} className="space-y-4">
               <div>
-                <label className="block font-bold text-[#1A1A1A] uppercase mb-1">
+                <label className="block font-bold text-[#0A0A0A] uppercase mb-1">
                   Video Title <span className="text-[#FF5500]">*</span>
                 </label>
                 <input
                   required
                   name="title"
                   placeholder="e.g. Raft Consensus Internals in Go"
-                  className="w-full px-3 py-2 border-2 border-[#1A1A1A] bg-[#F7F4EE] focus:bg-white text-xs font-mono focus:outline-none"
+                  className="w-full px-3 py-2 border-2 border-[#0A0A0A] bg-[#FFFFFF] focus:bg-white text-xs font-mono focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#1A1A1A] uppercase mb-1">
+                <label className="block font-bold text-[#0A0A0A] uppercase mb-1">
                   Description &amp; Key Concepts <span className="text-[#FF5500]">*</span>
                 </label>
                 <textarea
@@ -940,12 +940,12 @@ export function EducationContent({
                   rows={4}
                   name="description"
                   placeholder="Summarize the architectural takeaways for students and fellows..."
-                  className="w-full px-3 py-2 border-2 border-[#1A1A1A] bg-[#F7F4EE] focus:bg-white text-xs font-mono focus:outline-none"
+                  className="w-full px-3 py-2 border-2 border-[#0A0A0A] bg-[#FFFFFF] focus:bg-white text-xs font-mono focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-[#1A1A1A] uppercase mb-1">
+                <label className="block font-bold text-[#0A0A0A] uppercase mb-1">
                   Video File (.mp4) <span className="text-[#FF5500]">*</span>
                 </label>
                 <input
@@ -953,23 +953,23 @@ export function EducationContent({
                   name="videoFile"
                   type="file"
                   accept="video/mp4,video/x-m4v,video/*"
-                  className="w-full px-3 py-2 border-2 border-[#1A1A1A] bg-[#F7F4EE] text-xs font-mono file:mr-3 file:py-1 file:px-3 file:border-2 file:border-[#1A1A1A] file:font-bold file:bg-black file:text-white hover:file:bg-[#FF5500] cursor-pointer"
+                  className="w-full px-3 py-2 border-2 border-[#0A0A0A] bg-[#FFFFFF] text-xs font-mono file:mr-3 file:py-1 file:px-3 file:border-2 file:border-[#0A0A0A] file:font-bold file:bg-black file:text-white hover:file:bg-[#FF5500] cursor-pointer"
                 />
                 <p className="text-[10px] text-[#8F8A7E] mt-1">Maximum file size: 150MB.</p>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t-2 border-[#1A1A1A]">
+              <div className="flex justify-end gap-3 pt-3 border-t-2 border-[#0A0A0A]">
                 <button
                   type="button"
                   onClick={() => setShowVideoModal(false)}
-                  className="px-4 py-2 border-2 border-[#1A1A1A] bg-white font-bold hover:bg-[#F7F4EE] cursor-pointer"
+                  className="px-4 py-2 border-2 border-[#0A0A0A] bg-white font-bold hover:bg-[#FFFFFF] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   disabled={isPending}
                   type="submit"
-                  className="px-5 py-2 border-2 border-[#1A1A1A] bg-black text-white font-bold shadow-[2px_2px_0px_#1A1A1A] hover:bg-[#FF5500] cursor-pointer disabled:opacity-50"
+                  className="px-5 py-2 border-2 border-[#0A0A0A] bg-black text-white font-bold shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#FF5500] cursor-pointer disabled:opacity-50"
                 >
                   {isPending ? "Transmitting..." : "Submit for Moderation"}
                 </button>
@@ -982,15 +982,15 @@ export function EducationContent({
       {/* Modal 2: Watch Video Player */}
       {playingVideo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="relative w-full max-w-4xl bg-white border-2 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] flex flex-col max-h-[90vh] overflow-hidden">
-            <div className="flex justify-between items-center p-4 border-b-2 border-[#1A1A1A] bg-[#F7F4EE] font-mono">
-              <h2 className="text-sm font-black text-[#1A1A1A] uppercase flex items-center gap-2">
-                <ShieldCheck size={18} className="text-[#00E676]" />
+          <div className="relative w-full max-w-4xl bg-white border-2 border-[#0A0A0A] shadow-[8px_8px_0px_#0A0A0A] flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b-2 border-[#0A0A0A] bg-[#FFFFFF] font-mono">
+              <h2 className="text-sm font-black text-[#0A0A0A] uppercase flex items-center gap-2">
+                <ShieldCheck size={18} className="text-[#FF5500]" />
                 <span>SECURE WATCH-TO-EARN PLAYER // {playingVideo.title}</span>
               </h2>
               <button
                 onClick={() => setPlayingVideo(null)}
-                className="p-1 border-2 border-[#1A1A1A] bg-white hover:bg-[#EFECE4] cursor-pointer"
+                className="p-1 border-2 border-[#0A0A0A] bg-white hover:bg-[#F5F5F5] cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -1002,8 +1002,8 @@ export function EducationContent({
                 videoUrl={playingVideo.videoUrl}
                 title={playingVideo.title}
               />
-              <div className="p-5 border-t-2 border-[#1A1A1A] bg-white font-mono text-xs">
-                <h3 className="font-black text-[#1A1A1A] uppercase mb-1">About this Runbook</h3>
+              <div className="p-5 border-t-2 border-[#0A0A0A] bg-white font-mono text-xs">
+                <h3 className="font-black text-[#0A0A0A] uppercase mb-1">About this Runbook</h3>
                 <p className="text-[#635F57] text-sm leading-relaxed">{playingVideo.description}</p>
               </div>
             </div>
@@ -1014,22 +1014,22 @@ export function EducationContent({
       {/* Modal 3: Syllabus PDF Preview Modal */}
       {isSyllabusModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="relative w-full max-w-2xl bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[8px_8px_0px_#1A1A1A] flex flex-col gap-4 font-mono text-xs max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b-2 border-[#1A1A1A] pb-3">
+          <div className="relative w-full max-w-2xl bg-white border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[8px_8px_0px_#0A0A0A] flex flex-col gap-4 font-mono text-xs max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b-2 border-[#0A0A0A] pb-3">
               <div className="flex items-center gap-2">
                 <span className="px-2 py-0.5 bg-black text-white font-bold">SYLLABUS SPEC</span>
-                <span className="font-black text-[#1A1A1A] text-base uppercase">Sprint Curriculum Blueprint</span>
+                <span className="font-black text-[#0A0A0A] text-base uppercase">Sprint Curriculum Blueprint</span>
               </div>
               <button
                 onClick={() => setIsSyllabusModalOpen(false)}
-                className="p-1 border-2 border-[#1A1A1A] hover:bg-[#F7F4EE] cursor-pointer"
+                className="p-1 border-2 border-[#0A0A0A] hover:bg-[#FFFFFF] cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
-            <div className="space-y-3 text-[#1A1A1A] leading-relaxed text-xs">
-              <h4 className="font-mono font-black text-[#1A1A1A] uppercase text-sm">
+            <div className="space-y-3 text-[#0A0A0A] leading-relaxed text-xs">
+              <h4 className="font-mono font-black text-[#0A0A0A] uppercase text-sm">
                 Module Breakdown // Distributed Systems Transition Protocol
               </h4>
               <ul className="list-decimal pl-5 space-y-1.5 font-mono text-xs text-[#635F57]">
@@ -1042,10 +1042,10 @@ export function EducationContent({
               </ul>
             </div>
 
-            <div className="flex justify-end pt-3 border-t-2 border-[#1A1A1A]">
+            <div className="flex justify-end pt-3 border-t-2 border-[#0A0A0A]">
               <button
                 onClick={() => setIsSyllabusModalOpen(false)}
-                className="px-5 py-2.5 border-2 border-[#1A1A1A] bg-black text-white font-bold uppercase hover:bg-[#FF5500] cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
+                className="px-5 py-2.5 border-2 border-[#0A0A0A] bg-black text-white font-bold uppercase hover:bg-[#FF5500] cursor-pointer shadow-[2px_2px_0px_#0A0A0A]"
               >
                 Close Syllabus
               </button>
@@ -1057,43 +1057,43 @@ export function EducationContent({
       {/* Modal 4: Signature Verification Modal */}
       {isSignatureModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="relative w-full max-w-lg bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[8px_8px_0px_#1A1A1A] flex flex-col gap-4 font-mono text-xs">
-            <div className="flex items-center justify-between border-b-2 border-[#1A1A1A] pb-3">
+          <div className="relative w-full max-w-lg bg-white border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[8px_8px_0px_#0A0A0A] flex flex-col gap-4 font-mono text-xs">
+            <div className="flex items-center justify-between border-b-2 border-[#0A0A0A] pb-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-[#00E676] text-black font-black">ATTESTATION OK</span>
-                <span className="font-black text-[#1A1A1A] uppercase">Cryptographic Validation</span>
+                <span className="px-2 py-0.5 bg-[#FF5500] text-black font-black">ATTESTATION OK</span>
+                <span className="font-black text-[#0A0A0A] uppercase">Cryptographic Validation</span>
               </div>
               <button
                 onClick={() => setIsSignatureModalOpen(false)}
-                className="p-1 border-2 border-[#1A1A1A] hover:bg-[#F7F4EE] cursor-pointer"
+                className="p-1 border-2 border-[#0A0A0A] hover:bg-[#FFFFFF] cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
-            <div className="p-3.5 bg-[#F7F4EE] border-2 border-[#1A1A1A] space-y-2 shadow-[2px_2px_0px_#1A1A1A]">
+            <div className="p-3.5 bg-[#FFFFFF] border-2 border-[#0A0A0A] space-y-2 shadow-[2px_2px_0px_#0A0A0A]">
               <div className="flex justify-between">
                 <span className="text-[#8F8A7E] font-bold">ALGORITHM:</span>
-                <span className="font-bold text-[#1A1A1A]">ECDSA P-384 + SHA-384</span>
+                <span className="font-bold text-[#0A0A0A]">ECDSA P-384 + SHA-384</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#8F8A7E] font-bold">ROOT HASH:</span>
-                <span className="font-bold text-[#1A1A1A] truncate max-w-[200px]">0x89F1942E3120AA812</span>
+                <span className="font-bold text-[#0A0A0A] truncate max-w-[200px]">0x89F1942E3120AA812</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#8F8A7E] font-bold">ISSUER:</span>
-                <span className="font-bold text-[#1A1A1A]">PRO-ALUMN CONSORTIUM ROOT CA</span>
+                <span className="font-bold text-[#0A0A0A]">PRO-ALUMN CONSORTIUM ROOT CA</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#8F8A7E] font-bold">STATUS:</span>
-                <span className="text-[#00E676] font-black">CRYPTOGRAPHICALLY VERIFIED</span>
+                <span className="text-[#FF5500] font-black">CRYPTOGRAPHICALLY VERIFIED</span>
               </div>
             </div>
 
-            <div className="flex justify-end pt-2 border-t-2 border-[#1A1A1A]">
+            <div className="flex justify-end pt-2 border-t-2 border-[#0A0A0A]">
               <button
                 onClick={() => setIsSignatureModalOpen(false)}
-                className="px-5 py-2 border-2 border-[#1A1A1A] bg-black text-white font-bold uppercase hover:bg-[#FF5500] cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
+                className="px-5 py-2 border-2 border-[#0A0A0A] bg-black text-white font-bold uppercase hover:bg-[#FF5500] cursor-pointer shadow-[2px_2px_0px_#0A0A0A]"
               >
                 Close Verification
               </button>

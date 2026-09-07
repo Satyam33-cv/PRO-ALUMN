@@ -139,11 +139,11 @@ export function AnnouncementsContent() {
 
   // Filter categories
   const categories = [
-    { id: "All", label: "ALL TRANSMISSIONS", count: announcementsList.length },
-    { id: "Priority", label: "PRIORITY NOTICES", count: announcementsList.filter((a) => a.pinned).length + 1 }, // +1 for pinned flagship
-    { id: "Deanery", label: "DEANERY & FACULTY", count: announcementsList.filter((a) => (a.category || "").toLowerCase() === "deanery").length },
-    { id: "Career", label: "CAREER & HIRINGS", count: announcementsList.filter((a) => (a.category || "").toLowerCase() === "career").length },
-    { id: "Regional", label: "REGIONAL CHAPTERS", count: announcementsList.filter((a) => (a.category || "").toLowerCase() === "regional").length },
+    { id: "All", label: "All", count: announcementsList.length },
+    { id: "Priority", label: "Priority", count: announcementsList.filter((a) => a.pinned).length + 1 }, // +1 for pinned flagship
+    { id: "Deanery", label: "Faculty", count: announcementsList.filter((a) => (a.category || "").toLowerCase() === "deanery").length },
+    { id: "Career", label: "Careers", count: announcementsList.filter((a) => (a.category || "").toLowerCase() === "career").length },
+    { id: "Regional", label: "Regional", count: announcementsList.filter((a) => (a.category || "").toLowerCase() === "regional").length },
   ];
 
   // Filtered and sorted list
@@ -283,16 +283,16 @@ END:VCALENDAR`;
   };
 
   return (
-    <div className="flex flex-col w-full font-sans selection:bg-[#CCFF00] selection:text-black space-y-8">
+    <div className="flex flex-col w-full font-sans selection:bg-[#FF5500] selection:text-white space-y-8">
       {/* 1. TOP UTILITY CONTEXT BAR */}
-      <div className="bg-[#F7F4EE] border-2 border-black p-3 flex flex-wrap items-center justify-between shadow-[3px_3px_0px_#000000] font-mono text-xs gap-3">
+      <div className="bg-[#FFFFFF] border-2 border-black p-3 flex flex-wrap items-center justify-between shadow-[3px_3px_0px_#000000] font-mono text-xs gap-3">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse shadow-[0_0_8px_#00E676]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse shadow-[0_0_8px_#FF5500]" />
             <span className="font-extrabold tracking-widest text-black">FEED STATUS // ONLINE</span>
           </div>
           <span className="text-neutral-500 font-semibold">NODE: CLUSTER-US-EAST</span>
-          <span className="text-neutral-500 font-semibold">PROTOCOL: RFC-044-BROADCAST</span>
+          <span className="text-neutral-500 font-semibold"></span>
           <div className="hidden lg:flex items-center gap-1.5 bg-[#e5e2dc] px-2 py-0.5 border border-black text-[11px]">
             <span className="text-neutral-700">ENCRYPTION:</span>
             <span className="text-[#FF5500] font-bold">ED25519-SIGNED</span>
@@ -307,7 +307,7 @@ END:VCALENDAR`;
           <button
             onClick={loadAnnouncements}
             disabled={isSyncing}
-            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center gap-1.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 shadow-[2px_2px_0px_#000000] hover:bg-[#FF5500] hover:text-black transition-all flex items-center gap-1.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             type="button"
           >
             <RefreshCw size={13} className={isSyncing ? "animate-spin" : ""} />
@@ -324,24 +324,24 @@ END:VCALENDAR`;
 
         <div className="flex flex-col gap-2 relative z-10">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-xs px-2 py-0.5 bg-black text-[#CCFF00] font-bold tracking-wider shadow-[1px_1px_0px_#000000]">
-              [ BROADCAST PROTOCOL // RFC-044 ]
+            <span className="font-mono text-xs px-2 py-0.5 bg-black text-[#FF5500] font-bold tracking-wider shadow-[1px_1px_0px_#000000]">
+              Announcements
             </span>
             <span className="font-mono text-xs text-[#FF5500] font-bold">
-              OFFICIAL DISPATCHES &amp; DEANERY BULLETINS
+              Campus & alumni updates
             </span>
             <span className="hidden md:inline-block font-mono text-xs text-neutral-500">
-              | SYNCHRONIZED ACROSS 14 REGIONAL CHAPTERS
+              | 
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
             <div>
               <h1 className="text-2xl sm:text-4xl font-extrabold text-black tracking-tight font-sans">
-                Campus &amp; Alumni Announcements Wire
+                Announcements
               </h1>
               <p className="text-sm sm:text-base text-neutral-700 max-w-4xl mt-1 leading-relaxed">
-                Critical university updates, research breakthroughs, institutional partnerships, and regional chapter meetups. Filtered by authority nodes and academic advisory boards.
+                Official campus and alumni updates. Filter by type or search.
               </p>
             </div>
 
@@ -353,37 +353,37 @@ END:VCALENDAR`;
                   setIsCreateModalOpen(true);
                 }
               }}
-              className="inline-flex items-center justify-center gap-2 border-2 border-black bg-[#CCFF00] text-black px-4 py-2.5 text-xs font-mono font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all shrink-0 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border-2 border-black bg-[#FF5500] text-white px-4 py-2.5 text-xs font-mono font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all shrink-0 cursor-pointer"
             >
               <Plus size={15} />
-              <span>Broadcast Dispatch</span>
+              <span>New announcement</span>
             </button>
           </div>
         </div>
 
         {/* Quick Metrics Ribbon (4 Cards) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 mt-6 border-t-2 border-black font-mono">
-          <div className="bg-[#F7F4EE] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
-            <span className="text-[10px] uppercase font-bold text-neutral-600">ACTIVE TRANSMISSIONS</span>
+          <div className="bg-[#FFFFFF] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
+            <span className="text-[10px] uppercase font-bold text-neutral-600">Total</span>
             <span className="text-xl sm:text-2xl font-black text-black mt-1">{announcementsList.length} ITEMS</span>
           </div>
-          <div className="bg-[#F7F4EE] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
-            <span className="text-[10px] uppercase font-bold text-neutral-600">PRIORITY NOTICES</span>
-            <span className="text-xl sm:text-2xl font-black text-[#FF5500] mt-1">04 ACTIVE</span>
+          <div className="bg-[#FFFFFF] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
+            <span className="text-[10px] uppercase font-bold text-neutral-600">Priority</span>
+            <span className="text-xl sm:text-2xl font-black text-[#FF5500] mt-1">—</span>
           </div>
-          <div className="bg-[#F7F4EE] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
-            <span className="text-[10px] uppercase font-bold text-neutral-600">VERIFIED DEANERY SEALS</span>
-            <span className="text-xl sm:text-2xl font-black text-black mt-1">100% OK</span>
+          <div className="bg-[#FFFFFF] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
+            <span className="text-[10px] uppercase font-bold text-neutral-600">Published</span>
+            <span className="text-xl sm:text-2xl font-black text-black mt-1">—</span>
           </div>
-          <div className="bg-[#F7F4EE] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
-            <span className="text-[10px] uppercase font-bold text-neutral-600">AVG DISPATCH CYCLE</span>
-            <span className="text-xl sm:text-2xl font-black text-[#2E5BFF] mt-1">6.2 HRS</span>
+          <div className="bg-[#FFFFFF] border border-black p-3 flex flex-col justify-between shadow-[2px_2px_0px_#000000]">
+            <span className="text-[10px] uppercase font-bold text-neutral-600">Updated</span>
+            <span className="text-xl sm:text-2xl font-black text-[#FF5500] mt-1">—</span>
           </div>
         </div>
       </header>
 
       {/* 3. CATEGORY FILTER BAR WITH TACTILE SWITCHES */}
-      <section className="flex flex-wrap items-center justify-between gap-3 bg-[#F7F4EE] border-2 border-black p-3 shadow-[3px_3px_0px_#000000]">
+      <section className="flex flex-wrap items-center justify-between gap-3 bg-[#FFFFFF] border-2 border-black p-3 shadow-[3px_3px_0px_#000000]">
         <div aria-label="Announcement categories" className="flex flex-wrap items-center gap-2" role="tablist">
           {categories.map((cat) => {
             const isActive = selectedCategory.toLowerCase() === cat.id.toLowerCase();
@@ -393,14 +393,14 @@ END:VCALENDAR`;
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`font-mono text-xs px-3 py-1.5 border-2 border-black flex items-center gap-2 font-bold uppercase transition-all shadow-[2px_2px_0px_#000000] cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none ${
                   isActive
-                    ? "bg-black text-[#CCFF00]"
+                    ? "bg-black text-[#FF5500]"
                     : "bg-white text-black hover:bg-neutral-100"
                 }`}
                 type="button"
               >
                 {cat.id === "Priority" && <span className="w-2 h-2 rounded-full bg-[#FF5500]" />}
                 <span>{cat.label}</span>
-                <span className={`text-[10px] px-1 border border-black ${isActive ? "bg-white text-black" : "bg-[#F7F4EE] text-neutral-600"}`}>
+                <span className={`text-[10px] px-1 border border-black ${isActive ? "bg-white text-black" : "bg-[#FFFFFF] text-neutral-600"}`}>
                   ({cat.count})
                 </span>
               </button>
@@ -414,10 +414,10 @@ END:VCALENDAR`;
             <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-500" />
             <input
               type="text"
-              placeholder="Search wire / ⌘K..."
+              placeholder="Search announcements…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border-2 border-black pl-8 pr-3 py-1.5 text-xs font-mono text-black focus:outline-none focus:bg-[#CCFF00]/10 shadow-[2px_2px_0px_#000000]"
+              className="w-full bg-white border-2 border-black pl-8 pr-3 py-1.5 text-xs font-mono text-black focus:outline-none focus:bg-[#FF5500]/10 shadow-[2px_2px_0px_#000000]"
             />
             {searchQuery && (
               <button
@@ -434,7 +434,7 @@ END:VCALENDAR`;
             className="bg-white text-black font-mono text-xs px-3 py-1.5 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center gap-1 font-bold hover:bg-neutral-100 shrink-0"
             type="button"
           >
-            <span>CHRONO [{sortOrder.toUpperCase()}]</span>
+            <span>Newest [{sortOrder.toUpperCase()}]</span>
           </button>
         </div>
       </section>
@@ -444,11 +444,11 @@ END:VCALENDAR`;
         {/* High-visibility Warning/Authority Top Bar */}
         <div className="bg-[#FF5500] text-white border-b-2 border-black px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
           <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold tracking-wider shadow-[1px_1px_0px_#000000]">
-              ⚡ PRIORITY NOTICE // DEAN&apos;S DISPATCH
+            <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold tracking-wider shadow-[1px_1px_0px_#000000]">
+              ⚡ Priority // DEAN&apos;S DISPATCH
             </span>
             <span className="font-bold text-white uppercase hidden sm:inline">
-              CLEARANCE LEVEL: ALPHA [CAMPUS-WIDE + FELLOWS]
+              Campus-wide
             </span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -458,7 +458,7 @@ END:VCALENDAR`;
         </div>
 
         {/* Hero Banner Content Split Grid */}
-        <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#fcf9f3]">
+        <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#FFFFFF]">
           <div className="lg:col-span-8 flex flex-col gap-4">
             <div className="flex items-center gap-2 font-mono text-xs">
               <span className="text-[#FF5500] font-black">NODE 01</span>
@@ -485,13 +485,13 @@ END:VCALENDAR`;
                 <div className="flex flex-col">
                   <div className="flex items-center gap-1.5 font-bold text-black">
                     <span>Dr. Arvind Kulkarni, Ph.D.</span>
-                    <ShieldCheck size={14} className="text-[#2E5BFF]" />
+                    <ShieldCheck size={14} className="text-[#FF5500]" />
                   </div>
                   <span className="text-neutral-500 text-[11px]">Dean of Faculty &amp; Research // Institute Fellow &apos;98</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 px-2.5 py-1 bg-[#F7F4EE] border border-black text-[11px]">
+              <div className="flex items-center gap-2 px-2.5 py-1 bg-[#FFFFFF] border border-black text-[11px]">
                 <span className="text-neutral-500 font-bold">SIG:</span>
                 <span className="text-black font-bold">0x9E4A...B721 (RSA-4096 VALID)</span>
               </div>
@@ -501,20 +501,20 @@ END:VCALENDAR`;
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 onClick={() => setIsBlueprintModalOpen(true)}
-                className="bg-black text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                className="bg-black text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#FF5500] hover:text-black transition-all flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                 type="button"
               >
-                <span>READ FULL DISPATCH &amp; BLUEPRINT</span>
+                <span>Read more &amp; BLUEPRINT</span>
                 <span className="font-bold">→</span>
               </button>
 
               <button
                 onClick={() => setIsRsvpModalOpen(true)}
-                className="bg-[#FF5500] text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 transition-all flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                className="bg-[#FF5500] text-white font-mono text-xs font-bold px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#B80500] transition-all flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                 type="button"
               >
                 <Calendar size={14} />
-                <span>RSVP FOR CEREMONY RECEPTION</span>
+                <span>RSVP</span>
               </button>
             </div>
           </div>
@@ -524,8 +524,8 @@ END:VCALENDAR`;
             <div className="relative bg-white border-2 border-black p-1 shadow-[3px_3px_0px_#000000] overflow-hidden">
               <div className="w-full h-56 bg-neutral-900 border border-black flex flex-col items-center justify-center p-4 text-center relative overflow-hidden">
                 {/* Tech schematic graphic */}
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#CCFF00_1px,transparent_1px)] [background-size:16px_16px]" />
-                <Building2 size={48} className="text-[#CCFF00] mb-2 z-10" />
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#FF5500_1px,transparent_1px)] [background-size:16px_16px]" />
+                <Building2 size={48} className="text-[#FF5500] mb-2 z-10" />
                 <span className="font-mono text-xs font-bold text-white z-10">
                   AUTONOMOUS ROBOTICS &amp; SILICON WING
                 </span>
@@ -533,7 +533,7 @@ END:VCALENDAR`;
                   FACILITY BLUEPRINT // ARCHITECTURAL SCHEMATIC
                 </span>
                 <div className="absolute bottom-2 left-2 right-2 bg-black/90 border border-black text-white px-2 py-1 flex items-center justify-between font-mono text-[10px]">
-                  <span className="text-[#CCFF00] font-bold">WING B-4 // 40,000 SQ FT</span>
+                  <span className="text-[#FF5500] font-bold">WING B-4 // 40,000 SQ FT</span>
                   <span>RENDERING v1.8</span>
                 </div>
               </div>
@@ -545,11 +545,11 @@ END:VCALENDAR`;
                 <span className="text-black font-extrabold">USD $42.5M ALLOCATED</span>
               </div>
               <div className="w-full h-2.5 bg-[#e5e2dc] border border-black overflow-hidden">
-                <div className="h-full bg-[#00E676] w-[88%]" />
+                <div className="h-full bg-[#FF5500] w-[88%]" />
               </div>
               <div className="flex justify-between text-[10px] text-neutral-600 font-bold mt-0.5">
                 <span>ALUMNI VENTURE POOL: 88%</span>
-                <span className="text-[#2E5BFF]">GOOGLE CLOUD RESEARCH GRANT</span>
+                <span className="text-[#FF5500]">GOOGLE CLOUD RESEARCH GRANT</span>
               </div>
             </div>
           </div>
@@ -562,8 +562,8 @@ END:VCALENDAR`;
         <section aria-label="Announcements Feed List" className="lg:col-span-8 flex flex-col gap-6">
           <div className="flex items-center justify-between pb-1 border-b-2 border-black font-mono text-xs">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">SECTION 02</span>
-              <span className="font-extrabold text-black uppercase tracking-wider">LATEST DISPATCH FEED</span>
+              <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold">SECTION 02</span>
+              <span className="font-extrabold text-black uppercase tracking-wider">Latest</span>
             </div>
             <span className="text-neutral-500">
               SHOWING {filteredAnnouncements.length} OF {announcementsList.length} ITEMS
@@ -593,7 +593,7 @@ END:VCALENDAR`;
                   <article
                     key={ann.id}
                     className={`bg-white border-2 border-black p-6 shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#000000] transition-all flex flex-col gap-4 ${
-                      isPinned ? "bg-gradient-to-r from-[#CCFF00]/10 to-white" : ""
+                      isPinned ? "bg-gradient-to-r from-[#FF5500]/10 to-white" : ""
                     }`}
                   >
                     {/* Card Header: Index, Tag, ID, Date, Pin & Share */}
@@ -602,7 +602,7 @@ END:VCALENDAR`;
                         <span className="px-1.5 py-0.5 bg-black text-white font-bold">
                           {String(idx + 1).padStart(2, "0")}
                         </span>
-                        <span className="px-2 py-0.5 bg-[#F7F4EE] border border-black text-[#2E5BFF] font-bold uppercase">
+                        <span className="px-2 py-0.5 bg-[#FFFFFF] border border-black text-[#FF5500] font-bold uppercase">
                           {ann.category || "GENERAL"} // WIRE
                         </span>
                         <span className="text-neutral-400">•</span>
@@ -620,7 +620,7 @@ END:VCALENDAR`;
                           onClick={() => handleTogglePin(ann.id)}
                           title={isPinned ? "Unpin notice" : "Pin notice to top"}
                           className={`p-1 border border-black shadow-[1px_1px_0px_#000000] transition-colors cursor-pointer ${
-                            isPinned ? "bg-[#CCFF00] text-black font-bold" : "bg-white text-neutral-600 hover:bg-neutral-100"
+                            isPinned ? "bg-[#FF5500] text-white font-bold" : "bg-white text-neutral-600 hover:bg-neutral-100"
                           }`}
                         >
                           <Pin size={12} className={isPinned ? "fill-black rotate-45" : ""} />
@@ -632,7 +632,7 @@ END:VCALENDAR`;
                           title="Copy dispatch"
                           className="p-1 bg-white border border-black shadow-[1px_1px_0px_#000000] hover:bg-neutral-100 text-neutral-600 cursor-pointer"
                         >
-                          {copiedId === ann.id ? <Check size={12} className="text-[#00E676]" /> : <Share2 size={12} />}
+                          {copiedId === ann.id ? <Check size={12} className="text-[#FF5500]" /> : <Share2 size={12} />}
                         </button>
                       </div>
                     </div>
@@ -649,9 +649,9 @@ END:VCALENDAR`;
 
                     {/* Rich Visual Attachment for TechCorp Referral Corridor */}
                     {isReferralCard && (
-                      <div className="bg-[#F7F4EE] border-2 border-black p-4 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs shadow-[2px_2px_0px_#000000]">
+                      <div className="bg-[#FFFFFF] border-2 border-black p-4 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs shadow-[2px_2px_0px_#000000]">
                         <div className="flex items-center gap-3 w-full md:w-auto">
-                          <div className="w-12 h-12 bg-black text-[#CCFF00] border-2 border-black flex items-center justify-center font-black text-sm shrink-0 shadow-[2px_2px_0px_#000000]">
+                          <div className="w-12 h-12 bg-black text-[#FF5500] border-2 border-black flex items-center justify-center font-black text-sm shrink-0 shadow-[2px_2px_0px_#000000]">
                             SJ
                           </div>
                           <div className="flex flex-col">
@@ -662,8 +662,8 @@ END:VCALENDAR`;
                               </span>
                             </div>
                             <span className="text-neutral-600 text-[11px]">VP of Distributed Engineering, Snowflake</span>
-                            <span className="text-[#00E676] font-bold flex items-center gap-1 mt-0.5 text-[10px]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] inline-block" /> ACCEPTING DIRECT CV INBOX
+                            <span className="text-[#FF5500] font-bold flex items-center gap-1 mt-0.5 text-[10px]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500] inline-block" /> ACCEPTING DIRECT CV INBOX
                             </span>
                           </div>
                         </div>
@@ -671,10 +671,10 @@ END:VCALENDAR`;
                         <div className="flex items-center gap-2 w-full md:w-auto justify-end">
                           <button
                             onClick={() => setIsReferralModalOpen(true)}
-                            className="bg-black text-white font-mono text-xs font-bold px-4 py-2 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                            className="bg-black text-white font-mono text-xs font-bold px-4 py-2 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#FF5500] hover:text-black transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                             type="button"
                           >
-                            SUBMIT FOR REFERRAL
+                            Message
                           </button>
                         </div>
                       </div>
@@ -682,7 +682,7 @@ END:VCALENDAR`;
 
                     {/* Rich Visual Attachment for West Coast Alumni Mixer & Hackathon */}
                     {isHackathonCard && (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-[#F7F4EE] border-2 border-black p-3 font-mono text-xs shadow-[2px_2px_0px_#000000]">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-[#FFFFFF] border-2 border-black p-3 font-mono text-xs shadow-[2px_2px_0px_#000000]">
                         <div className="md:col-span-1 flex flex-col justify-between">
                           <div>
                             <span className="text-[10px] uppercase font-bold text-neutral-500">VENUE LOCATION</span>
@@ -696,8 +696,8 @@ END:VCALENDAR`;
                         </div>
 
                         <div className="md:col-span-2 relative border-2 border-black bg-neutral-900 h-32 overflow-hidden flex flex-col items-center justify-center p-3 text-center">
-                          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#2E5BFF_1px,transparent_1px)] [background-size:12px_12px]" />
-                          <Layers size={32} className="text-[#CCFF00] mb-1 z-10" />
+                          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#FF5500_1px,transparent_1px)] [background-size:12px_12px]" />
+                          <Layers size={32} className="text-[#FF5500] mb-1 z-10" />
                           <span className="font-mono text-xs font-bold text-white z-10">
                             SAN FRANCISCO SOMA TECH HUB MAP
                           </span>
@@ -711,9 +711,9 @@ END:VCALENDAR`;
 
                     {/* Rich Visual Attachment for Quantum Cryptography Grant */}
                     {isResearchGrantCard && (
-                      <div className="bg-[#F7F4EE] border-2 border-black p-3 flex flex-col md:flex-row items-center justify-between gap-3 font-mono text-xs shadow-[2px_2px_0px_#000000]">
+                      <div className="bg-[#FFFFFF] border-2 border-black p-3 flex flex-col md:flex-row items-center justify-between gap-3 font-mono text-xs shadow-[2px_2px_0px_#000000]">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-black text-[#CCFF00] border-2 border-black flex items-center justify-center font-bold text-xs shadow-[1px_1px_0px_#000000]">
+                          <div className="w-10 h-10 bg-black text-[#FF5500] border-2 border-black flex items-center justify-center font-bold text-xs shadow-[1px_1px_0px_#000000]">
                             Q-NSF
                           </div>
                           <div className="flex flex-col">
@@ -726,9 +726,9 @@ END:VCALENDAR`;
                         <div className="flex items-center gap-3 bg-white border border-black px-3 py-1 shadow-[1px_1px_0px_#000000]">
                           <div className="flex flex-col">
                             <span className="text-[10px] text-neutral-500 font-bold">SIMULATED FIDELITY</span>
-                            <span className="font-bold text-[#2E5BFF]">99.984% // 256-QUBIT</span>
+                            <span className="font-bold text-[#FF5500]">99.984% // 256-QUBIT</span>
                           </div>
-                          <svg className="text-[#2E5BFF]" height="20" viewBox="0 0 72 24" width="60">
+                          <svg className="text-[#FF5500]" height="20" viewBox="0 0 72 24" width="60">
                             <path
                               d="M2 18 L14 12 L26 16 L38 8 L50 11 L62 4 L70 3"
                               fill="none"
@@ -748,7 +748,7 @@ END:VCALENDAR`;
                         <AlertTriangle size={20} className="text-[#FF5500] shrink-0 mt-0.5" />
                         <div className="flex flex-col">
                           <span className="font-mono text-xs font-black text-black uppercase">
-                            ACTION MANDATORY: PROFILE VERIFICATION LOCK
+                            Action needed: complete profile verification
                           </span>
                           <p className="text-xs text-neutral-700 font-sans mt-0.5">
                             Candidates must upload academic transcripts and complete identity proofing before the November deadline to participate in campus Day-One interviews.
@@ -765,7 +765,7 @@ END:VCALENDAR`;
                           <span>{typeof ann.author === "string" ? ann.author : ann.author?.name || "Campus Node"}</span>
                         </span>
                         {ann.role && (
-                          <span className="bg-[#F7F4EE] border border-black px-1.5 py-0.2 text-[10px] text-neutral-700">
+                          <span className="bg-[#FFFFFF] border border-black px-1.5 py-0.2 text-[10px] text-neutral-700">
                             {ann.role}
                           </span>
                         )}
@@ -775,17 +775,17 @@ END:VCALENDAR`;
                         {isHackathonCard && (
                           <button
                             onClick={() => setIsRsvpModalOpen(true)}
-                            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black cursor-pointer"
+                            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#FF5500] hover:text-black cursor-pointer"
                           >
-                            REGISTER RSVP (FREE)
+                            RSVP (free)
                           </button>
                         )}
                         {isPlacementLockCard && (
                           <button
                             onClick={() => router.push("/login?redirect=/profile")}
-                            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black cursor-pointer"
+                            className="bg-black text-white font-mono text-xs font-bold px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#FF5500] hover:text-black cursor-pointer"
                           >
-                            VERIFY PROTOCOL STATUS
+                            View details
                           </button>
                         )}
                       </div>
@@ -799,13 +799,13 @@ END:VCALENDAR`;
           {/* Wire Stream Control Pagination Dock */}
           <div className="bg-white border-2 border-black p-3 shadow-[3px_3px_0px_#000000] flex items-center justify-between flex-wrap gap-3 font-mono text-xs">
             <span className="text-neutral-600">
-              SHOWING TRANSMISSIONS [01 - {Math.min(4, filteredAnnouncements.length)}] OF {announcementsList.length} TOTAL
+              Showing [01 - {Math.min(4, filteredAnnouncements.length)}] OF {announcementsList.length} TOTAL
             </span>
             <div className="flex items-center gap-1.5">
               <button
                 disabled={activePage === 1}
                 onClick={() => setActivePage(1)}
-                className="w-7 h-7 flex items-center justify-center bg-[#F7F4EE] border border-black shadow-[1px_1px_0px_#000000] disabled:opacity-30 cursor-pointer"
+                className="w-7 h-7 flex items-center justify-center bg-[#FFFFFF] border border-black shadow-[1px_1px_0px_#000000] disabled:opacity-30 cursor-pointer"
               >
                 <ChevronLeft size={14} />
               </button>
@@ -828,7 +828,7 @@ END:VCALENDAR`;
               <button
                 disabled={activePage === 2}
                 onClick={() => setActivePage(2)}
-                className="w-7 h-7 flex items-center justify-center bg-[#F7F4EE] border border-black shadow-[1px_1px_0px_#000000] disabled:opacity-30 cursor-pointer"
+                className="w-7 h-7 flex items-center justify-center bg-[#FFFFFF] border border-black shadow-[1px_1px_0px_#000000] disabled:opacity-30 cursor-pointer"
               >
                 <ChevronRight size={14} />
               </button>
@@ -840,7 +840,7 @@ END:VCALENDAR`;
         <aside aria-label="Notice Board and Feed Widgets" className="lg:col-span-4 flex flex-col gap-6">
           {/* Widget 1: Institutional Notice Board */}
           <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col overflow-hidden">
-            <div className="bg-[#F7F4EE] border-b-2 border-black p-3.5 flex items-center justify-between font-mono">
+            <div className="bg-[#FFFFFF] border-b-2 border-black p-3.5 flex items-center justify-between font-mono">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500]" />
                 <span className="text-sm font-extrabold text-black uppercase">Notice Board</span>
@@ -855,7 +855,7 @@ END:VCALENDAR`;
                   <span className="text-xs font-bold text-black font-sans mt-0.5">Academic Council Senate Meeting</span>
                   <span className="text-[11px] text-neutral-600">Curriculum revision debate: AI ethics syllabus.</span>
                 </div>
-                <span className="px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold">PUBLIC</span>
+                <span className="px-1.5 py-0.5 bg-[#FFFFFF] border border-black text-[10px] font-bold">PUBLIC</span>
               </div>
 
               <div className="flex items-start justify-between gap-2 pb-3 border-b border-neutral-200">
@@ -864,16 +864,16 @@ END:VCALENDAR`;
                   <span className="text-xs font-bold text-black font-sans mt-0.5">Peer Review Submission Deadline</span>
                   <span className="text-[11px] text-neutral-600">Journal of Advanced Network Synthesis Vol. 14.</span>
                 </div>
-                <span className="px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold">FACULTY</span>
+                <span className="px-1.5 py-0.5 bg-[#FFFFFF] border border-black text-[10px] font-bold">FACULTY</span>
               </div>
 
               <div className="flex items-start justify-between gap-2 pb-3 border-b border-neutral-200">
                 <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-[#2E5BFF]">NOV 18, 2026 // 18:30 GMT</span>
+                  <span className="text-[11px] font-bold text-[#FF5500]">NOV 18, 2026 // 18:30 GMT</span>
                   <span className="text-xs font-bold text-black font-sans mt-0.5">Global Alumni Venture Pitch Finals</span>
                   <span className="text-[11px] text-neutral-600">Broadcast live from London Innovation Foundry.</span>
                 </div>
-                <span className="px-1.5 py-0.5 bg-[#CCFF00] border border-black text-[10px] font-bold text-black">LIVE</span>
+                <span className="px-1.5 py-0.5 bg-[#FF5500] border border-black text-[10px] font-bold text-black">LIVE</span>
               </div>
 
               <div className="flex items-start justify-between gap-2">
@@ -882,11 +882,11 @@ END:VCALENDAR`;
                   <span className="text-xs font-bold text-black font-sans mt-0.5">Commencement Marshal Election</span>
                   <span className="text-[11px] text-neutral-600">Alumni voting portal open for all cohorts.</span>
                 </div>
-                <span className="px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold">VOTE</span>
+                <span className="px-1.5 py-0.5 bg-[#FFFFFF] border border-black text-[10px] font-bold">VOTE</span>
               </div>
             </div>
 
-            <div className="p-3 bg-[#F7F4EE] border-t-2 border-black flex items-center justify-between font-mono text-xs">
+            <div className="p-3 bg-[#FFFFFF] border-t-2 border-black flex items-center justify-between font-mono text-xs">
               <span className="text-neutral-500 font-bold">iCal / WebCal Sync</span>
               <button
                 onClick={handleExportCalendar}
@@ -901,7 +901,7 @@ END:VCALENDAR`;
 
           {/* Calendar Download Toast */}
           {isCalendarToast && (
-            <div className="p-3 bg-black text-[#CCFF00] border-2 border-black font-mono text-xs shadow-[3px_3px_0px_#000000] flex items-center gap-2">
+            <div className="p-3 bg-black text-[#FF5500] border-2 border-black font-mono text-xs shadow-[3px_3px_0px_#000000] flex items-center gap-2">
               <Check size={16} />
               <span>.ICS Calendar exported! Ready to import into Apple/Google Calendar.</span>
             </div>
@@ -910,11 +910,11 @@ END:VCALENDAR`;
           {/* Widget 2: Subscribe / Cryptographic RSS Syndicate */}
           <div className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#000000] flex flex-col gap-3 font-mono">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-black text-[#CCFF00] text-xs font-bold">RSS // SYNDICATE</span>
+              <span className="px-2 py-0.5 bg-black text-[#FF5500] text-xs font-bold">Email digest</span>
               <span className="text-sm font-extrabold text-black uppercase">Weekly Wire Digest</span>
             </div>
             <p className="text-xs text-neutral-700 font-sans leading-relaxed">
-              Receive authenticated Sunday morning executive briefings directly to your primary mailbox or secure decentralized reader.
+              Get a weekly summary of announcements by email.
             </p>
 
             <form onSubmit={handleRssSubmit} className="flex flex-col gap-3 pt-1">
@@ -926,7 +926,7 @@ END:VCALENDAR`;
                   value={rssEmail}
                   onChange={(e) => setRssEmail(e.target.value)}
                   placeholder="elena.vance@alumni.proalumn.edu"
-                  className="w-full bg-[#F7F4EE] border-2 border-black px-3 py-1.5 text-xs font-mono text-black focus:outline-none focus:bg-white shadow-[2px_2px_0px_#000000]"
+                  className="w-full bg-[#FFFFFF] border-2 border-black px-3 py-1.5 text-xs font-mono text-black focus:outline-none focus:bg-white shadow-[2px_2px_0px_#000000]"
                 />
               </div>
 
@@ -947,22 +947,22 @@ END:VCALENDAR`;
 
               <button
                 type="submit"
-                className="w-full bg-black text-white font-mono text-xs font-bold py-2 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                className="w-full bg-black text-white font-mono text-xs font-bold py-2 border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#FF5500] hover:text-black transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               >
-                <span>AUTHENTICATE &amp; SUBSCRIBE</span>
+                <span>Subscribe</span>
                 <Radio size={14} />
               </button>
 
               {isRssSuccess && (
-                <div className="p-2 bg-[#CCFF00] border border-black text-black text-xs font-bold flex items-center gap-1.5">
+                <div className="p-2 bg-[#FF5500] border border-black text-black text-xs font-bold flex items-center gap-1.5">
                   <Check size={14} />
                   <span>Subscription confirmed. Sunday dispatch will arrive weekly.</span>
                 </div>
               )}
             </form>
 
-            <div className="bg-[#F7F4EE] border border-black p-2 flex items-center justify-between text-[11px]">
-              <span className="text-neutral-500 font-bold">PUBLIC PGP KEY:</span>
+            <div className="bg-[#FFFFFF] border border-black p-2 flex items-center justify-between text-[11px]">
+              <span className="text-neutral-500 font-bold">Contact:</span>
               <span className="text-black font-bold truncate max-w-[140px]">4F88 E920 C4AA 1180</span>
             </div>
           </div>
@@ -970,20 +970,20 @@ END:VCALENDAR`;
           {/* Widget 3: Authority Node Network Status */}
           <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] flex flex-col gap-2.5 font-mono text-xs">
             <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
-              VERIFICATION CLUSTER METRICS
+              
             </span>
             <div className="flex flex-col gap-1.5">
               <div className="flex justify-between">
                 <span className="text-neutral-600">NODE US-EAST (NYC):</span>
-                <span className="text-[#00E676] font-extrabold">ACTIVE // 12ms</span>
+                <span className="text-[#FF5500] font-extrabold">ACTIVE // 12ms</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-600">NODE US-WEST (SFO):</span>
-                <span className="text-[#00E676] font-extrabold">ACTIVE // 18ms</span>
+                <span className="text-[#FF5500] font-extrabold">ACTIVE // 18ms</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-600">NODE EU-CENTRAL (BER):</span>
-                <span className="text-[#00E676] font-extrabold">ACTIVE // 41ms</span>
+                <span className="text-[#FF5500] font-extrabold">ACTIVE // 41ms</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-600">ORACLE PEERING:</span>
@@ -1006,11 +1006,11 @@ END:VCALENDAR`;
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
             <div className="relative w-full max-w-2xl bg-white border-4 border-black shadow-[8px_8px_0px_#000000] flex flex-col max-h-[90vh]">
               {/* Modal Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b-2 border-black bg-[#F7F4EE]">
+              <div className="flex items-center justify-between px-6 py-4 border-b-2 border-black bg-[#FFFFFF]">
                 <div className="flex items-center gap-2 font-mono">
-                  <span className="px-2 py-0.5 bg-black text-[#CCFF00] text-xs font-bold">[ DISPATCH WRITER ]</span>
+                  <span className="px-2 py-0.5 bg-black text-[#FF5500] text-xs font-bold">[ DISPATCH WRITER ]</span>
                   <h3 className="text-base font-extrabold text-black font-sans uppercase">
-                    Broadcast Official Announcement
+                    Publish announcement
                   </h3>
                 </div>
                 <button
@@ -1034,7 +1034,7 @@ END:VCALENDAR`;
                       placeholder="e.g. Robotics Center Groundbreaking"
                       value={newTitle}
                       onChange={(e) => setNewTitle(e.target.value)}
-                      className="w-full bg-[#F7F4EE] border-2 border-black px-3 py-2 text-xs font-mono text-black focus:outline-none focus:bg-white"
+                      className="w-full bg-[#FFFFFF] border-2 border-black px-3 py-2 text-xs font-mono text-black focus:outline-none focus:bg-white"
                     />
                   </div>
                   <div>
@@ -1044,7 +1044,7 @@ END:VCALENDAR`;
                     <select
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value)}
-                      className="w-full bg-[#F7F4EE] border-2 border-black px-3 py-2 text-xs font-mono text-black focus:outline-none"
+                      className="w-full bg-[#FFFFFF] border-2 border-black px-3 py-2 text-xs font-mono text-black focus:outline-none"
                     >
                       <option value="Deanery">Deanery &amp; Faculty</option>
                       <option value="Career">Career &amp; Hirings</option>
@@ -1074,7 +1074,7 @@ END:VCALENDAR`;
 
                 {/* Tab Switcher: Write vs Preview */}
                 <div className="border-2 border-black">
-                  <div className="flex items-center justify-between bg-[#F7F4EE] px-3 py-1.5 border-b border-black">
+                  <div className="flex items-center justify-between bg-[#FFFFFF] px-3 py-1.5 border-b border-black">
                     <div className="flex items-center gap-1 text-xs">
                       <button
                         type="button"
@@ -1107,7 +1107,7 @@ END:VCALENDAR`;
                       className="w-full p-3 text-xs font-mono bg-white focus:outline-none"
                     />
                   ) : (
-                    <div className="p-4 bg-[#F7F4EE] min-h-[160px] text-xs font-sans">
+                    <div className="p-4 bg-[#FFFFFF] min-h-[160px] text-xs font-sans">
                       {newBody.trim() ? (
                         <AnnouncementBody content={newBody} />
                       ) : (
@@ -1128,9 +1128,9 @@ END:VCALENDAR`;
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 border-2 border-black bg-[#CCFF00] text-black font-bold text-xs shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] cursor-pointer"
+                    className="px-5 py-2 border-2 border-black bg-[#FF5500] text-white font-bold text-xs shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white cursor-pointer"
                   >
-                    {newPinned ? "Transmit & Pin Priority Notice" : "Broadcast Dispatch"}
+                    {newPinned ? "Publish & pin" : "New announcement"}
                   </button>
                 </div>
               </form>
@@ -1161,7 +1161,7 @@ END:VCALENDAR`;
                 You are RSVPing for the <strong>Autonomous Robotics &amp; Silicon Wing Groundbreaking Reception</strong> scheduled for November 12, 2026. Credentials will be stamped with cryptographic deanery seal.
               </p>
 
-              <div className="p-3 bg-[#F7F4EE] border border-black space-y-1 text-xs">
+              <div className="p-3 bg-[#FFFFFF] border border-black space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-neutral-500">RECEPTION PROTOCOL:</span>
                   <span className="font-bold text-black">IN-PERSON VIP CHAMBER</span>
@@ -1172,7 +1172,7 @@ END:VCALENDAR`;
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-500">CREDENTIAL PASS:</span>
-                  <span className="text-[#00E676] font-bold">CONFIRMED ALLOCATION</span>
+                  <span className="text-[#FF5500] font-bold">CONFIRMED ALLOCATION</span>
                 </div>
               </div>
 
@@ -1188,7 +1188,7 @@ END:VCALENDAR`;
                     alert("Ceremony RSVP verified and logged in Institute Registry.");
                     setIsRsvpModalOpen(false);
                   }}
-                  className="px-5 py-2 border-2 border-black bg-[#CCFF00] text-black font-bold text-xs shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00]"
+                  className="px-5 py-2 border-2 border-black bg-[#FF5500] text-white font-bold text-xs shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white"
                 >
                   Confirm Registration
                 </button>
@@ -1205,7 +1205,7 @@ END:VCALENDAR`;
             <div className="relative w-full max-w-3xl bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col max-h-[90vh] overflow-y-auto gap-4 font-mono">
               <div className="flex items-center justify-between border-b-2 border-black pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 bg-black text-[#CCFF00] text-xs font-bold">BLUEPRINT SPEC</span>
+                  <span className="px-2 py-0.5 bg-black text-[#FF5500] text-xs font-bold">BLUEPRINT SPEC</span>
                   <span className="font-extrabold text-black font-sans uppercase">Autonomous Robotics Wing</span>
                 </div>
                 <button
@@ -1229,7 +1229,7 @@ END:VCALENDAR`;
                   <li><strong>Edge Silicon Validation Bench:</strong> 64 test racks for RISC-V tensor processing units.</li>
                   <li><strong>Incubator Loft:</strong> Dedicated workstation clusters reserved for student-alumni venture teams.</li>
                 </ul>
-                <div className="bg-[#F7F4EE] border-2 border-black p-3 font-mono text-xs">
+                <div className="bg-[#FFFFFF] border-2 border-black p-3 font-mono text-xs">
                   <span className="text-neutral-500 font-bold block mb-1">SIGNATURE SEAL:</span>
                   <span className="text-black font-bold">
                     Dr. Arvind Kulkarni, Ph.D. // 0x9E4A...B721 (RSA-4096 VALID ATTESTATION)
@@ -1240,7 +1240,7 @@ END:VCALENDAR`;
               <div className="flex justify-end pt-2 border-t-2 border-black">
                 <button
                   onClick={() => setIsBlueprintModalOpen(false)}
-                  className="px-5 py-2 border-2 border-black bg-black text-white font-bold text-xs hover:bg-[#CCFF00] hover:text-black cursor-pointer"
+                  className="px-5 py-2 border-2 border-black bg-black text-white font-bold text-xs hover:bg-[#FF5500] hover:text-black cursor-pointer"
                 >
                   Close Specification
                 </button>
@@ -1257,7 +1257,7 @@ END:VCALENDAR`;
             <div className="relative w-full max-w-lg bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col gap-4 font-mono">
               <div className="flex items-center justify-between border-b-2 border-black pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 bg-[#2E5BFF] text-white text-xs font-bold">REFERRAL RELAY</span>
+                  <span className="px-2 py-0.5 bg-[#FF5500] text-white text-xs font-bold">REFERRAL RELAY</span>
                   <span className="font-extrabold text-black font-sans uppercase">Snowflake / TechCorp</span>
                 </div>
                 <button
@@ -1272,10 +1272,10 @@ END:VCALENDAR`;
                 Connect directly with Sarah Jenkins (VP of Distributed Engineering, Class of &apos;16) for accelerated interview pipelines.
               </p>
 
-              <div className="p-3 bg-[#F7F4EE] border border-black space-y-1 text-xs">
+              <div className="p-3 bg-[#FFFFFF] border border-black space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-neutral-500">CORRIDOR STATUS:</span>
-                  <span className="text-[#00E676] font-bold">40 OPEN SLOTS</span>
+                  <span className="text-[#FF5500] font-bold">40 OPEN SLOTS</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-500">CANDIDATE:</span>
@@ -1299,7 +1299,7 @@ END:VCALENDAR`;
                       setIsReferralModalOpen(false);
                     }
                   }}
-                  className="px-5 py-2 border-2 border-black bg-[#CCFF00] text-black font-bold text-xs shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00]"
+                  className="px-5 py-2 border-2 border-black bg-[#FF5500] text-white font-bold text-xs shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white"
                 >
                   {user ? "Submit Profile →" : "Sign In to Submit"}
                 </button>

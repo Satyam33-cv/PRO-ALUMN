@@ -106,7 +106,7 @@ export default function SettingsPage() {
   }
 
   const inputClass =
-    "w-full border-2 border-black bg-white px-4 py-2.5 font-mono text-xs text-black outline-none shadow-[2px_2px_0px_#000000] focus:bg-[#CCFF00]/10 transition-colors";
+    "w-full border-2 border-black bg-white px-4 py-2.5 font-mono text-xs text-black outline-none shadow-[2px_2px_0px_#000000] focus:bg-[#FF5500]/10 transition-colors";
 
   return (
     <RoleShell>
@@ -114,7 +114,7 @@ export default function SettingsPage() {
         {/* Page Header */}
         <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000]">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+            <span className="h-2 w-2 bg-[#FF5500] border border-black" />
             <p className="font-mono text-xs uppercase font-bold tracking-[0.2em] text-black">
               [ SECTION 07 // ACCOUNT &amp; SYSTEM SETTINGS ]
             </p>
@@ -141,7 +141,7 @@ export default function SettingsPage() {
                 }}
                 className={`border-2 border-black px-4 py-2.5 flex items-center gap-2 font-mono text-xs font-black uppercase transition-all ${
                   isActive
-                    ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                    ? "bg-black text-[#FF5500] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
                     : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
                 }`}
               >
@@ -156,7 +156,7 @@ export default function SettingsPage() {
           <div
             className={`p-4 border-3 border-black font-mono text-xs font-bold uppercase shadow-[4px_4px_0px_#000000] ${
               saved
-                ? "bg-[#00E676] text-black"
+                ? "bg-[#FF5500] text-black"
                 : "bg-[#FF5500] text-white"
             }`}
           >
@@ -262,7 +262,7 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => setOpenToMentoring(!openToMentoring)}
                     className={`border-2 border-black px-4 py-1.5 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all ${
-                      openToMentoring ? "bg-[#00E676] text-black" : "bg-neutral-200 text-neutral-600"
+                      openToMentoring ? "bg-[#FF5500] text-black" : "bg-neutral-200 text-neutral-600"
                     }`}
                   >
                     {openToMentoring ? "Enabled" : "Disabled"}
@@ -271,7 +271,7 @@ export default function SettingsPage() {
                 <div className="p-4 border-2 border-black bg-neutral-50 space-y-2 shadow-[3px_3px_0px_#000000]">
                   <p className="font-bold text-sm text-black">Referral Slot Limits</p>
                   <p className="font-mono text-xs text-neutral-600">Manage internal job referral bandwidth per month to keep candidate quality high.</p>
-                  <span className="inline-block border-2 border-black px-3 py-1 text-xs font-mono font-black uppercase bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]">
+                  <span className="inline-block border-2 border-black px-3 py-1 text-xs font-mono font-black uppercase bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]">
                     Active Limit: Up to 5 requests / month
                   </span>
                 </div>
@@ -301,7 +301,7 @@ export default function SettingsPage() {
                       type="button"
                       onClick={() => item.set(!item.on)}
                       className={`border-2 border-black px-4 py-1.5 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all ${
-                        item.on ? "bg-[#00E676] text-black" : "bg-neutral-200 text-neutral-600"
+                        item.on ? "bg-[#FF5500] text-black" : "bg-neutral-200 text-neutral-600"
                       }`}
                     >
                       {item.on ? "ON" : "OFF"}
@@ -322,7 +322,7 @@ export default function SettingsPage() {
               <div className="p-4 border-2 border-black bg-neutral-50 space-y-2 shadow-[3px_3px_0px_#000000]">
                 <p className="font-bold text-sm text-black">Google OAuth SSO</p>
                 <p className="font-mono text-xs text-neutral-600">Your account is secured via Google OAuth 2.0 single sign-on.</p>
-                <span className="inline-flex items-center gap-1.5 text-xs font-mono font-black uppercase text-black bg-[#00E676] px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000000]">
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono font-black uppercase text-black bg-[#FF5500] px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000000]">
                   <Check className="w-3.5 h-3.5 stroke-[3]" /> Connected
                 </span>
               </div>
@@ -334,7 +334,7 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center gap-2 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] text-black px-8 py-3.5 font-mono text-sm font-black uppercase shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-60 cursor-pointer"
+              className="inline-flex items-center gap-2 border-3 border-black bg-[#FF5500] hover:bg-black hover:text-white text-black px-8 py-3.5 font-mono text-sm font-black uppercase shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-60 cursor-pointer"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4 stroke-[3]" /> : null}
               {loading ? "Saving Changes..." : saved ? "Changes Saved" : "Save Settings"}

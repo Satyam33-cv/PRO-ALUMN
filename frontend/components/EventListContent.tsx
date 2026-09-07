@@ -247,20 +247,20 @@ export function EventListContent() {
     : 0;
 
   return (
-    <div className="flex flex-col w-full font-sans selection:bg-[#CCFF00] selection:text-black space-y-10">
+    <div className="flex flex-col w-full font-sans selection:bg-[#FF5500] selection:text-white space-y-10">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 p-4 bg-[#CCFF00] text-black border-2 border-black shadow-[4px_4px_0px_#000000] font-mono text-xs font-extrabold max-w-md animate-bounce">
+        <div className="fixed top-20 right-6 z-50 p-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] font-mono text-xs font-extrabold max-w-md animate-bounce">
           {toastMessage}
         </div>
       )}
 
       {/* 1. TOP TELEMETRY MARQUEE & TICKER HEADER */}
-      <div className="w-full bg-[#F7F4EE] px-4 py-2 border-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono text-xs shadow-[3px_3px_0px_#000000]">
+      <div className="w-full bg-[#FFFFFF] px-4 py-2 border-2 border-black flex flex-wrap items-center justify-between gap-3 font-mono text-xs shadow-[3px_3px_0px_#000000]">
         <div className="flex items-center gap-2">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse" />
+          <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse" />
           <span className="font-extrabold text-black uppercase tracking-wider">
-            [PILLAR // 04] PROTOCOL 05 // SYNCHRONOUS ALUMNI REUNIONS &amp; HARDWARE CAPACITY LOCKS
+            Events
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -282,28 +282,28 @@ export function EventListContent() {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b-2 border-black pb-6">
           <div className="flex flex-col gap-2 max-w-4xl">
             <div className="flex items-center gap-2 font-mono text-xs">
-              <span className="px-2 py-0.5 bg-[#CCFF00] text-black font-extrabold border border-black uppercase shadow-[1px_1px_0px_#000000]">
-                ASSEMBLAGE ENGINE
+              <span className="px-2 py-0.5 bg-[#FF5500] text-white font-extrabold border border-black uppercase shadow-[1px_1px_0px_#000000]">
+                Events
               </span>
               <span className="text-neutral-500 font-semibold">
                 HASH // CLUSTER_TXN_0x9924
               </span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black text-black tracking-tight font-sans">
-              Events, Reunions &amp; Capacity RSVPs
+              Events & reunions
             </h1>
             <p className="text-sm sm:text-base text-neutral-700 mt-1 leading-relaxed font-sans">
-              Capacity-gated 1-click registration using serializable database transactions to guarantee zero overbooking. Seamless sync with Google Calendar and offline encrypted QR wallet admission.
+              Browse upcoming alumni events and RSVP in one click.
             </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0 font-mono text-xs">
             <button
               onClick={() => setIsGCalModalOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#F7F4EE] text-black border-2 border-black font-bold shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer uppercase transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#FFFFFF] text-black border-2 border-black font-bold shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer uppercase transition-all"
               type="button"
             >
-              <Calendar size={15} className="text-[#2E5BFF]" />
+              <Calendar size={15} className="text-[#FF5500]" />
               <span>Sync All to G-Cal</span>
             </button>
             <button
@@ -315,7 +315,7 @@ export function EventListContent() {
                   setIsVaultDrawerOpen(true);
                 }
               }}
-              className="flex items-center gap-1.5 px-4 py-2 bg-black text-[#CCFF00] border-2 border-black font-bold shadow-[3px_3px_0px_#000000] hover:bg-[#CCFF00] hover:text-black active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer uppercase transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 bg-black text-[#FF5500] border-2 border-black font-bold shadow-[3px_3px_0px_#000000] hover:bg-[#FF5500] hover:text-black active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer uppercase transition-all"
               type="button"
             >
               <Ticket size={15} />
@@ -329,8 +329,8 @@ export function EventListContent() {
           {/* Metric 01 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">ACTIVE ASSEMBLAGES</span>
-              <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F4EE] text-black font-bold border border-black">
+              <span className="text-[10px] font-bold uppercase">Upcoming events</span>
+              <span className="text-[10px] px-1.5 py-0.5 bg-[#FFFFFF] text-black font-bold border border-black">
                 01
               </span>
             </div>
@@ -338,7 +338,7 @@ export function EventListContent() {
               <span className="text-3xl sm:text-4xl font-black text-black font-sans leading-none">{assemblages.length}</span>
               <span className="text-xs font-bold text-neutral-600 block mt-1">Upcoming Global</span>
             </div>
-            <div className="w-full bg-[#F7F4EE] border border-black h-2 overflow-hidden">
+            <div className="w-full bg-[#FFFFFF] border border-black h-2 overflow-hidden">
               <div className="bg-[#FF5500] h-full w-[75%]" />
             </div>
           </div>
@@ -346,8 +346,8 @@ export function EventListContent() {
           {/* Metric 02 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">SECURED PASSES</span>
-              <span className="text-[10px] px-1.5 py-0.5 bg-[#CCFF00] text-black font-bold border border-black">
+              <span className="text-[10px] font-bold uppercase">Your passes</span>
+              <span className="text-[10px] px-1.5 py-0.5 bg-[#FF5500] text-white font-bold border border-black">
                 ACTIVE
               </span>
             </div>
@@ -357,16 +357,16 @@ export function EventListContent() {
               </span>
               <span className="text-xs font-bold text-neutral-600 block mt-1">Wallet Verified</span>
             </div>
-            <div className="w-full bg-[#F7F4EE] border border-black h-2 overflow-hidden">
-              <div className="bg-[#00E676] h-full w-full" />
+            <div className="w-full bg-[#FFFFFF] border border-black h-2 overflow-hidden">
+              <div className="bg-[#FF5500] h-full w-full" />
             </div>
           </div>
 
           {/* Metric 03 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">ATOMIC INTEGRITY</span>
-              <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F4EE] text-[#2E5BFF] font-bold border border-black">
+              <span className="text-[10px] font-bold uppercase">Open seats</span>
+              <span className="text-[10px] px-1.5 py-0.5 bg-[#FFFFFF] text-[#FF5500] font-bold border border-black">
                 ACID
               </span>
             </div>
@@ -374,16 +374,16 @@ export function EventListContent() {
               <span className="text-3xl sm:text-4xl font-black text-black font-sans leading-none">0.00%</span>
               <span className="text-xs font-bold text-neutral-600 block mt-1">Overbooking Lock</span>
             </div>
-            <div className="w-full bg-[#F7F4EE] border border-black h-2 overflow-hidden">
-              <div className="bg-[#2E5BFF] h-full w-full" />
+            <div className="w-full bg-[#FFFFFF] border border-black h-2 overflow-hidden">
+              <div className="bg-[#FF5500] h-full w-full" />
             </div>
           </div>
 
           {/* Metric 04 */}
           <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
             <div className="flex items-center justify-between text-neutral-500">
-              <span className="text-[10px] font-bold uppercase">MEDIAN ATTENDANCE</span>
-              <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F4EE] text-black font-bold border border-black">
+              <span className="text-[10px] font-bold uppercase">Typical turnout</span>
+              <span className="text-[10px] px-1.5 py-0.5 bg-[#FFFFFF] text-black font-bold border border-black">
                 TELEMETRY
               </span>
             </div>
@@ -391,7 +391,7 @@ export function EventListContent() {
               <span className="text-3xl sm:text-4xl font-black text-black font-sans leading-none">91.4%</span>
               <span className="text-xs font-bold text-neutral-600 block mt-1">Verified Turnout</span>
             </div>
-            <div className="w-full bg-[#F7F4EE] border border-black h-2 overflow-hidden">
+            <div className="w-full bg-[#FFFFFF] border border-black h-2 overflow-hidden">
               <div className="bg-black h-full w-[91.4%]" />
             </div>
           </div>
@@ -404,12 +404,12 @@ export function EventListContent() {
         <div className="bg-black text-white px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse" />
-            <span className="font-extrabold uppercase tracking-widest text-[#CCFF00]">
-              ANNUAL FLAGSHIP ASSEMBLAGE // COHORT CLUSTER ALPHA
+            <span className="font-extrabold uppercase tracking-widest text-[#FF5500]">
+              Featured event
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[#CCFF00] font-bold">CONCURRENCY ENGINE: ACTIVE</span>
+            <span className="text-[#FF5500] font-bold">CONCURRENCY ENGINE: ACTIVE</span>
             <span className="text-neutral-500">|</span>
             <span className="font-mono">LOCK_TTL: 450ms</span>
           </div>
@@ -420,13 +420,13 @@ export function EventListContent() {
           <div className="lg:col-span-7 p-6 sm:p-8 border-b lg:border-b-0 lg:border-r-2 border-black flex flex-col justify-between gap-6">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-                <span className="px-2 py-0.5 bg-[#CCFF00] text-black font-extrabold border border-black">
+                <span className="px-2 py-0.5 bg-[#FF5500] text-white font-extrabold border border-black">
                   {flagshipGala.dateFormatted}
                 </span>
-                <span className="px-2 py-0.5 bg-[#F7F4EE] text-black font-bold border border-black">
+                <span className="px-2 py-0.5 bg-[#FFFFFF] text-black font-bold border border-black">
                   {flagshipGala.timeFormatted}
                 </span>
-                <span className="px-2 py-0.5 bg-[#F7F4EE] text-neutral-700 font-bold border border-black">
+                <span className="px-2 py-0.5 bg-[#FFFFFF] text-neutral-700 font-bold border border-black">
                   CAMPUS PAVILION
                 </span>
               </div>
@@ -448,7 +448,7 @@ export function EventListContent() {
                 {flagshipGala.keynotes?.map((speaker) => (
                   <div
                     key={speaker.name}
-                    className="p-2.5 bg-[#F7F4EE] border border-black flex items-center gap-2 font-mono text-xs"
+                    className="p-2.5 bg-[#FFFFFF] border border-black flex items-center gap-2 font-mono text-xs"
                   >
                     <div
                       className={`w-9 h-9 ${speaker.bgClass} border border-black flex items-center justify-center font-black shrink-0 text-xs shadow-[1px_1px_0px_#000000]`}
@@ -466,7 +466,7 @@ export function EventListContent() {
           </div>
 
           {/* Telemetry & Registration Panel (5 cols) */}
-          <div className="lg:col-span-5 p-6 sm:p-8 bg-[#F7F4EE] flex flex-col justify-between gap-6">
+          <div className="lg:col-span-5 p-6 sm:p-8 bg-[#FFFFFF] flex flex-col justify-between gap-6">
             {/* Live Countdown Dial */}
             <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_#000000] space-y-2 font-mono">
               <div className="flex items-center justify-between text-xs">
@@ -525,7 +525,7 @@ export function EventListContent() {
 
               <div className="flex items-center justify-between text-[11px] text-neutral-600 font-bold">
                 <span>{flagshipSeatsRemaining} SEATS REMAINING</span>
-                <span className="text-neutral-500 uppercase">ZERO-OVERBOOK GUARANTEE</span>
+                <span className="text-neutral-500 uppercase">Limited seats</span>
               </div>
             </div>
 
@@ -536,18 +536,18 @@ export function EventListContent() {
                   <ShieldCheck size={18} className="text-[#00A859]" />
                   <span className="font-extrabold text-black uppercase">PASS ALLOCATED TO YOU</span>
                 </div>
-                <span className="bg-black text-[#CCFF00] px-2 py-0.5 font-bold border border-black">
+                <span className="bg-black text-[#FF5500] px-2 py-0.5 font-bold border border-black">
                   #{flagshipGala.ticketCode}
                 </span>
               </div>
 
               <button
                 onClick={() => setSelectedPassForQr(flagshipGala)}
-                className="w-full py-3 px-4 bg-black text-white border-2 border-black font-black uppercase text-sm flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-[#CCFF00] hover:text-black cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                className="w-full py-3 px-4 bg-black text-white border-2 border-black font-black uppercase text-sm flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-[#FF5500] hover:text-black cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 type="button"
               >
-                <CheckCircle2 size={18} className="text-[#00E676]" />
-                <span>RSVP CONFIRMED • PASS IN WALLET</span>
+                <CheckCircle2 size={18} className="text-[#FF5500]" />
+                <span>RSVP confirmed</span>
               </button>
 
               <div className="grid grid-cols-3 gap-2">
@@ -556,7 +556,7 @@ export function EventListContent() {
                   className="p-2 bg-white hover:bg-neutral-100 border border-black font-bold text-black flex flex-col items-center justify-center gap-1 shadow-[2px_2px_0px_#000000] cursor-pointer"
                   type="button"
                 >
-                  <Calendar size={14} className="text-[#2E5BFF]" />
+                  <Calendar size={14} className="text-[#FF5500]" />
                   <span className="text-[10px]">SYNC G-CAL</span>
                 </button>
                 <button
@@ -572,11 +572,11 @@ export function EventListContent() {
                 </button>
                 <button
                   onClick={() => setSelectedPassForQr(flagshipGala)}
-                  className="p-2 bg-[#CCFF00] hover:bg-yellow-300 border border-black font-bold text-black flex flex-col items-center justify-center gap-1 shadow-[2px_2px_0px_#000000] cursor-pointer"
+                  className="p-2 bg-[#FF5500] hover:bg-yellow-300 border border-black font-bold text-black flex flex-col items-center justify-center gap-1 shadow-[2px_2px_0px_#000000] cursor-pointer"
                   type="button"
                 >
                   <QrCode size={14} className="text-black" />
-                  <span className="text-[10px]">VIEW QR PASS</span>
+                  <span className="text-[10px]">View pass</span>
                 </button>
               </div>
             </div>
@@ -589,23 +589,23 @@ export function EventListContent() {
       <section id="drawer-registered-passes" className="flex flex-col gap-4">
         <div className="flex items-center justify-between border-b-2 border-black pb-3">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 bg-black text-[#CCFF00]">
+            <span className="font-mono text-xs font-bold px-2 py-0.5 bg-black text-[#FF5500]">
               DRAWER // 02
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-black font-sans tracking-tight">
-              Your Registered Passes &amp; Enclave Admissions
+              Your event passes
             </h2>
           </div>
           <div className="flex items-center gap-2 font-mono text-xs text-neutral-600 font-bold">
             <span>WALLET STATE: ENCRYPTED</span>
-            <span className="inline-block w-2 h-2 rounded-full bg-[#00E676]" />
+            <span className="inline-block w-2 h-2 rounded-full bg-[#FF5500]" />
           </div>
         </div>
 
         {registeredPasses.length === 0 ? (
           <div className="p-8 bg-white border-2 border-black text-center font-mono text-xs">
-            <p className="font-bold text-neutral-600">No active passes in your offline wallet.</p>
-            <p className="text-neutral-500 mt-1">Register for an assemblage below to generate your cryptographic admission badge.</p>
+            <p className="font-bold text-neutral-600">You have no event passes yet.</p>
+            <p className="text-neutral-500 mt-1">RSVP to an event below to get a pass.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -615,13 +615,13 @@ export function EventListContent() {
                 className="bg-white border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between"
               >
                 {/* Header */}
-                <div className="p-4 bg-[#F7F4EE] border-b-2 border-black space-y-2">
+                <div className="p-4 bg-[#FFFFFF] border-b-2 border-black space-y-2">
                   <div className="flex items-center justify-between font-mono text-xs">
                     <span className="px-2 py-0.5 bg-black text-white font-bold border border-black text-[11px]">
                       TICKET #{pass.ticketCode}
                     </span>
                     <span className="flex items-center gap-1 text-[#00A859] font-black text-[11px]">
-                      <span className="w-2 h-2 rounded-full bg-[#00E676]" />
+                      <span className="w-2 h-2 rounded-full bg-[#FF5500]" />
                       CONFIRMED
                     </span>
                   </div>
@@ -642,7 +642,7 @@ export function EventListContent() {
                     onClick={() => setSelectedPassForQr(pass)}
                     className="p-1.5 bg-white border-2 border-black flex flex-col items-center justify-center shrink-0 shadow-[2px_2px_0px_#000000] cursor-pointer hover:bg-neutral-100"
                   >
-                    <div className="w-14 h-14 bg-[#F7F4EE] flex items-center justify-center border border-black">
+                    <div className="w-14 h-14 bg-[#FFFFFF] flex items-center justify-center border border-black">
                       <svg className="w-10 h-10 text-black" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-2h2v2h-2v-2zm2 2h2v2h-2v-2z" />
                       </svg>
@@ -662,7 +662,7 @@ export function EventListContent() {
                           href="https://meet.google.com"
                           target="_blank"
                           rel="noreferrer"
-                          className="px-2 py-1 bg-black text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] flex items-center gap-1"
+                          className="px-2 py-1 bg-black text-[#FF5500] hover:bg-[#FF5500] hover:text-black border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] flex items-center gap-1"
                         >
                           <span>Join Stream</span>
                           <ExternalLink size={10} />
@@ -678,7 +678,7 @@ export function EventListContent() {
                           </button>
                           <button
                             onClick={() => setSelectedPassForQr(pass)}
-                            className="px-2 py-1 bg-[#F7F4EE] hover:bg-neutral-200 border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] cursor-pointer"
+                            className="px-2 py-1 bg-[#FFFFFF] hover:bg-neutral-200 border border-black font-mono text-[10px] font-bold shadow-[1px_1px_0px_#000000] cursor-pointer"
                             type="button"
                           >
                             Pass PDF
@@ -690,7 +690,7 @@ export function EventListContent() {
                 </div>
 
                 {/* Footer Bar */}
-                <div className="p-2 bg-[#F7F4EE] border-t border-black flex items-center justify-between font-mono text-[10px]">
+                <div className="p-2 bg-[#FFFFFF] border-t border-black flex items-center justify-between font-mono text-[10px]">
                   <span className="text-neutral-500 font-bold truncate max-w-[160px]">
                     TXN: 0x{pass.ticketCode}_MUTUAL_COMMIT
                   </span>
@@ -702,13 +702,13 @@ export function EventListContent() {
         )}
       </section>
 
-      {/* 5. BROWSE ASSEMBLAGES & FILTER PROTOCOL */}
+      {/* 5. BROWSE ASSEMBLAGES & Filters */}
       <section className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4 border-2 border-black bg-[#F7F4EE] p-4 sm:p-6 shadow-[4px_4px_0px_#000000] font-mono text-xs">
+        <div className="flex flex-col gap-4 border-2 border-black bg-[#FFFFFF] p-4 sm:p-6 shadow-[4px_4px_0px_#000000] font-mono text-xs">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black pb-2">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">FILTER PROTOCOL</span>
-              <span className="font-bold text-neutral-600 uppercase">CAPACITY INDEX QUERYING</span>
+              <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold">Filters</span>
+              <span className="font-bold text-neutral-600 uppercase">Browse events</span>
             </div>
             <span className="text-neutral-500 font-bold">
               QUERY EXEC: 1.2ms (SERIALIZABLE CACHE)
@@ -730,7 +730,7 @@ export function EventListContent() {
                 onClick={() => setActiveCategory(cat.value)}
                 className={`px-3 py-1.5 border border-black font-bold uppercase transition-all cursor-pointer ${
                   activeCategory === cat.value
-                    ? "bg-black text-[#CCFF00] shadow-[2px_2px_0px_#000000]"
+                    ? "bg-black text-[#FF5500] shadow-[2px_2px_0px_#000000]"
                     : "bg-white text-black hover:bg-neutral-100 shadow-[1px_1px_0px_#000000]"
                 }`}
                 type="button"
@@ -747,10 +747,10 @@ export function EventListContent() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Query assemblages by title, hall enclave, or fellow keywords..."
+                placeholder="Search events by title or location…"
                 className="w-full bg-white border-2 border-black px-3 py-2 text-xs font-mono text-black placeholder:text-neutral-500 focus:outline-none focus:bg-[#FFFDE7]"
               />
-              <span className="absolute right-3 top-2.5 px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] text-neutral-600 font-bold pointer-events-none">
+              <span className="absolute right-3 top-2.5 px-1.5 py-0.5 bg-[#FFFFFF] border border-black text-[10px] text-neutral-600 font-bold pointer-events-none">
                 ⌘K
               </span>
             </div>
@@ -775,7 +775,7 @@ export function EventListContent() {
         {filteredAssemblages.length === 0 ? (
           <EmptyState
             icon={Calendar}
-            title="NO ASSEMBLAGES MATCH QUERY PARAMETERS"
+            title="No events match your filters"
             body="Try switching your category filter or resetting your search term."
             action={
               <button
@@ -784,7 +784,7 @@ export function EventListContent() {
                   setActiveFormat("ALL");
                   setSearchQuery("");
                 }}
-                className="mt-2 px-4 py-2 bg-black text-[#CCFF00] border border-black font-bold uppercase cursor-pointer"
+                className="mt-2 px-4 py-2 bg-black text-[#FF5500] border border-black font-bold uppercase cursor-pointer"
               >
                 Reset Filters
               </button>
@@ -805,16 +805,16 @@ export function EventListContent() {
                     {/* Eyebrow / Badges */}
                     <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
                       <div className="flex items-center gap-1.5">
-                        <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold border border-black text-[11px]">
+                        <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold border border-black text-[11px]">
                           {item.categoryLabel}
                         </span>
                         <span
                           className={`px-2 py-0.5 font-bold border border-black text-[10px] ${
                             item.format === "VIRTUAL"
-                              ? "bg-[#2E5BFF] text-white"
+                              ? "bg-[#FF5500] text-white"
                               : item.format === "HYBRID"
                               ? "bg-[#FF5500] text-white"
-                              : "bg-[#F7F4EE] text-black"
+                              : "bg-[#FFFFFF] text-black"
                           }`}
                         >
                           {item.format}
@@ -832,7 +832,7 @@ export function EventListContent() {
                     </h3>
 
                     {/* Date & Location */}
-                    <div className="p-3 bg-[#F7F4EE] border border-black font-mono text-xs space-y-1">
+                    <div className="p-3 bg-[#FFFFFF] border border-black font-mono text-xs space-y-1">
                       <div className="flex items-center gap-2 text-black font-bold">
                         <Calendar size={13} className="text-[#FF5500]" />
                         <span>{item.dateFormatted} • {item.timeFormatted}</span>
@@ -850,7 +850,7 @@ export function EventListContent() {
 
                     {/* Host Vignette */}
                     <div className="flex items-center gap-2 pt-2 border-t border-neutral-200 font-mono text-xs">
-                      <div className="w-8 h-8 bg-black text-[#CCFF00] border border-black flex items-center justify-center font-bold text-xs shrink-0">
+                      <div className="w-8 h-8 bg-black text-[#FF5500] border border-black flex items-center justify-center font-bold text-xs shrink-0">
                         {item.hostInitials}
                       </div>
                       <div className="flex flex-col min-w-0">
@@ -868,12 +868,12 @@ export function EventListContent() {
                   <div className="pt-4 border-t-2 border-black space-y-3 font-mono text-xs">
                     <div className="space-y-1">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-neutral-500 font-bold uppercase">CAPACITY LOCK</span>
+                        <span className="text-neutral-500 font-bold uppercase">Capacity</span>
                         <span className="font-black text-black">
                           {item.reservedCount} / {item.totalCapacity} ({capacityPct}%)
                         </span>
                       </div>
-                      <div className="w-full bg-[#F7F4EE] border border-black h-2.5 p-[1px]">
+                      <div className="w-full bg-[#FFFFFF] border border-black h-2.5 p-[1px]">
                         <div
                           className={`h-full ${
                             capacityPct >= 90 ? "bg-red-600" : capacityPct >= 70 ? "bg-[#FF5500]" : "bg-black"
@@ -883,7 +883,7 @@ export function EventListContent() {
                       </div>
                       <div className="flex items-center justify-between text-[10px] text-neutral-600 font-semibold">
                         <span>{seatsLeft} SEATS REMAINING</span>
-                        <span className="text-[#00A859] font-bold">SERIALIZABLE TXN</span>
+                        <span className="text-[#00A859] font-bold">Open</span>
                       </div>
                     </div>
 
@@ -891,7 +891,7 @@ export function EventListContent() {
                       {item.isRegistered ? (
                         <button
                           onClick={() => setSelectedPassForQr(item)}
-                          className="flex-1 py-2 bg-[#CCFF00] text-black border-2 border-black font-extrabold uppercase text-xs flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white cursor-pointer transition-all"
+                          className="flex-1 py-2 bg-[#FF5500] text-white border-2 border-black font-extrabold uppercase text-xs flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white cursor-pointer transition-all"
                           type="button"
                         >
                           <Check size={14} />
@@ -900,11 +900,11 @@ export function EventListContent() {
                       ) : (
                         <button
                           onClick={() => handleRsvpClick(item)}
-                          className="flex-1 py-2 bg-black text-[#CCFF00] border-2 border-black font-extrabold uppercase text-xs flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000000] hover:bg-[#CCFF00] hover:text-black cursor-pointer transition-all"
+                          className="flex-1 py-2 bg-black text-[#FF5500] border-2 border-black font-extrabold uppercase text-xs flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000000] hover:bg-[#FF5500] hover:text-black cursor-pointer transition-all"
                           type="button"
                         >
                           <Ticket size={14} />
-                          <span>1-CLICK RSVP PROTOCOL →</span>
+                          <span>RSVP →</span>
                         </button>
                       )}
 
@@ -943,7 +943,7 @@ export function EventListContent() {
           <div className="relative w-full max-w-md bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col gap-4 font-mono text-xs">
             <div className="flex items-center justify-between border-b-2 border-black pb-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">WALLET ENCLAVE</span>
+                <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold">WALLET ENCLAVE</span>
                 <span className="font-extrabold text-black font-sans uppercase">Admission Pass</span>
               </div>
               <button
@@ -955,7 +955,7 @@ export function EventListContent() {
               </button>
             </div>
 
-            <div className="p-4 bg-[#F7F4EE] border-2 border-black flex flex-col items-center justify-center gap-3">
+            <div className="p-4 bg-[#FFFFFF] border-2 border-black flex flex-col items-center justify-center gap-3">
               <span className="font-extrabold text-sm text-black font-sans text-center">
                 {selectedPassForQr.title}
               </span>
@@ -999,7 +999,7 @@ export function EventListContent() {
                   dl.setAttribute("download", `pass_${selectedPassForQr.ticketCode}.json`);
                   dl.click();
                 }}
-                className="px-3 py-2 bg-[#F7F4EE] hover:bg-neutral-200 border border-black font-bold uppercase flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-2 bg-[#FFFFFF] hover:bg-neutral-200 border border-black font-bold uppercase flex items-center gap-1.5 cursor-pointer"
                 type="button"
               >
                 <Download size={13} />
@@ -1007,7 +1007,7 @@ export function EventListContent() {
               </button>
               <button
                 onClick={() => setSelectedPassForQr(null)}
-                className="px-4 py-2 bg-black text-white hover:bg-[#CCFF00] hover:text-black border-2 border-black font-bold uppercase cursor-pointer"
+                className="px-4 py-2 bg-black text-white hover:bg-[#FF5500] hover:text-black border-2 border-black font-bold uppercase cursor-pointer"
                 type="button"
               >
                 Close Pass
@@ -1023,7 +1023,7 @@ export function EventListContent() {
           <div className="relative w-full max-w-lg bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col gap-4 font-mono text-xs">
             <div className="flex items-center justify-between border-b-2 border-black pb-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">TXN ALLOCATION</span>
+                <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold">TXN ALLOCATION</span>
                 <span className="font-extrabold text-black font-sans uppercase">Confirm Seat RSVP</span>
               </div>
               <button
@@ -1036,7 +1036,7 @@ export function EventListContent() {
             </div>
 
             <form onSubmit={handleConfirmRsvp} className="space-y-4">
-              <div className="p-3 bg-[#F7F4EE] border border-black space-y-1">
+              <div className="p-3 bg-[#FFFFFF] border border-black space-y-1">
                 <span className="font-bold text-black font-sans text-sm block">
                   {selectedEventForRsvp.title}
                 </span>
@@ -1066,7 +1066,7 @@ export function EventListContent() {
                 <input
                   type="text"
                   placeholder="e.g. Vegetarian, Wheelchair access, High-power lab bench..."
-                  className="w-full px-3 py-2 border-2 border-black bg-[#F7F4EE] focus:bg-white font-mono text-xs focus:outline-none"
+                  className="w-full px-3 py-2 border-2 border-black bg-[#FFFFFF] focus:bg-white font-mono text-xs focus:outline-none"
                 />
               </div>
 
@@ -1086,13 +1086,13 @@ export function EventListContent() {
                 <button
                   type="button"
                   onClick={() => setSelectedEventForRsvp(null)}
-                  className="px-4 py-2 border border-black bg-[#F7F4EE] hover:bg-neutral-200 font-bold uppercase cursor-pointer"
+                  className="px-4 py-2 border border-black bg-[#FFFFFF] hover:bg-neutral-200 font-bold uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black font-extrabold uppercase shadow-[3px_3px_0px_#000000] cursor-pointer"
+                  className="px-5 py-2 border-2 border-black bg-black text-[#FF5500] hover:bg-[#FF5500] hover:text-black font-extrabold uppercase shadow-[3px_3px_0px_#000000] cursor-pointer"
                 >
                   Confirm Registration →
                 </button>
@@ -1108,7 +1108,7 @@ export function EventListContent() {
           <div className="relative w-full max-w-md bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000000] flex flex-col gap-4 font-mono text-xs">
             <div className="flex items-center justify-between border-b-2 border-black pb-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-[#2E5BFF] text-white font-bold">CALENDAR PROTOCOL</span>
+                <span className="px-2 py-0.5 bg-[#FF5500] text-white font-bold">Calendar</span>
                 <span className="font-extrabold text-black font-sans uppercase">Google Calendar Sync</span>
               </div>
               <button
@@ -1124,7 +1124,7 @@ export function EventListContent() {
               <p>
                 Synchronize all <strong>{registeredPasses.length} verified RSVP passes</strong> directly into your primary Google Calendar account with mutual TLS verification.
               </p>
-              <div className="p-3 bg-[#F7F4EE] border border-black font-mono text-[11px] space-y-1">
+              <div className="p-3 bg-[#FFFFFF] border border-black font-mono text-[11px] space-y-1">
                 <div className="flex justify-between">
                   <span className="text-neutral-500 font-bold">PASSES QUEUED:</span>
                   <span className="font-bold text-black">{registeredPasses.length} Events</span>
@@ -1143,7 +1143,7 @@ export function EventListContent() {
             <div className="flex justify-end gap-2 pt-2 border-t-2 border-black">
               <button
                 onClick={() => setIsGCalModalOpen(false)}
-                className="px-4 py-2 border border-black bg-[#F7F4EE] hover:bg-neutral-200 font-bold uppercase cursor-pointer"
+                className="px-4 py-2 border border-black bg-[#FFFFFF] hover:bg-neutral-200 font-bold uppercase cursor-pointer"
                 type="button"
               >
                 Close
@@ -1154,7 +1154,7 @@ export function EventListContent() {
                   setToastMessage("✓ All confirmed assemblages dispatched to Google Calendar.");
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
-                className="px-5 py-2 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black font-extrabold uppercase shadow-[2px_2px_0px_#000000] cursor-pointer"
+                className="px-5 py-2 border-2 border-black bg-black text-[#FF5500] hover:bg-[#FF5500] hover:text-black font-extrabold uppercase shadow-[2px_2px_0px_#000000] cursor-pointer"
                 type="button"
               >
                 Dispatch Sync Now →

@@ -34,17 +34,18 @@ export interface NavProtocolItem {
 }
 
 const PROTOCOLS: NavProtocolItem[] = [
-  { id: "dashboard", index: "01", title: "Member Dashboard", href: "/dashboard" },
-  { id: "directory", index: "02", title: "Alumni Directory", href: "/directory" },
-  { id: "jobs", index: "03", title: "Career & Referral Hub", href: "/jobs" },
-  { id: "mentorship", index: "04", title: "Mentorship & Flash 1:1", href: "/mentorship" },
-  { id: "events", index: "05", title: "Events & RSVPs", href: "/events" },
-  { id: "stories", index: "06", title: "Success Stories", href: "/stories" },
-  { id: "education", index: "07", title: "Education & Sprints", href: "/education" },
-  { id: "announcements", index: "08", title: "Announcements Wire", href: "/announcements" },
-  { id: "chat", index: "09", title: "Unified Messaging & Chat", href: "/chat" },
-  { id: "profile", index: "10", title: "My Profile & Digital Pass", href: "/profile" },
-  { id: "admin", index: "11", title: "Admin Command Center", href: "/admin", adminOnly: true },
+  { id: "dashboard", index: "01", title: "Home", href: "/dashboard" },
+  { id: "directory", index: "02", title: "Directory", href: "/directory" },
+  { id: "matching", index: "03", title: "Matches", href: "/matching" },
+  { id: "jobs", index: "04", title: "Jobs", href: "/jobs" },
+  { id: "mentorship", index: "05", title: "Mentorship", href: "/mentorship" },
+  { id: "events", index: "06", title: "Events", href: "/events" },
+  { id: "stories", index: "07", title: "Stories", href: "/stories" },
+  { id: "education", index: "08", title: "Learn", href: "/education" },
+  { id: "announcements", index: "09", title: "Announcements", href: "/announcements" },
+  { id: "chat", index: "10", title: "Messages", href: "/chat" },
+  { id: "profile", index: "11", title: "Profile", href: "/profile" },
+  { id: "admin", index: "12", title: "Admin", href: "/admin", adminOnly: true },
 ];
 
 export interface NotificationShellItem {
@@ -112,13 +113,13 @@ function NotificationPanel({
     <div
       ref={panelRef}
       role="dialog"
-      aria-label="System Notifications"
-      className="absolute right-0 top-full z-50 mt-2 w-80 md:w-96 overflow-hidden border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 bg-[#F7F4EE] dark:bg-[#12151b] shadow-[4px_4px_0_#1A1A1A] dark:shadow-[4px_4px_0_#333]"
+      aria-label="Notifications"
+      className="absolute right-0 top-full z-50 mt-2 w-80 md:w-96 overflow-hidden border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 bg-[#FFFFFF] dark:bg-[#12151b] shadow-[4px_4px_0_#0A0A0A] dark:shadow-[4px_4px_0_#333]"
     >
-      <div className="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800 px-4 py-3 bg-[#EFECE4] dark:bg-[#181a20]">
+      <div className="flex items-center justify-between border-b-[1.5px] border-[#0A0A0A] dark:border-neutral-800 px-4 py-3 bg-[#F5F5F5] dark:bg-[#181a20]">
         <div className="flex items-center gap-2">
           <span className="text-[#FF5500] font-mono text-xs font-bold">/////</span>
-          <p className="font-headline text-xs uppercase font-bold text-[#1A1A1A] dark:text-white tracking-tight">
+          <p className="font-headline text-xs uppercase font-bold text-[#0A0A0A] dark:text-white tracking-tight">
             NOTIFICATIONS WIRE
           </p>
           {notifications.some((n) => !n.isRead) && (
@@ -136,13 +137,13 @@ function NotificationPanel({
             onClose();
             triggerRef.current?.focus();
           }}
-          className="p-1 text-[#1A1A1A] dark:text-neutral-300 hover:bg-[#D5CEBF] dark:hover:bg-neutral-800 transition-colors"
+          className="p-1 text-[#0A0A0A] dark:text-neutral-300 hover:bg-[#D4D4D4] dark:hover:bg-neutral-800 transition-colors"
           aria-label="Close notifications"
         >
           <X size={16} />
         </button>
       </div>
-      <ul className="max-h-80 divide-y-[1.5px] divide-[#D5CEBF]/60 dark:divide-neutral-800 overflow-y-auto font-sans">
+      <ul className="max-h-80 divide-y-[1.5px] divide-[#D4D4D4]/60 dark:divide-neutral-800 overflow-y-auto font-sans">
         {notifications.length === 0 ? (
           <li className="px-4 py-8 text-center font-mono text-xs text-neutral-500">
             [QUEUE EMPTY] • ZERO PENDING PROTOCOLS
@@ -155,7 +156,7 @@ function NotificationPanel({
                 !n.isRead ? "bg-white dark:bg-[#15181f]" : ""
               }`}
             >
-              <p className="font-headline text-xs font-bold text-[#1A1A1A] dark:text-neutral-100">
+              <p className="font-headline text-xs font-bold text-[#0A0A0A] dark:text-neutral-100">
                 {n.title || n.message || n.text}
               </p>
               {n.message && n.title && (
@@ -232,9 +233,9 @@ export function RoleShell({
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#fcf9f3] dark:bg-[#0c0e12]">
+      <div className="flex min-h-screen items-center justify-center bg-[#FFFFFF] dark:bg-[#0c0e12]">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin border-2 border-[#1A1A1A] dark:border-white border-t-[#FF5500]" />
+          <div className="h-8 w-8 animate-spin border-2 border-[#0A0A0A] dark:border-white border-t-[#FF5500]" />
           <span className="font-mono text-xs tracking-wider text-neutral-600 dark:text-neutral-400">
             INITIALIZING CORE ROUTING...
           </span>
@@ -265,20 +266,20 @@ export function RoleShell({
       : `FELLOW / COHORT '${user?.classYear ? user.classYear.slice(-2) : "26"}`;
 
   const AsideNav = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <aside className="h-full w-72 bg-[#F7F4EE] dark:bg-[#12151b] flex flex-col justify-between border-r-[1.5px] border-[#1A1A1A] dark:border-neutral-800 select-none">
+    <aside className="h-full w-72 bg-[#FFFFFF] dark:bg-[#12151b] flex flex-col justify-between border-r-[1.5px] border-[#0A0A0A] dark:border-neutral-800 select-none">
       <div className="flex flex-col flex-1 min-h-0">
         {/* Aside Header */}
-        <div className="h-16 px-4 flex items-center justify-between bg-[#F7F4EE] dark:bg-[#12151b] border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800 shrink-0">
+        <div className="h-16 px-4 flex items-center justify-between bg-[#FFFFFF] dark:bg-[#12151b] border-b-[1.5px] border-[#0A0A0A] dark:border-neutral-800 shrink-0">
           <Link
             href="/dashboard"
             onClick={() => isMobile && setSidebarOpen(false)}
             className="flex items-center gap-2.5"
           >
-            <span className="flex items-center justify-center w-8 h-8 bg-black text-white dark:bg-white dark:text-black font-mono text-xs font-bold shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff]">
+            <span className="flex items-center justify-center w-8 h-8 bg-black text-white dark:bg-white dark:text-black font-mono text-xs font-bold shadow-[2px_2px_0_#0A0A0A] dark:shadow-[2px_2px_0_#ffffff]">
               PA
             </span>
             <div className="flex flex-col">
-              <span className="font-headline text-base tracking-tight text-[#1A1A1A] dark:text-white font-bold leading-none uppercase">
+              <span className="font-headline text-base tracking-tight text-[#0A0A0A] dark:text-white font-bold leading-none uppercase">
                 PRO-ALUMN
               </span>
               <span className="font-mono text-[10px] text-neutral-500 tracking-tight mt-0.5">
@@ -287,14 +288,14 @@ export function RoleShell({
             </div>
           </Link>
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#e5e2dc] dark:bg-[#1c1f26] text-[#1A1A1A] dark:text-neutral-300 border border-[#1A1A1A] dark:border-neutral-700 font-bold">
+            <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#e5e2dc] dark:bg-[#1c1f26] text-[#0A0A0A] dark:text-neutral-300 border border-[#0A0A0A] dark:border-neutral-700 font-bold">
               SYS.OK
             </span>
             {isMobile && (
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-1 border border-[#1A1A1A] dark:border-neutral-700"
-                aria-label="Close navigation"
+                className="p-1 border border-[#0A0A0A] dark:border-neutral-700"
+                aria-label="Close"
               >
                 <X size={16} />
               </button>
@@ -313,7 +314,7 @@ export function RoleShell({
         </div>
 
         {/* Navigation List */}
-        <nav className="flex flex-col px-2.5 gap-0.5 flex-1 min-h-0 overflow-y-auto" aria-label="System navigation">
+        <nav className="flex flex-col px-2.5 gap-0.5 flex-1 min-h-0 overflow-y-auto" aria-label="Navigation">
           {PROTOCOLS.map((p) => {
             const active = isProtocolActive(p.href);
             // If adminOnly, still visible if user is admin or as preview
@@ -326,8 +327,8 @@ export function RoleShell({
                 onClick={() => isMobile && setSidebarOpen(false)}
                 className={`flex items-center justify-between px-2.5 py-1.5 text-xs font-bold uppercase transition-all duration-150 border-[1.5px] ${
                   active
-                    ? "bg-black text-white dark:bg-white dark:text-black border-[#1A1A1A] dark:border-neutral-300 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#FFFFFF]"
-                    : "bg-transparent text-neutral-700 dark:text-neutral-300 border-transparent hover:border-[#1A1A1A] dark:hover:border-neutral-700 hover:bg-[#ebe8e2] dark:hover:bg-[#181a20]"
+                    ? "bg-black text-white dark:bg-white dark:text-black border-[#0A0A0A] dark:border-neutral-300 shadow-[2px_2px_0_#0A0A0A] dark:shadow-[2px_2px_0_#FFFFFF]"
+                    : "bg-transparent text-neutral-700 dark:text-neutral-300 border-transparent hover:border-[#0A0A0A] dark:hover:border-neutral-700 hover:bg-[#ebe8e2] dark:hover:bg-[#181a20]"
                 }`}
               >
                 <span className="flex items-center gap-2 min-w-0">
@@ -347,8 +348,8 @@ export function RoleShell({
         </nav>
       </div>
 
-      {/* Aside Footer: Vector Runtime Status & Sign Out */}
-      <div className="p-3 flex flex-col gap-2 bg-[#EFECE4] dark:bg-[#181a20] border-t-[1.5px] border-[#1A1A1A] dark:border-neutral-800 shrink-0">
+      {/* Aside Footer: Vector Runtime Status & Sign out */}
+      <div className="p-3 flex flex-col gap-2 bg-[#F5F5F5] dark:bg-[#181a20] border-t-[1.5px] border-[#0A0A0A] dark:border-neutral-800 shrink-0">
         <div className="flex items-center justify-between px-1">
           <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
             VECTOR RUNTIME
@@ -356,26 +357,26 @@ export function RoleShell({
           <span className="font-mono text-[10px] text-[#FF5500] font-bold">HNSW:OK</span>
         </div>
 
-        <div className="p-2.5 bg-white dark:bg-[#12151b] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-between shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333]">
+        <div className="p-2.5 bg-white dark:bg-[#12151b] border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 flex items-center justify-between shadow-[2px_2px_0_#0A0A0A] dark:shadow-[2px_2px_0_#333]">
           <div className="flex flex-col">
             <span className="font-headline text-[9px] uppercase font-bold text-neutral-500">
               EMBEDDING DIM
             </span>
-            <span className="font-mono text-xs font-bold text-[#1A1A1A] dark:text-white">
+            <span className="font-mono text-xs font-bold text-[#0A0A0A] dark:text-white">
               1536_ADA002
             </span>
           </div>
-          <div className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_8px_#00E676]" />
+          <div className="w-2.5 h-2.5 rounded-full bg-[#FF5500] shadow-[0_0_8px_#FF5500]" />
         </div>
 
         {/* User quick badge & sign out */}
-        <div className="pt-2 border-t border-[#D5CEBF] dark:border-neutral-800 flex items-center justify-between">
+        <div className="pt-2 border-t border-[#D4D4D4] dark:border-neutral-800 flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-mono text-[10px] font-bold border border-[#1A1A1A]">
+            <div className="w-7 h-7 bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-mono text-[10px] font-bold border border-[#0A0A0A]">
               {user.name ? user.name.slice(0, 2).toUpperCase() : "ID"}
             </div>
             <div className="truncate">
-              <p className="font-headline text-xs font-bold text-[#1A1A1A] dark:text-white truncate">
+              <p className="font-headline text-xs font-bold text-[#0A0A0A] dark:text-white truncate">
                 {user.name}
               </p>
               <p className="font-mono text-[9px] text-neutral-500 uppercase truncate">
@@ -385,9 +386,9 @@ export function RoleShell({
           </div>
           <button
             onClick={handleSignOut}
-            title="Sign Out"
-            className="p-1.5 border border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#12151b] hover:bg-[#FF5500] hover:text-white transition-colors cursor-pointer"
-            aria-label="Sign Out"
+            title="Sign out"
+            className="p-1.5 border border-[#0A0A0A] dark:border-neutral-700 bg-white dark:bg-[#12151b] hover:bg-[#FF5500] hover:text-white transition-colors cursor-pointer"
+            aria-label="Sign out"
           >
             <LogOut size={14} />
           </button>
@@ -397,7 +398,7 @@ export function RoleShell({
   );
 
   return (
-    <div className="min-h-screen bg-[#fcf9f3] dark:bg-[#0c0e12] text-[#1c1c18] dark:text-[#f3f0ea] font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0c0e12] text-[#1c1c18] dark:text-[#f3f0ea] font-sans antialiased">
       {/* Desktop Fixed Aside Rail */}
       <div className="hidden lg:block fixed left-0 top-0 h-full z-50">
         <AsideNav />
@@ -430,14 +431,14 @@ export function RoleShell({
       {/* Content wrapper offset by 72 (18rem) */}
       <div className="lg:pl-72 flex flex-col min-h-screen">
         {/* Top Broadsheet Header */}
-        <header className="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-[#F7F4EE]/95 dark:bg-[#0c0e12]/95 backdrop-blur-md z-40 px-4 sm:px-6 flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+        <header className="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-[#FFFFFF]/95 dark:bg-[#0c0e12]/95 backdrop-blur-md z-40 px-4 sm:px-6 flex items-center justify-between border-b-[1.5px] border-[#0A0A0A] dark:border-neutral-800">
           <div className="flex items-center gap-3 flex-1 max-w-xl">
             {/* Mobile menu trigger */}
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="p-2 border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 bg-white dark:bg-[#181a20] shadow-[2px_2px_0_#1A1A1A] lg:hidden"
-              aria-label="Open Navigation"
+              className="p-2 border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 bg-white dark:bg-[#181a20] shadow-[2px_2px_0_#0A0A0A] lg:hidden"
+              aria-label="Menu"
             >
               <Menu size={18} />
             </button>
@@ -450,10 +451,10 @@ export function RoleShell({
 
           <div className="flex items-center gap-3 sm:gap-4">
             {/* PGVector Latency Pill */}
-            <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333]">
+            <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#181a20] border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 shadow-[2px_2px_0_#0A0A0A] dark:shadow-[2px_2px_0_#333]">
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#00E676] shadow-[0_0_4px_#00E676]" />
-                <span className="font-headline text-[10px] uppercase font-bold text-[#1A1A1A] dark:text-white">
+                <span className="w-2 h-2 rounded-full bg-[#FF5500] shadow-[0_0_4px_#FF5500]" />
+                <span className="font-headline text-[10px] uppercase font-bold text-[#0A0A0A] dark:text-white">
                   PGVECTOR
                 </span>
               </div>
@@ -469,10 +470,10 @@ export function RoleShell({
                 ref={notifTriggerRef}
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
                 aria-label="Notifications"
-                className="relative flex items-center justify-center w-9 h-9 bg-white dark:bg-[#181a20] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] dark:hover:bg-[#20242c] transition-colors cursor-pointer"
+                className="relative flex items-center justify-center w-9 h-9 bg-white dark:bg-[#181a20] border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 shadow-[2px_2px_0_#0A0A0A] dark:shadow-[2px_2px_0_#333] hover:bg-[#ebe8e2] dark:hover:bg-[#20242c] transition-colors cursor-pointer"
                 type="button"
               >
-                <Bell size={18} className="text-[#1A1A1A] dark:text-white" />
+                <Bell size={18} className="text-[#0A0A0A] dark:text-white" />
                 {unreadCount > 0 && (
                   <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#FF5500]" />
                 )}
@@ -487,21 +488,21 @@ export function RoleShell({
             </div>
 
             {/* Theme Toggle */}
-            <div className="border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#333]">
+            <div className="border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 shadow-[2px_2px_0_#0A0A0A] dark:shadow-[2px_2px_0_#333]">
               <ThemeToggle />
             </div>
 
             {/* User Profile Pill */}
-            <div className="flex items-center gap-2.5 pl-2 border-l-[1.5px] border-[#D5CEBF] dark:border-neutral-800">
+            <div className="flex items-center gap-2.5 pl-2 border-l-[1.5px] border-[#D4D4D4] dark:border-neutral-800">
               <div className="hidden sm:flex flex-col items-end">
-                <span className="font-headline text-xs font-bold text-[#1A1A1A] dark:text-white leading-tight">
+                <span className="font-headline text-xs font-bold text-[#0A0A0A] dark:text-white leading-tight">
                   {displayName}
                 </span>
-                <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] uppercase font-bold leading-none mt-1">
+                <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#FF5500] text-white border border-[#0A0A0A] uppercase font-bold leading-none mt-1">
                   {displayRoleLabel}
                 </span>
               </div>
-              <div className="w-8 h-8 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center border-[1.5px] border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] dark:shadow-[2px_2px_0_#ffffff] font-mono text-xs font-bold">
+              <div className="w-8 h-8 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center border-[1.5px] border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] dark:shadow-[2px_2px_0_#ffffff] font-mono text-xs font-bold">
                 {user.name ? user.name.charAt(0).toUpperCase() : "U"}
               </div>
             </div>
@@ -509,7 +510,7 @@ export function RoleShell({
         </header>
 
         {/* Main Content Viewport */}
-        <main className="w-full pt-16 flex-1 bg-[#fcf9f3] dark:bg-[#0c0e12]">
+        <main className="w-full pt-16 flex-1 bg-[#FFFFFF] dark:bg-[#0c0e12]">
           {children}
         </main>
       </div>

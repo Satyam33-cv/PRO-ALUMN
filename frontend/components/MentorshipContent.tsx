@@ -26,7 +26,7 @@ import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
 
 // Duration and Credit Modes
-type DurationMode = "15-Min Flash (30 CR)" | "30-Min Deep-Dive (50 CR)" | "0-CR Barter";
+type DurationMode = "15 min" | "30 min" | "Free swap";
 
 interface MentorFellow {
   id: string;
@@ -71,7 +71,7 @@ export function MentorshipContent() {
   const { user } = useAuth();
   const router = useRouter();
   const [activeDomain, setActiveDomain] = useState("ALL DOMAINS");
-  const [durationMode, setDurationMode] = useState<DurationMode>("15-Min Flash (30 CR)");
+  const [durationMode, setDurationMode] = useState<DurationMode>("15 min");
   const [searchQuery, setSearchQuery] = useState("");
   const [messagingId, setMessagingId] = useState<string | null>(null);
 
@@ -253,7 +253,7 @@ export function MentorshipContent() {
     }
   };
 
-  // Handle Dual-Handshake Completion Trigger
+  // Handle Confirm both sides Completion Trigger
   const handleConfirmAndReleaseEscrow = async () => {
     setReleasingEscrow(true);
     try {
@@ -301,7 +301,7 @@ export function MentorshipContent() {
         area: auditArea,
         message: `[${durationMode}] Slot: ${selectedSlot} - Topic: ${auditTopic.trim()}`,
         durationMins: durationMode.includes("30-Min") ? 30 : 15,
-        isDirectSwap: durationMode === "0-CR Barter",
+        isDirectSwap: durationMode === "Free swap",
       });
       const id =
         (res as any)?.mentorship?.id ||
@@ -321,43 +321,21 @@ export function MentorshipContent() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-[#FCF9F3] min-h-screen text-[#1A1A1A] font-sans selection:bg-[#D9E021] selection:text-black">
+    <div className="flex flex-col w-full bg-[#FFFFFF] min-h-screen text-[#0A0A0A] font-sans selection:bg-[#FF5500] selection:text-white">
       {/* ========================================================================= */}
       {/* System Protocol Marquee / Top Telemetry Strip                             */}
       {/* ========================================================================= */}
-      <div className="w-full bg-[#EFECE4] px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between border-b-2 border-[#1A1A1A] shadow-[0_2px_0_#1A1A1A] gap-3">
-        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs px-2 py-0.5 bg-[#FF5500] text-white shadow-[1px_1px_0_#1A1A1A] font-extrabold tracking-wider">
-              P-04
-            </span>
-            <span className="font-sans text-xs sm:text-sm uppercase tracking-wider text-[#1A1A1A] font-extrabold">
-              PROTOCOL 04 // ASYNCHRONOUS &amp; SYNCHRONOUS EXPERT EXCHANGE
-            </span>
-          </div>
-          <span className="hidden md:inline-block text-[#D5CEBF] font-mono text-xs">|</span>
-          <div className="hidden md:flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_8px_#00E676] animate-pulse"></span>
-            <span className="font-mono text-xs font-semibold text-[#635F57]">
-              TOPOLOGICAL MATCHER: ONLINE (&lt;24ms)
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-xs text-[#8F8A7E] hidden sm:inline">
-            SESSION DISPATCH ROUTER:
-          </span>
-          <span className="font-mono text-xs px-2.5 py-1 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[1px_1px_0_#1A1A1A] font-bold">
-            TLS_1.3 // ENCLAVE_SECURE
-          </span>
-        </div>
+      <div className="w-full bg-[#F5F5F5] px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between border-b-2 border-black gap-3">
+        <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#635F57]">
+          Mentorship &amp; skill swap
+        </p>
       </div>
 
       <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
         {/* ========================================================================= */}
         {/* Hero Header Banner                                                        */}
         {/* ========================================================================= */}
-        <header className="flex flex-col gap-6 bg-white p-6 sm:p-8 border-2 border-[#1A1A1A] shadow-[4px_4px_0_#1A1A1A] relative overflow-hidden">
+        <header className="flex flex-col gap-6 bg-white p-6 sm:p-8 border-2 border-[#0A0A0A] shadow-[4px_4px_0_#0A0A0A] relative overflow-hidden">
           {/* Subtle Corner Watermark 04 */}
           <div className="absolute -right-4 -bottom-8 opacity-[0.04] pointer-events-none select-none font-mono text-[160px] font-black text-black leading-none">
             04
@@ -366,110 +344,56 @@ export function MentorshipContent() {
           <div className="flex flex-wrap items-center justify-between gap-3 relative z-10">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono text-xs px-2.5 py-1 bg-black text-white font-bold tracking-wider">
-                PILLAR // 03
+                Mentorship
               </span>
               <span className="font-mono text-xs text-[#8F8A7E] font-medium">
-                HNSW_COSINE_SIMILARITY_v2
+                
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs px-2.5 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-bold shadow-[2px_2px_0_#1A1A1A]">
-                ESCROW INTEGRITY: VERIFIED
+              <span className="font-mono text-xs px-2.5 py-1 bg-[#FF5500] text-white border-2 border-[#0A0A0A] font-bold shadow-[2px_2px_0_#0A0A0A]">
+                Verified mentors
               </span>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
             <div className="max-w-3xl flex flex-col gap-2">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1A1A1A] tracking-tight">
-                Mentorship &amp; Flash 1-on-1 Sessions
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0A0A0A] tracking-tight">
+                Mentorship & skill swap
               </h1>
               <p className="text-sm sm:text-base text-[#635F57] leading-relaxed">
-                Sub-30ms topological matching connects scholars and candidates with verified technical fellows for 15-minute architectural audits, resume breakdowns, and 30-minute career roadmaps.
+                Find alumni who can teach skills you want, or book a short 1-on-1 session.
               </p>
-            </div>
-            <div className="flex flex-col items-start md:items-end gap-1 shrink-0 bg-[#F7F4EE] p-3 sm:p-4 border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                ESCROW LIQUIDITY POOL
-              </span>
-              <div className="flex items-baseline gap-2">
-                <span className="font-black text-2xl sm:text-3xl text-[#1A1A1A] tracking-tight">
-                  2,450
-                </span>
-                <span className="font-mono text-xs text-[#FF5500] font-black">
-                  ALUMN-CR
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Telemetry Badges Strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t-2 border-[#D5CEBF] relative z-10">
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                ACTIVE FELLOWS
-              </span>
-              <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                148 Available
-              </span>
-            </div>
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                SUBSIDIZED PASSES
-              </span>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                  2 Remaining
-                </span>
-                <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A]">
-                  FREE TIER
-                </span>
-              </div>
-            </div>
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                ESCROW PROTECTION
-              </span>
-              <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                Dual-Handshake
-              </span>
-            </div>
-            <div className="p-3 sm:p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                MEDIAN AUDIT TIME
-              </span>
-              <span className="text-base sm:text-lg text-[#1A1A1A] font-bold">
-                14.8 Minutes
-              </span>
             </div>
           </div>
         </header>
 
         {/* ========================================================================= */}
-        {/* Top Bento Row: In-Flight Session & Dual-Handshake Pipeline                 */}
+        {/* Top Bento Row: In-Flight Session & Confirm both sides Pipeline                 */}
         {/* ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* In-Flight Session Card (7 Cols) */}
           <section
             aria-label="Active Session In-Flight"
-            className="lg:col-span-7 bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between gap-6 relative"
+            className="lg:col-span-7 bg-white border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[4px_4px_0_#0A0A0A] flex flex-col justify-between gap-6 relative"
           >
             {activeSession ? (
               <div className="flex flex-col gap-5">
-                <div className="flex items-center justify-between pb-3 border-b-2 border-[#D5CEBF] gap-2 flex-wrap">
+                <div className="flex items-center justify-between pb-3 border-b-2 border-[#D4D4D4] gap-2 flex-wrap">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-pulse shadow-[0_0_8px_#00E676]"></span>
-                    <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse shadow-[0_0_8px_#FF5500]"></span>
+                    <span className="font-sans text-xs sm:text-sm text-[#0A0A0A] uppercase tracking-wider font-extrabold">
                       ACTIVE SESSION IN-FLIGHT // COMMENCING SOON
                     </span>
                   </div>
-                  <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#635F57] border-2 border-[#1A1A1A] font-bold">
+                  <span className="font-mono text-xs px-2 py-0.5 bg-[#FFFFFF] text-[#635F57] border-2 border-[#0A0A0A] font-bold">
                     SESSION ID #{activeSession.id}
                   </span>
                 </div>
 
                 {/* Countdown Counter Strip */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 bg-[#F7F4EE] border-2 border-[#1A1A1A] gap-4 shadow-[2px_2px_0_#1A1A1A]">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 bg-[#FFFFFF] border-2 border-[#0A0A0A] gap-4 shadow-[2px_2px_0_#0A0A0A]">
                   <div>
                     <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
                       T-MINUS COUNTDOWN
@@ -485,7 +409,7 @@ export function MentorshipContent() {
                     <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
                       TYPE &amp; LENGTH
                     </span>
-                    <span className="text-sm sm:text-base font-bold text-[#1A1A1A] mt-1">
+                    <span className="text-sm sm:text-base font-bold text-[#0A0A0A] mt-1">
                       {activeSession.type || "15-Min Architectural Flash"}
                     </span>
                   </div>
@@ -503,19 +427,19 @@ export function MentorshipContent() {
                       alt={activeSession.mentor?.name || activeSession.name || "Mentor"}
                       width={64}
                       height={64}
-                      className="w-16 h-16 border-2 border-[#1A1A1A] object-cover shadow-[3px_3px_0_#1A1A1A]"
+                      className="w-16 h-16 border-2 border-[#0A0A0A] object-cover shadow-[3px_3px_0_#0A0A0A]"
                     />
-                    <span className="absolute -bottom-1.5 -right-1.5 font-mono text-[10px] px-1.5 py-0.5 bg-[#1D4ED8] text-white font-extrabold border border-[#1A1A1A]">
+                    <span className="absolute -bottom-1.5 -right-1.5 font-mono text-[10px] px-1.5 py-0.5 bg-[#000000] text-white font-extrabold border border-[#0A0A0A]">
                       {activeSession.badge || "PRO"}
                     </span>
                   </div>
                   <div className="flex flex-col min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-base sm:text-lg font-black text-[#1A1A1A]">
+                      <span className="text-base sm:text-lg font-black text-[#0A0A0A]">
                         {activeSession.mentor?.name || activeSession.name || "Verified Fellow"}
                       </span>
                       {(activeSession.mentor?.company || activeSession.company) && (
-                        <span className="font-mono text-xs px-2 py-0.5 bg-[#e5e2dc] text-[#1A1A1A] border border-[#1A1A1A] font-bold">
+                        <span className="font-mono text-xs px-2 py-0.5 bg-[#e5e2dc] text-[#0A0A0A] border border-[#0A0A0A] font-bold">
                           {activeSession.mentor?.company || activeSession.company}
                         </span>
                       )}
@@ -527,7 +451,7 @@ export function MentorshipContent() {
                       <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider block">
                         AUDIT TOPIC:
                       </span>
-                      <p className="text-sm sm:text-base font-bold text-[#1A1A1A] leading-snug mt-0.5">
+                      <p className="text-sm sm:text-base font-bold text-[#0A0A0A] leading-snug mt-0.5">
                         {activeSession.topic || activeSession.area || activeSession.message || "Architectural Review"}
                       </p>
                     </div>
@@ -535,10 +459,10 @@ export function MentorshipContent() {
                 </div>
 
                 {/* Escrow Pill Indicator */}
-                <div className="p-3 bg-[#EFECE4] border-2 border-[#1A1A1A] flex flex-wrap items-center justify-between gap-2 shadow-[1px_1px_0_#1A1A1A]">
+                <div className="p-3 bg-[#F5F5F5] border-2 border-[#0A0A0A] flex flex-wrap items-center justify-between gap-2 shadow-[1px_1px_0_#0A0A0A]">
                   <div className="flex items-center gap-2">
                     <Lock className="w-4 h-4 text-[#FF5500] shrink-0" />
-                    <span className="font-mono text-xs text-[#1A1A1A] font-bold">
+                    <span className="font-mono text-xs text-[#0A0A0A] font-bold">
                       {activeSession.credits || activeSession.lockedCredits || 30} ALUMN-CR HELD IN ESCROW
                     </span>
                   </div>
@@ -549,23 +473,23 @@ export function MentorshipContent() {
               </div>
             ) : (
               <div className="flex flex-col gap-5">
-                <div className="flex items-center justify-between pb-3 border-b-2 border-[#D5CEBF] gap-2 flex-wrap">
+                <div className="flex items-center justify-between pb-3 border-b-2 border-[#D4D4D4] gap-2 flex-wrap">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#8F8A7E]"></span>
-                    <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
-                      ACTIVE SESSION IN-FLIGHT // STANDBY
+                    <span className="font-sans text-xs sm:text-sm text-[#0A0A0A] uppercase tracking-wider font-extrabold">
+                      Active session
                     </span>
                   </div>
-                  <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#635F57] border-2 border-[#1A1A1A] font-bold">
+                  <span className="font-mono text-xs px-2 py-0.5 bg-[#FFFFFF] text-[#635F57] border-2 border-[#0A0A0A] font-bold">
                     STANDBY
                   </span>
                 </div>
-                <div className="p-8 text-center bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col items-center gap-2">
-                  <span className="font-mono text-sm font-bold text-[#1A1A1A]">
-                    NO SESSIONS COMMENCING
+                <div className="p-8 text-center bg-[#FFFFFF] border-2 border-[#0A0A0A] flex flex-col items-center gap-2">
+                  <span className="font-mono text-sm font-bold text-[#0A0A0A]">
+                    No active session
                   </span>
                   <p className="text-xs text-[#635F57] max-w-md">
-                    You do not currently have an active session in flight. Schedule a 1-on-1 below to connect with verified mentors.
+                    You do not have an active session. Book one below.
                   </p>
                 </div>
               </div>
@@ -573,12 +497,12 @@ export function MentorshipContent() {
 
             {/* Action Buttons */}
             {activeSession ? (
-              <div className="flex flex-wrap items-center gap-3 pt-4 border-t-2 border-[#D5CEBF]">
+              <div className="flex flex-wrap items-center gap-3 pt-4 border-t-2 border-[#D4D4D4]">
                 <a
                   href={activeSession.meetUrl || "https://meet.google.com/new"}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex-1 min-w-[180px] flex items-center justify-center gap-2 px-5 py-3 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#1A1A1A] hover:bg-[#FF5500] hover:text-white transition-all cursor-pointer"
+                  className="flex-1 min-w-[180px] flex items-center justify-center gap-2 px-5 py-3 bg-black text-white border-2 border-[#0A0A0A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#0A0A0A] hover:bg-[#FF5500] hover:text-white transition-all cursor-pointer"
                 >
                   <Video className="w-4 h-4" />
                   <span>LAUNCH GOOGLE MEET</span>
@@ -586,7 +510,7 @@ export function MentorshipContent() {
                 <button
                   type="button"
                   onClick={() => setDossierModalOpen(true)}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#1A1A1A] hover:bg-black hover:text-white transition-all cursor-pointer"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-[#FFFFFF] text-[#0A0A0A] border-2 border-[#0A0A0A] font-bold text-xs sm:text-sm shadow-[3px_3px_0_#0A0A0A] hover:bg-black hover:text-white transition-all cursor-pointer"
                 >
                   <FolderOpen className="w-4 h-4" />
                   <span>PRE-FLIGHT DOSSIER</span>
@@ -597,63 +521,63 @@ export function MentorshipContent() {
                     setRescheduleSuccess(false);
                     setRescheduleModalOpen(true);
                   }}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-white text-[#635F57] border-2 border-[#1A1A1A] font-semibold text-xs sm:text-sm hover:text-black hover:bg-[#F7F4EE] transition-all cursor-pointer"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-white text-[#635F57] border-2 border-[#0A0A0A] font-semibold text-xs sm:text-sm hover:text-black hover:bg-[#FFFFFF] transition-all cursor-pointer"
                 >
                   <Calendar className="w-4 h-4" />
                   <span>RESCHEDULE</span>
                 </button>
               </div>
             ) : (
-              <div className="pt-4 border-t-2 border-[#D5CEBF] flex justify-end">
+              <div className="pt-4 border-t-2 border-[#D4D4D4] flex justify-end">
                 <a
                   href="#mentor-directory"
-                  className="px-4 py-2.5 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] transition-all"
+                  className="px-4 py-2.5 bg-black text-white border-2 border-[#0A0A0A] font-bold text-xs shadow-[2px_2px_0_#0A0A0A] hover:bg-[#FF5500] transition-all"
                 >
-                  RESERVE A MENTOR SLOT →
+                  Book a session →
                 </a>
               </div>
             )}
           </section>
 
-          {/* Pending Dual-Handshake Protocol Card (5 Cols) */}
+          {/* Pending Confirm both sides Protocol Card (5 Cols) */}
           <section
-            aria-label="Pending Dual-Handshake Pipeline"
-            className="lg:col-span-5 bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[4px_4px_0_#1A1A1A] flex flex-col justify-between gap-6"
+            aria-label="Pending Confirm both sides Pipeline"
+            className="lg:col-span-5 bg-white border-2 border-[#0A0A0A] p-6 sm:p-8 shadow-[4px_4px_0_#0A0A0A] flex flex-col justify-between gap-6"
           >
             <div className="flex flex-col gap-5">
-              <div className="flex items-center justify-between pb-3 border-b-2 border-[#D5CEBF]">
-                <span className="font-sans text-xs sm:text-sm text-[#1A1A1A] uppercase tracking-wider font-extrabold">
-                  PENDING DUAL-HANDSHAKE PIPELINE
+              <div className="flex items-center justify-between pb-3 border-b-2 border-[#D4D4D4]">
+                <span className="font-sans text-xs sm:text-sm text-[#0A0A0A] uppercase tracking-wider font-extrabold">
+                  Pending requests
                 </span>
-                <span className="font-mono text-xs px-2.5 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-black shadow-[1px_1px_0_#1A1A1A]">
+                <span className="font-mono text-xs px-2.5 py-1 bg-[#FF5500] text-white border-2 border-[#0A0A0A] font-black shadow-[1px_1px_0_#0A0A0A]">
                   {pipelineItems.length} IN ESCROW
                 </span>
               </div>
 
               {escrowReleased && (
-                <div className="p-3 bg-[#D9E021]/30 border-2 border-[#1A1A1A] text-[#1A1A1A] font-mono text-xs flex items-center gap-2 font-bold shadow-[2px_2px_0_#1A1A1A]">
-                  <CheckCircle2 className="w-4 h-4 text-[#00E676] shrink-0" />
+                <div className="p-3 bg-[#FF5500]/30 border-2 border-[#0A0A0A] text-[#0A0A0A] font-mono text-xs flex items-center gap-2 font-bold shadow-[2px_2px_0_#0A0A0A]">
+                  <CheckCircle2 className="w-4 h-4 text-[#FF5500] shrink-0" />
                   <span>Dual cryptographic signature accepted. 30 CR released.</span>
                 </div>
               )}
 
               <div className="flex flex-col gap-3">
                 {pipelineItems.length === 0 ? (
-                  <div className="p-6 text-center bg-[#F7F4EE] border-2 border-[#1A1A1A] text-[#8F8A7E] font-mono text-xs font-bold">
+                  <div className="p-6 text-center bg-[#FFFFFF] border-2 border-[#0A0A0A] text-[#8F8A7E] font-mono text-xs font-bold">
                     All escrow handshakes settled. Pipeline clear.
                   </div>
                 ) : (
                   pipelineItems.map((item) => (
                     <div
                       key={item.id}
-                      className="p-3.5 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]"
+                      className="p-3.5 bg-[#FFFFFF] border-2 border-[#0A0A0A] flex flex-col gap-2 shadow-[2px_2px_0_#0A0A0A]"
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-sm text-[#1A1A1A]">
+                        <span className="font-bold text-sm text-[#0A0A0A]">
                           {item.name}
                         </span>
                         <span
-                          className={`font-mono text-[10px] font-bold px-2 py-0.5 border border-[#1A1A1A] ${
+                          className={`font-mono text-[10px] font-bold px-2 py-0.5 border border-[#0A0A0A] ${
                             item.badgeClass || "bg-[#e5e2dc] text-[#635F57]"
                           }`}
                         >
@@ -663,12 +587,12 @@ export function MentorshipContent() {
                       <p className="text-xs text-[#635F57] leading-tight italic">
                         &quot;{item.topic}&quot;
                       </p>
-                      <div className="flex items-center justify-between pt-2 border-t border-[#D5CEBF] mt-1">
+                      <div className="flex items-center justify-between pt-2 border-t border-[#D4D4D4] mt-1">
                         <span className="font-mono text-xs text-[#8F8A7E] font-bold">
                           LOCK: {item.lockedCredits} ALUMN-CR
                         </span>
                         <span
-                          className={`font-mono text-[10px] px-2 py-0.5 border border-[#1A1A1A] font-bold ${item.statusColor}`}
+                          className={`font-mono text-[10px] px-2 py-0.5 border border-[#0A0A0A] font-bold ${item.statusColor}`}
                         >
                           {item.status}
                         </span>
@@ -680,22 +604,22 @@ export function MentorshipContent() {
             </div>
 
             {/* Verification Signature Trigger */}
-            <div className="mt-2 pt-4 border-t-2 border-[#D5CEBF] flex flex-col gap-2">
+            <div className="mt-2 pt-4 border-t-2 border-[#D4D4D4] flex flex-col gap-2">
               <button
                 type="button"
                 onClick={handleConfirmAndReleaseEscrow}
                 disabled={releasingEscrow || pipelineItems.length === 0}
-                className="w-full py-3.5 px-4 bg-[#FF5500] text-white font-black text-xs sm:text-sm border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A] hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-3.5 px-4 bg-[#FF5500] text-white font-black text-xs sm:text-sm border-2 border-[#0A0A0A] shadow-[3px_3px_0_#0A0A0A] hover:bg-black transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 <ShieldCheck className="w-4 h-4" />
                 <span>
                   {releasingEscrow
-                    ? "TRANSMITTING SIGNATURE..."
+                    ? "Confirming…"
                     : "CONFIRM SESSION COMPLETION & RELEASE ESCROW"}
                 </span>
               </button>
               <span className="font-mono text-[11px] text-[#8F8A7E] text-center font-medium">
-                Requires cryptographic signature from {user?.name || "verified member"}&apos;s token
+                Waiting for confirmation from {user?.name || "verified member"}&apos;s token
               </span>
             </div>
           </section>
@@ -705,14 +629,14 @@ export function MentorshipContent() {
         {/* Main Booking Core: Filters, Mode Selection, Verified Mentor Bento         */}
         {/* ========================================================================= */}
         <section aria-label="Book a Flash Session" className="flex flex-col gap-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-2 border-[#1A1A1A]">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-2 border-[#0A0A0A]">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  [SUB-ROUTINE 04.2]
+                  
                 </span>
-                <h2 className="text-xl sm:text-2xl font-black text-[#1A1A1A]">
-                  Book a Flash 1-on-1 Session
+                <h2 className="text-xl sm:text-2xl font-black text-[#0A0A0A]">
+                  Book a session
                 </h2>
               </div>
               <p className="text-xs sm:text-sm text-[#635F57]">
@@ -721,16 +645,16 @@ export function MentorshipContent() {
             </div>
 
             {/* Duration / Type Switcher */}
-            <div className="inline-flex bg-white p-1 border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] gap-1 flex-wrap">
-              {(["15-Min Flash (30 CR)", "30-Min Deep-Dive (50 CR)", "0-CR Barter"] as DurationMode[]).map((mode) => (
+            <div className="inline-flex bg-white p-1 border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] gap-1 flex-wrap">
+              {(["15 min", "30 min", "Free swap"] as DurationMode[]).map((mode) => (
                 <button
                   key={mode}
                   type="button"
                   onClick={() => setDurationMode(mode)}
                   className={`px-3 py-1.5 font-mono text-xs transition-all cursor-pointer ${
                     durationMode === mode
-                      ? "bg-black text-white font-bold shadow-[1px_1px_0_#1A1A1A]"
-                      : "text-[#635F57] hover:text-black font-semibold hover:bg-[#F7F4EE]"
+                      ? "bg-black text-white font-bold shadow-[1px_1px_0_#0A0A0A]"
+                      : "text-[#635F57] hover:text-black font-semibold hover:bg-[#FFFFFF]"
                   }`}
                 >
                   {mode}
@@ -742,20 +666,20 @@ export function MentorshipContent() {
           {/* Search Bar & Domain Filters Strip */}
           <div className="flex flex-col gap-4">
             {/* Live Search Input */}
-            <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-white border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A] max-w-xl">
+            <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-white border-2 border-[#0A0A0A] shadow-[3px_3px_0_#0A0A0A] max-w-xl">
               <Search className="w-4 h-4 text-[#8F8A7E] shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search mentor by name, company, or tech stack (e.g. Raft, Rust, YC)..."
-                className="w-full bg-transparent font-mono text-xs sm:text-sm text-[#1A1A1A] placeholder:text-[#8F8A7E] focus:outline-none"
+                className="w-full bg-transparent font-mono text-xs sm:text-sm text-[#0A0A0A] placeholder:text-[#8F8A7E] focus:outline-none"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="text-[#8F8A7E] hover:text-[#1A1A1A] cursor-pointer"
+                  className="text-[#8F8A7E] hover:text-[#0A0A0A] cursor-pointer"
                   aria-label="Clear search"
                 >
                   <X className="w-4 h-4" />
@@ -766,17 +690,17 @@ export function MentorshipContent() {
             {/* Filter Topology Chips */}
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-mono text-xs text-[#8F8A7E] uppercase mr-1 font-extrabold tracking-wider">
-                FILTER TOPOLOGY:
+                Filter:
               </span>
               {DOMAINS.map((domain) => (
                 <button
                   key={domain}
                   type="button"
                   onClick={() => setActiveDomain(domain)}
-                  className={`px-3 py-1.5 border-2 border-[#1A1A1A] font-mono text-xs font-bold transition-all cursor-pointer shadow-[2px_2px_0_#1A1A1A] ${
+                  className={`px-3 py-1.5 border-2 border-[#0A0A0A] font-mono text-xs font-bold transition-all cursor-pointer shadow-[2px_2px_0_#0A0A0A] ${
                     activeDomain === domain
                       ? "bg-black text-white"
-                      : "bg-white text-[#1A1A1A] hover:bg-[#F7F4EE]"
+                      : "bg-white text-[#0A0A0A] hover:bg-[#FFFFFF]"
                   }`}
                 >
                   {domain}
@@ -802,7 +726,7 @@ export function MentorshipContent() {
                     <div className="flex flex-wrap gap-2 justify-center mt-2">
                       <Link
                         href="/complete-profile"
-                        className="px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all"
+                        className="px-4 py-2 bg-black text-white font-mono text-xs font-bold border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:bg-[#FF5500] cursor-pointer transition-all"
                       >
                         UPDATE PROFILE SKILLS
                       </Link>
@@ -812,7 +736,7 @@ export function MentorshipContent() {
                           setActiveDomain("ALL DOMAINS");
                           setSearchQuery("");
                         }}
-                        className="px-4 py-2 bg-white text-black font-mono text-xs font-bold border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#F7F4EE] cursor-pointer transition-all"
+                        className="px-4 py-2 bg-white text-black font-mono text-xs font-bold border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:bg-[#FFFFFF] cursor-pointer transition-all"
                       >
                         RESET FILTERS
                       </button>
@@ -825,19 +749,19 @@ export function MentorshipContent() {
                 return (
                   <article
                     key={mentor.id}
-                    className="bg-white border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A] p-5 sm:p-6 flex flex-col justify-between gap-5 relative group hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#1A1A1A] transition-all"
+                    className="bg-white border-2 border-[#0A0A0A] shadow-[3px_3px_0_#0A0A0A] p-5 sm:p-6 flex flex-col justify-between gap-5 relative group hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#0A0A0A] transition-all"
                   >
                     <div className="flex flex-col gap-4">
                       {/* Header Tag & Match Badge */}
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-xs px-2 py-0.5 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold shadow-[1px_1px_0_#1A1A1A]">
+                        <span className="font-mono text-xs px-2 py-0.5 bg-[#FFFFFF] text-[#0A0A0A] border-2 border-[#0A0A0A] font-bold shadow-[1px_1px_0_#0A0A0A]">
                           {mentor.recCode}
                         </span>
                         <span
-                          className={`font-mono text-xs px-2 py-0.5 border-2 border-[#1A1A1A] font-black shadow-[1px_1px_0_#1A1A1A] ${
+                          className={`font-mono text-xs px-2 py-0.5 border-2 border-[#0A0A0A] font-black shadow-[1px_1px_0_#0A0A0A] ${
                             mentor.isPerfectMatch
-                              ? "bg-[#D9E021] text-black"
-                              : "bg-[#e5e2dc] text-[#1A1A1A]"
+                              ? "bg-[#FF5500] text-white"
+                              : "bg-[#e5e2dc] text-[#0A0A0A]"
                           }`}
                         >
                           {mentor.isPerfectMatch ? "PERFECT SWAP" : `SCORE ${mentor.score}`}
@@ -851,20 +775,20 @@ export function MentorshipContent() {
                           alt={mentor.name}
                           width={64}
                           height={64}
-                          className="w-16 h-16 border-2 border-[#1A1A1A] object-cover shadow-[2px_2px_0_#1A1A1A] shrink-0"
+                          className="w-16 h-16 border-2 border-[#0A0A0A] object-cover shadow-[2px_2px_0_#0A0A0A] shrink-0"
                         />
                         <div className="flex flex-col min-w-0">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <h3 className="text-base sm:text-lg font-black text-[#1A1A1A] truncate">
+                            <h3 className="text-base sm:text-lg font-black text-[#0A0A0A] truncate">
                               {mentor.name}
                             </h3>
                             {mentor.verified && (
                               <span title="Verified">
-                                <UserCheck className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+                                <UserCheck className="w-4 h-4 text-[#000000] shrink-0" />
                               </span>
                             )}
                           </div>
-                          <span className="text-xs sm:text-sm text-[#1A1A1A] font-bold truncate mt-0.5">
+                          <span className="text-xs sm:text-sm text-[#0A0A0A] font-bold truncate mt-0.5">
                             {[mentor.company, mentor.role].filter(Boolean).join(" // ") || "Member"}
                           </span>
                           <span className="font-mono text-[11px] text-[#8F8A7E] font-medium mt-0.5">
@@ -883,7 +807,7 @@ export function MentorshipContent() {
                             {mentor.canTeachMe.map((skill) => (
                               <span
                                 key={`offer-${skill}`}
-                                className="font-mono text-[11px] px-2 py-0.5 bg-[#D9E021] text-[#1A1A1A] border border-[#1A1A1A] font-medium shadow-[1px_1px_0_#1A1A1A]"
+                                className="font-mono text-[11px] px-2 py-0.5 bg-[#FF5500] text-[#0A0A0A] border border-[#0A0A0A] font-medium shadow-[1px_1px_0_#0A0A0A]"
                               >
                                 {skill}
                               </span>
@@ -902,7 +826,7 @@ export function MentorshipContent() {
                             {mentor.iCanTeachThem.map((skill) => (
                               <span
                                 key={`want-${skill}`}
-                                className="font-mono text-[11px] px-2 py-0.5 bg-[#F7F4EE] text-[#1A1A1A] border border-[#1A1A1A] font-medium shadow-[1px_1px_0_#1A1A1A]"
+                                className="font-mono text-[11px] px-2 py-0.5 bg-[#FFFFFF] text-[#0A0A0A] border border-[#0A0A0A] font-medium shadow-[1px_1px_0_#0A0A0A]"
                               >
                                 {skill}
                               </span>
@@ -919,7 +843,7 @@ export function MentorshipContent() {
                             {mentor.skills.map((skill) => (
                               <span
                                 key={skill}
-                                className="font-mono text-[11px] px-2 py-0.5 bg-[#F7F4EE] text-[#1A1A1A] border border-[#1A1A1A] font-medium shadow-[1px_1px_0_#1A1A1A]"
+                                className="font-mono text-[11px] px-2 py-0.5 bg-[#FFFFFF] text-[#0A0A0A] border border-[#0A0A0A] font-medium shadow-[1px_1px_0_#0A0A0A]"
                               >
                                 {skill}
                               </span>
@@ -934,7 +858,7 @@ export function MentorshipContent() {
                         type="button"
                         onClick={() => handleMessage(mentor)}
                         disabled={messagingId === mentor.id}
-                        className="w-full py-3 bg-black text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                        className="w-full py-3 bg-black text-white border-2 border-[#0A0A0A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#0A0A0A] hover:bg-[#FF5500] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                       >
                         {messagingId === mentor.id ? (
                           <>
@@ -950,7 +874,7 @@ export function MentorshipContent() {
                       </button>
                       <Link
                         href={`/directory/${mentor.id}`}
-                        className="w-full py-2.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold text-xs text-center shadow-[2px_2px_0_#1A1A1A] hover:bg-[#F7F4EE] transition-colors"
+                        className="w-full py-2.5 bg-white text-[#0A0A0A] border-2 border-[#0A0A0A] font-bold text-xs text-center shadow-[2px_2px_0_#0A0A0A] hover:bg-[#FFFFFF] transition-colors"
                       >
                         VIEW PROFILE
                       </Link>
@@ -962,150 +886,35 @@ export function MentorshipContent() {
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* Credit Economy & Escrow Ledger State Diagram Section                      */}
-        {/* ========================================================================= */}
-        <section
-          aria-label="Credit Economy & Hardware Enclave Escrow"
-          className="bg-white border-2 border-[#1A1A1A] p-6 sm:p-8 shadow-[4px_4px_0_#1A1A1A] flex flex-col gap-6"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-2 border-[#D5CEBF]">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-xs px-2.5 py-1 bg-black text-white font-bold">
-                LEDGER PROTOCOL
-              </span>
-              <h2 className="text-lg sm:text-xl font-black text-[#1A1A1A] uppercase tracking-tight">
-                Credit Economy &amp; Hardware Enclave Escrow
-              </h2>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
-                YOUR ESCROW BALANCE:
-              </span>
-              <span className="font-mono text-xs px-3 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-black shadow-[2px_2px_0_#1A1A1A]">
-                120 ALUMN-CR
-              </span>
-            </div>
-          </div>
 
-          {/* State Diagram Stepper */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Step 1 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 01
-                </span>
-                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white font-black border border-[#1A1A1A]">
-                  -50 CR
-                </span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Scholar Requests Session
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Balance deducted from active wallet. Transferred directly to cryptographic escrow register.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 02
-                </span>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D9E021] border border-[#1A1A1A]"></span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Held in Secure Enclave
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Protected under FIPS 140-3 enclave. Neither party can prematurely seize funds until verification.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 03
-                </span>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1D4ED8] border border-[#1A1A1A]"></span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Dual-Handshake Sign-Off
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Both mentor &amp; student transmit digital receipt tokens at meeting conclusion.
-              </p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="p-4 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-2 shadow-[2px_2px_0_#1A1A1A]">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-[#8F8A7E] font-bold">
-                  STATE 04
-                </span>
-                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#00E676] text-[#1A1A1A] font-black border border-[#1A1A1A]">
-                  +50 CR
-                </span>
-              </div>
-              <span className="font-bold text-sm text-[#1A1A1A]">
-                Released to Mentor
-              </span>
-              <p className="font-mono text-xs text-[#635F57] leading-snug">
-                Full release into Fellow&apos;s redeemable balance. Automatic reputation coefficient bump.
-              </p>
-            </div>
-          </div>
-
-          {/* Guarantee Footer Strip */}
-          <div className="p-3.5 bg-[#EFECE4] border-2 border-[#1A1A1A] flex flex-wrap items-center justify-between gap-3 shadow-[1px_1px_0_#1A1A1A]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <ShieldCheck className="w-4 h-4 text-[#1A1A1A] shrink-0" />
-              <span className="text-xs sm:text-sm font-bold text-[#1A1A1A]">
-                CANCELLATION INTEGRITY GUARANTEE:
-              </span>
-              <span className="text-xs sm:text-sm text-[#635F57]">
-                If mentor cancels or fails to join within 5 minutes, 100% Escrow Refund is instantaneous.
-              </span>
-            </div>
-            <Link
-              href="/support"
-              className="font-mono text-xs text-[#1A1A1A] font-black underline hover:text-[#FF5500] tracking-wider"
-            >
-              AUDIT LEDGER RULES →
-            </Link>
-          </div>
-        </section>
       </div>
 
       {/* ========================================================================= */}
       {/* Persistent Institutional Security & Enclave Footer                        */}
       {/* ========================================================================= */}
-      <footer className="w-full bg-[#EFECE4] border-t-2 border-[#1A1A1A] px-4 sm:px-8 py-4 mt-8">
+      <footer className="w-full bg-[#F5F5F5] border-t-2 border-[#0A0A0A] px-4 sm:px-8 py-4 mt-8">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] shadow-[0_0_8px_#00E676]"></span>
-              <span className="font-sans text-xs text-[#1A1A1A] uppercase tracking-wider font-extrabold">
-                CLUSTER STATE: OPTIMAL
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] shadow-[0_0_8px_#FF5500]"></span>
+              <span className="font-sans text-xs text-[#0A0A0A] uppercase tracking-wider font-extrabold">
+                Ready
               </span>
             </div>
-            <span className="text-[#D5CEBF] font-mono text-xs">|</span>
+            <span className="text-[#D4D4D4] font-mono text-xs">|</span>
             <span className="font-mono text-xs text-[#635F57]">
-              POSTGRES 16.2 / PGVECTOR 0.6.0
+              
             </span>
-            <span className="text-[#D5CEBF] font-mono text-xs">|</span>
+            <span className="text-[#D4D4D4] font-mono text-xs">|</span>
             <span className="font-mono text-xs text-[#635F57]">
-              SECURITY ENCLAVE: ACTIVE [FIPS 140-3]
+              
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs text-[#8F8A7E]">
-              AUTH SESSION TOKEN:
+              
             </span>
-            <span className="font-mono text-xs px-2 py-0.5 bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] font-black shadow-[1px_1px_0_#1A1A1A]">
+            <span className="font-mono text-xs px-2 py-0.5 bg-white text-[#0A0A0A] border-2 border-[#0A0A0A] font-black shadow-[1px_1px_0_#0A0A0A]">
               0x8F92...B314
             </span>
           </div>
@@ -1122,47 +931,47 @@ export function MentorshipContent() {
           aria-labelledby="booking-modal-title"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
         >
-          <div className="w-full max-w-lg bg-white border-2 border-[#1A1A1A] shadow-[6px_6px_0_#1A1A1A] p-6 sm:p-8 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-lg bg-white border-2 border-[#0A0A0A] shadow-[6px_6px_0_#0A0A0A] p-6 sm:p-8 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b-2 border-[#1A1A1A]">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0A0A0A]">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs px-2 py-0.5 bg-[#FF5500] text-white font-bold tracking-wider">
                   ESCROW-RESERVATION
                 </span>
-                <span id="booking-modal-title" className="text-base sm:text-lg font-black text-[#1A1A1A]">
+                <span id="booking-modal-title" className="text-base sm:text-lg font-black text-[#0A0A0A]">
                   {bookingMentor.name}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setBookingMentor(null)}
-                className="p-1 hover:bg-[#F7F4EE] border-2 border-[#1A1A1A] cursor-pointer"
+                className="p-1 hover:bg-[#FFFFFF] border-2 border-[#0A0A0A] cursor-pointer"
                 aria-label="Close booking modal"
               >
-                <X className="w-4 h-4 text-[#1A1A1A]" />
+                <X className="w-4 h-4 text-[#0A0A0A]" />
               </button>
             </div>
 
             {bookingSuccess ? (
               <div className="flex flex-col items-center gap-4 py-6 text-center">
-                <div className="w-16 h-16 bg-[#D9E021] border-2 border-[#1A1A1A] flex items-center justify-center shadow-[3px_3px_0_#1A1A1A]">
-                  <Check className="w-8 h-8 text-[#1A1A1A] stroke-[3]" />
+                <div className="w-16 h-16 bg-[#FF5500] border-2 border-[#0A0A0A] flex items-center justify-center shadow-[3px_3px_0_#0A0A0A]">
+                  <Check className="w-8 h-8 text-[#0A0A0A] stroke-[3]" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <h4 className="text-base sm:text-lg font-black text-[#1A1A1A]">
+                  <h4 className="text-base sm:text-lg font-black text-[#0A0A0A]">
                     FLASH SESSION LOCKED IN ESCROW
                   </h4>
                   <p className="text-xs sm:text-sm text-[#635F57]">
                     Calendar invitation dispatched. Meeting link and cryptographic token issued.
                   </p>
                 </div>
-                <div className="p-2.5 bg-[#F7F4EE] border-2 border-[#1A1A1A] font-mono text-xs text-[#1A1A1A] w-full text-center font-bold">
+                <div className="p-2.5 bg-[#FFFFFF] border-2 border-[#0A0A0A] font-mono text-xs text-[#0A0A0A] w-full text-center font-bold">
                   TX TOKEN: {bookingTxHash}
                 </div>
                 <button
                   type="button"
                   onClick={() => setBookingMentor(null)}
-                  className="w-full py-3 bg-black text-white font-bold text-xs sm:text-sm border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all"
+                  className="w-full py-3 bg-black text-white font-bold text-xs sm:text-sm border-2 border-[#0A0A0A] shadow-[3px_3px_0_#0A0A0A] hover:bg-[#FF5500] cursor-pointer transition-all"
                 >
                   RETURN TO MENTORSHIP HUB
                 </button>
@@ -1170,19 +979,19 @@ export function MentorshipContent() {
             ) : (
               <div className="flex flex-col gap-4">
                 {/* Mentor Summary Row */}
-                <div className="p-3.5 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex items-center justify-between gap-2 shadow-[2px_2px_0_#1A1A1A]">
+                <div className="p-3.5 bg-[#FFFFFF] border-2 border-[#0A0A0A] flex items-center justify-between gap-2 shadow-[2px_2px_0_#0A0A0A]">
                   <div className="flex flex-col">
-                    <span className="text-xs sm:text-sm font-bold text-[#1A1A1A]">
+                    <span className="text-xs sm:text-sm font-bold text-[#0A0A0A]">
                       {bookingMentor.role} // {bookingMentor.company}
                     </span>
                     <span className="font-mono text-xs text-[#8F8A7E]">
                       Cosine Match: {bookingMentor.cosineMatch}% • {bookingMentor.cohort}
                     </span>
                   </div>
-                  <span className="font-mono text-xs px-2.5 py-1 bg-[#D9E021] text-black border-2 border-[#1A1A1A] font-black">
-                    {durationMode === "30-Min Deep-Dive (50 CR)"
+                  <span className="font-mono text-xs px-2.5 py-1 bg-[#FF5500] text-white border-2 border-[#0A0A0A] font-black">
+                    {durationMode === "30 min"
                       ? "50 ALUMN-CR"
-                      : durationMode === "0-CR Barter"
+                      : durationMode === "Free swap"
                       ? "0 CR BARTER"
                       : "30 ALUMN-CR"}
                   </span>
@@ -1199,10 +1008,10 @@ export function MentorshipContent() {
                         key={slot}
                         type="button"
                         onClick={() => setSelectedSlot(slot)}
-                        className={`py-2 px-2 border-2 border-[#1A1A1A] font-mono text-xs text-center transition-all cursor-pointer font-bold ${
+                        className={`py-2 px-2 border-2 border-[#0A0A0A] font-mono text-xs text-center transition-all cursor-pointer font-bold ${
                           selectedSlot === slot
-                            ? "bg-black text-white shadow-[2px_2px_0_#1A1A1A]"
-                            : "bg-[#F7F4EE] text-[#1A1A1A] hover:bg-[#e5e2dc]"
+                            ? "bg-black text-white shadow-[2px_2px_0_#0A0A0A]"
+                            : "bg-[#FFFFFF] text-[#0A0A0A] hover:bg-[#e5e2dc]"
                         }`}
                       >
                         {slot}
@@ -1220,7 +1029,7 @@ export function MentorshipContent() {
                     <select
                       value={auditArea}
                       onChange={(e) => setAuditArea(e.target.value)}
-                      className="w-full bg-[#F7F4EE] border-2 border-[#1A1A1A] px-3.5 py-2.5 font-mono text-xs text-[#1A1A1A] appearance-none focus:outline-none font-bold"
+                      className="w-full bg-[#FFFFFF] border-2 border-[#0A0A0A] px-3.5 py-2.5 font-mono text-xs text-[#0A0A0A] appearance-none focus:outline-none font-bold"
                     >
                       <option value="Architectural Audit">Architectural Audit &amp; Code Review</option>
                       <option value="Resume & Portfolio">Resume &amp; Systems Portfolio Breakdown</option>
@@ -1241,12 +1050,12 @@ export function MentorshipContent() {
                     value={auditTopic}
                     onChange={(e) => setAuditTopic(e.target.value)}
                     placeholder="e.g. Distributed consensus failure states in raft, or GitHub PR link to review..."
-                    className="w-full p-3 bg-[#F7F4EE] border-2 border-[#1A1A1A] font-mono text-xs text-[#1A1A1A] placeholder:text-[#8F8A7E] resize-none focus:outline-none"
+                    className="w-full p-3 bg-[#FFFFFF] border-2 border-[#0A0A0A] font-mono text-xs text-[#0A0A0A] placeholder:text-[#8F8A7E] resize-none focus:outline-none"
                   />
                 </div>
 
                 {/* Escrow Lock Notice */}
-                <div className="p-2.5 bg-[#EFECE4] border-2 border-[#1A1A1A] flex items-start gap-2 text-xs font-mono text-[#635F57]">
+                <div className="p-2.5 bg-[#F5F5F5] border-2 border-[#0A0A0A] flex items-start gap-2 text-xs font-mono text-[#635F57]">
                   <Lock className="w-4 h-4 text-[#FF5500] shrink-0 mt-0.5" />
                   <span>
                     FIPS 140-3 Escrow Lock: Credits will be held securely and released only after dual completion sign-off.
@@ -1258,7 +1067,7 @@ export function MentorshipContent() {
                   <button
                     type="button"
                     onClick={() => setBookingMentor(null)}
-                    className="flex-1 py-3 bg-[#F7F4EE] text-[#1A1A1A] border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm hover:bg-[#e5e2dc] transition-all cursor-pointer"
+                    className="flex-1 py-3 bg-[#FFFFFF] text-[#0A0A0A] border-2 border-[#0A0A0A] font-bold text-xs sm:text-sm hover:bg-[#e5e2dc] transition-all cursor-pointer"
                   >
                     CANCEL
                   </button>
@@ -1266,7 +1075,7 @@ export function MentorshipContent() {
                     type="button"
                     onClick={handleConfirmBooking}
                     disabled={isSubmittingBooking || !auditTopic.trim()}
-                    className="flex-2 py-3 bg-[#FF5500] text-white border-2 border-[#1A1A1A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#1A1A1A] hover:bg-black transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-2 py-3 bg-[#FF5500] text-white border-2 border-[#0A0A0A] font-bold text-xs sm:text-sm shadow-[2px_2px_0_#0A0A0A] hover:bg-black transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Lock className="w-4 h-4" />
                     <span>
@@ -1289,32 +1098,32 @@ export function MentorshipContent() {
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
         >
-          <div className="w-full max-w-xl bg-white border-2 border-[#1A1A1A] shadow-[6px_6px_0_#1A1A1A] p-6 sm:p-8 flex flex-col gap-4">
-            <div className="flex items-center justify-between pb-3 border-b-2 border-[#1A1A1A]">
+          <div className="w-full max-w-xl bg-white border-2 border-[#0A0A0A] shadow-[6px_6px_0_#0A0A0A] p-6 sm:p-8 flex flex-col gap-4">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0A0A0A]">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs px-2 py-0.5 bg-black text-white font-bold">
                   DOSSIER #{activeSession?.id || "SESSION"}
                 </span>
-                <span className="text-base sm:text-lg font-black text-[#1A1A1A]">
+                <span className="text-base sm:text-lg font-black text-[#0A0A0A]">
                   Pre-Flight Architectural Notes
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setDossierModalOpen(false)}
-                className="p-1 hover:bg-[#F7F4EE] border-2 border-[#1A1A1A] cursor-pointer"
+                className="p-1 hover:bg-[#FFFFFF] border-2 border-[#0A0A0A] cursor-pointer"
                 aria-label="Close dossier"
               >
-                <X className="w-4 h-4 text-[#1A1A1A]" />
+                <X className="w-4 h-4 text-[#0A0A0A]" />
               </button>
             </div>
 
             <div className="flex flex-col gap-3">
-              <div className="p-3.5 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
+              <div className="p-3.5 bg-[#FFFFFF] border-2 border-[#0A0A0A] flex flex-col gap-1 shadow-[2px_2px_0_#0A0A0A]">
                 <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
                   TARGET FELLOW:
                 </span>
-                <span className="text-sm font-bold text-[#1A1A1A]">
+                <span className="text-sm font-bold text-[#0A0A0A]">
                   {activeSession?.mentor?.name || activeSession?.name || "Verified Fellow"} ({activeSession?.mentor?.role || activeSession?.role || "Mentor"} @ {activeSession?.mentor?.company || activeSession?.company || "Partner Organization"})
                 </span>
                 <span className="font-mono text-xs text-[#635F57]">
@@ -1322,22 +1131,22 @@ export function MentorshipContent() {
                 </span>
               </div>
 
-              <div className="p-3.5 bg-[#F7F4EE] border-2 border-[#1A1A1A] flex flex-col gap-1 shadow-[2px_2px_0_#1A1A1A]">
+              <div className="p-3.5 bg-[#FFFFFF] border-2 border-[#0A0A0A] flex flex-col gap-1 shadow-[2px_2px_0_#0A0A0A]">
                 <span className="font-mono text-xs text-[#8F8A7E] uppercase font-bold tracking-wider">
                   SESSION AGENDA:
                 </span>
-                <ol className="list-decimal list-inside text-xs sm:text-sm text-[#1A1A1A] space-y-1 font-medium">
+                <ol className="list-decimal list-inside text-xs sm:text-sm text-[#0A0A0A] space-y-1 font-medium">
                   <li>00:00 - 03:00: Consensus heartbeat failure edge cases</li>
                   <li>03:00 - 10:00: Architecture audit of candidate&apos;s Raft cluster branch</li>
                   <li>10:00 - 15:00: Production deployment tips &amp; dual-sign-off token verification</li>
                 </ol>
               </div>
 
-              <div className="p-3 bg-[#EFECE4] border-2 border-[#1A1A1A] flex items-center justify-between gap-2 shadow-[1px_1px_0_#1A1A1A]">
+              <div className="p-3 bg-[#F5F5F5] border-2 border-[#0A0A0A] flex items-center justify-between gap-2 shadow-[1px_1px_0_#0A0A0A]">
                 <span className="font-mono text-xs text-[#635F57] font-medium">
                   ATTACHED SPEC: session_architecture_spec.pdf
                 </span>
-                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#D9E021] text-black border border-[#1A1A1A] font-black">
+                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border border-[#0A0A0A] font-black">
                   VERIFIED SHA256
                 </span>
               </div>
@@ -1346,7 +1155,7 @@ export function MentorshipContent() {
             <button
               type="button"
               onClick={() => setDossierModalOpen(false)}
-              className="w-full py-3 bg-black text-white font-bold text-xs sm:text-sm border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all mt-2"
+              className="w-full py-3 bg-black text-white font-bold text-xs sm:text-sm border-2 border-[#0A0A0A] shadow-[3px_3px_0_#0A0A0A] hover:bg-[#FF5500] cursor-pointer transition-all mt-2"
             >
               CLOSE DOSSIER
             </button>
@@ -1363,27 +1172,27 @@ export function MentorshipContent() {
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
         >
-          <div className="w-full max-w-md bg-white border-2 border-[#1A1A1A] shadow-[6px_6px_0_#1A1A1A] p-6 sm:p-8 flex flex-col gap-4">
-            <div className="flex items-center justify-between pb-3 border-b-2 border-[#1A1A1A]">
-              <span className="text-base sm:text-lg font-black text-[#1A1A1A]">
+          <div className="w-full max-w-md bg-white border-2 border-[#0A0A0A] shadow-[6px_6px_0_#0A0A0A] p-6 sm:p-8 flex flex-col gap-4">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#0A0A0A]">
+              <span className="text-base sm:text-lg font-black text-[#0A0A0A]">
                 Reschedule Session #{activeSession?.id || ""}
               </span>
               <button
                 type="button"
                 onClick={() => setRescheduleModalOpen(false)}
-                className="p-1 hover:bg-[#F7F4EE] border-2 border-[#1A1A1A] cursor-pointer"
+                className="p-1 hover:bg-[#FFFFFF] border-2 border-[#0A0A0A] cursor-pointer"
                 aria-label="Close reschedule dialog"
               >
-                <X className="w-4 h-4 text-[#1A1A1A]" />
+                <X className="w-4 h-4 text-[#0A0A0A]" />
               </button>
             </div>
 
             {rescheduleSuccess ? (
               <div className="flex flex-col items-center gap-3 py-4 text-center">
-                <div className="w-12 h-12 bg-[#00E676] border-2 border-[#1A1A1A] flex items-center justify-center shadow-[2px_2px_0_#1A1A1A]">
-                  <Check className="w-6 h-6 text-[#1A1A1A] stroke-[3]" />
+                <div className="w-12 h-12 bg-[#FF5500] border-2 border-[#0A0A0A] flex items-center justify-center shadow-[2px_2px_0_#0A0A0A]">
+                  <Check className="w-6 h-6 text-[#0A0A0A] stroke-[3]" />
                 </div>
-                <span className="text-base font-black text-[#1A1A1A]">
+                <span className="text-base font-black text-[#0A0A0A]">
                   SESSION RESCHEDULED
                 </span>
                 <p className="text-xs sm:text-sm text-[#635F57]">
@@ -1392,7 +1201,7 @@ export function MentorshipContent() {
                 <button
                   type="button"
                   onClick={() => setRescheduleModalOpen(false)}
-                  className="w-full py-3 bg-black text-white font-bold text-xs sm:text-sm border-2 border-[#1A1A1A] shadow-[2px_2px_0_#1A1A1A] hover:bg-[#FF5500] cursor-pointer transition-all mt-2"
+                  className="w-full py-3 bg-black text-white font-bold text-xs sm:text-sm border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:bg-[#FF5500] cursor-pointer transition-all mt-2"
                 >
                   DONE
                 </button>
@@ -1408,7 +1217,7 @@ export function MentorshipContent() {
                       key={timeSlot}
                       type="button"
                       onClick={() => setRescheduleSuccess(true)}
-                      className="p-3 bg-[#F7F4EE] border-2 border-[#1A1A1A] font-mono text-xs font-bold text-center hover:bg-black hover:text-white transition-all cursor-pointer shadow-[1px_1px_0_#1A1A1A]"
+                      className="p-3 bg-[#FFFFFF] border-2 border-[#0A0A0A] font-mono text-xs font-bold text-center hover:bg-black hover:text-white transition-all cursor-pointer shadow-[1px_1px_0_#0A0A0A]"
                     >
                       {timeSlot}
                     </button>

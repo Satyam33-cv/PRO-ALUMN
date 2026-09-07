@@ -36,7 +36,7 @@ export const CANONICAL_HUBS: HubPreset[] = [
     count: 142,
     coords: [12.9716, 77.5946],
     zoom: 11,
-    color: "#CCFF00",
+    color: "#FF5500",
     fellows: "Vikram Aditya (Google Cloud), Rohit Nair (PhonePe), Priya Sen (InMobi)",
   },
   {
@@ -55,7 +55,7 @@ export const CANONICAL_HUBS: HubPreset[] = [
     count: 64,
     coords: [40.7128, -74.006],
     zoom: 11,
-    color: "#2E5BFF",
+    color: "#FF5500",
     textColor: "#FFFFFF",
     fellows: "Ananya Deshmukh (AWS), Michael Chang (Datadog), Zoe Miller (Jane Street)",
   },
@@ -85,7 +85,7 @@ export const CANONICAL_HUBS: HubPreset[] = [
     count: 18,
     coords: [35.6762, 139.6503],
     zoom: 11,
-    color: "#CCFF00",
+    color: "#FF5500",
     fellows: "Kenji Sato (Preferred Networks), Yuka Takahashi (Sony AI)",
   },
 ];
@@ -131,7 +131,7 @@ export default function DirectoryMap({
         count: 1248,
         coords: [22.0, 15.0],
         zoom: 2,
-        color: "#CCFF00",
+        color: "#FF5500",
         fellows: "All global accredited nodes and verified engineering labs",
       });
     }
@@ -209,7 +209,7 @@ export default function DirectoryMap({
           <div style="font-family: 'Space Grotesk', sans-serif; min-width: 210px; padding: 4px;">
             <div style="font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
               <span>HUB // ${hub.id}</span>
-              <span style="background: #CCFF00; padding: 1px 4px; border: 1px solid #000; color: #000;">${hub.count} FELLOWS</span>
+              <span style="background: #FF5500; padding: 1px 4px; border: 1px solid #000; color: #000;">${hub.count} FELLOWS</span>
             </div>
             <div style="font-weight: 700; font-size: 13px; text-transform: uppercase; margin-bottom: 2px; color: #000;">
               ${hub.name}
@@ -289,7 +289,7 @@ export default function DirectoryMap({
               align-items: center;
               gap: 4px;
             ">
-              <span style="width: 6px; height: 6px; background: #2E5BFF; display: inline-block;"></span>
+              <span style="width: 6px; height: 6px; background: #FF5500; display: inline-block;"></span>
               ${c.city.slice(0, 3).toUpperCase()} [${c.count}]
             </div>`,
             iconSize: [84, 28],
@@ -331,7 +331,7 @@ export default function DirectoryMap({
           <span className="hidden sm:inline text-neutral-600 text-[11px]">
             EPSG:3857 // SPATIAL INDEX ACTIVE
           </span>
-          <span className="inline-flex items-center px-2 py-0.5 bg-[#CCFF00] text-black border border-black text-[10px] font-bold">
+          <span className="inline-flex items-center px-2 py-0.5 bg-[#FF5500] text-white border border-black text-[10px] font-bold">
             <span className="w-1.5 h-1.5 bg-black mr-1 animate-pulse inline-block"></span>
             142 GLOBAL NODES CONNECTED
           </span>
@@ -361,7 +361,7 @@ export default function DirectoryMap({
           className={`px-2 py-0.5 border border-black text-[11px] font-bold transition-colors ${
             selectedHubId === "GLOBAL"
               ? "bg-black text-white"
-              : "bg-white text-black hover:bg-[#CCFF00]"
+              : "bg-white text-black hover:bg-[#FF5500]"
           }`}
         >
           GLOBAL (1,248)
@@ -376,7 +376,7 @@ export default function DirectoryMap({
               className={`px-2 py-0.5 border border-black text-[11px] font-bold transition-colors ${
                 isActive
                   ? "bg-black text-white"
-                  : "bg-white text-black hover:bg-[#CCFF00]"
+                  : "bg-white text-black hover:bg-[#FF5500]"
               }`}
             >
               {hub.name.split(",")[0].split("/")[0].trim()} [{hub.count}]
@@ -386,7 +386,7 @@ export default function DirectoryMap({
       </div>
 
       {/* Interactive Map Viewport */}
-      <div className="relative w-full h-[520px] bg-[#f7f4ee]">
+      <div className="relative w-full h-[520px] bg-[#FFFFFF]">
         <div ref={mapContainerRef} className="w-full h-full z-10" />
 
         {/* Spatial Cluster Telemetry Overlay Card */}

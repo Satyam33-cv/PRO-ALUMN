@@ -19,7 +19,7 @@ const ROLE_OPTIONS: {
   score: string;
   color: string;
 }[] = [
-  { id: "alumni", num: "[01]", title: "ALUMNI SPONSOR", subtitle: "Active sponsor node • Endorsement corridor enabled", score: "SPONSOR CORRIDOR", color: "#00FF66" },
+  { id: "alumni", num: "[01]", title: "ALUMNI SPONSOR", subtitle: "Active sponsor node • Endorsement corridor enabled", score: "SPONSOR CORRIDOR", color: "#FF5500" },
   { id: "candidate", num: "[02]", title: "STUDENT / RESEARCH CANDIDATE", subtitle: "Vector portfolio ingestion & fast-track warm route", score: "FAST-TRACK ROUTE", color: "#00E5FF" },
   { id: "faculty", num: "[03]", title: "FACULTY / DEPT LEAD", subtitle: "Curriculum signing & institutional endorsement hub", score: "AUTHORITY NODE", color: "#FFB800" },
 ];
@@ -182,7 +182,7 @@ export default function RegisterPage() {
                         active ? "bg-black text-white" : "text-neutral-600 bg-white hover:bg-neutral-100"
                       }`}
                     >
-                      <span className={`w-2 h-2 inline-block ${active ? "bg-[#00FF66]" : "bg-neutral-400"}`}></span>
+                      <span className={`w-2 h-2 inline-block ${active ? "bg-[#FF5500]" : "bg-neutral-400"}`}></span>
                       <span>{label}</span>
                     </button>
                   );
@@ -379,7 +379,7 @@ export default function RegisterPage() {
                       disabled={isSubmitting}
                       className="flex-1 bg-black text-white hover:bg-neutral-900 py-3 px-6 flex items-center justify-center gap-2 font-mono font-bold text-xs uppercase tracking-wider border-2 border-black disabled:opacity-60"
                     >
-                      <span className={`w-2.5 h-2.5 bg-[#00FF66] inline-block ${isSubmitting ? "animate-ping" : "animate-pulse"}`}></span>
+                      <span className={`w-2.5 h-2.5 bg-[#FF5500] inline-block ${isSubmitting ? "animate-ping" : "animate-pulse"}`}></span>
                       <span>{isSubmitting ? "SUBMITTING…" : "CREATE ACCOUNT →"}</span>
                     </button>
                   </div>
@@ -427,7 +427,7 @@ export default function RegisterPage() {
         <section className="w-full lg:w-1/2 min-h-screen lg:h-full bg-[#050505] flex flex-col justify-between items-center relative overflow-hidden p-6 sm:p-10">
           <header className="w-full flex items-center justify-between font-mono text-[11px] tracking-wider uppercase text-neutral-400 border-b border-neutral-900 pb-4">
             <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-[#00FF66] animate-pulse"></span>
+              <span className="w-2 h-2 bg-[#FF5500] animate-pulse"></span>
               <span className="text-white font-bold">NODE: IDENTITY-REGISTRATION</span>
             </div>
           </header>

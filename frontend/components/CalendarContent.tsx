@@ -218,7 +218,7 @@ END:VCALENDAR`;
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+              <span className="h-2 w-2 bg-[#FF5500] border border-black" />
               <p className="font-mono text-xs uppercase font-bold tracking-[0.2em] text-black">
                 [ SECTION 09 // CAMPUS SCHEDULE &amp; REUNIONS ]
               </p>
@@ -235,7 +235,7 @@ END:VCALENDAR`;
             {(user?.role === "admin" || user?.role === "alumni" || user?.role === "faculty") && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 border-3 border-black bg-[#CCFF00] hover:bg-black hover:text-[#CCFF00] text-black font-mono text-xs font-black uppercase shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border-3 border-black bg-[#FF5500] hover:bg-black hover:text-white text-black font-mono text-xs font-black uppercase shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
               >
                 <Plus size={16} />
                 Schedule Event
@@ -250,7 +250,7 @@ END:VCALENDAR`;
         <div
           className={`p-4 border-3 border-black font-mono text-xs font-bold uppercase shadow-[4px_4px_0px_#000000] flex items-center justify-between gap-3 ${
             statusMsg.type === "success"
-              ? "bg-[#00E676] text-black"
+              ? "bg-[#FF5500] text-black"
               : "bg-[#FF5500] text-white"
           }`}
         >
@@ -280,7 +280,7 @@ END:VCALENDAR`;
           <button
             onClick={fetchEvents}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 border-2 border-black bg-white text-xs font-mono font-bold uppercase text-black hover:bg-black hover:text-[#CCFF00] shadow-[2px_2px_0px_#000000] transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 border-2 border-black bg-white text-xs font-mono font-bold uppercase text-black hover:bg-black hover:text-white shadow-[2px_2px_0px_#000000] transition-all cursor-pointer"
           >
             <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
             <span>Refresh Schedule</span>
@@ -315,7 +315,7 @@ END:VCALENDAR`;
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-mono font-black uppercase px-2.5 py-1 border-2 border-black bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]">
+                      <span className="text-xs font-mono font-black uppercase px-2.5 py-1 border-2 border-black bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]">
                         {startDateObj
                           ? startDateObj.toLocaleDateString("en-US", {
                               weekday: "short",
@@ -326,7 +326,7 @@ END:VCALENDAR`;
                       </span>
 
                       {evt.isRegistered ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-mono font-black uppercase text-black bg-[#00E676] px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#000000]">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-mono font-black uppercase text-black bg-[#FF5500] px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#000000]">
                           <CheckCircle2 size={12} className="stroke-[3]" />
                           RSVP&apos;d
                         </span>
@@ -386,7 +386,7 @@ END:VCALENDAR`;
                         className={`w-full py-2 px-3 border-2 border-black text-xs font-mono font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${
                           evt.isRegistered
                             ? "bg-neutral-100 hover:bg-[#FF5500] hover:text-white text-black"
-                            : "bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black"
+                            : "bg-black text-[#FF5500] hover:bg-[#FF5500] hover:text-black"
                         }`}
                       >
                         {isRsvpBusy ? (

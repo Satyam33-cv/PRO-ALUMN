@@ -123,14 +123,14 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FCF9F3] text-[#1A1A1A] font-sans antialiased selection:bg-black selection:text-white">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#0A0A0A] font-sans antialiased selection:bg-black selection:text-white">
       {/* ========================================================================= */}
       {/* TOP BROADSHEET HEADER */}
       {/* ========================================================================= */}
-      <header className="fixed top-0 left-0 w-full z-50 bg-[#FCF9F3] border-b-2 border-black">
+      <header className="fixed top-0 left-0 w-full z-50 bg-[#FFFFFF] border-b-2 border-black">
         <div className="w-full flex items-stretch justify-between h-16">
           {/* Logo & Node Indicator */}
-          <div className="flex items-center px-4 md:px-8 border-r-2 border-black bg-[#FCF9F3]">
+          <div className="flex items-center px-4 md:px-8 border-r-2 border-black bg-[#FFFFFF]">
             <Link href="/" className="flex items-center gap-2 group" aria-label="PRO-ALUMN Home">
               <span className="font-mono text-sm tracking-widest text-black font-black group-hover:text-[#FF5500] transition-colors">
                 /////
@@ -139,8 +139,8 @@ export default function LandingPage() {
                 PRO-ALUMN
               </span>
             </Link>
-            <div className="hidden xl:flex items-center ml-4 px-2 py-0.5 bg-[#CCFF00] border border-black text-[10px] font-mono font-bold text-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-ping mr-1.5" />
+            <div className="hidden xl:flex items-center ml-4 px-2 py-0.5 bg-[#FF5500] border border-black text-[10px] font-mono font-bold text-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500] animate-ping mr-1.5" />
               SYS.V24 // NODE-ALPHA [PUBLIC_GUEST]
             </div>
           </div>
@@ -149,40 +149,40 @@ export default function LandingPage() {
           <nav className="hidden lg:flex items-stretch h-full" aria-label="Main Navigation">
             <Link
               href="/directory"
-              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
+              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-white transition-colors"
             >
               Directory{" "}
-              <span className="ml-1.5 px-1 bg-[#CCFF00] text-black text-[9px] font-black border border-black">
+              <span className="ml-1.5 px-1 bg-[#FF5500] text-white text-[9px] font-black border border-black">
                 ★ 1.2K
               </span>
             </Link>
             <Link
               href="/stories"
-              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
+              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-white transition-colors"
             >
               Success Spotlight
             </Link>
             <Link
               href="/jobs"
-              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
+              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-white transition-colors"
             >
               Jobs &amp; Referrals
             </Link>
             <Link
               href="/mentorship"
-              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
+              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-white transition-colors"
             >
               Mentorship
             </Link>
             <Link
               href="/announcements"
-              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
+              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-white transition-colors"
             >
               Announcements
             </Link>
             <Link
               href="/education"
-              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-[#CCFF00] transition-colors"
+              className="flex items-center px-4 font-mono text-xs font-bold uppercase text-black border-r-2 border-black hover:bg-black hover:text-white transition-colors"
             >
               Education
             </Link>
@@ -202,9 +202,9 @@ export default function LandingPage() {
             >
               Get Started <span className="font-black">→</span>
             </Link>
-            <div className="flex items-center px-4 border-l-2 border-black bg-[#EFECE4]">
+            <div className="flex items-center px-4 border-l-2 border-black bg-[#F5F5F5]">
               <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center border border-black shadow-[1px_1px_0px_0px_#000000]">
-                <span className="font-mono text-xs font-bold text-[#CCFF00]">ID</span>
+                <span className="font-mono text-xs font-bold text-[#FF5500]">ID</span>
               </div>
             </div>
           </div>
@@ -212,20 +212,20 @@ export default function LandingPage() {
       </header>
 
       {/* Main Content Area */}
-      <main className="w-full pt-16 bg-[#FCF9F3]">
-        <div className="flex flex-col w-full bg-[#FCF9F3]">
+      <main className="w-full pt-16 bg-[#FFFFFF]">
+        <div className="flex flex-col w-full bg-[#FFFFFF]">
           {/* ========================================================================= */}
           {/* SECTION 1: ARCHITECTURAL HERO & BROADSHEET MASTHEAD */}
           {/* ========================================================================= */}
-          <section className="w-full bg-[#FCF9F3] border-b-2 border-black">
+          <section className="w-full bg-[#FFFFFF] border-b-2 border-black">
             {/* Masthead Gazette Sub-header Strip */}
-            <div className="w-full px-4 md:px-8 py-2 bg-[#EFECE4] border-b border-black flex flex-col md:flex-row justify-between items-center text-black font-mono text-[11px] font-semibold tracking-wider uppercase gap-2">
+            <div className="w-full px-4 md:px-8 py-2 bg-[#F5F5F5] border-b border-black flex flex-col md:flex-row justify-between items-center text-black font-mono text-[11px] font-semibold tracking-wider uppercase gap-2">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-black border border-black">
+                <span className="px-2 py-0.5 bg-black text-[#FF5500] font-black border border-black">
                   DISPATCH NO. 448
                 </span>
-                <span className="flex items-center gap-1.5 text-[#1A1A1A]">
-                  <span className="w-2 h-2 rounded-full bg-[#00E676]" />
+                <span className="flex items-center gap-1.5 text-[#0A0A0A]">
+                  <span className="w-2 h-2 rounded-full bg-[#FF5500]" />
                   INDEXED IN POSTGRESQL + PGVECTOR
                 </span>
               </div>
@@ -237,15 +237,15 @@ export default function LandingPage() {
                 <span>
                   SEMANTIC COSINE THRESHOLD: <strong className="text-black font-bold">0.884</strong>
                 </span>
-                <span className="px-2 py-0.5 bg-[#00E676]/20 text-[#00873E] border border-[#00A34D] font-bold text-[10px]">
+                <span className="px-2 py-0.5 bg-[#FF5500]/20 text-[#00873E] border border-[#00A34D] font-bold text-[10px]">
                   ● STATE: PRODUCTION STABLE
                 </span>
               </div>
             </div>
 
             {/* Editorial Scaffolding & Title Block */}
-            <div className="w-full px-4 md:px-8 pt-10 pb-8 bg-[#FCF9F3]">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#CCFF00] text-black font-mono text-xs font-black uppercase tracking-wider mb-6 border-2 border-black shadow-[3px_3px_0px_0px_#000000]">
+            <div className="w-full px-4 md:px-8 pt-10 pb-8 bg-[#FFFFFF]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FF5500] text-white font-mono text-xs font-black uppercase tracking-wider mb-6 border-2 border-black shadow-[3px_3px_0px_0px_#000000]">
                 <span className="inline-block w-2.5 h-2.5 bg-black" />
                 AI-POWERED ALUMNI INTELLIGENCE // GOOGLE CLOUD &amp; PGVECTOR
               </div>
@@ -254,17 +254,17 @@ export default function LandingPage() {
                 <div className="lg:col-span-8 space-y-4">
                   <h1 className="font-headline text-4xl sm:text-5xl lg:text-[62px] lg:leading-[1.05] font-black uppercase tracking-tighter text-black">
                     Where Alumni Networks Power{" "}
-                    <span className="bg-[#CCFF00] px-2 py-0.5 border-2 border-black shadow-[4px_4px_0px_0px_#000000] inline-block mt-1">
+                    <span className="bg-[#FF5500] px-2 py-0.5 border-2 border-black shadow-[4px_4px_0px_0px_#000000] inline-block mt-1">
                       Fast-Track Careers.
                     </span>
                   </h1>
                 </div>
                 <div className="lg:col-span-4 pb-1">
-                  <div className="p-4 bg-[#F7F4EE] border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
-                    <div className="font-mono text-[10px] font-bold text-[#1D4ED8] uppercase mb-1">
+                  <div className="p-4 bg-[#FFFFFF] border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+                    <div className="font-mono text-[10px] font-bold text-[#000000] uppercase mb-1">
                       // MISSION PROTOCOL
                     </div>
-                    <p className="font-serif text-lg text-[#1A1A1A] italic leading-snug">
+                    <p className="font-serif text-lg text-[#0A0A0A] italic leading-snug">
                       Connecting students with verified alumni champions via 384-dimensional vector embeddings, driving warm referrals across a transparent, state-governed hiring lifecycle.
                     </p>
                   </div>
@@ -281,33 +281,33 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   href="/directory"
-                  className="inline-flex items-center justify-center px-6 py-3.5 bg-[#FCF9F3] text-black font-mono text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#EFECE4] transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center px-6 py-3.5 bg-[#FFFFFF] text-black font-mono text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#F5F5F5] transition-all cursor-pointer"
                 >
                   Explore Directory [1,248+]
                 </Link>
-                <div className="sm:ml-auto flex items-center gap-2 font-mono text-xs font-bold uppercase text-black bg-[#EFECE4] px-3 py-2 border border-black">
-                  <ShieldCheck className="w-4 h-4 text-[#1D4ED8]" />
+                <div className="sm:ml-auto flex items-center gap-2 font-mono text-xs font-bold uppercase text-black bg-[#F5F5F5] px-3 py-2 border border-black">
+                  <ShieldCheck className="w-4 h-4 text-[#000000]" />
                   <span>Dual-Handshake Institutional Auth Guaranteed</span>
                 </div>
               </div>
             </div>
 
             {/* Interactive Broad-Search Terminal Console */}
-            <div className="w-full bg-[#EFECE4] px-4 md:px-8 py-6 border-t-2 border-black">
+            <div className="w-full bg-[#F5F5F5] px-4 md:px-8 py-6 border-t-2 border-black">
               <div className="max-w-6xl mx-auto flex flex-col gap-3">
                 <div className="flex items-center justify-between font-mono text-xs font-bold uppercase text-[#474746]">
                   <span className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-[#FF5500]" />
                     // INSTANT EMBEDDING LOOKUP ENGINE
                   </span>
-                  <span className="bg-black text-[#CCFF00] px-2 py-0.5 border border-black text-[11px]">
+                  <span className="bg-black text-[#FF5500] px-2 py-0.5 border border-black text-[11px]">
                     INDEX: pgv_alumni_embeddings_hnsw
                   </span>
                 </div>
 
                 <form onSubmit={handleComputeMatch} className="flex flex-col md:flex-row items-stretch bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
-                  <div className="flex items-center px-4 py-3 bg-[#FCF9F3] border-b md:border-b-0 md:border-r-2 border-black text-black font-mono text-xs font-bold uppercase whitespace-nowrap">
-                    <Search className="w-4 h-4 mr-2 text-[#1D4ED8]" />
+                  <div className="flex items-center px-4 py-3 bg-[#FFFFFF] border-b md:border-b-0 md:border-r-2 border-black text-black font-mono text-xs font-bold uppercase whitespace-nowrap">
+                    <Search className="w-4 h-4 mr-2 text-[#000000]" />
                     <span>VECTOR QUERY:</span>
                   </div>
                   <input
@@ -319,7 +319,7 @@ export default function LandingPage() {
                   />
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-[#CCFF00] text-black font-mono text-xs font-black uppercase hover:bg-black hover:text-[#CCFF00] whitespace-nowrap border-t md:border-t-0 md:border-l-2 border-black transition-colors cursor-pointer"
+                    className="px-6 py-3 bg-[#FF5500] text-white font-mono text-xs font-black uppercase hover:bg-black hover:text-white whitespace-nowrap border-t md:border-t-0 md:border-l-2 border-black transition-colors cursor-pointer"
                   >
                     Compute Match (384-D) ↵
                   </button>
@@ -335,7 +335,7 @@ export default function LandingPage() {
                       key={p.label}
                       type="button"
                       onClick={() => handleSelectPreset(p)}
-                      className="px-2.5 py-1 bg-white hover:bg-black hover:text-[#CCFF00] text-black font-mono text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors cursor-pointer"
+                      className="px-2.5 py-1 bg-white hover:bg-black hover:text-white text-black font-mono text-xs font-bold border border-black shadow-[2px_2px_0px_0px_#000000] transition-colors cursor-pointer"
                     >
                       {p.label}
                     </button>
@@ -346,16 +346,16 @@ export default function LandingPage() {
                 {showMatchResult && (
                   <div className="mt-2 p-3.5 bg-black text-white flex flex-col md:flex-row md:items-center justify-between font-mono text-xs border-2 border-black shadow-[4px_4px_0px_0px_#000000] gap-2 animate-fade-in">
                     <div className="flex items-center gap-2.5 flex-wrap">
-                      <span className="px-2 py-0.5 bg-[#CCFF00] text-black font-black uppercase text-[10px]">
+                      <span className="px-2 py-0.5 bg-[#FF5500] text-white font-black uppercase text-[10px]">
                         ★ {matchedCandidate.similarity}
                       </span>
                       <span className="font-bold">{matchedCandidate.name}</span>
                       <span className="text-neutral-300">({matchedCandidate.role})</span>
-                      <span className="text-[#00E676] font-bold">• Status: {matchedCandidate.status}</span>
+                      <span className="text-[#FF5500] font-bold">• Status: {matchedCandidate.status}</span>
                     </div>
                     <Link
                       href="/directory"
-                      className="text-[#CCFF00] font-black underline hover:text-white uppercase"
+                      className="text-[#FF5500] font-black underline hover:text-white uppercase"
                     >
                       Inspect Dossier →
                     </Link>
@@ -366,12 +366,12 @@ export default function LandingPage() {
 
             {/* Telemetry Strip Metrics (4 Columns) */}
             <div className="w-full grid grid-cols-2 lg:grid-cols-4 bg-black gap-[2px] border-t-2 border-black">
-              <div className="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+              <div className="p-6 bg-[#FFFFFF] flex flex-col justify-between hover:bg-[#FFFFFF] transition-colors">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] uppercase text-[#474746] font-bold">
                     [ TELEMETRY // 01 ]
                   </span>
-                  <span className="w-2 h-2 bg-[#00E676] rounded-full" />
+                  <span className="w-2 h-2 bg-[#FF5500] rounded-full" />
                 </div>
                 <div className="my-4">
                   <div className="font-headline text-4xl font-black text-black tracking-tight">
@@ -386,17 +386,17 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+              <div className="p-6 bg-[#FFFFFF] flex flex-col justify-between hover:bg-[#FFFFFF] transition-colors">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] uppercase text-[#1D4ED8] font-bold">
+                  <span className="font-mono text-[11px] uppercase text-[#000000] font-bold">
                     [ TELEMETRY // 02 ]
                   </span>
-                  <span className="px-1.5 py-0.5 bg-[#1D4ED8] text-white text-[9px] font-black font-mono">
+                  <span className="px-1.5 py-0.5 bg-[#000000] text-white text-[9px] font-black font-mono">
                     HIGH SIGNAL
                   </span>
                 </div>
                 <div className="my-4">
-                  <div className="font-headline text-4xl font-black text-[#1D4ED8] tracking-tight">
+                  <div className="font-headline text-4xl font-black text-[#000000] tracking-tight">
                     88.4%
                   </div>
                   <div className="font-headline text-sm font-bold text-black uppercase mt-1">
@@ -408,12 +408,12 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+              <div className="p-6 bg-[#FFFFFF] flex flex-col justify-between hover:bg-[#FFFFFF] transition-colors">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] uppercase text-black font-bold">
                     [ TELEMETRY // 03 ]
                   </span>
-                  <span className="px-1.5 py-0.5 bg-[#CCFF00] text-black text-[9px] font-black font-mono border border-black">
+                  <span className="px-1.5 py-0.5 bg-[#FF5500] text-white text-[9px] font-black font-mono border border-black">
                     AI EMBED
                   </span>
                 </div>
@@ -430,7 +430,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="p-6 bg-[#FCF9F3] flex flex-col justify-between hover:bg-[#F7F4EE] transition-colors">
+              <div className="p-6 bg-[#FFFFFF] flex flex-col justify-between hover:bg-[#FFFFFF] transition-colors">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] uppercase text-[#FF5500] font-bold">
                     [ TELEMETRY // 04 ]
@@ -457,12 +457,12 @@ export default function LandingPage() {
           {/* ========================================================================= */}
           {/* SECTION 2: REFERRAL LIFECYCLE STATE MACHINE */}
           {/* ========================================================================= */}
-          <section className="w-full bg-[#EFECE4] py-16 px-4 md:px-8 border-b-2 border-black">
+          <section className="w-full bg-[#F5F5F5] py-16 px-4 md:px-8 border-b-2 border-black">
             <div className="max-w-6xl mx-auto space-y-8">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                   <div className="font-mono text-xs uppercase text-black font-bold tracking-wider mb-2 flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-black">
+                    <span className="px-2 py-0.5 bg-[#FF5500] border border-black text-black font-black">
                       PROTOCOL SPECIFICATION
                     </span>
                     <span>// LIFECYCLE DISPATCH</span>
@@ -479,11 +479,11 @@ export default function LandingPage() {
               {/* State Machine Stepper Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Step 01 */}
-                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
                       <span className="font-mono text-xs font-black uppercase text-black">PHASE 01</span>
-                      <span className="px-2 py-0.5 bg-[#EFECE4] border border-black text-black font-mono text-[10px] font-bold uppercase">
+                      <span className="px-2 py-0.5 bg-[#F5F5F5] border border-black text-black font-mono text-[10px] font-bold uppercase">
                         STATE: PENDING
                       </span>
                     </div>
@@ -501,11 +501,11 @@ export default function LandingPage() {
                 </div>
 
                 {/* Step 02 */}
-                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
                       <span className="font-mono text-xs font-black uppercase text-black">PHASE 02</span>
-                      <span className="px-2 py-0.5 bg-[#1D4ED8] text-white font-mono text-[10px] font-bold uppercase">
+                      <span className="px-2 py-0.5 bg-[#000000] text-white font-mono text-[10px] font-bold uppercase">
                         STATE: SCREENED
                       </span>
                     </div>
@@ -517,13 +517,13 @@ export default function LandingPage() {
                     </p>
                   </div>
                   <div className="mt-6 pt-3 border-t border-black font-mono text-xs uppercase text-black font-bold flex justify-between items-center">
-                    <span className="text-[#1D4ED8] font-black">█ DUAL SIGN-OFF</span>
+                    <span className="text-[#000000] font-black">█ DUAL SIGN-OFF</span>
                     <span className="text-black font-black text-base">→</span>
                   </div>
                 </div>
 
                 {/* Step 03 */}
-                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
                       <span className="font-mono text-xs font-black uppercase text-black">PHASE 03</span>
@@ -545,11 +545,11 @@ export default function LandingPage() {
                 </div>
 
                 {/* Step 04 */}
-                <div className="p-5 bg-[#CCFF00] border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
+                <div className="p-5 bg-[#FF5500] border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
                       <span className="font-mono text-xs font-black uppercase text-black">PHASE 04</span>
-                      <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-mono text-[10px] font-black uppercase">
+                      <span className="px-2 py-0.5 bg-black text-[#FF5500] font-mono text-[10px] font-black uppercase">
                         STATE: HIRED
                       </span>
                     </div>
@@ -570,16 +570,16 @@ export default function LandingPage() {
               {/* State Flow Interactive Monitor Graphic */}
               <div className="w-full bg-black text-white p-4 border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-3 font-mono text-xs uppercase">
-                  <div className="flex items-center gap-2 text-[#CCFF00]">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-ping" />
+                  <div className="flex items-center gap-2 text-[#FF5500]">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-ping" />
                     <span className="font-bold">ACTIVE LIVE TRANSMISSIONS: 147 CANDIDATES IN FLIGHT</span>
                   </div>
-                  <div className="flex items-center gap-6 text-[#EFECE4]">
+                  <div className="flex items-center gap-6 text-[#F5F5F5]">
                     <span>
-                      AVG STAGE CONVERSION: <strong className="text-[#CCFF00]">71.8%</strong>
+                      AVG STAGE CONVERSION: <strong className="text-[#FF5500]">71.8%</strong>
                     </span>
                     <span>
-                      MEDIAN REFERRAL LATENCY: <strong className="text-[#CCFF00]">3.4 DAYS</strong>
+                      MEDIAN REFERRAL LATENCY: <strong className="text-[#FF5500]">3.4 DAYS</strong>
                     </span>
                   </div>
                 </div>
@@ -590,12 +590,12 @@ export default function LandingPage() {
           {/* ========================================================================= */}
           {/* SECTION 3: THE 5 ESSENTIAL PILLARS (EDITORIAL MOSAIC) */}
           {/* ========================================================================= */}
-          <section className="w-full bg-[#FCF9F3] py-16 px-4 md:px-8 border-b-2 border-black">
+          <section className="w-full bg-[#FFFFFF] py-16 px-4 md:px-8 border-b-2 border-black">
             <div className="max-w-7xl mx-auto space-y-10">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-4 border-b-2 border-black">
                 <div className="lg:col-span-8">
-                  <div className="font-mono text-xs uppercase text-[#1D4ED8] font-bold tracking-wider mb-2 flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-[#1D4ED8] text-white font-black">05 PILLARS</span>
+                  <div className="font-mono text-xs uppercase text-[#000000] font-bold tracking-wider mb-2 flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-[#000000] text-white font-black">05 PILLARS</span>
                     <span>INFRASTRUCTURE FRAMEWORK</span>
                   </div>
                   <h2 className="font-headline text-3xl md:text-5xl uppercase tracking-tighter text-black font-black">
@@ -616,7 +616,7 @@ export default function LandingPage() {
                       <span className="font-mono text-xs font-bold uppercase text-[#474746]">
                         [ PILLAR 01 // DIRECTORY &amp; CARTOGRAPHY ]
                       </span>
-                      <span className="font-mono text-[11px] font-black uppercase bg-[#CCFF00] border border-black px-2 py-0.5 text-black">
+                      <span className="font-mono text-[11px] font-black uppercase bg-[#FF5500] border border-black px-2 py-0.5 text-black">
                         HNSW COSINE INDEX
                       </span>
                     </div>
@@ -628,11 +628,11 @@ export default function LandingPage() {
                     </p>
                   </div>
                   {/* Geo Visual Location Canvas */}
-                  <div className="mt-6 bg-[#FCF9F3] p-3 border-2 border-black">
+                  <div className="mt-6 bg-[#FFFFFF] p-3 border-2 border-black">
                     <div className="w-full h-48 bg-[#0F172A] p-4 flex flex-col justify-between border border-black relative overflow-hidden">
                       <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
                       <div className="relative z-10 flex justify-between items-start">
-                        <span className="font-mono text-[10px] px-2 py-0.5 bg-[#CCFF00] text-black font-bold">
+                        <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white font-bold">
                           LEAFLET GEO-GRID
                         </span>
                         <span className="font-mono text-[10px] text-white">LAT: 37.7749° N, LON: 122.4194° W</span>
@@ -640,11 +640,11 @@ export default function LandingPage() {
                       <div className="relative z-10 flex items-center justify-center gap-6 my-auto">
                         <div className="p-3 border border-white/40 bg-black/60 text-center">
                           <div className="font-headline text-xl font-bold text-white">412</div>
-                          <div className="font-mono text-[9px] text-[#CCFF00]">SF BAY CLUSTER</div>
+                          <div className="font-mono text-[9px] text-[#FF5500]">SF BAY CLUSTER</div>
                         </div>
                         <div className="p-3 border border-white/40 bg-black/60 text-center">
                           <div className="font-headline text-xl font-bold text-white">284</div>
-                          <div className="font-mono text-[9px] text-[#00E676]">SEATTLE INFRA</div>
+                          <div className="font-mono text-[9px] text-[#FF5500]">SEATTLE INFRA</div>
                         </div>
                         <div className="p-3 border border-white/40 bg-black/60 text-center">
                           <div className="font-headline text-xl font-bold text-white">198</div>
@@ -653,17 +653,17 @@ export default function LandingPage() {
                       </div>
                       <div className="relative z-10 flex justify-between items-center text-[10px] font-mono text-neutral-400">
                         <span>OPENSTREETMAP // CARTOCDN TILES</span>
-                        <Link href="/directory" className="text-[#CCFF00] font-bold hover:underline">
+                        <Link href="/directory" className="text-[#FF5500] font-bold hover:underline">
                           OPEN INTERACTIVE MAP →
                         </Link>
                       </div>
                     </div>
                     <div className="flex justify-between items-center font-mono text-[11px] font-bold uppercase text-black pt-2">
                       <span className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-[#00E676]" />
+                        <span className="w-2 h-2 rounded-full bg-[#FF5500]" />
                         NODE: SF_BAY_AREA_CLUSTER (N=412)
                       </span>
-                      <span className="bg-black text-[#CCFF00] px-1.5 py-0.5 text-[10px]">
+                      <span className="bg-black text-[#FF5500] px-1.5 py-0.5 text-[10px]">
                         GEO-INDEX: EPSG:4326 // LEAFLET
                       </span>
                     </div>
@@ -688,14 +688,14 @@ export default function LandingPage() {
                       Live requisition boards linked to alumni referral quotas. Direct submission pipelines bypass general applicant pools with structured endorsement packets.
                     </p>
                   </div>
-                  <div className="mt-6 p-4 bg-[#FCF9F3] border-2 border-black text-black font-mono text-xs space-y-2">
+                  <div className="mt-6 p-4 bg-[#FFFFFF] border-2 border-black text-black font-mono text-xs space-y-2">
                     <div className="flex justify-between border-b border-black/10 pb-1.5">
                       <span className="font-bold uppercase">ACTIVE REQUISITIONS</span>
                       <span className="font-black text-[#FF5500]">342 OPEN</span>
                     </div>
                     <div className="flex justify-between border-b border-black/10 pb-1.5">
                       <span className="font-bold uppercase">INTERNAL REVIEWS</span>
-                      <span className="font-black text-[#1D4ED8]">48H SLA</span>
+                      <span className="font-black text-[#000000]">48H SLA</span>
                     </div>
                     <div className="flex justify-between pt-0.5">
                       <span className="font-bold uppercase">TOP DISCIPLINE</span>
@@ -711,7 +711,7 @@ export default function LandingPage() {
                       <span className="font-mono text-xs font-bold uppercase text-[#474746]">
                         [ PILLAR 03 // FELLOWSHIPS ]
                       </span>
-                      <span className="font-mono text-[11px] font-black uppercase bg-[#1D4ED8] text-white px-2 py-0.5 border border-black">
+                      <span className="font-mono text-[11px] font-black uppercase bg-[#000000] text-white px-2 py-0.5 border border-black">
                         FLASH 1-ON-1
                       </span>
                     </div>
@@ -728,7 +728,7 @@ export default function LandingPage() {
                     </span>
                     <Link
                       href="/mentorship"
-                      className="font-black text-white bg-black px-3 py-1.5 hover:bg-[#1D4ED8] transition-colors cursor-pointer"
+                      className="font-black text-white bg-black px-3 py-1.5 hover:bg-[#000000] transition-colors cursor-pointer"
                     >
                       Book Flash →
                     </Link>
@@ -742,7 +742,7 @@ export default function LandingPage() {
                       <span className="font-mono text-xs font-bold uppercase text-[#474746]">
                         [ PILLAR 04 // SYMPOSIA ]
                       </span>
-                      <span className="font-mono text-[11px] font-black uppercase bg-[#EFECE4] text-black border border-black px-2 py-0.5">
+                      <span className="font-mono text-[11px] font-black uppercase bg-[#F5F5F5] text-black border border-black px-2 py-0.5">
                         CALENDAR SYNC
                       </span>
                     </div>
@@ -768,7 +768,7 @@ export default function LandingPage() {
                       <span className="font-mono text-xs font-bold uppercase text-[#474746]">
                         [ PILLAR 05 // CHRONICLE ]
                       </span>
-                      <span className="font-mono text-[11px] font-black uppercase bg-[#00E676]/30 text-black border border-black px-2 py-0.5">
+                      <span className="font-mono text-[11px] font-black uppercase bg-[#FF5500]/30 text-black border border-black px-2 py-0.5">
                         LEDGER VERIFIED
                       </span>
                     </div>
@@ -796,7 +796,7 @@ export default function LandingPage() {
           {/* ========================================================================= */}
           {/* SECTION 4: ROLE-AWARE ARCHITECTURE (4 PERSONAS) */}
           {/* ========================================================================= */}
-          <section className="w-full bg-[#EFECE4] py-16 px-4 md:px-8 border-b-2 border-black">
+          <section className="w-full bg-[#F5F5F5] py-16 px-4 md:px-8 border-b-2 border-black">
             <div className="max-w-6xl mx-auto space-y-8">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
@@ -816,9 +816,9 @@ export default function LandingPage() {
               {/* Segmented Persona Matrix */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Persona 1: Student */}
-                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div className="space-y-3">
-                    <div className="font-mono text-xs uppercase text-[#1D4ED8] font-black">
+                    <div className="font-mono text-xs uppercase text-[#000000] font-black">
                       01 // UNDERGRAD &amp; GRAD
                     </div>
                     <h4 className="font-headline text-xl font-black uppercase text-black">
@@ -829,15 +829,15 @@ export default function LandingPage() {
                     </p>
                     <ul className="font-mono text-[11px] uppercase text-black space-y-1.5 pt-2 border-t border-black/10 font-bold">
                       <li className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#1D4ED8]" />
+                        <span className="w-1.5 h-1.5 bg-[#000000]" />
                         One-Click Referral Dossiers
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#1D4ED8]" />
+                        <span className="w-1.5 h-1.5 bg-[#000000]" />
                         AI Resume Alignment Score
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#1D4ED8]" />
+                        <span className="w-1.5 h-1.5 bg-[#000000]" />
                         Flash Slot Reservations
                       </li>
                     </ul>
@@ -845,7 +845,7 @@ export default function LandingPage() {
                   <div className="mt-6 pt-3 border-t-2 border-black">
                     <Link
                       href="/login"
-                      className="font-mono text-xs font-black uppercase text-black hover:text-[#1D4ED8] flex items-center justify-between"
+                      className="font-mono text-xs font-black uppercase text-black hover:text-[#000000] flex items-center justify-between"
                     >
                       <span>Student Entry</span>
                       <span>→</span>
@@ -854,7 +854,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Persona 2: Alumni */}
-                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div className="space-y-3">
                     <div className="font-mono text-xs uppercase text-[#FF5500] font-black">
                       02 // INDUSTRY FELLOW
@@ -892,7 +892,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Persona 3: Faculty */}
-                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div className="space-y-3">
                     <div className="font-mono text-xs uppercase text-black font-black">
                       03 // ACADEMIC LABS
@@ -921,7 +921,7 @@ export default function LandingPage() {
                   <div className="mt-6 pt-3 border-t-2 border-black">
                     <Link
                       href="/login"
-                      className="font-mono text-xs font-black uppercase text-black hover:text-[#1D4ED8] flex items-center justify-between"
+                      className="font-mono text-xs font-black uppercase text-black hover:text-[#000000] flex items-center justify-between"
                     >
                       <span>Faculty Access</span>
                       <span>→</span>
@@ -930,7 +930,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Persona 4: Administrator */}
-                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div className="space-y-3">
                     <div className="font-mono text-xs uppercase text-black font-black">
                       04 // ADVANCEMENT
@@ -943,15 +943,15 @@ export default function LandingPage() {
                     </p>
                     <ul className="font-mono text-[11px] uppercase text-black space-y-1.5 pt-2 border-t border-black/10 font-bold">
                       <li className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#00E676]" />
+                        <span className="w-1.5 h-1.5 bg-[#FF5500]" />
                         Real-Time Employment
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#00E676]" />
+                        <span className="w-1.5 h-1.5 bg-[#FF5500]" />
                         SAML / Okta Integration
                       </li>
                       <li className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#00E676]" />
+                        <span className="w-1.5 h-1.5 bg-[#FF5500]" />
                         Audit-Ready Reporting
                       </li>
                     </ul>
@@ -973,13 +973,13 @@ export default function LandingPage() {
           {/* ========================================================================= */}
           {/* SECTION 5: TECHNICAL ARCHITECTURE & PGVECTOR QUERY */}
           {/* ========================================================================= */}
-          <section className="w-full bg-[#FCF9F3] py-16 px-4 md:px-8 border-b-2 border-black">
+          <section className="w-full bg-[#FFFFFF] py-16 px-4 md:px-8 border-b-2 border-black">
             <div className="max-w-6xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left: Rationale & Google Workspace Native Suite */}
                 <div className="lg:col-span-5 space-y-5">
-                  <div className="font-mono text-xs uppercase text-[#1D4ED8] font-bold tracking-wider flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-[#1D4ED8] text-white font-black">TOPOLOGY</span>
+                  <div className="font-mono text-xs uppercase text-[#000000] font-bold tracking-wider flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-[#000000] text-white font-black">TOPOLOGY</span>
                     <span>ENGINE SPECIFICATION</span>
                   </div>
                   <h2 className="font-headline text-3xl font-black uppercase tracking-tight text-black">
@@ -987,7 +987,7 @@ export default function LandingPage() {
                   </h2>
                   <p className="font-headline text-sm text-[#474746] leading-relaxed">
                     Built atop Google Gemini text embeddings and PostgreSQL{" "}
-                    <code className="font-mono text-xs bg-[#CCFF00] border border-black px-1.5 py-0.5 text-black font-bold">
+                    <code className="font-mono text-xs bg-[#FF5500] border border-black px-1.5 py-0.5 text-black font-bold">
                       pgvector
                     </code>{" "}
                     HNSW indexing. We calculate multidimensional proximity across alumni technical competencies, departmental lineage, and current hiring demand.
@@ -996,7 +996,7 @@ export default function LandingPage() {
                   <div className="pt-2 space-y-2 font-mono text-xs uppercase">
                     <div className="p-2.5 bg-white border border-black text-black flex justify-between shadow-[2px_2px_0px_0px_#000000]">
                       <span className="font-bold">EMBEDDING MODEL</span>
-                      <span className="font-black text-[#1D4ED8]">GOOGLE-GEMINI-V2</span>
+                      <span className="font-black text-[#000000]">GOOGLE-GEMINI-V2</span>
                     </div>
                     <div className="p-2.5 bg-white border border-black text-black flex justify-between shadow-[2px_2px_0px_0px_#000000]">
                       <span className="font-bold">INDEX ALGORITHM</span>
@@ -1013,9 +1013,9 @@ export default function LandingPage() {
                   </div>
 
                   {/* Native Google Workspace Badge */}
-                  <div className="p-4 bg-[#EFECE4] border-2 border-black text-black font-mono text-xs space-y-1 shadow-[3px_3px_0px_0px_#000000]">
+                  <div className="p-4 bg-[#F5F5F5] border-2 border-black text-black font-mono text-xs space-y-1 shadow-[3px_3px_0px_0px_#000000]">
                     <div className="font-black uppercase flex items-center gap-1.5">
-                      <span className="w-2 h-2 bg-[#00E676]" />
+                      <span className="w-2 h-2 bg-[#FF5500]" />
                       [ NATIVE GOOGLE WORKSPACE PROTOCOLS ]
                     </div>
                     <p className="font-headline text-xs text-[#474746] pt-1">
@@ -1032,7 +1032,7 @@ export default function LandingPage() {
                         <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500]" />
                         SQL QUERY RUNNER // PRODUCTION NODE 01
                       </span>
-                      <span className="px-2 py-0.5 bg-[#CCFF00] text-black font-bold text-[10px]">
+                      <span className="px-2 py-0.5 bg-[#FF5500] text-white font-bold text-[10px]">
                         READ COMMITTED
                       </span>
                     </div>
@@ -1060,7 +1060,7 @@ export default function LandingPage() {
                       {"\n    "}) q
                       {"\n"}
                       <span className="text-[#93C5FD] font-bold">WHERE</span> 
-                      {"\n    "}a.referral_quota_active = <span className="text-[#CCFF00] font-bold">TRUE</span>
+                      {"\n    "}a.referral_quota_active = <span className="text-[#FF5500] font-bold">TRUE</span>
                       {"\n    "}<span className="text-[#93C5FD] font-bold">AND</span> a.verified_status = <span className="text-[#FDBA74]">&apos;ACCREDITED&apos;</span>
                       {"\n"}
                       <span className="text-[#93C5FD] font-bold">ORDER BY</span> 
@@ -1071,9 +1071,9 @@ export default function LandingPage() {
                   </div>
                   <div className="pt-4 mt-4 border-t border-gray-700 flex items-center justify-between font-mono text-xs text-gray-400">
                     <span>
-                      INDEX: <span className="text-[#CCFF00]">idx_alumni_hnsw</span>
+                      INDEX: <span className="text-[#FF5500]">idx_alumni_hnsw</span>
                     </span>
-                    <span className="px-2 py-0.5 bg-[#00E676]/20 text-[#00E676] font-bold">
+                    <span className="px-2 py-0.5 bg-[#FF5500]/20 text-[#FF5500] font-bold">
                       TOTAL EXECUTION: 6.84ms
                     </span>
                   </div>
@@ -1085,12 +1085,12 @@ export default function LandingPage() {
           {/* ========================================================================= */}
           {/* SECTION 6: SOCIAL PROOF & ALUMNI SPOTLIGHT */}
           {/* ========================================================================= */}
-          <section className="w-full bg-[#EFECE4] py-16 px-4 md:px-8 border-b-2 border-black">
+          <section className="w-full bg-[#F5F5F5] py-16 px-4 md:px-8 border-b-2 border-black">
             <div className="max-w-6xl mx-auto space-y-8">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                   <div className="font-mono text-xs uppercase text-black font-bold tracking-wider mb-2 flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-black">
+                    <span className="px-2 py-0.5 bg-[#FF5500] border border-black text-black font-black">
                       VERIFIED SPOTLIGHT
                     </span>
                     <span>// FELLOW TESTIMONIALS</span>
@@ -1107,10 +1107,10 @@ export default function LandingPage() {
               {/* Testimonial Broadsheet Columns */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Quote 1 */}
-                <div className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between pb-2 border-b-2 border-black">
-                      <span className="px-2 py-0.5 bg-[#1D4ED8] text-white font-mono text-xs font-black uppercase">
+                      <span className="px-2 py-0.5 bg-[#000000] text-white font-mono text-xs font-black uppercase">
                         GOOGLE CLOUD
                       </span>
                       <span className="font-mono text-xs text-[#474746] font-bold">[ CLASS OF &apos;18 ]</span>
@@ -1130,7 +1130,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Quote 2 */}
-                <div className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                       <span className="px-2 py-0.5 bg-[#FF5500] text-white font-mono text-xs font-black uppercase">
@@ -1153,10 +1153,10 @@ export default function LandingPage() {
                 </div>
 
                 {/* Quote 3 */}
-                <div className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FCF9F3] transition-all">
+                <div className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000000] flex flex-col justify-between hover:bg-[#FFFFFF] transition-all">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between pb-2 border-b-2 border-black">
-                      <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-mono text-xs font-black uppercase border border-black">
+                      <span className="px-2 py-0.5 bg-black text-[#FF5500] font-mono text-xs font-black uppercase border border-black">
                         META AI
                       </span>
                       <span className="font-mono text-xs text-[#474746] font-bold">[ CLASS OF &apos;17 ]</span>
@@ -1181,9 +1181,9 @@ export default function LandingPage() {
           {/* ========================================================================= */}
           {/* SECTION 7: FINAL CALL TO ACTION BANNER (HIGH IMPACT CYBER LIME CONTAINER) */}
           {/* ========================================================================= */}
-          <section className="w-full bg-[#CCFF00] text-black py-20 px-4 md:px-8 border-b-2 border-black relative">
+          <section className="w-full bg-[#FF5500] text-white py-20 px-4 md:px-8 border-b-2 border-black relative">
             <div className="max-w-5xl mx-auto flex flex-col items-center text-center space-y-6">
-              <div className="font-mono text-xs font-black uppercase tracking-widest bg-black text-[#CCFF00] px-3 py-1 border border-black shadow-[2px_2px_0px_0px_#000000]">
+              <div className="font-mono text-xs font-black uppercase tracking-widest bg-black text-[#FF5500] px-3 py-1 border border-black shadow-[2px_2px_0px_0px_#000000]">
                 [ IMMEDIATE ACCREDITATION // DEPLOYED CAMPUS-WIDE ]
               </div>
               <h2 className="font-headline text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tighter max-w-4xl font-black leading-none">
@@ -1201,7 +1201,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   href="/login"
-                  className="px-8 py-4 bg-white text-black font-mono text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#FCF9F3] transition-all cursor-pointer"
+                  className="px-8 py-4 bg-white text-black font-mono text-sm font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[#FFFFFF] transition-all cursor-pointer"
                 >
                   Verify via Campus SSO
                 </Link>
@@ -1228,7 +1228,7 @@ export default function LandingPage() {
       {/* ========================================================================= */}
       {/* INSTITUTIONAL BROADSHEET FOOTER */}
       {/* ========================================================================= */}
-      <footer className="w-full bg-[#FCF9F3] border-t-2 border-black">
+      <footer className="w-full bg-[#FFFFFF] border-t-2 border-black">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 border-b-2 border-black">
           <div className="lg:col-span-4 p-8 border-b-2 lg:border-b-0 lg:border-r-2 border-black flex flex-col justify-between space-y-6">
             <div className="space-y-3">
@@ -1243,8 +1243,8 @@ export default function LandingPage() {
               </p>
             </div>
             <div>
-              <div className="inline-flex items-center gap-2 border-2 border-black px-3 py-1.5 bg-[#EFECE4] font-mono text-xs uppercase text-black font-bold shadow-[2px_2px_0px_0px_#000000]">
-                <span className="inline-block w-2 h-2 bg-[#00E676] rounded-full" />
+              <div className="inline-flex items-center gap-2 border-2 border-black px-3 py-1.5 bg-[#F5F5F5] font-mono text-xs uppercase text-black font-bold shadow-[2px_2px_0px_0px_#000000]">
+                <span className="inline-block w-2 h-2 bg-[#FF5500] rounded-full" />
                 Google Cloud &amp; pgvector Cluster Active
               </div>
             </div>
@@ -1291,7 +1291,7 @@ export default function LandingPage() {
 
           <div className="lg:col-span-3 p-8 border-b-2 md:border-b-0 lg:border-r-2 border-black space-y-4">
             <div className="font-mono text-xs text-black font-black uppercase tracking-wider flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-[#1D4ED8]" />
+              <span className="w-1.5 h-1.5 bg-[#000000]" />
               [ PROTOCOLS // GOVERNANCE ]
             </div>
             <ul className="space-y-2 font-mono text-xs uppercase font-bold text-[#474746]">
@@ -1323,14 +1323,14 @@ export default function LandingPage() {
             </ul>
           </div>
 
-          <div className="lg:col-span-2 p-8 flex flex-col justify-between space-y-6 bg-[#FCF9F3]">
+          <div className="lg:col-span-2 p-8 flex flex-col justify-between space-y-6 bg-[#FFFFFF]">
             <div className="space-y-2">
               <div className="font-mono text-xs text-black font-black uppercase tracking-wider">
                 [ TELEMETRY ]
               </div>
               <div className="font-mono text-xs space-y-1">
                 <div className="text-black font-black flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#00E676]" />
+                  <span className="w-2 h-2 rounded-full bg-[#FF5500]" />
                   NODE: ACTIVE-01
                 </div>
                 <div className="text-[#474746] font-bold">LATENCY: 14MS</div>
@@ -1344,10 +1344,10 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="w-full px-4 md:px-8 py-4 bg-[#EFECE4] flex flex-col sm:flex-row items-center justify-between font-mono text-xs text-black font-bold gap-2">
+        <div className="w-full px-4 md:px-8 py-4 bg-[#F5F5F5] flex flex-col sm:flex-row items-center justify-between font-mono text-xs text-black font-bold gap-2">
           <div>© 2025 PRO-ALUMN CONSORTIUM. ALL RIGHTS RESERVED.</div>
           <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-black">
+            <span className="px-2 py-0.5 bg-[#FF5500] border border-black text-black font-black">
               EDITION 14.8.2
             </span>
             <span>ENCRYPTED REPOSITORY</span>

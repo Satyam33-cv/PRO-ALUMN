@@ -55,7 +55,7 @@ export default function NotificationsPage() {
         <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000]">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center border-2 border-black bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]">
+              <div className="flex h-12 w-12 items-center justify-center border-2 border-black bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]">
                 <Bell size={22} className="stroke-[2.5]" />
               </div>
               <div>
@@ -71,7 +71,7 @@ export default function NotificationsPage() {
               <button
                 onClick={handleMarkAllRead}
                 disabled={markingRead}
-                className="inline-flex items-center gap-2 px-4 py-2 border-2 border-black bg-white text-xs font-mono font-black uppercase text-black hover:bg-black hover:text-[#CCFF00] shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer self-start sm:self-auto disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 border-2 border-black bg-white text-xs font-mono font-black uppercase text-black hover:bg-black hover:text-white shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer self-start sm:self-auto disabled:opacity-50"
               >
                 {markingRead ? <Loader2 size={13} className="animate-spin" /> : <CheckCheck size={13} />}
                 Mark all as read
@@ -107,7 +107,7 @@ export default function NotificationsPage() {
                 >
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center border-2 border-black shadow-[2px_2px_0px_#000000] ${
                     isUnread
-                      ? "bg-[#CCFF00] text-black"
+                      ? "bg-[#FF5500] text-white"
                       : "bg-neutral-100 text-neutral-600"
                   }`}>
                     <CheckCircle2 size={18} className="stroke-[2.5]" />

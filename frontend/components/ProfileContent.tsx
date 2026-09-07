@@ -89,12 +89,12 @@ function TimelineModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg bg-[#fcf9f3] border-4 border-black shadow-[8px_8px_0px_#000000] p-6 space-y-4"
+        className="w-full max-w-lg bg-[#FFFFFF] border-4 border-black shadow-[8px_8px_0px_#000000] p-6 space-y-4"
       >
         <div className="flex items-center justify-between border-b-2 border-black pb-3">
           <div className="flex items-center space-x-2">
             <span className="font-bold text-sm uppercase">[ 03 // ADD CAREER MILESTONE ]</span>
-            <span className="px-2 py-0.5 bg-[#CCFF00] text-black text-[10px] font-bold border border-black">
+            <span className="px-2 py-0.5 bg-[#FF5500] text-white text-[10px] font-bold border border-black">
               ORACLE BACKED
             </span>
           </div>
@@ -169,7 +169,7 @@ function TimelineModal({
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 bg-[#FF5500] text-white border-2 border-black font-bold shadow-[2px_2px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
+              className="px-5 py-2 bg-[#FF5500] text-white border-2 border-black font-bold shadow-[2px_2px_0px_#000000] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
             >
               {saving ? "TRANSMITTING..." : "COMMIT MILESTONE →"}
             </button>
@@ -293,7 +293,7 @@ export function ProfileContent() {
       setTimeout(() => setRefreshDone(false), 3000);
     } catch (err) {
       console.error(err);
-      showToast("Vector Sync Completed with local PGVECTOR instance.");
+      showToast("Match profile refreshed.");
       setRefreshDone(true);
       setTimeout(() => setRefreshDone(false), 3000);
     } finally {
@@ -315,7 +315,7 @@ export function ProfileContent() {
       },
       issuer: {
         name: "PRO-ALUMN Decentralized Consensus Network",
-        enclave: "SECURE-ENCLAVE-0x48F2A",
+        enclave: "",
         pgvectorDimensions: 384,
         consensusEpoch: "2026.Q3",
       },
@@ -336,7 +336,7 @@ export function ProfileContent() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    showToast("PKI / JSON-LD Cryptographic Credential Exported!");
+    showToast("Profile data exported.");
   };
 
   const handleSignOut = () => {
@@ -545,88 +545,88 @@ export function ProfileContent() {
       {/* ============================================================ */}
       {/* 1. SUB-BAR: ECOSYSTEM PORTAL NAVIGATION & NODE TELEMETRY */}
       {/* ============================================================ */}
-      <div className="w-full bg-[#F7F4EE] border-2 border-black shadow-[3px_3px_0px_#1A1A1A] p-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="w-full bg-[#FFFFFF] border-2 border-black shadow-[3px_3px_0px_#0A0A0A] p-2 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex flex-wrap items-center gap-1.5 font-bold">
           <Link
             href="/dashboard"
-            className="px-2.5 py-1 hover:bg-[#EFECE4] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            className="px-2.5 py-1 hover:bg-[#F5F5F5] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             01 DASHBOARD
           </Link>
           <span className="text-neutral-400">/</span>
           <Link
             href="/directory"
-            className="px-2.5 py-1 hover:bg-[#EFECE4] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            className="px-2.5 py-1 hover:bg-[#F5F5F5] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             02 ALUMNI REGISTRY
           </Link>
           <span className="text-neutral-400">/</span>
           <Link
             href="/jobs"
-            className="px-2.5 py-1 hover:bg-[#EFECE4] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            className="px-2.5 py-1 hover:bg-[#F5F5F5] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             03 JOBS & REFERRALS
           </Link>
           <span className="text-neutral-400">/</span>
           <Link
             href="/mentorship"
-            className="px-2.5 py-1 hover:bg-[#EFECE4] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            className="px-2.5 py-1 hover:bg-[#F5F5F5] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             04 MENTORSHIP HUB
           </Link>
           <span className="text-neutral-400">/</span>
           <Link
             href="/events"
-            className="px-2.5 py-1 hover:bg-[#EFECE4] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            className="px-2.5 py-1 hover:bg-[#F5F5F5] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             05 EVENTS & RSVPS
           </Link>
           <span className="text-neutral-400">/</span>
           <Link
             href="/stories"
-            className="px-2.5 py-1 hover:bg-[#EFECE4] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            className="px-2.5 py-1 hover:bg-[#F5F5F5] text-neutral-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
             06 SUCCESS STORIES
           </Link>
           <span className="text-neutral-400">/</span>
-          <span className="px-3 py-1 bg-black text-[#CCFF00] font-bold border-2 border-black flex items-center gap-1.5 shadow-[2px_2px_0px_#1A1A1A]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse"></span>
+          <span className="px-3 py-1 bg-black text-[#FF5500] font-bold border-2 border-black flex items-center gap-1.5 shadow-[2px_2px_0px_#0A0A0A]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500] animate-pulse"></span>
             MY PROFILE & DIGITAL PASS
           </span>
         </div>
 
         {/* Live Corridor Key Badge */}
         <div className="flex items-center gap-1.5 text-[11px] uppercase px-3 py-1 bg-white border border-black font-bold">
-          <span className="text-[#FF5500]">CONDUIT //</span>
-          <span className="tracking-wider">SECURE-ENCLAVE-0x48F2A</span>
+          <span className="text-[#FF5500]"></span>
+          <span className="tracking-wider"></span>
         </div>
       </div>
 
       {/* ============================================================ */}
       {/* 2. DOSSIER HERO HEADER SECTION */}
       {/* ============================================================ */}
-      <div className="w-full bg-white border-4 border-black shadow-[5px_5px_0px_#1A1A1A] p-6 sm:p-8 relative overflow-hidden">
+      <div className="w-full bg-white border-4 border-black shadow-[5px_5px_0px_#0A0A0A] p-6 sm:p-8 relative overflow-hidden">
         {/* Background Graphic Accents */}
         <div className="absolute right-0 top-0 translate-x-10 -translate-y-4 pointer-events-none opacity-5 select-none font-black text-[120px] text-black">
-          0x384D
+          
         </div>
 
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
           <div className="flex flex-col gap-2 max-w-3xl">
             <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600 uppercase font-bold">
-              <span className="px-2 py-0.5 bg-[#FF5500] text-white font-bold">PILLAR 07</span>
+              <span className="px-2 py-0.5 bg-[#FF5500] text-white font-bold">Profile</span>
               <span>//</span>
-              <span className="text-black">PROFILE & ATTESTATION</span>
+              <span className="text-black">Profile</span>
               <span className="text-neutral-400">•</span>
-              <span>SYS_HASH: 0x48f2a..c21</span>
+              <span></span>
               <span className="text-neutral-400">•</span>
-              <span className="text-[#FF5500] font-bold">NODE: VERIFIED-CREDENTIAL-POD</span>
+              <span className="text-[#FF5500] font-bold"></span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-black mt-1">
-              Fellow Dossier & Digital Credential Pass
+              Your profile
             </h1>
             <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed max-w-2xl font-sans">
-              Cryptographic member identity, verified career timeline, 384-dimensional Gemini embedding projection, and real-time mentorship telemetry. Fully attestation-backed by decentralized alumni consensus.
+              Your public profile, skills, and documents. Edit anything that looks wrong.
             </p>
           </div>
 
@@ -635,31 +635,31 @@ export function ProfileContent() {
             <button
               type="button"
               onClick={() => setIsEditingProfile(true)}
-              className="px-4 py-2.5 bg-white border-2 border-black shadow-[2px_2px_0px_#1A1A1A] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center gap-1.5"
+              className="px-4 py-2.5 bg-white border-2 border-black shadow-[2px_2px_0px_#0A0A0A] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center gap-1.5"
             >
               <Pencil size={15} />
-              <span>Edit Profile Data</span>
+              <span>Edit profile</span>
             </button>
             <button
               type="button"
               onClick={handleRefresh}
               disabled={refreshing}
-              className="px-4 py-2.5 bg-[#F7F4EE] border-2 border-black shadow-[2px_2px_0px_#1A1A1A] hover:bg-[#EFECE4] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center gap-1.5 disabled:opacity-60"
+              className="px-4 py-2.5 bg-[#FFFFFF] border-2 border-black shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#F5F5F5] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center gap-1.5 disabled:opacity-60"
             >
               {refreshing ? (
                 <Loader2 size={15} className="animate-spin text-[#FF5500]" />
               ) : (
                 <RefreshCw size={15} className="text-[#FF5500]" />
               )}
-              <span>{refreshing ? "Re-calculating..." : "Re-sync AI Vector (384-D)"}</span>
+              <span>{refreshing ? "Refreshing…" : "Refresh matches"}</span>
             </button>
             <button
               type="button"
               onClick={handleExportPKI}
-              className="px-4 py-2.5 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#1A1A1A] hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center gap-1.5"
+              className="px-4 py-2.5 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#0A0A0A] hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center gap-1.5"
             >
-              <Key size={15} className="text-[#CCFF00]" />
-              <span>Export PKI / JSON-LD</span>
+              <Key size={15} className="text-[#FF5500]" />
+              <span>Export profile</span>
             </button>
           </div>
         </div>
@@ -673,25 +673,25 @@ export function ProfileContent() {
         {/* LEFT COLUMN: COL-SPAN-8 */}
         {/* ============================================================ */}
         <div className="lg:col-span-8 flex flex-col gap-6">
-          {/* ---------------- 01 // DOSSIER-RECORD CARD ---------------- */}
-          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 relative">
+          {/* ---------------- Profile CARD ---------------- */}
+          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#0A0A0A] p-6 relative">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  01 // DOSSIER-RECORD
+                <span className="px-2 py-0.5 border border-black text-xs bg-[#FFFFFF] font-bold">
+                  Profile
                 </span>
                 <span className="text-xs text-neutral-500 font-bold">UID #{fellowUid}</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-black font-bold">
-                <span className="w-2 h-2 rounded-full bg-[#00E676] inline-block animate-pulse"></span>
-                <span>ATTESTATION ACTIVE</span>
+                <span className="w-2 h-2 rounded-full bg-[#FF5500] inline-block animate-pulse"></span>
+                <span>Active</span>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row gap-6 items-start">
               {/* Fellow Avatar Chamber */}
               <div className="relative shrink-0">
-                <div className="w-32 h-32 border-2 border-black shadow-[3px_3px_0px_#1A1A1A] bg-[#F7F4EE] p-1 relative overflow-hidden group">
+                <div className="w-32 h-32 border-2 border-black shadow-[3px_3px_0px_#0A0A0A] bg-[#FFFFFF] p-1 relative overflow-hidden group">
                   {fullProfile?.avatarUrl || user.avatarUrl ? (
                     <Image
                       src={fullProfile?.avatarUrl || user.avatarUrl!}
@@ -726,7 +726,7 @@ export function ProfileContent() {
                       if (file) uploadAvatar(file);
                     }}
                   />
-                  <div className="absolute bottom-1 right-1 bg-black text-[#CCFF00] p-0.5 border border-black">
+                  <div className="absolute bottom-1 right-1 bg-black text-[#FF5500] p-0.5 border border-black">
                     <ShieldCheck size={16} />
                   </div>
                 </div>
@@ -744,7 +744,7 @@ export function ProfileContent() {
                   <span className="bg-[#FF5500] text-white px-2 py-0.5 text-xs font-bold">
                     FELLOW &apos;{String(cohortYear).slice(-2)}
                   </span>
-                  <span className="bg-[#F7F4EE] text-black border border-black px-2 py-0.5 text-xs font-bold">
+                  <span className="bg-[#FFFFFF] text-black border border-black px-2 py-0.5 text-xs font-bold">
                     SOMAIYA VERIFIED
                   </span>
                 </div>
@@ -759,7 +759,7 @@ export function ProfileContent() {
                   </span>
                 </div>
 
-                <div className="text-xs text-neutral-700 mt-1 leading-relaxed bg-[#fcf9f3] p-3 border border-black">
+                <div className="text-xs text-neutral-700 mt-1 leading-relaxed bg-[#FFFFFF] p-3 border border-black">
                   {editingBio ? (
                     <div className="space-y-2">
                       <textarea
@@ -796,11 +796,11 @@ export function ProfileContent() {
                 </div>
 
                 {/* Real-time Status Capsule Indicator & Pill Dock */}
-                <div className="mt-2 flex flex-wrap items-center justify-between gap-3 p-2.5 bg-[#F7F4EE] border border-black">
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-3 p-2.5 bg-[#FFFFFF] border border-black">
                   <div className="flex items-center gap-2">
                     <span
                       className={`w-2.5 h-2.5 border border-black rounded-full inline-block ${
-                        mentoring ? "bg-[#CCFF00]" : "bg-neutral-400"
+                        mentoring ? "bg-[#FF5500]" : "bg-neutral-400"
                       }`}
                     ></span>
                     <span className="text-[11px] font-bold uppercase text-black">
@@ -816,7 +816,7 @@ export function ProfileContent() {
                   </div>
 
                   {/* Minimalist Quick Action Pill Dock */}
-                  <div className="inline-flex items-center bg-black rounded-full px-3 py-1 gap-3 text-white shadow-[2px_2px_0px_#1A1A1A]">
+                  <div className="inline-flex items-center bg-black rounded-full px-3 py-1 gap-3 text-white shadow-[2px_2px_0px_#0A0A0A]">
                     <button
                       type="button"
                       onClick={() => router.back()}
@@ -852,7 +852,7 @@ export function ProfileContent() {
                     <button
                       type="button"
                       onClick={() => setScheduleOpen(true)}
-                      className="hover:text-[#CCFF00] transition-colors flex items-center text-[11px] font-bold gap-1"
+                      className="hover:text-[#FF5500] transition-colors flex items-center text-[11px] font-bold gap-1"
                       title="Schedule Google Meet"
                     >
                       <Video size={13} />
@@ -864,14 +864,14 @@ export function ProfileContent() {
             </div>
           </div>
 
-          {/* ---------------- 02 // SKILLS & EXPERTISE ---------------- */}
-          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4">
+          {/* ---------------- Skills ---------------- */}
+          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#0A0A0A] p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  02 // SKILLS &amp; EXPERTISE
+                <span className="px-2 py-0.5 border border-black text-xs bg-[#FFFFFF] font-bold">
+                  Skills
                 </span>
-                <span className="text-xs text-neutral-600 font-bold">COMPETENCIES &amp; DOMAIN KNOWLEDGE</span>
+                <span className="text-xs text-neutral-600 font-bold"></span>
               </div>
               <div className="text-xs text-neutral-500 font-bold font-mono">
                 {skills.length} SKILLS REGISTERED
@@ -882,17 +882,17 @@ export function ProfileContent() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-black">
-                  ACTIVE SKILL VECTORS & TAGS:
+                  Skills:
                 </span>
                 <span className="text-[11px] text-neutral-500 font-bold">
-                  {skills.length} VECTORS REGISTERED
+                  {skills.length} skills
                 </span>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {skills.map((skill) => (
                   <span
                     key={skill}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F7F4EE] border border-black text-xs font-bold text-black"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#FFFFFF] border border-black text-xs font-bold text-black"
                   >
                     <span>{skill}</span>
                     <button
@@ -913,28 +913,28 @@ export function ProfileContent() {
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Append new vector (e.g. 'Spanner Raft', 'CUDA')... Press Enter"
+                  placeholder="Add a skill and press Enter"
                   className="flex-1 p-2 bg-white border-2 border-black text-xs font-mono focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={addSkill}
-                  className="px-4 py-2 bg-[#CCFF00] text-black border-2 border-black font-bold text-xs shadow-[2px_2px_0px_#1A1A1A] hover:bg-[#b8e600] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                  className="px-4 py-2 bg-[#FF5500] text-white border-2 border-black font-bold text-xs shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#b8e600] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 >
-                  + ADD VECTOR
+                  + Add skill
                 </button>
               </div>
             </div>
           </div>
 
-          {/* ---------------- 03 // CAREER CHRONOLOGY ---------------- */}
-          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4">
+          {/* ---------------- Experience ---------------- */}
+          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#0A0A0A] p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  03 // CAREER CHRONOLOGY
+                <span className="px-2 py-0.5 border border-black text-xs bg-[#FFFFFF] font-bold">
+                  Experience
                 </span>
-                <span className="text-xs text-neutral-600 font-bold">ORACLE-BACKED CAREER ATTESTATIONS</span>
+                <span className="text-xs text-neutral-600 font-bold"></span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-black font-bold">
@@ -943,9 +943,9 @@ export function ProfileContent() {
                 <button
                   type="button"
                   onClick={() => setIsAddingTimeline(true)}
-                  className="px-2.5 py-1 bg-[#FF5500] text-white border border-black text-[11px] font-bold shadow-[2px_2px_0px_#1A1A1A] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                  className="px-2.5 py-1 bg-[#FF5500] text-white border border-black text-[11px] font-bold shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 >
-                  + ADD MILESTONE
+                  + Add experience
                 </button>
               </div>
             </div>
@@ -958,9 +958,9 @@ export function ProfileContent() {
                   <button
                     type="button"
                     onClick={() => setIsAddingTimeline(true)}
-                    className="px-3 py-1.5 bg-[#FF5500] text-white border border-black text-xs font-bold shadow-[2px_2px_0px_#1A1A1A] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                    className="px-3 py-1.5 bg-[#FF5500] text-white border border-black text-xs font-bold shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                   >
-                    + ADD MILESTONE
+                    + Add experience
                   </button>
                 }
               />
@@ -970,14 +970,14 @@ export function ProfileContent() {
                   <div key={idx} className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-3 group">
                     <div
                       className={`absolute -left-[29px] top-1.5 w-3.5 h-3.5 border-2 border-black ${
-                        idx === 0 ? "bg-[#FF5500]" : idx === 1 ? "bg-black" : "bg-[#F7F4EE]"
+                        idx === 0 ? "bg-[#FF5500]" : idx === 1 ? "bg-black" : "bg-[#FFFFFF]"
                       }`}
                     ></div>
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
                         <span className="text-base font-black uppercase text-black">{item.role}</span>
                         {idx === 0 && (
-                          <span className="px-1.5 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold">
+                          <span className="px-1.5 py-0.5 bg-[#FFFFFF] border border-black text-[10px] font-bold">
                             CURRENT
                           </span>
                         )}
@@ -996,7 +996,7 @@ export function ProfileContent() {
                       )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0 self-start">
-                      <span className="text-xs font-bold text-black bg-[#F7F4EE] px-2 py-1 border border-black">
+                      <span className="text-xs font-bold text-black bg-[#FFFFFF] px-2 py-1 border border-black">
                         {item.range}
                       </span>
                       <button
@@ -1014,42 +1014,42 @@ export function ProfileContent() {
             )}
           </div>
 
-          {/* ---------------- 04 // ENDORSEMENT STICKERS FLAIR ---------------- */}
-          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4">
+          {/* ---------------- Badges FLAIR ---------------- */}
+          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#0A0A0A] p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  04 // ENDORSEMENT STICKERS
+                <span className="px-2 py-0.5 border border-black text-xs bg-[#FFFFFF] font-bold">
+                  Badges
                 </span>
-                <span className="text-xs text-neutral-600 font-bold">VERIFIED ON-CHAIN PEER BADGES</span>
+                <span className="text-xs text-neutral-600 font-bold"></span>
               </div>
               <span className="text-xs text-black font-bold">TOTAL STAKED: 450 CR</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {/* Badge 1 */}
-              <div className="p-4 bg-[#CCFF00] border-2 border-black shadow-[3px_3px_0px_#1A1A1A] flex flex-col gap-1 items-center text-center -rotate-1 hover:rotate-0 transition-transform">
+              <div className="p-4 bg-[#FF5500] border-2 border-black shadow-[3px_3px_0px_#0A0A0A] flex flex-col gap-1 items-center text-center -rotate-1 hover:rotate-0 transition-transform">
                 <Award size={28} className="text-black" />
                 <span className="text-xs font-black uppercase tracking-tight text-black mt-1">TOP MENTOR &apos;24</span>
                 <span className="text-[10px] text-neutral-700 font-bold">38 SESSIONS LOGGED</span>
               </div>
 
               {/* Badge 2 */}
-              <div className="p-4 bg-[#F7F4EE] border-2 border-black shadow-[3px_3px_0px_#1A1A1A] flex flex-col gap-1 items-center text-center rotate-1 hover:rotate-0 transition-transform">
+              <div className="p-4 bg-[#FFFFFF] border-2 border-black shadow-[3px_3px_0px_#0A0A0A] flex flex-col gap-1 items-center text-center rotate-1 hover:rotate-0 transition-transform">
                 <Sparkles size={28} className="text-[#FF5500]" />
                 <span className="text-xs font-black uppercase tracking-tight text-black mt-1">HIRED VIA CONDUIT</span>
                 <span className="text-[10px] text-neutral-700 font-bold">SERIES B CLOSURE</span>
               </div>
 
               {/* Badge 3 */}
-              <div className="p-4 bg-black text-white border-2 border-black shadow-[3px_3px_0px_#1A1A1A] flex flex-col gap-1 items-center text-center -rotate-2 hover:rotate-0 transition-transform">
-                <Video size={28} className="text-[#CCFF00]" />
+              <div className="p-4 bg-black text-white border-2 border-black shadow-[3px_3px_0px_#0A0A0A] flex flex-col gap-1 items-center text-center -rotate-2 hover:rotate-0 transition-transform">
+                <Video size={28} className="text-[#FF5500]" />
                 <span className="text-xs font-black uppercase tracking-tight text-white mt-1">KEYNOTE SPEAKER</span>
                 <span className="text-[10px] text-neutral-400 font-bold">GLOBAL SUMMIT &apos;23</span>
               </div>
 
               {/* Badge 4 */}
-              <div className="p-4 bg-[#EFECE4] border-2 border-black shadow-[3px_3px_0px_#1A1A1A] flex flex-col gap-1 items-center text-center rotate-1 hover:rotate-0 transition-transform">
+              <div className="p-4 bg-[#F5F5F5] border-2 border-black shadow-[3px_3px_0px_#0A0A0A] flex flex-col gap-1 items-center text-center rotate-1 hover:rotate-0 transition-transform">
                 <Key size={28} className="text-black" />
                 <span className="text-xs font-black uppercase tracking-tight text-black mt-1">100 ALUMN-CR</span>
                 <span className="text-[10px] text-neutral-700 font-bold">STAKED GOVERNANCE</span>
@@ -1058,23 +1058,23 @@ export function ProfileContent() {
           </div>
 
           {/* ---------------- 05 // RESUME & SUPABASE PROOF STORAGE ---------------- */}
-          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4">
+          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#0A0A0A] p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  05 // VERIFIED CREDENTIAL STORAGE
+                <span className="px-2 py-0.5 border border-black text-xs bg-[#FFFFFF] font-bold">
+                  Documents
                 </span>
-                <span className="text-xs text-neutral-600 font-bold">SUPABASE ENCRYPTED BUCKET</span>
+                <span className="text-xs text-neutral-600 font-bold"></span>
               </div>
-              <span className="text-xs text-[#00E676] font-bold">STATUS: REPOSITORY CONNECTED</span>
+              <span className="text-xs text-[#FF5500] font-bold">Connected</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Resume Box */}
-              <div className="border-2 border-black p-4 bg-[#F7F4EE] flex flex-col justify-between">
+              <div className="border-2 border-black p-4 bg-[#FFFFFF] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold uppercase text-black">RESUME DOSSIER (PDF)</span>
+                    <span className="text-xs font-bold uppercase text-black">Resume (PDF)</span>
                     <FileText size={16} className="text-black" />
                   </div>
                   <div
@@ -1130,7 +1130,7 @@ export function ProfileContent() {
 
                 {fullProfile?.resumeUrl && (
                   <div className="mt-3 pt-2 border-t border-black/10 flex justify-between items-center text-xs">
-                    <span className="text-emerald-700 font-bold">ACTIVE IN VECTOR MATCH</span>
+                    <span className="text-emerald-700 font-bold">Used in matching</span>
                     <a
                       href={fullProfile.resumeUrl}
                       target="_blank"
@@ -1144,10 +1144,10 @@ export function ProfileContent() {
               </div>
 
               {/* Experience Certificate Box */}
-              <div className="border-2 border-black p-4 bg-[#F7F4EE] flex flex-col justify-between">
+              <div className="border-2 border-black p-4 bg-[#FFFFFF] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold uppercase text-black">EXPERIENCE CERTIFICATES</span>
+                    <span className="text-xs font-bold uppercase text-black">Certificates</span>
                     <Award size={16} className="text-black" />
                   </div>
                   <div className="space-y-2 mb-3">
@@ -1173,10 +1173,10 @@ export function ProfileContent() {
                     type="button"
                     onClick={() => certInputRef.current?.click()}
                     disabled={uploadingCert}
-                    className="w-full py-2 bg-white border-2 border-black font-bold text-xs shadow-[2px_2px_0px_#1A1A1A] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-1"
+                    className="w-full py-2 bg-white border-2 border-black font-bold text-xs shadow-[2px_2px_0px_#0A0A0A] hover:bg-neutral-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-1"
                   >
                     {uploadingCert ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
-                    <span>UPLOAD DEGREE / PROOF</span>
+                    <span>Upload certificate</span>
                   </button>
                   <input
                     ref={certInputRef}
@@ -1202,10 +1202,10 @@ export function ProfileContent() {
           <div className="w-full flex flex-col items-center">
             {/* Physical Lanyard Webbing Strap */}
             <div className="w-14 h-16 bg-black border-x-2 border-t-2 border-black relative flex flex-col items-center justify-between p-1 shadow-md">
-              <span className="text-[8px] text-[#F7F4EE] font-bold tracking-tighter uppercase [writing-mode:vertical-rl] rotate-180 opacity-70">
+              <span className="text-[8px] text-[#FFFFFF] font-bold tracking-tighter uppercase [writing-mode:vertical-rl] rotate-180 opacity-70">
                 PRO-ALUMN CONDUIT
               </span>
-              <div className="w-6 h-3 border-2 border-black bg-[#F7F4EE] rounded-xs mt-auto"></div>
+              <div className="w-6 h-3 border-2 border-black bg-[#FFFFFF] rounded-xs mt-auto"></div>
             </div>
 
             {/* Lanyard Clasp Ring */}
@@ -1214,21 +1214,21 @@ export function ProfileContent() {
             {/* Physical Digital Credential Pass Card (with 3D Mouse Tilt) */}
             <div
               ref={badgeCardRef}
-              className="w-full bg-[#1A1A1A] text-white p-6 border-2 border-black shadow-[6px_6px_0px_#FF5500] flex flex-col gap-4 transition-transform duration-150 ease-out select-none relative overflow-hidden"
+              className="w-full bg-[#0A0A0A] text-white p-6 border-2 border-black shadow-[6px_6px_0px_#FF5500] flex flex-col gap-4 transition-transform duration-150 ease-out select-none relative overflow-hidden"
               id="badgeCard"
             >
               {/* Holographic Sheen Layer */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-[#CCFF00]/10 pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-[#FF5500]/10 pointer-events-none"></div>
 
               {/* Pass Header with punch hole */}
               <div className="flex items-center justify-between border-b border-white/20 pb-3 relative">
                 <div className="flex items-center gap-1.5">
                   <span className="text-[#FF5500] font-bold tracking-tighter">/////</span>
-                  <span className="text-xs uppercase tracking-widest text-white font-bold">PRO-PASS ID</span>
+                  <span className="text-xs uppercase tracking-widest text-white font-bold">Member card</span>
                 </div>
                 {/* Simulated lanyard slot */}
                 <div className="w-12 h-2 bg-white/20 rounded-full border border-white/40 mx-auto"></div>
-                <span className="text-xs text-[#CCFF00] font-bold">2026-V2</span>
+                <span className="text-xs text-[#FF5500] font-bold">2026-V2</span>
               </div>
 
               {/* Pass Photo & Keyline Info */}
@@ -1248,14 +1248,14 @@ export function ProfileContent() {
                       {userInitials}
                     </div>
                   )}
-                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#00E676] rounded-none"></div>
+                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#FF5500] rounded-none"></div>
                 </div>
                 <div className="flex flex-col gap-0.5 overflow-hidden">
                   <div className="text-[10px] text-white/60 uppercase tracking-widest font-bold">
-                    FELLOW ATTESTED
+                    Verified
                   </div>
                   <div className="text-base font-black text-white truncate uppercase">{user.name}</div>
-                  <div className="text-xs text-[#CCFF00] font-bold truncate">
+                  <div className="text-xs text-[#FF5500] font-bold truncate">
                     {fullProfile?.department || user.department || "SYSTEMS RESEARCH"}
                   </div>
                   <div className="text-[9px] text-white/50 truncate font-mono">
@@ -1267,7 +1267,7 @@ export function ProfileContent() {
               {/* Machine Readable Segment */}
               <div className="p-2 bg-white/5 border border-white/10 flex flex-col gap-1.5 font-mono">
                 <div className="flex justify-between text-[9px] text-white/60">
-                  <span>PKI SIGNATURE: 0xEF..83A</span>
+                  <span>ID: 0xEF..83A</span>
                   <span>ENC: SHA-256 / ECC</span>
                 </div>
                 {/* Barcode Mock */}
@@ -1299,34 +1299,34 @@ export function ProfileContent() {
               {/* Bottom Hologram Dot & Security Stamp */}
               <div className="flex items-center justify-between pt-2 border-t border-white/10 text-[10px]">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-gradient-to-r from-[#FF5500] via-[#CCFF00] to-[#1D4ED8] inline-block"></span>
+                  <span className="w-3 h-3 rounded-full bg-gradient-to-r from-[#FF5500] via-[#FF5500] to-[#000000] inline-block"></span>
                   <span className="text-white/70 font-bold">CHIP // NTAG424</span>
                 </div>
-                <span className="text-[#CCFF00] font-bold">TAP TO TRANSMIT</span>
+                <span className="text-[#FF5500] font-bold"></span>
               </div>
             </div>
 
             <div className="text-[10px] text-neutral-500 mt-2 flex items-center gap-1 font-bold">
-              <span>TACTILE 3D CARD TILT ACTIVE</span>
+              <span></span>
             </div>
           </div>
 
-          {/* ---------------- 2. LIQUIDITY & REFERRAL SLOTS ---------------- */}
-          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4">
+          {/* ---------------- 2. LIQUIDITY & Open slots ---------------- */}
+          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#0A0A0A] p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  05 // LIQUIDITY
+                <span className="px-2 py-0.5 border border-black text-xs bg-[#FFFFFF] font-bold">
+                  Activity
                 </span>
-                <span className="text-xs text-neutral-600 font-bold">ESCROW & CONDUIT SLOTS</span>
+                <span className="text-xs text-neutral-600 font-bold"></span>
               </div>
               <span className="w-2 h-2 rounded-full bg-[#FF5500]"></span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               {/* Slot Counter */}
-              <div className="p-3 bg-[#F7F4EE] border border-black flex flex-col">
-                <span className="text-[11px] text-neutral-600 font-bold uppercase">REFERRAL SLOTS</span>
+              <div className="p-3 bg-[#FFFFFF] border border-black flex flex-col">
+                <span className="text-[11px] text-neutral-600 font-bold uppercase">Open slots</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-3xl font-black text-black">3</span>
                   <span className="text-xs text-neutral-500 font-bold">/ 5 AVAIL</span>
@@ -1335,20 +1335,20 @@ export function ProfileContent() {
               </div>
 
               {/* Staked Balance */}
-              <div className="p-3 bg-[#F7F4EE] border border-black flex flex-col">
-                <span className="text-[11px] text-neutral-600 font-bold uppercase">ALUMN-CR TOKEN</span>
+              <div className="p-3 bg-[#FFFFFF] border border-black flex flex-col">
+                <span className="text-[11px] text-neutral-600 font-bold uppercase">Credits</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-3xl font-black text-[#FF5500]">350</span>
                   <span className="text-xs text-black font-bold">CR</span>
                 </div>
-                <span className="text-[9px] text-neutral-500 font-bold mt-1">ESCROW LOCKED: 50 CR</span>
+                <span className="text-[9px] text-neutral-500 font-bold mt-1">Reserved: 50 CR</span>
               </div>
             </div>
 
             {/* Trust Metric Key-Value Group */}
-            <div className="flex flex-col gap-2 p-3 bg-[#fcf9f3] border border-black text-xs">
+            <div className="flex flex-col gap-2 p-3 bg-[#FFFFFF] border border-black text-xs">
               <div className="flex justify-between items-center font-bold">
-                <span className="text-neutral-600">PEER TRUST RATING</span>
+                <span className="text-neutral-600">Rating</span>
                 <span className="text-black flex items-center gap-1">
                   <span className="text-[#FF5500]">★</span>
                   <span>4.98 / 5.0 (28 Fellows)</span>
@@ -1356,33 +1356,33 @@ export function ProfileContent() {
               </div>
               <div className="h-[1px] bg-black/10"></div>
               <div className="flex justify-between items-center font-bold">
-                <span className="text-neutral-600">IN-FLIGHT INTROS</span>
+                <span className="text-neutral-600">Active intros</span>
                 <span className="text-black">1 Active (Anthropic)</span>
               </div>
               <div className="h-[1px] bg-black/10"></div>
               <div className="flex justify-between items-center font-bold">
-                <span className="text-neutral-600">ESCROW STATUS</span>
-                <span className="text-[#FF5500]">SMART DISPATCH READY</span>
+                <span className="text-neutral-600">Status</span>
+                <span className="text-[#FF5500]">Ready</span>
               </div>
             </div>
 
             <Link
               href="/jobs"
-              className="w-full py-2.5 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#1A1A1A] hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#0A0A0A] hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center justify-center gap-2"
             >
-              <Send size={14} className="text-[#CCFF00]" />
-              <span>Issue Endorsed Candidate Intro</span>
+              <Send size={14} className="text-[#FF5500]" />
+              <span>Introduce someone</span>
             </Link>
           </div>
 
           {/* ---------------- 3. PRIVACY & CORRIDOR VISIBILITY CONTROLS ---------------- */}
-          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4">
+          <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#0A0A0A] p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  06 // CORRIDOR PRIVACY
+                <span className="px-2 py-0.5 border border-black text-xs bg-[#FFFFFF] font-bold">
+                  Privacy
                 </span>
-                <span className="text-xs text-neutral-600 font-bold">CONFIDENTIALITY CONTROLS</span>
+                <span className="text-xs text-neutral-600 font-bold"></span>
               </div>
               <Lock size={16} className="text-black" />
             </div>
@@ -1390,14 +1390,14 @@ export function ProfileContent() {
             {/* Switch 1 */}
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-black uppercase">Zero-Knowledge Mode</span>
-                <span className="text-[10px] text-neutral-600">Obfuscate company names to unverified nodes</span>
+                <span className="text-xs font-bold text-black uppercase">Hide company from guests</span>
+                <span className="text-[10px] text-neutral-600">Hide company name from people who are not signed in</span>
               </div>
               <button
                 type="button"
                 onClick={() => setZkMode(!zkMode)}
                 className={`relative w-11 h-6 border-2 border-black transition-colors ${
-                  zkMode ? "bg-[#CCFF00]" : "bg-[#F7F4EE]"
+                  zkMode ? "bg-[#FF5500]" : "bg-[#FFFFFF]"
                 }`}
               >
                 <span
@@ -1413,14 +1413,14 @@ export function ProfileContent() {
             {/* Switch 2 */}
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-black uppercase">Direct Inbound Conduits</span>
-                <span className="text-[10px] text-neutral-600">Permit direct encrypted P2P fellowship pings</span>
+                <span className="text-xs font-bold text-black uppercase">Allow messages</span>
+                <span className="text-[10px] text-neutral-600">Let other members message you directly</span>
               </div>
               <button
                 type="button"
                 onClick={() => setDirectConduits(!directConduits)}
                 className={`relative w-11 h-6 border-2 border-black transition-colors ${
-                  directConduits ? "bg-[#CCFF00]" : "bg-[#F7F4EE]"
+                  directConduits ? "bg-[#FF5500]" : "bg-[#FFFFFF]"
                 }`}
               >
                 <span
@@ -1436,14 +1436,14 @@ export function ProfileContent() {
             {/* Switch 3 */}
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-black uppercase">Geo-Node Masking</span>
-                <span className="text-[10px] text-neutral-600">Show only metropolitan corridor, hide IP region</span>
+                <span className="text-xs font-bold text-black uppercase">Hide exact location</span>
+                <span className="text-[10px] text-neutral-600">Show city only, not precise location</span>
               </div>
               <button
                 type="button"
                 onClick={() => setGeoMasking(!geoMasking)}
                 className={`relative w-11 h-6 border-2 border-black transition-colors ${
-                  geoMasking ? "bg-[#CCFF00]" : "bg-[#F7F4EE]"
+                  geoMasking ? "bg-[#FF5500]" : "bg-[#FFFFFF]"
                 }`}
               >
                 <span
@@ -1454,7 +1454,7 @@ export function ProfileContent() {
               </button>
             </div>
 
-            <div className="p-2 bg-[#F7F4EE] border border-black text-[10px] text-neutral-600 font-bold">
+            <div className="p-2 bg-[#FFFFFF] border border-black text-[10px] text-neutral-600 font-bold">
               POLICY ENFORCEMENT: STRICT ZERO-LEAK ALUMNI STANDARD // REVISION 4.2
             </div>
           </div>
@@ -1463,10 +1463,10 @@ export function ProfileContent() {
           <button
             type="button"
             onClick={handleSignOut}
-            className="w-full py-3 bg-red-50 text-red-900 border-2 border-black shadow-[3px_3px_0px_#1A1A1A] hover:bg-red-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 bg-red-50 text-red-900 border-2 border-black shadow-[3px_3px_0px_#0A0A0A] hover:bg-red-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-bold uppercase transition-all flex items-center justify-center gap-2"
           >
             <LogOut size={16} />
-            <span>DISCONNECT SECURE CONDUIT (SIGN OUT)</span>
+            <span>Sign out</span>
           </button>
         </div>
       </div>
@@ -1474,17 +1474,17 @@ export function ProfileContent() {
       {/* ============================================================ */}
       {/* 4. PERSISTENT BROADCAST TELEMETRY STRIP */}
       {/* ============================================================ */}
-      <div className="w-full bg-[#EFECE4] border-2 border-black p-3 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-bold text-neutral-700 shadow-[3px_3px_0px_#1A1A1A]">
+      <div className="w-full bg-[#F5F5F5] border-2 border-black p-3 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-bold text-neutral-700 shadow-[3px_3px_0px_#0A0A0A]">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 bg-[#00E676] rounded-full animate-pulse"></span>
-            <span className="text-black">ENCLAVE SECURED</span>
+            <span className="w-2.5 h-2.5 bg-[#FF5500] rounded-full animate-pulse"></span>
+            <span className="text-black"></span>
           </div>
           <span>HASH: SHA256-{user.id ? user.id.slice(0, 8) : "48f2a99c"}-proalumn</span>
           <span>PEER ATTESTATIONS: 28 CONFIRMED</span>
         </div>
         <div className="flex items-center gap-2 text-black">
-          <span>PKI CREDENTIAL ISSUED VIA POSTGRES 16.2 / PGVECTOR 0.6.0</span>
+          <span></span>
         </div>
       </div>
 
@@ -1514,12 +1514,12 @@ export function ProfileContent() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#fcf9f3] border-4 border-black shadow-[8px_8px_0px_#000000] p-6 space-y-4"
+            className="w-full max-w-md bg-[#FFFFFF] border-4 border-black shadow-[8px_8px_0px_#000000] p-6 space-y-4"
           >
             <div className="flex items-center justify-between border-b-2 border-black pb-3">
               <div className="flex items-center space-x-2">
                 <span className="font-bold text-sm uppercase">[ SCHEDULE FRONTIER ADVISORY ]</span>
-                <span className="px-2 py-0.5 bg-[#CCFF00] text-black text-[10px] font-bold border border-black">
+                <span className="px-2 py-0.5 bg-[#FF5500] text-white text-[10px] font-bold border border-black">
                   GOOGLE MEET
                 </span>
               </div>
@@ -1534,7 +1534,7 @@ export function ProfileContent() {
 
             <div className="space-y-4 text-xs">
               {scheduleStatus === "success" ? (
-                <div className="p-4 bg-[#CCFF00] border-2 border-black text-center space-y-2">
+                <div className="p-4 bg-[#FF5500] border-2 border-black text-center space-y-2">
                   <div className="font-bold text-sm text-black">✓ GOOGLE CALENDAR INVITE OPENED</div>
                   <div className="text-xs text-neutral-800">
                     A synchronized invite was populated for {user?.email || "your calendar"}.
@@ -1588,7 +1588,7 @@ export function ProfileContent() {
                     type="button"
                     onClick={handleScheduleMeet}
                     disabled={schedulingMeet || !meetTopic.trim()}
-                    className="w-full py-2.5 bg-[#FF5500] text-white border-2 border-black font-bold text-xs shadow-[2px_2px_0px_#1A1A1A] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
+                    className="w-full py-2.5 bg-[#FF5500] text-white border-2 border-black font-bold text-xs shadow-[2px_2px_0px_#0A0A0A] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
                   >
                     {schedulingMeet ? "PREPARING DISPATCH..." : "DISPATCH GOOGLE CALENDAR INVITE →"}
                   </button>
@@ -1601,7 +1601,7 @@ export function ProfileContent() {
 
       {/* Persistent Brutalist Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#CCFF00] border-4 border-black p-4 font-mono text-xs font-black shadow-[6px_6px_0px_#000000] flex items-center space-x-3 text-black">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#FF5500] border-4 border-black p-4 font-mono text-xs font-black shadow-[6px_6px_0px_#000000] flex items-center space-x-3 text-black">
           <span className="w-2.5 h-2.5 bg-black animate-ping"></span>
           <span>{toast}</span>
         </div>

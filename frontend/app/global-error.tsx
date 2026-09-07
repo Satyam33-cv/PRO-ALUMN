@@ -80,17 +80,17 @@ export default function GlobalError({
               fontSize: "0.875rem",
               fontWeight: 600,
               color: "#fff",
-              backgroundColor: "#2563eb",
+              backgroundColor: "#ff5500",
               border: "none",
               borderRadius: "0.75rem",
               cursor: "pointer",
               transition: "background-color 0.15s",
             }}
             onMouseOver={(e) =>
-              ((e.target as HTMLButtonElement).style.backgroundColor = "#1d4ed8")
+              ((e.target as HTMLButtonElement).style.backgroundColor = "#000000")
             }
             onMouseOut={(e) =>
-              ((e.target as HTMLButtonElement).style.backgroundColor = "#2563eb")
+              ((e.target as HTMLButtonElement).style.backgroundColor = "#ff5500")
             }
           >
             Reload page

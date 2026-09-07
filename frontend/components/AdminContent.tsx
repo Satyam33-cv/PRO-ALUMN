@@ -765,7 +765,7 @@ export function AdminContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fcf9f3] text-black flex items-center justify-center font-mono text-xs">
+      <div className="min-h-screen bg-[#FFFFFF] text-black flex items-center justify-center font-mono text-xs">
         <div className="p-8 bg-white border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-4 border-black border-t-[#FF5500] animate-spin" />
           <span className="font-bold tracking-wider">[ VERIFYING ENCLAVE CLEARANCE... ]</span>
@@ -777,7 +777,7 @@ export function AdminContent() {
   // Strict Confidentiality Gate: Only role === "admin" is permitted
   if (!user || role !== "admin") {
     return (
-      <div className="min-h-screen bg-[#fcf9f3] text-black flex items-center justify-center p-4 font-mono">
+      <div className="min-h-screen bg-[#FFFFFF] text-black flex items-center justify-center p-4 font-mono">
         <div className="max-w-xl w-full bg-white border-4 border-black shadow-[8px_8px_0px_#000000] p-8 space-y-6">
           <div className="flex items-center gap-3">
             <span className="px-2.5 py-1 bg-black text-[#FF5500] font-bold text-xs">
@@ -797,14 +797,14 @@ export function AdminContent() {
             </p>
           </div>
 
-          <div className="p-4 bg-[#EFECE4] border-2 border-black space-y-2 text-xs">
+          <div className="p-4 bg-[#F5F5F5] border-2 border-black space-y-2 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-neutral-600 font-bold">CURRENT SESSION:</span>
               <span className="font-bold text-black">{user ? user.name : "UNAUTHENTICATED"}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-neutral-600 font-bold">IDENTITY ROLE:</span>
-              <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold text-[10px] uppercase">
+              <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold text-[10px] uppercase">
                 {role || "GUEST"}
               </span>
             </div>
@@ -817,7 +817,7 @@ export function AdminContent() {
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <Link
               href={user ? "/dashboard" : "/login"}
-              className="flex-1 py-3 px-4 bg-[#FF5500] text-white font-bold uppercase text-center border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              className="flex-1 py-3 px-4 bg-[#FF5500] text-white font-bold uppercase text-center border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
             >
               {user ? "← Return to Member Console" : "Authenticate Account →"}
             </Link>
@@ -836,19 +836,19 @@ export function AdminContent() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-20 font-sans">
       {/* Tier-2 Operational Boundary Console Banner */}
-      <div className="border-4 border-black bg-[#F7F4EE] p-5 shadow-[6px_6px_0px_#000000]">
+      <div className="border-4 border-black bg-[#FFFFFF] p-5 shadow-[6px_6px_0px_#000000]">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-black pb-3">
           <div className="flex items-center gap-2">
-            <span className="h-3 w-3 bg-[#CCFF00] border-2 border-black" />
+            <span className="h-3 w-3 bg-[#FF5500] border-2 border-black" />
             <span className="font-mono text-xs font-black tracking-widest text-black uppercase">
               [ ROOT // SUPER-ADMIN COMMAND CONSOLE &amp; SYSTEM TELEMETRY ]
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="border-2 border-black bg-black px-2 py-0.5 font-mono text-[10px] font-black uppercase text-[#CCFF00]">
+            <span className="border-2 border-black bg-black px-2 py-0.5 font-mono text-[10px] font-black uppercase text-[#FF5500]">
               TIER-2 HIGH-DENSITY OPERATIONAL PLANE
             </span>
-            <span className="border-2 border-black bg-[#00E676] px-2 py-0.5 font-mono text-[10px] font-black uppercase text-black">
+            <span className="border-2 border-black bg-[#FF5500] px-2 py-0.5 font-mono text-[10px] font-black uppercase text-black">
               MAX AUDIT THROUGHPUT
             </span>
           </div>
@@ -862,7 +862,7 @@ export function AdminContent() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-black pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-2.5 w-2.5 border border-black bg-[#00E676] animate-pulse" />
+            <span className="flex h-2.5 w-2.5 border border-black bg-[#FF5500] animate-pulse" />
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-900 font-black">
               PRO ALUMN Institutional Command Enclave
             </p>
@@ -878,7 +878,7 @@ export function AdminContent() {
         {/* Live Health Indicator Pill & Online Users Count */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-3.5 py-1.5 border-2 border-black bg-white text-xs font-mono shadow-[2px_2px_0px_#000000]">
-            <span className="flex h-2 w-2 bg-[#00E676] animate-ping" />
+            <span className="flex h-2 w-2 bg-[#FF5500] animate-ping" />
             <span className="font-bold text-black">{onlineUsers.size} Online</span>
             <span className="text-black">|</span>
             <Server size={13} className={healthData?.status === "HEALTHY" ? "text-emerald-600" : "text-amber-600"} />
@@ -895,7 +895,7 @@ export function AdminContent() {
               reloadPages();
               showToast("Refreshed platform telemetry & moderation queues");
             }}
-            className="p-2 border-2 border-black bg-white hover:bg-black hover:text-[#CCFF00] shadow-[2px_2px_0px_#000000] text-black transition-all cursor-pointer"
+            className="p-2 border-2 border-black bg-white hover:bg-black hover:text-white shadow-[2px_2px_0px_#000000] text-black transition-all cursor-pointer"
             title="Refresh telemetry"
           >
             <RefreshCw size={16} />

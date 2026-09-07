@@ -190,13 +190,13 @@ export function JobListContent() {
             <span className="font-bold text-black uppercase tracking-wider">
               [ PILLAR // 02 ] CAREER OPPORTUNITIES & ALUMNI DIRECTORY
             </span>
-            <span className="px-2 py-0.5 bg-[#D9E021] text-black border border-black font-bold text-[10px] uppercase">
+            <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black font-bold text-[10px] uppercase">
               VERIFIED REQUISITIONS
             </span>
           </div>
           <div className="flex items-center space-x-2 font-mono text-[11px] text-neutral-600">
             <span>LIVE JOBS FEED</span>
-            <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-[#FF5500] animate-pulse"></span>
           </div>
         </div>
 
@@ -235,7 +235,7 @@ export function JobListContent() {
       {/* ============================================================ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
         {/* KPI 1 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
+        <div className="bg-[#FFFFFF] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
           <div className="flex items-center justify-between text-[10px] text-neutral-600 uppercase">
             <span className="font-bold">ACTIVE REQUISITIONS</span>
             <span className="px-1.5 py-0.5 bg-white border border-black font-bold">[K-01]</span>
@@ -251,7 +251,7 @@ export function JobListContent() {
         </div>
 
         {/* KPI 2 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
+        <div className="bg-[#FFFFFF] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
           <div className="flex items-center justify-between text-[10px] text-neutral-600 uppercase">
             <span className="font-bold">FULL-TIME ROLES</span>
             <span className="px-1.5 py-0.5 bg-white border border-black font-bold">[K-02]</span>
@@ -267,7 +267,7 @@ export function JobListContent() {
         </div>
 
         {/* KPI 3 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
+        <div className="bg-[#FFFFFF] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
           <div className="flex items-center justify-between text-[10px] text-neutral-600 uppercase">
             <span className="font-bold">REMOTE POSITIONS</span>
             <span className="px-1.5 py-0.5 bg-white border border-black font-bold">[K-03]</span>
@@ -283,7 +283,7 @@ export function JobListContent() {
         </div>
 
         {/* KPI 4 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
+        <div className="bg-[#FFFFFF] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between gap-2 relative overflow-hidden">
           <div className="flex items-center justify-between text-[10px] text-neutral-600 uppercase">
             <span className="font-bold">HIRING ORGANIZATIONS</span>
             <span className="px-1.5 py-0.5 bg-white border border-black font-bold">[K-04]</span>
@@ -327,7 +327,7 @@ export function JobListContent() {
                       className={`px-3 py-1.5 border border-black font-bold transition-all shadow-[1px_1px_0px_#000000] ${
                         isActive
                           ? "bg-black text-white"
-                          : "bg-[#fcf9f3] text-black hover:bg-neutral-200"
+                          : "bg-[#FFFFFF] text-black hover:bg-neutral-200"
                       }`}
                     >
                       {btn.label}
@@ -350,7 +350,7 @@ export function JobListContent() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search job titles, companies, requisitions, or skills (e.g. Distributed Systems)..."
-                className="w-full px-3 py-2.5 bg-[#fcf9f3] border-2 border-black text-xs font-mono placeholder:text-neutral-500 focus:outline-none focus:bg-white"
+                className="w-full px-3 py-2.5 bg-[#FFFFFF] border-2 border-black text-xs font-mono placeholder:text-neutral-500 focus:outline-none focus:bg-white"
               />
               {query && (
                 <button
@@ -411,12 +411,12 @@ export function JobListContent() {
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2 flex-wrap font-mono text-xs">
-                          <span className="px-2 py-0.5 bg-[#fcf9f3] border border-black font-bold">
+                          <span className="px-2 py-0.5 bg-[#FFFFFF] border border-black font-bold">
                             {job.reqCode}
                           </span>
                           <span
                             className={`px-2 py-0.5 border border-black font-bold ${
-                              isHigh ? "bg-[#D9E021] text-black" : "bg-white text-black"
+                              isHigh ? "bg-[#FF5500] text-white" : "bg-white text-black"
                             }`}
                           >
                             {job.similarity}% SKILL MATCH
@@ -424,7 +424,7 @@ export function JobListContent() {
                           <span className="px-2 py-0.5 bg-neutral-100 border border-black text-neutral-700 font-bold">
                             {job.domain}
                           </span>
-                          <span className="px-2 py-0.5 bg-[#CCFF00] border border-black text-black font-bold text-[10px]">
+                          <span className="px-2 py-0.5 bg-[#FF5500] border border-black text-black font-bold text-[10px]">
                             [VERIFIED ALUMNI POSTING]
                           </span>
                         </div>
@@ -441,7 +441,7 @@ export function JobListContent() {
                       </div>
 
                       {/* Poster Details Block */}
-                      <div className="bg-[#fcf9f3] p-2.5 border border-black shadow-[2px_2px_0px_#000000] flex items-center space-x-2.5 min-w-[200px] font-mono">
+                      <div className="bg-[#FFFFFF] p-2.5 border border-black shadow-[2px_2px_0px_#000000] flex items-center space-x-2.5 min-w-[200px] font-mono">
                         <div className="w-9 h-9 bg-black text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
                           {job.posterInitials}
                         </div>
@@ -461,7 +461,7 @@ export function JobListContent() {
                     </p>
 
                     {/* Stack Bar */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#fcf9f3] border border-black font-mono text-xs">
+                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#FFFFFF] border border-black font-mono text-xs">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-[10px] font-bold text-neutral-500 uppercase">
                           STACK:
@@ -476,7 +476,7 @@ export function JobListContent() {
                         ))}
                       </div>
                       <div className="flex items-center space-x-1.5 text-xs font-bold text-black">
-                        <span className="w-2 h-2 rounded-full bg-[#00E676]"></span>
+                        <span className="w-2 h-2 rounded-full bg-[#FF5500]"></span>
                         <span>Direct Alumni Connection</span>
                       </div>
                     </div>
@@ -490,7 +490,7 @@ export function JobListContent() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/jobs/${job.id}`}
-                          className="px-4 py-2 bg-[#fcf9f3] text-black font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-200 transition-all text-center"
+                          className="px-4 py-2 bg-[#FFFFFF] text-black font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-neutral-200 transition-all text-center"
                         >
                           View Requisition
                         </Link>
@@ -525,9 +525,9 @@ export function JobListContent() {
         <div className="xl:col-span-4 flex flex-col gap-6">
           <div className="bg-white p-6 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col gap-5 sticky top-24 font-mono">
             {/* Header */}
-            <div className="flex items-center justify-between pb-2 bg-[#fcf9f3] p-2 border-b-2 border-black -mx-6 -mt-6">
+            <div className="flex items-center justify-between pb-2 bg-[#FFFFFF] p-2 border-b-2 border-black -mx-6 -mt-6">
               <div className="flex items-center space-x-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#00E676]"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500]"></span>
                 <span className="font-bold text-xs uppercase text-black">
                   CAREER & MENTORSHIP ACTIONS
                 </span>
@@ -541,7 +541,7 @@ export function JobListContent() {
             <div className="flex flex-col gap-2.5">
               <Link
                 href="/mentorship"
-                className="p-3 bg-[#fcf9f3] hover:bg-neutral-100 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-between transition-all group"
+                className="p-3 bg-[#FFFFFF] hover:bg-neutral-100 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-between transition-all group"
               >
                 <div className="flex flex-col">
                   <span className="font-bold text-xs text-black">1:1 Mentorship & Reviews</span>
@@ -552,7 +552,7 @@ export function JobListContent() {
 
               <Link
                 href="/directory"
-                className="p-3 bg-[#fcf9f3] hover:bg-neutral-100 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-between transition-all group"
+                className="p-3 bg-[#FFFFFF] hover:bg-neutral-100 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-between transition-all group"
               >
                 <div className="flex flex-col">
                   <span className="font-bold text-xs text-black">Company Alumni Search</span>
@@ -563,7 +563,7 @@ export function JobListContent() {
 
               <Link
                 href="/events"
-                className="p-3 bg-[#fcf9f3] hover:bg-neutral-100 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-between transition-all group"
+                className="p-3 bg-[#FFFFFF] hover:bg-neutral-100 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-between transition-all group"
               >
                 <div className="flex flex-col">
                   <span className="font-bold text-xs text-black">Career Workshops & AMA</span>
@@ -575,7 +575,7 @@ export function JobListContent() {
 
             {/* Top Skills In Demand Box */}
             {topSkills.length > 0 && (
-              <div className="bg-[#fcf9f3] p-3.5 border-2 border-black shadow-[2px_2px_0px_#000000] space-y-2">
+              <div className="bg-[#FFFFFF] p-3.5 border-2 border-black shadow-[2px_2px_0px_#000000] space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-neutral-600">
                     TOP SKILLS IN DEMAND
@@ -596,7 +596,7 @@ export function JobListContent() {
             )}
 
             {/* Networking Best Practices */}
-            <div className="bg-[#fcf9f3] p-3.5 border-2 border-black shadow-[2px_2px_0px_#000000] space-y-1.5">
+            <div className="bg-[#FFFFFF] p-3.5 border-2 border-black shadow-[2px_2px_0px_#000000] space-y-1.5">
               <span className="text-[10px] uppercase font-bold text-neutral-600">
                 COMMUNITY NETWORKING ETIQUETTE
               </span>
@@ -613,7 +613,7 @@ export function JobListContent() {
       {/* ============================================================ */}
       <div className="w-full bg-white p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-3 font-mono text-xs">
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#00E676]"></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500]"></span>
           <span className="font-bold text-black">NETWORK STATUS: OPERATIONAL</span>
           <span className="text-neutral-400">|</span>
           <span className="text-neutral-700">REALTIME CAREER FEED</span>
@@ -621,7 +621,7 @@ export function JobListContent() {
           <span className="text-neutral-700">VERIFIED ALUMNI DIRECTORY</span>
         </div>
         <div className="flex items-center gap-3 text-neutral-600 text-[11px]">
-          <span className="px-2 py-0.5 bg-[#fcf9f3] border border-black font-bold text-black">
+          <span className="px-2 py-0.5 bg-[#FFFFFF] border border-black font-bold text-black">
             ALUMNIA CAREER NETWORK
           </span>
         </div>

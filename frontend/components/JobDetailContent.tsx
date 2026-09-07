@@ -111,7 +111,7 @@ export function JobDetailContent({ id }: { id: string }) {
       {toast && (
         <div
           role="status"
-          className="fixed top-6 right-6 z-50 bg-[#CCFF00] text-black border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
+          className="fixed top-6 right-6 z-50 bg-[#FF5500] text-white border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
         >
           <CheckCircle2 size={16} />
           <span>{toast}</span>
@@ -122,12 +122,12 @@ export function JobDetailContent({ id }: { id: string }) {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <Link
           href="/jobs"
-          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
         >
           <ArrowLeft size={14} /> Back to Job Board
         </Link>
         <div className="flex items-center gap-2 text-xs">
-          <span className="px-2 py-0.5 bg-[#EFECE4] border border-black font-bold uppercase text-neutral-600">
+          <span className="px-2 py-0.5 bg-[#F5F5F5] border border-black font-bold uppercase text-neutral-600">
             OPP-DISPATCH
           </span>
           <span className="font-bold text-neutral-400">//</span>
@@ -140,13 +140,13 @@ export function JobDetailContent({ id }: { id: string }) {
         {/* Banner Strip */}
         <header className="bg-black text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 border-b-4 border-black">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 bg-[#00FF66] inline-block animate-pulse"></span>
+            <span className="w-2.5 h-2.5 bg-[#FF5500] inline-block animate-pulse"></span>
             <span className="font-bold text-xs tracking-wider uppercase">
               OPPORTUNITY CONDUIT // VERIFIED ALUMNI POSTING
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-[#CCFF00] text-black border border-black text-[11px] font-bold uppercase">
+            <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black text-[11px] font-bold uppercase">
               {job.type}
             </span>
             {job.remote && (
@@ -161,7 +161,7 @@ export function JobDetailContent({ id }: { id: string }) {
         <div className="p-6 sm:p-8 bg-white border-b-2 border-black">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-6">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F7F4EE] border-3 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FFFFFF] border-3 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center shrink-0">
                 <BriefcaseBusiness size={32} className="text-black" />
               </div>
               <div className="space-y-1">
@@ -190,7 +190,7 @@ export function JobDetailContent({ id }: { id: string }) {
                 navigator.clipboard?.writeText(window.location.href);
                 showToast("Job link copied to clipboard");
               }}
-              className="px-3 py-1.5 bg-[#F7F4EE] hover:bg-black hover:text-white border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] transition-colors flex items-center gap-1.5 cursor-pointer self-start"
+              className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-black hover:text-white border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] transition-colors flex items-center gap-1.5 cursor-pointer self-start"
             >
               <Share2 size={13} /> Share
             </button>
@@ -227,7 +227,7 @@ export function JobDetailContent({ id }: { id: string }) {
                 <ul className="space-y-2">
                   {reqs.map((req, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-xs text-neutral-800 font-sans">
-                      <span className="w-4 h-4 bg-black text-[#CCFF00] border border-black flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                      <span className="w-4 h-4 bg-black text-[#FF5500] border border-black flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
                         ✓
                       </span>
                       <span>{req}</span>
@@ -238,7 +238,7 @@ export function JobDetailContent({ id }: { id: string }) {
             )}
 
             {/* Apply + Message Alumni CTAs (no referral pipeline) */}
-            <section className="p-6 bg-[#F7F4EE] border-2 border-black space-y-4 shadow-[4px_4px_0px_#000000]">
+            <section className="p-6 bg-[#FFFFFF] border-2 border-black space-y-4 shadow-[4px_4px_0px_#000000]">
               <div className="flex items-center gap-2 border-b border-black pb-3">
                 <UserCheck size={18} className="text-[#FF5500]" />
                 <span className="text-xs font-bold uppercase tracking-wider text-black">
@@ -255,7 +255,7 @@ export function JobDetailContent({ id }: { id: string }) {
                     href={(job as any).applyLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 py-3 px-4 bg-[#FF5500] hover:bg-orange-600 text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-1 py-3 px-4 bg-[#FF5500] hover:bg-[#B80500] text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <ExternalLink size={16} />
                     Apply on company site
@@ -269,7 +269,7 @@ export function JobDetailContent({ id }: { id: string }) {
                   type="button"
                   onClick={handleMessagePoster}
                   disabled={messaging}
-                  className="flex-1 py-3 px-4 bg-black hover:bg-[#1A1A1A] text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                  className="flex-1 py-3 px-4 bg-black hover:bg-[#0A0A0A] text-white border-2 border-black font-mono font-bold text-xs uppercase shadow-[3px_3px_0px_#000000] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                 >
                   {messaging ? (
                     <>
@@ -288,7 +288,7 @@ export function JobDetailContent({ id }: { id: string }) {
           </div>
 
           {/* Sidebar */}
-          <aside className="p-6 sm:p-8 bg-[#F7F4EE] space-y-6">
+          <aside className="p-6 sm:p-8 bg-[#FFFFFF] space-y-6">
             <div className="space-y-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-600 border-b-2 border-black pb-2">
                 REQUISITION METRICS

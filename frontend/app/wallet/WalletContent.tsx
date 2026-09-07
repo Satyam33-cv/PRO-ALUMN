@@ -28,7 +28,7 @@ export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
         <div className="border-b-2 border-black pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-wider bg-black text-[#CCFF00] px-2.5 py-0.5 font-bold">
+              <span className="font-mono text-[10px] uppercase tracking-wider bg-black text-[#FF5500] px-2.5 py-0.5 font-bold">
                 FINANCIAL LEDGER // ESCROW
               </span>
               <span className="font-mono text-[10px] text-neutral-500 uppercase font-bold">
@@ -44,17 +44,17 @@ export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-[#CCFF00] border-2 border-black text-black font-mono text-xs font-bold shadow-[2px_2px_0px_#000000]">
+            <span className="px-3 py-1 bg-[#FF5500] border-2 border-black text-white font-mono text-xs font-bold shadow-[2px_2px_0px_#000000]">
               ESCROW STATUS: ACTIVE
             </span>
           </div>
         </div>
 
         {/* Hero Neo-Brutalist Balance Card */}
-        <div className="bg-[#F7F4EE] dark:bg-[#12151b] border-4 border-black shadow-[6px_6px_0px_#000000] p-6 sm:p-8 relative overflow-hidden">
+        <div className="bg-[#FFFFFF] dark:bg-[#12151b] border-4 border-black shadow-[6px_6px_0px_#000000] p-6 sm:p-8 relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
-              <div className="h-16 w-16 bg-[#CCFF00] border-2 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center shrink-0">
+              <div className="h-16 w-16 bg-[#FF5500] border-2 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center shrink-0">
                 <Coins size={32} className="text-black" />
               </div>
               <div>
@@ -75,7 +75,7 @@ export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
             {/* Credit Allocation Explainer */}
             <div className="bg-white dark:bg-[#181a20] border-2 border-black p-4 shadow-[3px_3px_0px_#000000] space-y-2 max-w-md font-mono text-xs">
               <div className="flex items-start gap-2">
-                <ShieldCheck size={16} className="text-[#00E676] shrink-0 mt-0.5" />
+                <ShieldCheck size={16} className="text-[#FF5500] shrink-0 mt-0.5" />
                 <p className="text-neutral-700 dark:text-neutral-300">
                   <strong className="text-black dark:text-white">+50 pts</strong> credited on campus admin credential verification.
                 </p>
@@ -123,7 +123,7 @@ export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
                     <div
                       className={`h-10 w-10 shrink-0 border-2 border-black flex items-center justify-center font-bold ${
                         tx.amount > 0
-                          ? "bg-[#00E676] text-black shadow-[2px_2px_0px_#000000]"
+                          ? "bg-[#FF5500] text-black shadow-[2px_2px_0px_#000000]"
                           : "bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]"
                       }`}
                     >
@@ -148,7 +148,7 @@ export function WalletContent({ wallet }: { wallet: UserWallet | null }) {
                   <div
                     className={`font-mono font-bold text-base sm:text-lg px-3 py-1 border-2 border-black shrink-0 ${
                       tx.amount > 0
-                        ? "bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]"
+                        ? "bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]"
                         : "bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]"
                     }`}
                   >

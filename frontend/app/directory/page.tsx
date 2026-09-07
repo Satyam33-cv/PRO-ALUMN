@@ -32,7 +32,7 @@ export default async function DirectoryPage({
 	const view = rawView === "showcase" ? "showcase" : rawView === "member" ? "member" : undefined;
 
 	return (
-		<Suspense fallback={<div className="min-h-screen bg-[#fcf9f3] p-8 font-mono text-xs flex items-center justify-center">[ INITIALIZING DIRECTORY TOPOLOGY... ]</div>}>
+		<Suspense fallback={<div className="min-h-screen bg-[#FFFFFF] p-8 font-mono text-xs flex items-center justify-center">[ INITIALIZING DIRECTORY TOPOLOGY... ]</div>}>
 			<AdaptiveShell activeRoute="directory" forcePublic={view === "showcase"}>
 				<DirectoryContent initialQuery={query} viewMode={view} />
 			</AdaptiveShell>

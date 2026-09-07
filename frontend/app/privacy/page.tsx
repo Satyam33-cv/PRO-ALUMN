@@ -6,13 +6,13 @@ import { ArrowLeft, Shield, Lock, Eye, FileText, Mail } from "lucide-react";
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-[#F7F4EE] text-black font-sans selection:bg-[#CCFF00] selection:text-black py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFFFFF] text-black font-sans selection:bg-[#FF5500] selection:text-white py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Navigation & Header */}
         <div className="flex items-center justify-between font-mono text-xs">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white transition-colors"
           >
             <ArrowLeft size={14} /> Back to Portal
           </Link>
@@ -26,7 +26,7 @@ export default function PrivacyPolicyPage() {
           {/* Header Banner */}
           <header className="bg-black text-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b-4 border-black">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#CCFF00] border-2 border-black flex items-center justify-center text-black font-black">
+              <div className="w-8 h-8 bg-[#FF5500] border-2 border-black flex items-center justify-center text-black font-black">
                 <Shield size={18} />
               </div>
               <div>
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
                 </p>
               </div>
             </div>
-            <span className="px-2.5 py-1 bg-[#CCFF00] text-black border-2 border-black font-mono text-xs font-black uppercase">
+            <span className="px-2.5 py-1 bg-[#FF5500] text-white border-2 border-black font-mono text-xs font-black uppercase">
               CONFIDENTIAL // GOVERNED
             </span>
           </header>
@@ -63,7 +63,7 @@ export default function PrivacyPolicyPage() {
                 2. Information We Collect
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                <div className="p-4 bg-[#F7F4EE] border-2 border-black space-y-2">
+                <div className="p-4 bg-[#FFFFFF] border-2 border-black space-y-2">
                   <div className="flex items-center gap-2 font-bold text-black">
                     <FileText size={16} className="text-[#FF5500]" />
                     <span>ACADEMIC & IDENTITY DATA</span>
@@ -73,9 +73,9 @@ export default function PrivacyPolicyPage() {
                   </p>
                 </div>
 
-                <div className="p-4 bg-[#F7F4EE] border-2 border-black space-y-2">
+                <div className="p-4 bg-[#FFFFFF] border-2 border-black space-y-2">
                   <div className="flex items-center gap-2 font-bold text-black">
-                    <Lock size={16} className="text-[#00E676]" />
+                    <Lock size={16} className="text-[#FF5500]" />
                     <span>CAREER & PROFESSIONAL DATA</span>
                   </div>
                   <p className="text-neutral-700 font-sans text-xs">
@@ -83,9 +83,9 @@ export default function PrivacyPolicyPage() {
                   </p>
                 </div>
 
-                <div className="p-4 bg-[#F7F4EE] border-2 border-black space-y-2">
+                <div className="p-4 bg-[#FFFFFF] border-2 border-black space-y-2">
                   <div className="flex items-center gap-2 font-bold text-black">
-                    <Eye size={16} className="text-[#2E5BFF]" />
+                    <Eye size={16} className="text-[#FF5500]" />
                     <span>TELEMETRY & MATCHING VECTORS</span>
                   </div>
                   <p className="text-neutral-700 font-sans text-xs">
@@ -93,9 +93,9 @@ export default function PrivacyPolicyPage() {
                   </p>
                 </div>
 
-                <div className="p-4 bg-[#F7F4EE] border-2 border-black space-y-2">
+                <div className="p-4 bg-[#FFFFFF] border-2 border-black space-y-2">
                   <div className="flex items-center gap-2 font-bold text-black">
-                    <Shield size={16} className="text-[#CCFF00]" />
+                    <Shield size={16} className="text-[#FF5500]" />
                     <span>FINANCIAL TRANSACTIONS</span>
                   </div>
                   <p className="text-neutral-700 font-sans text-xs">
@@ -108,7 +108,7 @@ export default function PrivacyPolicyPage() {
             {/* How Information Is Used */}
             <section className="space-y-3">
               <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2 font-mono">
-                <span className="w-3 h-3 bg-[#CCFF00] inline-block"></span>
+                <span className="w-3 h-3 bg-[#FF5500] inline-block"></span>
                 3. Purpose of Processing
               </h2>
               <ul className="list-disc pl-5 text-sm text-neutral-700 space-y-1.5">
@@ -122,7 +122,7 @@ export default function PrivacyPolicyPage() {
             {/* Data Retention & Security */}
             <section className="space-y-3">
               <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2 font-mono">
-                <span className="w-3 h-3 bg-[#00E676] inline-block"></span>
+                <span className="w-3 h-3 bg-[#FF5500] inline-block"></span>
                 4. Cryptographic Security & Passwords
               </h2>
               <p className="text-sm text-neutral-700">
@@ -133,7 +133,7 @@ export default function PrivacyPolicyPage() {
             {/* User Rights */}
             <section className="space-y-3">
               <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2 font-mono">
-                <span className="w-3 h-3 bg-[#2E5BFF] inline-block"></span>
+                <span className="w-3 h-3 bg-[#FF5500] inline-block"></span>
                 5. User Rights & Data Deletion
               </h2>
               <p className="text-sm text-neutral-700">
@@ -150,7 +150,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           {/* Footer Strip */}
-          <footer className="bg-[#F7F4EE] border-t-4 border-black p-4 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+          <footer className="bg-[#FFFFFF] border-t-4 border-black p-4 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
             <div className="flex items-center gap-2 text-neutral-600">
               <Mail size={14} />
               <span>Questions? Contact: admin@proalumn.edu</span>

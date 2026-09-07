@@ -55,11 +55,11 @@ export const RewardsContent = memo(function RewardsContent() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-16 px-4 sm:px-6">
       {/* ================= HERO HEADER ================= */}
-      <div className="relative overflow-hidden bg-[#F7F4EE] dark:bg-[#12151b] border-4 border-black text-black dark:text-white p-6 sm:p-10 shadow-[6px_6px_0px_#000000]">
+      <div className="relative overflow-hidden bg-[#FFFFFF] dark:bg-[#12151b] border-4 border-black text-black dark:text-white p-6 sm:p-10 shadow-[6px_6px_0px_#000000]">
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-[#CCFF00] border-2 border-black text-xs font-mono font-bold uppercase tracking-wider">
-              <Sparkles size={14} className="text-[#CCFF00]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-[#FF5500] border-2 border-black text-xs font-mono font-bold uppercase tracking-wider">
+              <Sparkles size={14} className="text-[#FF5500]" />
               ALUMNI REWARDS &amp; ACHIEVEMENTS // PROTOCOL
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-headline uppercase text-black dark:text-white">
@@ -83,7 +83,7 @@ export const RewardsContent = memo(function RewardsContent() {
 
             {/* Total Points Card */}
             <div className="p-4 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] flex flex-col items-center justify-center text-center">
-              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-[#CCFF00] text-black mb-2 shadow-[2px_2px_0px_#000000]">
+              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-[#FF5500] text-white mb-2 shadow-[2px_2px_0px_#000000]">
                 <Coins size={22} />
               </div>
               <span className="text-2xl font-black font-mono text-black dark:text-white">{totalPoints}</span>
@@ -92,7 +92,7 @@ export const RewardsContent = memo(function RewardsContent() {
 
             {/* Platform Rank Card */}
             <div className="p-4 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] col-span-2 sm:col-span-1 flex flex-col items-center justify-center text-center">
-              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-black text-[#CCFF00] mb-2 shadow-[2px_2px_0px_#000000]">
+              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-black text-[#FF5500] mb-2 shadow-[2px_2px_0px_#000000]">
                 <Trophy size={22} />
               </div>
               <span className="text-2xl font-black font-mono text-black dark:text-white">#{rank}</span>
@@ -124,7 +124,7 @@ export const RewardsContent = memo(function RewardsContent() {
                 key={item.day}
                 className={`flex flex-col items-center justify-center p-2 sm:p-3 border-2 border-black transition-all ${
                   item.active
-                    ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000] font-bold"
+                    ? "bg-[#FF5500] text-white shadow-[3px_3px_0px_#000000] font-bold"
                     : "bg-white dark:bg-[#181a20] text-neutral-400"
                 } ${item.bonus ? "ring-2 ring-[#FF5500]" : ""}`}
               >
@@ -149,8 +149,8 @@ export const RewardsContent = memo(function RewardsContent() {
           onClick={() => setActiveTab("badges")}
           className={`flex items-center gap-2 px-4 py-2 border-2 border-black font-headline text-xs uppercase font-bold transition-all cursor-pointer ${
             activeTab === "badges"
-              ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000]"
-              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#F7F4EE]"
+              ? "bg-[#FF5500] text-white shadow-[3px_3px_0px_#000000]"
+              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#FFFFFF]"
           }`}
         >
           <Award size={16} />
@@ -161,8 +161,8 @@ export const RewardsContent = memo(function RewardsContent() {
           onClick={() => setActiveTab("leaderboard")}
           className={`flex items-center gap-2 px-4 py-2 border-2 border-black font-headline text-xs uppercase font-bold transition-all cursor-pointer ${
             activeTab === "leaderboard"
-              ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000]"
-              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#F7F4EE]"
+              ? "bg-[#FF5500] text-white shadow-[3px_3px_0px_#000000]"
+              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#FFFFFF]"
           }`}
         >
           <Trophy size={16} />
@@ -173,8 +173,8 @@ export const RewardsContent = memo(function RewardsContent() {
           onClick={() => setActiveTab("history")}
           className={`flex items-center gap-2 px-4 py-2 border-2 border-black font-headline text-xs uppercase font-bold transition-all cursor-pointer ${
             activeTab === "history"
-              ? "bg-[#CCFF00] text-black shadow-[3px_3px_0px_#000000]"
-              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#F7F4EE]"
+              ? "bg-[#FF5500] text-white shadow-[3px_3px_0px_#000000]"
+              : "bg-white dark:bg-[#181a20] text-black dark:text-white hover:bg-[#FFFFFF]"
           }`}
         >
           <Coins size={16} />

@@ -75,7 +75,7 @@ export function AlumniProfileContent({ id }: { id: string }) {
       {toastMessage && (
         <div
           role="status"
-          className="fixed top-6 right-6 z-50 bg-[#CCFF00] text-black border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
+          className="fixed top-6 right-6 z-50 bg-[#FF5500] text-white border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
         >
           <CheckCircle2 size={16} />
           <span>{toastMessage}</span>
@@ -86,12 +86,12 @@ export function AlumniProfileContent({ id }: { id: string }) {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <Link
           href="/directory"
-          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
         >
           <ArrowLeft size={14} /> Back to Directory
         </Link>
         <div className="flex items-center gap-2 text-xs">
-          <span className="px-2 py-0.5 bg-[#EFECE4] border border-black font-bold uppercase text-neutral-600">
+          <span className="px-2 py-0.5 bg-[#F5F5F5] border border-black font-bold uppercase text-neutral-600">
             NODE REGISTRY
           </span>
           <span className="font-bold text-neutral-400">//</span>
@@ -104,13 +104,13 @@ export function AlumniProfileContent({ id }: { id: string }) {
         {/* Dossier Header Bar */}
         <header className="bg-black text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 border-b-4 border-black">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 bg-[#CCFF00] inline-block animate-pulse"></span>
+            <span className="w-2.5 h-2.5 bg-[#FF5500] inline-block animate-pulse"></span>
             <span className="font-bold text-xs tracking-wider uppercase">
               VERIFIED ALUMNI DOSSIER // INSTITUTIONAL RECORD
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-[#CCFF00] text-black border border-black text-[11px] font-bold uppercase">
+            <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black text-[11px] font-bold uppercase">
               CLASS OF &apos;{data.batch || (data.batchYear ? String(data.batchYear).slice(-2) : "22")}
             </span>
             <span className="px-2 py-0.5 bg-neutral-800 text-neutral-200 border border-neutral-700 text-[11px] font-bold uppercase">
@@ -124,7 +124,7 @@ export function AlumniProfileContent({ id }: { id: string }) {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               {/* Avatar Box */}
-              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-black text-[#CCFF00] border-3 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center font-black text-2xl sm:text-3xl shrink-0 uppercase tracking-tighter">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-black text-[#FF5500] border-3 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center font-black text-2xl sm:text-3xl shrink-0 uppercase tracking-tighter">
                 {data.initials || data.name.substring(0, 2).toUpperCase()}
               </div>
 
@@ -164,13 +164,13 @@ export function AlumniProfileContent({ id }: { id: string }) {
             <div className="flex flex-row sm:flex-col gap-2.5 w-full sm:w-auto shrink-0 pt-2 sm:pt-0">
               <Link
                 href={`/jobs?company=${encodeURIComponent(data.company || "")}`}
-                className="flex-1 sm:flex-none text-center px-4 py-2 bg-[#FF5500] text-white border-2 border-black text-xs font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-1.5"
+                className="flex-1 sm:flex-none text-center px-4 py-2 bg-[#FF5500] text-white border-2 border-black text-xs font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-1.5"
               >
                 <UserCheck size={14} /> Request Referral
               </Link>
               <Link
                 href="/chat"
-                className="flex-1 sm:flex-none text-center px-4 py-2 bg-[#CCFF00] text-black border-2 border-black text-xs font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-1.5"
+                className="flex-1 sm:flex-none text-center px-4 py-2 bg-[#FF5500] text-white border-2 border-black text-xs font-bold uppercase shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-1.5"
               >
                 <MessageSquare size={14} /> Open Conduit
               </Link>
@@ -179,7 +179,7 @@ export function AlumniProfileContent({ id }: { id: string }) {
         </div>
 
         {/* Biography & Mission Statement */}
-        <section className="p-6 sm:p-8 bg-[#F7F4EE] border-b-2 border-black space-y-3">
+        <section className="p-6 sm:p-8 bg-[#FFFFFF] border-b-2 border-black space-y-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-black inline-block"></span>
             <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-600">
@@ -211,7 +211,7 @@ export function AlumniProfileContent({ id }: { id: string }) {
             {skillsList.map((skill, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1 bg-[#F7F4EE] text-black border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000]"
+                className="px-3 py-1 bg-[#FFFFFF] text-black border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000]"
               >
                 {skill}
               </span>
@@ -220,7 +220,7 @@ export function AlumniProfileContent({ id }: { id: string }) {
         </section>
 
         {/* Telemetry & Links Footer */}
-        <footer className="p-4 sm:p-6 bg-[#EFECE4] flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
+        <footer className="p-4 sm:p-6 bg-[#F5F5F5] flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
           <div className="flex items-center gap-4 flex-wrap">
             {data.linkedinUrl && (
               <a

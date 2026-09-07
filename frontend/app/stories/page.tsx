@@ -29,7 +29,7 @@ export default async function StoriesPage({
   const view = rawView === "showcase" ? "showcase" : rawView === "member" ? "member" : undefined;
 
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#fcf9f3] p-8 font-mono text-xs flex items-center justify-center">[ INITIALIZING SPOTLIGHT CHRONICLES... ]</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#FFFFFF] p-8 font-mono text-xs flex items-center justify-center">[ INITIALIZING SPOTLIGHT CHRONICLES... ]</div>}>
       <AdaptiveShell activeRoute="stories" forcePublic={view === "showcase"}>
         <StoriesContent viewMode={view} />
       </AdaptiveShell>
