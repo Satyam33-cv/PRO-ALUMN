@@ -1,17 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Tier 1 neo-brutalist tokens (DESIGN_SYSTEM.md) */
 :root {
-  --font-jakarta: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-jetbrains: "JetBrains Mono", monospace;
-  --font-outfit: "Outfit", system-ui, sans-serif;
-  --font-inter: "Inter", system-ui, sans-serif;
-  --font-space-grotesk: "Space Grotesk", sans-serif;
-  --font-space-mono: "Space Mono", monospace;
-  --font-newsreader: "Newsreader", serif;
+  --canvas: #f7f4ef;
+  --surface: #ffffff;
+  --ink: #1a1a1a;
+  --muted: #635f57;
+  --lime: #ccff00;
+  --orange: #ff5500;
+  --border: #000000;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -19,30 +22,52 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: #F8FAFC;
-  color: #0F172A;
-  font-family: var(--font-jakarta), system-ui, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.dark body,
-body.dark {
-  background: #090D16;
-  color: #F1F5F9;
-}
-
 ::selection {
-  background: #2563EB;
-  color: #FFFFFF;
+  background: var(--lime);
+  color: #000000;
 }
 
 a { color: inherit; text-decoration: none; }
 
+*:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
 @layer utilities {
   .text-balance { text-wrap: balance; }
-  
-  /* Masonry grid for stories */
+
+  .page-shell {
+    @apply mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8;
+  }
+
+  .nb-card {
+    @apply border-2 border-black bg-white shadow-[3px_3px_0_#000000];
+  }
+
+  .nb-card-lg {
+    @apply border-4 border-black bg-white shadow-[6px_6px_0_#000000];
+  }
+
+  .nb-btn {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-black bg-black px-4 py-2.5 font-mono text-xs font-bold uppercase text-white shadow-[2px_2px_0_#000000] transition-all hover:bg-[#ff5500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+  }
+
+  .nb-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-black bg-white px-4 py-2.5 font-mono text-xs font-bold uppercase text-black shadow-[2px_2px_0_#000000] transition-all hover:bg-[#f7f4ef] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+  }
+
+  .nb-chip {
+    @apply inline-flex border border-black bg-[#f7f4ef] px-2 py-0.5 font-mono text-[10px] font-bold uppercase;
+  }
+
   .masonry-grid {
     columns: 1;
     column-gap: 1.5rem;
@@ -62,53 +87,17 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-*:focus-visible {
-  outline: 2px solid #2563EB;
-  outline-offset: 2px;
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--canvas); }
+::-webkit-scrollbar-thumb { background: #1a1a1a; border: 2px solid var(--canvas); }
+::-webkit-scrollbar-thumb:hover { background: #ff5500; }
 
-/* Glass morphism */
-.glass {
-  background: rgba(248, 250, 252, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(15, 23, 42, 0.06);
-}
-
-.dark .glass {
-  background: rgba(9, 13, 22, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Animated background pattern (used by BackgroundPattern) */
-@keyframes pattern-shift {
-  from { background-position: 0 0, 0 0, 0 0, 0 0; }
-  to { background-position: 50px 50px, 50px 50px, 50px 50px, 50px 50px; }
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.15); border-radius: 3px; }
-.dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); }
-::-webkit-scrollbar-thumb:hover { background: rgba(15, 23, 42, 0.25); }
-
-/* Neobrutalist Leaflet Popup & Marker Overrides */
 .leaflet-popup-content-wrapper {
   border: 2px solid #000000 !important;
-  border-radius: 0px !important;
-  box-shadow: 4px 4px 0px #000000 !important;
-  padding: 0 !important;
-  background: #ffffff !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #000000 !important;
+  font-family: var(--font-display) !important;
 }
-.leaflet-popup-content {
-  margin: 10px !important;
-  line-height: 1.4 !important;
-}
-.leaflet-popup-tip-container {
-  display: none !important;
-}
-.leaflet-container {
-  background: #f7f4ee !important;
-  font-family: var(--font-space-mono), monospace !important;
+.leaflet-popup-tip {
+  border: 2px solid #000000 !important;
 }
