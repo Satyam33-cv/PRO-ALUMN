@@ -1,20 +1,29 @@
 // apps/api/src/routes/matching.js
 // AI Smart Matching — pgvector "Top 5 Alumni for You"
+// Scoring per docs/specs/ai-matching.md: 60% cosine similarity, 15% same
+// department, 15% target-company overlap, 10% shared skills. Base cosine
+// similarity must clear MIN_SIMILARITY or the pool is empty — never force
+// a top-5 with no real signal.
 const express = require('express');
 const router = express.Router();
 const prisma = require('../db');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { generateEmbedding, profileText } = require('../services/embeddings');
 
+const WEIGHTS = { similarity: 0.60, department: 0.15, company: 0.15, skills: 0.10 };
+const MIN_SIMILARITY = 0.30;
+const CANDIDATE_POOL_SIZE = 50; // widen past `limit` so re-ranking has room to work with
+
 function toVectorLiteral(arr) {
   return `[${arr.map((n) => (Number.isInteger(n) ? n : n.toFixed(6))).join(',')}]`;
 }
 
-const PROFILE_SELECT = {
-  id: true, name: true, avatarUrl: true, role: true, batchYear: true, department: true,
-  currentCompany: true, jobTitle: true, location: true, bio: true, skills: true,
-  interests: true, isVerified: true,
-};
+function splitList(str) {
+  return (str || '')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+}
 
 // Fetch a user's profile + text to embed
 async function getUserContext(id) {
@@ -23,14 +32,56 @@ async function getUserContext(id) {
     select: {
       id: true, name: true, role: true, department: true, batchYear: true,
       currentCompany: true, jobTitle: true, location: true, bio: true,
-      skills: true, interests: true, isVerified: true,
+      skills: true, interests: true, targetCompanies: true, isVerified: true,
     },
   });
   return user;
 }
 
+// Score one candidate against the student. Returns { composite (0-100), reasons[], sharedSkills[] }.
+function scoreCandidate(student, candidate, cosineSim) {
+  const reasons = [];
+
+  const sameDept = Boolean(
+    student.department && candidate.department &&
+    student.department.trim().toLowerCase() === candidate.department.trim().toLowerCase()
+  );
+  if (sameDept) reasons.push(`Same department (${candidate.department})`);
+
+  const targetCompanies = splitList(student.targetCompanies);
+  const candidateCompany = (candidate.currentCompany || '').trim().toLowerCase();
+  const companyMatch = Boolean(candidateCompany && targetCompanies.includes(candidateCompany));
+  if (companyMatch) reasons.push(`Works at ${candidate.currentCompany}`);
+
+  const studentSkills = new Set(splitList(student.skills));
+  const candidateSkills = splitList(candidate.skills);
+  const sharedSkills = candidateSkills.filter((s) => studentSkills.has(s));
+  // Cap the skill component's contribution at 3 shared skills so one very
+  // skill-heavy profile can't dominate the score on this axis alone.
+  const skillScore = Math.min(sharedSkills.length, 3) / 3;
+  if (sharedSkills.length > 0) {
+    reasons.push(`${sharedSkills.length} shared skill${sharedSkills.length === 1 ? '' : 's'}`);
+  }
+
+  if (candidate.isVerified) reasons.push('Verified alumnus');
+
+  const composite =
+    cosineSim * WEIGHTS.similarity +
+    (sameDept ? WEIGHTS.department : 0) +
+    (companyMatch ? WEIGHTS.company : 0) +
+    skillScore * WEIGHTS.skills;
+
+  return {
+    matchScore: Math.max(0, Math.min(100, Math.round(composite * 100))),
+    reasons,
+    sharedSkills: candidateSkills.filter((s) => studentSkills.has(s)),
+  };
+}
+
 // =================== GET /api/matching/top-alumni ===================
-// Student-facing: top 5 alumni by cosine similarity to the student's profile
+// Student-facing: top 5 alumni by composite score against the student's profile.
+// Query params: department, company (both narrow the eligible pool, they never
+// re-rank it), minScore (override MIN_SIMILARITY).
 router.get('/top-alumni', authenticate, requireRole('STUDENT'), async (req, res) => {
   try {
     const student = await getUserContext(req.user.id);
@@ -39,27 +90,47 @@ router.get('/top-alumni', authenticate, requireRole('STUDENT'), async (req, res)
     const embedding = await generateEmbedding(profileText(student));
     const vec = toVectorLiteral(embedding);
     const limit = Math.min(parseInt(req.query.limit) || 5, 20);
+    const minSimilarity = req.query.minScore ? Math.max(0, Math.min(1, parseFloat(req.query.minScore))) : MIN_SIMILARITY;
+    const departmentFilter = req.query.department ? String(req.query.department).trim().toLowerCase() : null;
+    const companyFilter = req.query.company ? String(req.query.company).trim().toLowerCase() : null;
 
+    // Widen the candidate pool via cosine ordering, then re-rank the top slice
+    // in application code — the extra signals (department/company/skills)
+    // aren't cheap to express as a single SQL ORDER BY against comma-separated
+    // text columns, and the dataset size here doesn't need that to stay fast.
     const rows = await prisma.$queryRawUnsafe(
       `SELECT id, name, "avatarUrl", "batchYear", department, "currentCompany", "jobTitle",
               location, bio, skills, interests, "isVerified",
-              1 - (embedding <=> $1::vector) AS score
+              1 - (embedding <=> $1::vector) AS "cosineSim"
        FROM "User"
-       WHERE role = 'ALUMNI' AND "isActive" = true AND embedding IS NOT NULL
+       WHERE role = 'ALUMNI' AND "isActive" = true AND "isVerified" = true AND embedding IS NOT NULL
        ORDER BY embedding <=> $1::vector
        LIMIT $2`,
-      vec, limit,
+      vec, CANDIDATE_POOL_SIZE,
     );
 
-    const alumni = rows.map((r) => ({
-      id: r.id, name: r.name, avatarUrl: r.avatarUrl, batchYear: r.batchYear,
-      department: r.department, currentCompany: r.currentCompany, jobTitle: r.jobTitle,
-      location: r.location, bio: r.bio, skills: r.skills, interests: r.interests,
-      isVerified: r.isVerified,
-      matchScore: Math.max(0, Math.round((r.score ?? 0) * 100)), // similarity → percentage
-    }));
+    const eligible = rows.filter((r) => {
+      if ((r.cosineSim ?? 0) < minSimilarity) return false;
+      if (departmentFilter && (r.department || '').trim().toLowerCase() !== departmentFilter) return false;
+      if (companyFilter && (r.currentCompany || '').trim().toLowerCase() !== companyFilter) return false;
+      return true;
+    });
 
-    res.json({ student: { id: student.id, name: student.name }, alumni });
+    const ranked = eligible
+      .map((r) => {
+        const { matchScore, reasons, sharedSkills } = scoreCandidate(student, r, r.cosineSim ?? 0);
+        return {
+          id: r.id, name: r.name, avatarUrl: r.avatarUrl, batchYear: r.batchYear,
+          department: r.department, currentCompany: r.currentCompany, jobTitle: r.jobTitle,
+          location: r.location, bio: r.bio, skills: r.skills, interests: r.interests,
+          isVerified: r.isVerified,
+          matchScore, reasons, sharedSkills,
+        };
+      })
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, limit);
+
+    res.json({ student: { id: student.id, name: student.name }, alumni: ranked });
   } catch (err) {
     console.error('GET /matching/top-alumni error:', err);
     res.status(500).json({ error: 'Failed to compute matches' });
@@ -145,11 +216,12 @@ router.get('/skill-swap', authenticate, async (req, res) => {
       return res.json({ matches: [], message: 'Add skills you want to learn in your profile to find swap partners.' });
     }
 
-    // Find all active users (except self) who have skillsOffered populated
+    // Find all active, verified users (except self) who have skillsOffered populated
     const candidates = await prisma.user.findMany({
       where: {
         id: { not: req.user.id },
         isActive: true,
+        isVerified: true,
         skillsOffered: { not: null },
       },
       select: {

@@ -332,48 +332,6 @@ INSERT INTO "JobPosting" (
   NOW()
 ) ON CONFLICT ("id") DO NOTHING;
 
--- 4. Insert Job Applications / Referral Requests with Resumes
-INSERT INTO "ReferralRequest" (
-  "id", "jobId", "requestedById", "referredById", "resumeUrl", "coverLetter",
-  "studentNote", "status", "createdAt", "updatedAt"
-) VALUES
-(
-  'ref-req-01',
-  'job-google-sde1',
-  'usr-student-01',
-  'usr-alumni-01',
-  'https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/sample-resume.pdf',
-  'I have built several distributed systems projects in Go and contributed to Kubernetes SIG-docs. I would love the opportunity to be referred to Google Cloud.',
-  'Hi Vikram sir, I attended your tech talk on Kubernetes and have been preparing DSA rigorously. Would really appreciate your referral!',
-  'ACCEPTED',
-  NOW() - INTERVAL '2 days',
-  NOW()
-),
-(
-  'ref-req-02',
-  'job-amazon-sde-intern',
-  'usr-student-02',
-  'usr-alumni-02',
-  'https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/sample-resume.pdf',
-  'Active LeetCode solver (Top 5%) with experience in building production React and Java Spring microservices.',
-  'Hello Ananya maam, I am a 3rd year IT student and would love an internship referral for AWS.',
-  'PENDING',
-  NOW() - INTERVAL '1 day',
-  NOW()
-),
-(
-  'ref-req-03',
-  'job-google-sde1',
-  'usr-student-03',
-  'usr-alumni-01',
-  'https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/sample-resume.pdf',
-  'Strong background in data modeling and backend systems with Python and PostgreSQL.',
-  'Hi Vikram sir, applying for the SDE-1 position at Google. Resume attached.',
-  'PENDING',
-  NOW() - INTERVAL '4 hours',
-  NOW()
-) ON CONFLICT ("id") DO NOTHING;
-
 -- 5. Insert Official Announcements
 INSERT INTO "Announcement" (
   "id", "title", "content", "authorId", "targetRole", "priority", "isPinned", "createdAt", "updatedAt"

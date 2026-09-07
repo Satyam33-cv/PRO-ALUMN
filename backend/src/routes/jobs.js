@@ -13,24 +13,7 @@ router.get('/my-postings', authenticate, async (req, res) => {
       where: req.user.role === 'ADMIN' ? {} : { postedById: req.user.id },
       orderBy: { createdAt: 'desc' },
       include: {
-        referrals: {
-          include: {
-            requestedBy: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                batchYear: true,
-                department: true,
-                rollNumber: true,
-                resumeUrl: true,
-                skills: true,
-              },
-            },
-          },
-          orderBy: { createdAt: 'desc' },
-        },
-        _count: { select: { referrals: true } },
+        postedBy: { select: { id: true, name: true, currentCompany: true, jobTitle: true, avatarUrl: true } },
       },
     });
 
@@ -41,101 +24,7 @@ router.get('/my-postings', authenticate, async (req, res) => {
   }
 });
 
-// =================== GET /api/jobs/:id/applicants/export ===================
-// Export all applicants & resumes for a specific job as CSV
-router.get('/:id/applicants/export', authenticate, async (req, res) => {
-  try {
-    const job = await prisma.jobPosting.findUnique({
-      where: { id: req.params.id },
-      include: {
-        referrals: {
-          include: {
-            requestedBy: {
-              select: {
-                name: true,
-                email: true,
-                batchYear: true,
-                department: true,
-                rollNumber: true,
-                resumeUrl: true,
-                phone: true,
-              },
-            },
-          },
-        },
-      },
-    });
 
-    if (!job) return res.status(404).json({ error: 'Job not found' });
-    if (job.postedById !== req.user.id && req.user.role !== 'ADMIN') {
-      return res.status(403).json({ error: 'Not authorized to export applicants for this job' });
-    }
-
-    const headers = ['Applicant Name', 'Email', 'Phone', 'Roll Number', 'Department', 'Batch Year', 'Status', 'Resume URL', 'Cover Letter / Note', 'Applied Date'];
-    const data = job.referrals.map((r) => [
-      r.requestedBy?.name || '',
-      r.requestedBy?.email || '',
-      r.requestedBy?.phone || '',
-      r.requestedBy?.rollNumber || '',
-      r.requestedBy?.department || '',
-      r.requestedBy?.batchYear || '',
-      r.status,
-      r.resumeUrl || r.requestedBy?.resumeUrl || '',
-      r.studentNote || r.coverLetter || '',
-      r.createdAt.toISOString(),
-    ]);
-
-    const csvContent = [headers.join(','), ...data.map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))].join('\n');
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', `attachment; filename=applicants-${job.company}-${job.title.replace(/[^a-z0-9]/gi, '_')}.csv`);
-    res.send(csvContent);
-  } catch (err) {
-    console.error('GET /jobs/:id/applicants/export error:', err);
-    res.status(500).json({ error: 'Failed to export applicants' });
-  }
-});
-
-// =================== PATCH /api/jobs/:id/applicants/:requestId/status ===================
-// Alumni / Admin: Update candidate application status (HIRED, ACCEPTED, REJECTED, etc.)
-router.patch('/:id/applicants/:requestId/status', authenticate, async (req, res) => {
-  try {
-    const { status, alumniNote } = req.body;
-    const validStatuses = ['PENDING', 'ACCEPTED', 'REJECTED', 'REFERRED', 'HIRED', 'NOT_HIRED'];
-    if (!status || !validStatuses.includes(status.toUpperCase())) {
-      return res.status(400).json({ error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
-    }
-
-    const job = await prisma.jobPosting.findUnique({ where: { id: req.params.id } });
-    if (!job) return res.status(404).json({ error: 'Job not found' });
-    if (job.postedById !== req.user.id && req.user.role !== 'ADMIN') {
-      return res.status(403).json({ error: 'Not authorized' });
-    }
-
-    const updated = await prisma.referralRequest.update({
-      where: { id: req.params.requestId },
-      data: {
-        status: status.toUpperCase(),
-        alumniNote: alumniNote || undefined,
-        referredAt: status.toUpperCase() === 'REFERRED' ? new Date() : undefined,
-        finalOutcomeAt: ['HIRED', 'NOT_HIRED'].includes(status.toUpperCase()) ? new Date() : undefined,
-      },
-      include: {
-        requestedBy: { select: { id: true, name: true, email: true } },
-      },
-    });
-
-    // Award bonus points to alumni if candidate hired
-    if (status.toUpperCase() === 'HIRED') {
-      const { awardPoints } = require('../services/gamification');
-      await awardPoints(req.user.id, 'CANDIDATE_HIRED', 100).catch(() => {});
-    }
-
-    res.json({ request: updated, message: `Candidate status updated to ${status.toUpperCase()}` });
-  } catch (err) {
-    console.error('PATCH applicant status error:', err);
-    res.status(500).json({ error: 'Failed to update applicant status' });
-  }
-});
 
 // =================== POST /api/jobs ===================
 // Alumni or Admin can post a job
@@ -144,7 +33,7 @@ router.post('/', authenticate, requireRole('ALUMNI', 'ADMIN'), async (req, res) 
     const {
       title, company, location, jobType, experienceLevel,
       description, requirements, skills, salaryMin, salaryMax,
-      currency, applyLink, deadline, referralSlots,
+      currency, applyLink, deadline,
     } = req.body;
 
     if (!title || !company || !location || !description) {
@@ -161,11 +50,9 @@ router.post('/', authenticate, requireRole('ALUMNI', 'ADMIN'), async (req, res) 
         salaryMax: salaryMax ? parseInt(salaryMax) : null,
         currency: currency || 'INR',
         applyLink, deadline: deadline ? new Date(deadline) : null,
-        referralSlots: referralSlots ? parseInt(referralSlots) : 1,
       },
       include: {
         postedBy: { select: { id: true, name: true, currentCompany: true, jobTitle: true, avatarUrl: true } },
-        _count: { select: { referrals: true } },
       },
     });
 
@@ -212,7 +99,6 @@ router.get('/', async (req, res) => {
         skip, take,
         include: {
           postedBy: { select: { id: true, name: true, currentCompany: true, jobTitle: true, avatarUrl: true, batchYear: true } },
-          _count: { select: { referrals: true } },
         },
       }),
       prisma.jobPosting.count({ where }),
@@ -241,10 +127,6 @@ router.get('/:id', async (req, res) => {
             avatarUrl: true, batchYear: true, department: true, linkedinUrl: true,
           },
         },
-        referrals: {
-          select: { id: true, status: true, createdAt: true },
-        },
-        _count: { select: { referrals: true } },
       },
     });
 
@@ -266,7 +148,7 @@ router.patch('/:id', authenticate, async (req, res) => {
     }
 
     const allowed = ['title', 'company', 'location', 'jobType', 'description', 'requirements',
-      'skills', 'salaryMin', 'salaryMax', 'currency', 'applyLink', 'deadline', 'referralSlots', 'status'];
+      'skills', 'salaryMin', 'salaryMax', 'currency', 'applyLink', 'deadline', 'status'];
 
     const data = {};
     for (const key of allowed) {

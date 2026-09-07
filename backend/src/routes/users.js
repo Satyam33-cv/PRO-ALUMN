@@ -44,6 +44,7 @@ router.patch('/me', authenticate, async (req, res) => {
       'name', 'phone', 'avatarUrl', 'batchYear', 'department', 'rollNumber',
       'currentCompany', 'jobTitle', 'location', 'linkedinUrl', 'bio', 'resumeUrl',
       'skills', 'skillsOffered', 'skillsWanted', 'interests', 'timeline', 'referredByCode',
+      'targetCompanies',
     ];
     const data = {};
     for (const key of allowed) {
@@ -61,7 +62,7 @@ router.patch('/me', authenticate, async (req, res) => {
     if (data.department !== undefined || data.batchYear !== undefined) {
       data.lastEducationUpdate = now;
     }
-    if (data.skills !== undefined || data.skillsOffered !== undefined || data.skillsWanted !== undefined || data.interests !== undefined || data.timeline !== undefined) {
+    if (data.skills !== undefined || data.skillsOffered !== undefined || data.skillsWanted !== undefined || data.interests !== undefined || data.timeline !== undefined || data.targetCompanies !== undefined) {
       data.lastProjectUpdate = now;
     }
 
@@ -73,6 +74,7 @@ router.patch('/me', authenticate, async (req, res) => {
         batchYear: true, department: true, currentCompany: true, jobTitle: true,
         location: true, linkedinUrl: true, bio: true, resumeUrl: true,
         skills: true, skillsOffered: true, skillsWanted: true, interests: true, timeline: true, isVerified: true,
+        targetCompanies: true,
         createdAt: true, currentStreak: true, longestStreak: true, totalPoints: true,
         lastProfileUpdate: true, lastJobUpdate: true, lastEducationUpdate: true, lastProjectUpdate: true,
         profileCompleteness: true,

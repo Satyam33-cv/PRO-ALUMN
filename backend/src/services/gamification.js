@@ -103,7 +103,7 @@ function checkProfileFreshness(user) {
         title: 'Career Check-in',
         message: user.currentCompany 
           ? `Are you still at ${user.currentCompany}? Confirm or update your position to keep your network informed!`
-          : `Add your current company and role to help students reach out for referrals.`,
+          : `Add your current company and role to help students connect for mentorship.`,
         points: 50,
         actionLabel: 'Verify Career Info',
         actionHref: '/profile',

@@ -49,10 +49,6 @@ async function run() {
     const userIds = foundUsers.map((u) => u.id);
 
     // Remove foreign-key dependencies
-    await prisma.referralRequest.deleteMany({
-      where: { OR: [{ requestedById: { in: userIds } }, { referredById: { in: userIds } }] },
-    }).catch(() => {});
-
     await prisma.mentorship.deleteMany({
       where: { OR: [{ studentId: { in: userIds } }, { mentorId: { in: userIds } }] },
     }).catch(() => {});

@@ -101,12 +101,11 @@ describe("ProfileContent", () => {
     expect(screen.getAllByText(/Quantix Systems/i).length).toBeGreaterThan(0);
   });
 
-  it("renders embedding radar and dimension gauges", () => {
+  it("renders skills and expertise section", () => {
     setupProfileMocks();
     render(<ProfileContent />);
-    expect(screen.getByText(/02 \/\/ EMBEDDING RADAR/i)).toBeInTheDocument();
-    expect(screen.getByText(/DISTRIBUTED TENSOR COMPILER/i)).toBeInTheDocument();
-    expect(screen.getByText(/LATTICE CRYPTOGRAPHY/i)).toBeInTheDocument();
+    expect(screen.getByText(/02 \/\/ SKILLS & EXPERTISE/i)).toBeInTheDocument();
+    expect(screen.getByText(/ACTIVE SKILL VECTORS & TAGS/i)).toBeInTheDocument();
   });
 
   it("renders digital lanyard ID pass with barcode", () => {

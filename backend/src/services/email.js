@@ -148,53 +148,8 @@ async function sendProfileApprovalEmail(userEmail, userName) {
   });
 }
 
-// 3. Referral status change (accepted / referred / hired / rejected...)
-async function sendReferralStatusEmail({ to, name, status, jobTitle, company }) {
-  const labels = {
-    ACCEPTED: 'Your referral request was accepted',
-    REJECTED: 'Your referral request was declined',
-    REFERRED: 'You were referred internally',
-    HIRED: '🎉 You got hired!',
-    NOT_HIRED: 'Update on your referral',
-  };
-  const safeName = escapeHtml(name || 'Candidate');
-  const safeJobTitle = escapeHtml(jobTitle || 'Role');
-  const safeCompany = escapeHtml(company || 'Company');
-  return sendEmail({
-    to,
-    subject: `PRO ALUMN — ${labels[status] || 'Referral update'}`,
-    html: layout(
-      labels[status] || 'Referral Update',
-      `<p>Hi <strong>${safeName}</strong>,</p>
-       <p>Status changed for <strong>${safeJobTitle}</strong> at <strong>${safeCompany}</strong>: 
-       <span style="font-weight:700;color:#2563eb">${labels[status] || status}</span>.</p>`,
-      'View My Referrals',
-      `${PORTAL_URL}/jobs`
-    ),
-  });
-}
 
-// 4. New referral request received by alumni
-async function sendNewReferralEmail({ to, name, studentName, jobTitle, company }) {
-  const safeName = escapeHtml(name || 'Alum');
-  const safeStudentName = escapeHtml(studentName || 'A student');
-  const safeJobTitle = escapeHtml(jobTitle || 'Role');
-  const safeCompany = escapeHtml(company || 'Company');
-  return sendEmail({
-    to,
-    subject: 'You have a new referral request',
-    html: layout(
-      'New Referral Request ✉️',
-      `<p>Hi <strong>${safeName}</strong>,</p>
-       <p><strong>${safeStudentName}</strong> requested an internal referral for <strong>${safeJobTitle}</strong> at <strong>${safeCompany}</strong>.</p>
-       <p>Review their pitch and attached resume on your dashboard.</p>`,
-      'Review Referral Request',
-      `${PORTAL_URL}/jobs`
-    ),
-  });
-}
-
-// 5. Achievement / Success Story approved
+// 3. Achievement / Success Story approved
 async function sendStoryApprovedEmail(to, storyTitle) {
   const safeStoryTitle = escapeHtml(storyTitle || 'Achievement');
   return sendEmail({
@@ -262,8 +217,6 @@ module.exports = {
   sendWelcomeEmail,
   sendProfileApprovalEmail,
   sendAchievementApprovalEmail: (email, title) => sendStoryApprovedEmail(email, title),
-  sendReferralStatusEmail,
-  sendNewReferralEmail,
   sendStoryApprovedEmail,
   sendSupportTicketConfirmation,
   sendAdminTicketNotification,

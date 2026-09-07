@@ -864,119 +864,22 @@ export function ProfileContent() {
             </div>
           </div>
 
-          {/* ---------------- 02 // EMBEDDING RADAR & SKILLS ---------------- */}
+          {/* ---------------- 02 // SKILLS & EXPERTISE ---------------- */}
           <div className="bg-white border-2 border-black shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between pb-3 border-b-2 border-black">
               <div className="flex items-center gap-2">
                 <span className="px-2 py-0.5 border border-black text-xs bg-[#F7F4EE] font-bold">
-                  02 // EMBEDDING RADAR
+                  02 // SKILLS &amp; EXPERTISE
                 </span>
-                <span className="text-xs text-neutral-600 font-bold">GEMINI-1.5-PRO // HNSW-384D PROJECTION</span>
+                <span className="text-xs text-neutral-600 font-bold">COMPETENCIES &amp; DOMAIN KNOWLEDGE</span>
               </div>
-              <div className="text-xs text-[#FF5500] font-bold">
-                COSINE METRIC: 0.964 SIMILARITY
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-              {/* Visual Coordinate Plot (Clean SVG Vector Topology) */}
-              <div className="md:col-span-5 flex flex-col items-center justify-center p-3 bg-[#F7F4EE] border-2 border-black relative">
-                <svg className="w-44 h-44 overflow-visible" viewBox="0 0 200 200">
-                  {/* Concentric coordinate rings */}
-                  <polygon
-                    fill="none"
-                    points="100,15 185,50 185,150 100,185 15,150 15,50"
-                    stroke="#D5CEBF"
-                    strokeDasharray="3,3"
-                    strokeWidth="1.5"
-                  />
-                  <polygon
-                    fill="none"
-                    points="100,40 160,65 160,135 100,160 40,135 40,65"
-                    stroke="#D5CEBF"
-                    strokeWidth="1.5"
-                  />
-                  <polygon
-                    fill="none"
-                    points="100,70 130,82 130,118 100,130 70,118 70,82"
-                    stroke="#D5CEBF"
-                    strokeWidth="1"
-                  />
-                  {/* Axis crosshairs */}
-                  <line stroke="#1A1A1A" strokeDasharray="2,2" strokeWidth="1" x1="100" x2="100" y1="10" y2="190" />
-                  <line stroke="#1A1A1A" strokeDasharray="2,2" strokeWidth="1" x1="10" x2="190" y1="100" y2="100" />
-                  {/* Vector Surface Area */}
-                  <polygon
-                    fill="#FF5500"
-                    fillOpacity="0.25"
-                    points="100,22 178,58 152,142 100,172 32,138 28,54"
-                    stroke="#1A1A1A"
-                    strokeWidth="2"
-                  />
-                  {/* Hot Nodes */}
-                  <circle cx="100" cy="22" fill="#1A1A1A" r="4" />
-                  <circle cx="178" cy="58" fill="#1A1A1A" r="4" />
-                  <circle cx="152" cy="142" fill="#FF5500" r="4" />
-                  <circle cx="100" cy="172" fill="#1A1A1A" r="4" />
-                  <circle cx="32" cy="138" fill="#1A1A1A" r="4" />
-                  <circle cx="28" cy="54" fill="#CCFF00" r="4" stroke="#1A1A1A" strokeWidth="1" />
-                </svg>
-                <div className="mt-2 text-[10px] text-neutral-600 uppercase text-center font-bold">
-                  EIGENVECTOR SPAN: 384-DIM → 2D T-SNE LATENT SPACE
-                </div>
-              </div>
-
-              {/* Numerical Dimension Gauges */}
-              <div className="md:col-span-7 flex flex-col gap-3">
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between text-xs uppercase font-bold">
-                    <span>DISTRIBUTED TENSOR COMPILER</span>
-                    <span className="text-[#FF5500]">0.982 // TOP 1%</span>
-                  </div>
-                  <div className="h-3 w-full bg-[#F7F4EE] border border-black p-0.5">
-                    <div className="h-full bg-black" style={{ width: "98%" }}></div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between text-xs uppercase font-bold">
-                    <span>LATTICE CRYPTOGRAPHY & ZK-ROLLUPS</span>
-                    <span>0.941 // PROVEN</span>
-                  </div>
-                  <div className="h-3 w-full bg-[#F7F4EE] border border-black p-0.5">
-                    <div className="h-full bg-[#FF5500]" style={{ width: "94%" }}></div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between text-xs uppercase font-bold">
-                    <span>SIMD MICROKERNELS & ACCELERATORS</span>
-                    <span>0.920 // EXPERT</span>
-                  </div>
-                  <div className="h-3 w-full bg-[#F7F4EE] border border-black p-0.5">
-                    <div className="h-full bg-black" style={{ width: "92%" }}></div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between text-xs uppercase font-bold">
-                    <span>MENTORSHIP LIQUIDITY & CODESHARE</span>
-                    <span>0.994 // STEWARD</span>
-                  </div>
-                  <div className="h-3 w-full bg-[#F7F4EE] border border-black p-0.5">
-                    <div className="h-full bg-[#CCFF00]" style={{ width: "99%" }}></div>
-                  </div>
-                </div>
-
-                <div className="pt-1 flex items-center justify-between text-[10px] text-neutral-500 font-bold">
-                  <span>INDEXED: PGVECTOR HNSW COSINE MATRIX</span>
-                  <span>LAST COMPUTED: 14 MINS AGO</span>
-                </div>
+              <div className="text-xs text-neutral-500 font-bold font-mono">
+                {skills.length} SKILLS REGISTERED
               </div>
             </div>
 
-            {/* Skills & Stack Vectors */}
-            <div className="pt-4 border-t-2 border-black/10">
+            {/* Skills & Stack Tags */}
+            <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-black">
                   ACTIVE SKILL VECTORS & TAGS:

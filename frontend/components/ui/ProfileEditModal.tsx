@@ -16,6 +16,7 @@ export interface ProfileEditModalProps {
     linkedinUrl?: string;
     bio?: string;
     phone?: string;
+    targetCompanies?: string;
   } | null;
   onClose: () => void;
   onSave: (data: Record<string, unknown>) => Promise<void>;
@@ -35,6 +36,7 @@ export function ProfileEditModal({
     location: user?.location || "",
     linkedinUrl: user?.linkedinUrl || "",
     bio: user?.bio || "",
+    targetCompanies: user?.targetCompanies || "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -252,6 +254,23 @@ export function ProfileEditModal({
               placeholder="Write a brief intro about your journey, interests, or what you can offer..."
               className="mt-1.5 w-full resize-none rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass placeholder:text-ink/35"
             />
+          </label>
+
+          {/* Row 6: Target Companies (AI Matching) */}
+          <label className="block">
+            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink/60">
+              <Building2 size={13} className="text-ink/40" /> Target Companies (AI Matching Boost)
+            </span>
+            <input
+              type="text"
+              value={formData.targetCompanies}
+              onChange={(e) => setFormData({ ...formData, targetCompanies: e.target.value })}
+              placeholder="e.g. Google, Microsoft, Stripe (comma-separated)"
+              className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-brass placeholder:text-ink/35"
+            />
+            <span className="text-[11px] text-ink/45 mt-1 block">
+              Alumni at these companies receive a 15% priority boost in your AI matches.
+            </span>
           </label>
 
           {/* Actions */}

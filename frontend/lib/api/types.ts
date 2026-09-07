@@ -36,6 +36,7 @@ export type UpdateProfileData = {
   batchYear?: number;
   linkedinUrl?: string;
   interests?: string;
+  targetCompanies?: string;
 };
 
 export type SearchParams = {
@@ -60,8 +61,12 @@ export type CreateReferralData = {
 export type ReferralRequestResponse = {
   id: string;
   jobId: string;
-  status: string;
+  requestedById: string;
+  referredById?: string;
+  resumeUrl?: string;
+  coverLetter?: string;
   studentNote?: string;
+  status: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
   createdAt: string;
   job?: import("@/lib/types").Job;
 };
@@ -84,6 +89,7 @@ export type User = {
   skillsOffered?: string;
   skillsWanted?: string;
   interests?: string;
+  targetCompanies?: string;
   timeline?: unknown;
   resumeUrl?: string;
   currentStreak?: number;

@@ -38,7 +38,7 @@ router.get('/system-health', async (req, res) => {
     const userCount = await prisma.user.count();
     const jobCount = await prisma.jobPosting.count();
     const storyCount = await prisma.successStory.count();
-    const referralCount = await prisma.referralRequest.count();
+    const referralCount = 0; // Referral pipeline removed; kept for backward compat
     const mentorshipCount = await prisma.mentorship.count();
     const eventCount = await prisma.event.count();
     const newsletterCount = await prisma.newsletter.count().catch(() => 0);
@@ -88,8 +88,8 @@ router.get('/stats', async (req, res) => {
     const byRole = await prisma.user.groupBy({ by: ['role'], _count: { _all: true } });
     const jobs = await prisma.jobPosting.count();
     const openJobs = await prisma.jobPosting.count({ where: { status: 'OPEN' } });
-    const referrals = await prisma.referralRequest.count();
-    const referralsByStatus = await prisma.referralRequest.groupBy({ by: ['status'], _count: { _all: true } });
+    const referrals = 0; // Referral pipeline removed
+    const referralsByStatus = [];
     const storiesApproved = await prisma.successStory.count({ where: { isApproved: true } });
     const storiesPending = await prisma.successStory.count({ where: { isApproved: false } });
     const events = await prisma.event.count();
@@ -101,14 +101,6 @@ router.get('/stats', async (req, res) => {
       select: { id: true, name: true, email: true, role: true, isVerified: true, createdAt: true, currentCompany: true, jobTitle: true },
     });
 
-    const recentReferrals = await prisma.referralRequest.findMany({
-      orderBy: { createdAt: 'desc' }, take: 6,
-      select: {
-        id: true, status: true, createdAt: true,
-        job: { select: { title: true, company: true } },
-        requestedBy: { select: { name: true } },
-      },
-    });
 
     const verified = await prisma.user.count({ where: { isVerified: true } });
 
@@ -122,7 +114,6 @@ router.get('/stats', async (req, res) => {
         announcements,
       },
       recentUsers,
-      recentReferrals,
     });
   } catch (err) {
     console.error('GET /admin/stats error:', err);
@@ -465,7 +456,7 @@ router.get('/jobs', async (req, res) => {
       orderBy: { createdAt: 'desc' },
       include: {
         postedBy: { select: { id: true, name: true, email: true, currentCompany: true } },
-        _count: { select: { referrals: true } },
+        _count: { select: {} },
       },
     });
 
@@ -1010,7 +1001,7 @@ const RESERVED_SLUGS = new Set([
   'home',
   'directory',
   'jobs',
-  'referrals',
+
   'stories',
   'announcements',
   'chat',

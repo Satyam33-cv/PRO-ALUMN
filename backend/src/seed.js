@@ -356,7 +356,7 @@ async function main() {
       skills: 'Go, Python, Kubernetes, Linux, Distributed Systems',
       salaryMin: 1800000,
       salaryMax: 2400000,
-      referralSlots: 5,
+
       status: 'OPEN',
     },
   }).catch(() => null);
@@ -374,7 +374,7 @@ async function main() {
       skills: 'Java, Data Structures, OOP, SQL, Problem Solving',
       salaryMin: 80000,
       salaryMax: 100000,
-      referralSlots: 8,
+
       status: 'OPEN',
     },
   }).catch(() => null);
@@ -392,7 +392,7 @@ async function main() {
       skills: 'C++, LLVM, Compilers, Computer Architecture, Performance Profiling',
       salaryMin: 6500000,
       salaryMax: 9000000,
-      referralSlots: 3,
+
       status: 'OPEN',
     },
   }).catch(() => null);
@@ -410,7 +410,7 @@ async function main() {
       skills: 'CUDA, Triton, PyTorch, Distributed Systems, GPU Optimization',
       salaryMin: 18000000,
       salaryMax: 28000000,
-      referralSlots: 4,
+
       status: 'OPEN',
     },
   }).catch(() => null);
@@ -428,7 +428,7 @@ async function main() {
       skills: 'C++, Rust, Database Internals, Vectorized Execution, SIMD',
       salaryMin: 5500000,
       salaryMax: 7800000,
-      referralSlots: 5,
+
       status: 'OPEN',
     },
   }).catch(() => null);
@@ -446,7 +446,7 @@ async function main() {
       skills: 'Go, Ruby, React, Distributed Consensus, High-TPS Payments',
       salaryMin: 12000000,
       salaryMax: 16000000,
-      referralSlots: 6,
+
       status: 'OPEN',
     },
   }).catch(() => null);
@@ -600,23 +600,7 @@ async function main() {
   }).catch(() => {});
   console.log('🏆 Success Stories seeded (5 approved & featured stories across YC, AWS, Google, Snowflake, OpenAI)');
 
-  // 8. MENTORSHIP & REFERRALS
-  // Seed sample applications with resumes
-  if (job1 && student1) {
-    await prisma.referralRequest.upsert({
-      where: { jobId_requestedById: { jobId: job1.id, requestedById: student1.id } },
-      update: {},
-      create: {
-        jobId: job1.id,
-        requestedById: student1.id,
-        referredById: alumni1.id,
-        resumeUrl: 'https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/sample-resume.pdf',
-        studentNote: 'Hi Vikram sir, I built Go microservices and would love a referral for Google Cloud!',
-        status: 'ACCEPTED',
-      },
-    }).catch(() => {});
-  }
-
+  // 8. MENTORSHIP
   // Seed Mentorship relationship with dual-handshake
   await prisma.mentorship.upsert({
     where: { studentId_mentorId: { studentId: student1.id, mentorId: alumni1.id } },

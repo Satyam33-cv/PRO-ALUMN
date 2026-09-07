@@ -23,7 +23,7 @@ import {
 import { useAuth } from "@/lib/context/AuthContext";
 import { useApi } from "@/lib/hooks/useApi";
 import { apiClient } from "@/lib/api/client";
-import type { Alumni, Job, ReferralRequest, EventItem } from "@/lib/api/types";
+import type { Alumni, Job, EventItem, GamificationStatus } from "@/lib/api/types";
 
 interface VectorMatchItem {
   id: string;
@@ -37,50 +37,16 @@ interface VectorMatchItem {
   avatar: string;
 }
 
-const DEFAULT_MATCHES: VectorMatchItem[] = [
-  {
-    id: "m-01",
-    name: "Vikram Aditya",
-    role: "Google Core Systems (L5)",
-    similarity: "98.4% COSINE",
-    tagNum: "01",
-    bio: "Alum '19 • Ex-CERN • Specializing in Paxos Protocols, Distributed Storage & Kernel Bypass",
-    skills: ["Go / Rust", "Distributed Locks", "gRPC RPC-v3"],
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "m-02",
-    name: "Ananya Deshmukh",
-    role: "Amazon AWS SDE II",
-    similarity: "96.1% COSINE",
-    tagNum: "02",
-    bio: "Alum '21 • DynamoDB Core Engines • High-throughput asynchronous replication",
-    skills: ["AWS Internals", "C++20", "EBS Optimization"],
-    booked: true,
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "m-03",
-    name: "Siddharth Joshi",
-    role: "Stripe Core Ledger Staff",
-    similarity: "94.8% COSINE",
-    tagNum: "03",
-    bio: "Alum '17 • Real-time Payment settlement, Idempotency guarantees, Raft consensus",
-    skills: ["Ledger Architecture", "Kafka Streams", "PostgreSQL"],
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-  },
-];
-
 export function DashboardContent() {
   const { user } = useAuth();
 
   // State for interactive features
-  const [matches, setMatches] = useState<VectorMatchItem[]>(DEFAULT_MATCHES);
+  const [matches, setMatches] = useState<VectorMatchItem[]>([]);
   const [isRecomputing, setIsRecomputing] = useState(false);
   const [rsvpConfirmed, setRsvpConfirmed] = useState(false);
-  const [reservedCount, setReservedCount] = useState(184);
+  const [reservedCount, setReservedCount] = useState(42);
   const [syncingVector, setSyncingVector] = useState(false);
-  const [syncStatus, setSyncStatus] = useState("92% INDEXED");
+  const [syncStatus, setSyncStatus] = useState("100% SYNCHRONIZED");
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 24, seconds: 18 });
   const [upvotes, setUpvotes] = useState<Record<string, number>>({ story1: 142, story2: 89 });
   const [hasUpvoted, setHasUpvoted] = useState<Record<string, boolean>>({});
@@ -98,45 +64,112 @@ export function DashboardContent() {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch real API data to supplement or display live statistics
-  const { data: dashboardData } = useApi("member:dashboardData", async () => {
-    const [alumni, jobs, referralsRes, events] = await Promise.all([
+  // Fetch real API data
+  const { data: dashboardData, refresh } = useApi("member:dashboardData", async () => {
+    const isStudent = user?.role === "student" || (user?.role as string) === "STUDENT";
+    const [alumni, jobs, events, gamification, topAlumniRes] = await Promise.all([
       apiClient.alumni.list().catch(() => [] as Alumni[]),
       apiClient.jobs.list().catch(() => [] as Job[]),
-      apiClient.referrals.mySent().catch(() => ({ referrals: [] as ReferralRequest[] })),
       apiClient.events.list().catch(() => [] as EventItem[]),
+      apiClient.gamification.getStatus().catch(() => null as GamificationStatus | null),
+      isStudent
+        ? apiClient.matching.topAlumni().catch(() => ({ student: null, alumni: [] }))
+        : Promise.resolve({ student: null, alumni: [] }),
     ]);
     return {
       alumni: Array.isArray(alumni) ? alumni : [],
       jobs: Array.isArray(jobs) ? jobs : [],
-      referrals: referralsRes?.referrals || [],
       events: Array.isArray(events) ? events : [],
+      gamification,
+      topAlumni: (topAlumniRes?.alumni || []) as Record<string, any>[],
     };
   });
 
-  const handleRecompute = () => {
-    setIsRecomputing(true);
-    setTimeout(() => {
-      setIsRecomputing(false);
-    }, 900);
-  };
+  // Sync real matches from topAlumni API or alumni list
+  useEffect(() => {
+    if (!dashboardData) return;
 
-  const handleToggleRsvp = () => {
-    if (rsvpConfirmed) {
-      setRsvpConfirmed(false);
-      setReservedCount((c) => c - 1);
-    } else {
-      setRsvpConfirmed(true);
-      setReservedCount((c) => c + 1);
+    if (dashboardData.topAlumni && dashboardData.topAlumni.length > 0) {
+      const liveMatches: VectorMatchItem[] = dashboardData.topAlumni.slice(0, 5).map((m, idx) => ({
+        id: m.id,
+        name: m.name || "Alumnus",
+        role: [m.currentCompany, m.jobTitle].filter(Boolean).join(" • ") || m.department || "Alumni",
+        similarity: m.matchScore ? `${m.matchScore}% MATCH` : "RECOMMENDED",
+        tagNum: String(idx + 1).padStart(2, "0"),
+        bio: m.bio || `${m.batchYear ? `Alum '${String(m.batchYear).slice(-2)} • ` : ""}${m.department || "Alumni Network"}`,
+        skills: Array.isArray(m.sharedSkills) && m.sharedSkills.length > 0
+          ? m.sharedSkills
+          : (typeof m.skills === "string"
+              ? m.skills.split(",").map((s: string) => s.trim()).filter(Boolean)
+              : ["Engineering", "Mentorship"]).slice(0, 3),
+        avatar: m.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      }));
+      setMatches(liveMatches);
+    } else if (dashboardData.alumni && dashboardData.alumni.length > 0) {
+      const fallbackMatches: VectorMatchItem[] = dashboardData.alumni.slice(0, 5).map((a, idx) => ({
+        id: a.id,
+        name: a.name || "Alumnus",
+        role: [a.company, a.role].filter(Boolean).join(" • ") || a.department || "Alumni",
+        similarity: "ALUMNI",
+        tagNum: String(idx + 1).padStart(2, "0"),
+        bio: a.bio || `${a.batch ? `Alum '${String(a.batch).slice(-2)} • ` : ""}${a.department || "Alumni Network"}`,
+        skills: [a.department || "Engineering", a.company || "Industry", "Alumni"].filter(Boolean).slice(0, 3),
+        avatar: a.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      }));
+      setMatches(fallbackMatches);
+    }
+
+    if (dashboardData.events && dashboardData.events.length > 0) {
+      const firstEv = dashboardData.events[0];
+      setReservedCount(firstEv.attending ?? 42);
+    }
+  }, [dashboardData]);
+
+  const handleRecompute = async () => {
+    setIsRecomputing(true);
+    try {
+      await apiClient.matching.syncMe().catch(() => {});
+      await refresh();
+    } catch (err) {
+      console.error("Failed to recompute matches:", err);
+    } finally {
+      setIsRecomputing(false);
     }
   };
 
-  const handleSyncVector = () => {
+  const featuredEvent = dashboardData?.events?.[0];
+  const eventCapacity = featuredEvent?.capacity || 200;
+  const eventPlace = featuredEvent?.place || featuredEvent?.location || "Main Campus Hall";
+
+  const handleToggleRsvp = async () => {
+    if (!featuredEvent) return;
+    try {
+      if (rsvpConfirmed) {
+        await apiClient.events.cancelRsvp(featuredEvent.id).catch(() => {});
+        setRsvpConfirmed(false);
+        setReservedCount((c) => Math.max(0, c - 1));
+      } else {
+        await apiClient.events.rsvp(featuredEvent.id).catch(() => {});
+        setRsvpConfirmed(true);
+        setReservedCount((c) => c + 1);
+      }
+    } catch (err) {
+      console.error("RSVP action failed:", err);
+    }
+  };
+
+  const handleSyncVector = async () => {
     setSyncingVector(true);
-    setTimeout(() => {
-      setSyncingVector(false);
+    try {
+      await apiClient.matching.syncMe();
       setSyncStatus("100% SYNCHRONIZED");
-    }, 1200);
+      await refresh();
+    } catch (err) {
+      console.error("Profile sync failed:", err);
+      setSyncStatus("SYNC ERROR");
+    } finally {
+      setSyncingVector(false);
+    }
   };
 
   const handleUpvote = (key: string) => {
@@ -244,31 +277,31 @@ export function DashboardContent() {
             <div className="grid grid-cols-2 gap-2.5">
               <div className="bg-white dark:bg-[#181a20] border-2 border-black p-2.5 shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500">
-                  GAMIFICATION
+                  COMMUNITY POINTS
                 </span>
                 <div className="flex items-baseline gap-1 my-1">
                   <span className="font-headline text-lg font-bold text-[#1A1A1A] dark:text-white">
-                    450
+                    {dashboardData?.gamification?.totalPoints ?? 0}
                   </span>
                   <span className="font-mono text-[10px] text-neutral-500">PTS</span>
                 </div>
                 <span className="font-mono text-[9px] text-[#1D4ED8] dark:text-blue-400 font-bold">
-                  LVL 4: SUPER NET
+                  LVL {Math.max(1, Math.floor(((dashboardData?.gamification?.totalPoints || 0) / 100)) + 1)}: RANK #{dashboardData?.gamification?.rank ?? 1}
                 </span>
               </div>
 
               <div className="bg-white dark:bg-[#181a20] border-2 border-black p-2.5 shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500">
-                  PENDING REFS
+                  ACTIVITY STREAK
                 </span>
                 <div className="flex items-baseline gap-1 my-1">
                   <span className="font-headline text-lg font-bold text-[#FF5500]">
-                    12
+                    {dashboardData?.gamification?.streak?.current ?? 0}
                   </span>
-                  <span className="font-mono text-[10px] text-neutral-500">SLOTS</span>
+                  <span className="font-mono text-[10px] text-neutral-500">DAYS</span>
                 </div>
                 <span className="font-mono text-[9px] text-neutral-600 dark:text-neutral-400">
-                  SLA: 48H RESOLVE
+                  {dashboardData?.jobs?.length ?? 0} OPPORTUNITIES LIVE
                 </span>
               </div>
             </div>
@@ -380,17 +413,17 @@ export function DashboardContent() {
                   ) : (
                     <>
                       <Link
-                        href="/mentorship"
+                        href={`/mentorship?mentorId=${match.id}`}
                         className="px-3 py-1.5 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                       >
                         Flash 15m
                       </Link>
                       <Link
-                        href="/jobs"
-                        className="px-3 py-1.5 bg-black text-white dark:bg-white dark:text-black border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center gap-1 cursor-pointer"
+                        href={`/chat?userId=${match.id}`}
+                        className="px-3 py-1.5 bg-black text-white dark:bg-white dark:text-black border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-neutral-800 dark:hover:bg-neutral-200 font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center gap-1.5 cursor-pointer"
                       >
-                        <span>Request Referral</span>
-                        <ArrowRight size={13} />
+                        <Send size={12} />
+                        <span>Message</span>
                       </Link>
                     </>
                   )}
@@ -415,7 +448,7 @@ export function DashboardContent() {
         </div>
 
         {/* ----------------------------------------------------------------------- */}
-        {/* CELL B: ACTIVE REFERRAL STATE MACHINE - 4 COLS */}
+        {/* CELL G: POINTS WALLET & REWARDS - 4 COLS (PLACED NEXT TO HERO MATCHES) */}
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
@@ -425,98 +458,80 @@ export function DashboardContent() {
                   02
                 </span>
                 <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
-                  Referral Tracker
+                  Community Wallet
                 </h2>
               </div>
-              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border-2 border-black font-bold">
-                2 LIVE REQS
+              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#e5e2dc] dark:bg-[#20242c] border-2 border-black text-neutral-600 dark:text-neutral-400 font-bold">
+                RANK #{dashboardData?.gamification?.rank ?? 1}
               </span>
             </div>
 
             <div className="p-4 sm:p-5 space-y-4">
-              {/* Item 1: Google Intern */}
-              <div className="border-2 border-black p-3.5 bg-[#EFECE4] dark:bg-[#15181f] space-y-3 shadow-[3px_3px_0px_#000000]">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="font-mono text-[10px] text-neutral-500 uppercase">
-                      APP ID: #REF-GOOG-882
-                    </span>
-                    <h3 className="font-headline text-sm text-[#1A1A1A] dark:text-white font-bold uppercase">
-                      Sr. Infrastructure Intern
-                    </h3>
-                    <p className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
-                      Google Corp • Sponsor: Vikram Aditya
-                    </p>
-                  </div>
-                  <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#00E676] text-black border-2 border-black font-bold">
-                    DISPATCHED
+              {/* Balance Panel */}
+              <div className="flex items-center justify-between p-3.5 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black shadow-[3px_3px_0px_#000000]">
+                <div>
+                  <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
+                    MEMBER CREDIT BALANCE
                   </span>
-                </div>
-
-                {/* State Machine Step Progression */}
-                <div className="space-y-1.5 pt-1">
-                  <div className="grid grid-cols-4 gap-1 text-center font-mono text-[9px]">
-                    <div className="p-1 bg-[#1A1A1A] text-white font-bold">01 SUB</div>
-                    <div className="p-1 bg-[#1A1A1A] text-white font-bold">02 SCRN</div>
-                    <div className="p-1 bg-[#FF5500] text-white font-bold">03 DISP</div>
-                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border-2 border-black">
-                      04 HIRE
-                    </div>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="font-headline text-2xl font-bold text-[#1A1A1A] dark:text-white">
+                      {dashboardData?.gamification?.totalPoints ?? 0}
+                    </span>
+                    <span className="font-mono text-xs text-[#FF5500] font-bold">
+                      PTS
+                    </span>
                   </div>
-                  <div className="flex justify-between font-mono text-[10px] text-neutral-600 dark:text-neutral-400">
-                    <span>Phase: Internal req submitted</span>
-                    <span className="text-[#FF5500] font-bold">ETA: 48h</span>
+                </div>
+                <div className="text-right">
+                  <span className="font-mono text-[9px] px-2 py-0.5 bg-[#00E676] border-2 border-black text-black font-bold">
+                    LVL {Math.max(1, Math.floor(((dashboardData?.gamification?.totalPoints || 0) / 100)) + 1)}
+                  </span>
+                  <div className="font-mono text-[10px] text-neutral-500 mt-1">
+                    {dashboardData?.gamification?.streak?.current ?? 0} Day Streak
                   </div>
                 </div>
               </div>
 
-              {/* Item 2: Meta ML Associate */}
-              <div className="border-2 border-black p-3.5 bg-white dark:bg-[#181a20] space-y-3 shadow-[3px_3px_0px_#000000]">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="font-mono text-[10px] text-neutral-500 uppercase">
-                      APP ID: #REF-META-104
-                    </span>
-                    <h3 className="font-headline text-sm text-[#1A1A1A] dark:text-white font-bold uppercase">
-                      ML Research Associate
-                    </h3>
-                    <p className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
-                      Meta FAIR • Sponsor: Senior Alumni Sponsor
-                    </p>
-                  </div>
-                  <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#CCFF00] text-black border-2 border-black font-bold">
-                    IN REVIEW
-                  </span>
-                </div>
-
-                {/* State Machine Step Progression */}
-                <div className="space-y-1.5 pt-1">
-                  <div className="grid grid-cols-4 gap-1 text-center font-mono text-[9px]">
-                    <div className="p-1 bg-[#1A1A1A] text-white font-bold">01 SUB</div>
-                    <div className="p-1 bg-[#FF5500] text-white font-bold">02 SCRN</div>
-                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border-2 border-black">
-                      03 DISP
+              {/* Ledger Activity Records */}
+              <div className="space-y-1.5">
+                <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
+                  Recent Activity Log
+                </span>
+                <div className="border-2 border-black divide-y-2 divide-black font-mono text-[10px]">
+                  {(dashboardData?.gamification?.recentActivities && dashboardData.gamification.recentActivities.length > 0) ? (
+                    dashboardData.gamification.recentActivities.slice(0, 3).map((act: any) => (
+                      <div key={act.id} className="p-2 flex justify-between items-center bg-white dark:bg-[#181a20]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[#00E676] font-bold">+{act.pointsEarned}</span>
+                          <span className="text-[#1A1A1A] dark:text-white uppercase truncate max-w-[170px]">
+                            {act.actionType.replace(/_/g, " ")}
+                          </span>
+                        </div>
+                        <span className="text-neutral-400">
+                          {act.createdAt ? new Date(act.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Recent"}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-3 text-center text-neutral-500 bg-white dark:bg-[#181a20]">
+                      No recent activities logged yet.
                     </div>
-                    <div className="p-1 bg-[#F7F4EE] dark:bg-[#20242c] text-neutral-400 border-2 border-black">
-                      04 HIRE
-                    </div>
-                  </div>
-                  <div className="flex justify-between font-mono text-[10px] text-neutral-600 dark:text-neutral-400">
-                    <span>Phase: Portfolio scan in review</span>
-                    <span className="text-neutral-400">Awaiting nod</span>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
           <div className="p-4 sm:p-5 pt-0">
-            <Link
-              href="/jobs"
-              className="block w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+            <button
+              onClick={handleSyncVector}
+              disabled={syncingVector}
+              className="w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+              type="button"
             >
-              + Generate New Referral Escrow
-            </Link>
+              <RefreshCw size={13} className={syncingVector ? "animate-spin text-[#FF5500]" : ""} />
+              <span>{syncingVector ? "Syncing Profile..." : "Update Profile Vector Embedding"}</span>
+            </button>
           </div>
         </div>
 
@@ -616,7 +631,7 @@ export function DashboardContent() {
                 </h2>
               </div>
               <span className="font-mono text-[10px] px-2 py-0.5 bg-[#CCFF00] text-black border-2 border-black font-bold uppercase">
-                RSVP CLOSING
+                RSVP OPEN
               </span>
             </div>
 
@@ -624,17 +639,17 @@ export function DashboardContent() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[10px] text-[#FF5500] font-bold">
-                    [ANNUAL FLAGSHIP]
+                    {featuredEvent?.category ? `[${featuredEvent.category.toUpperCase()}]` : "[ANNUAL FLAGSHIP]"}
                   </span>
                   <span className="font-mono text-[10px] text-neutral-500">
-                    • MARCH 28, 2026
+                    • {featuredEvent?.date ? new Date(featuredEvent.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).toUpperCase() : "MARCH 28, 2026"}
                   </span>
                 </div>
                 <h3 className="font-headline text-base sm:text-lg text-[#1A1A1A] dark:text-white font-bold uppercase tracking-tight">
-                  Homecoming &amp; Tech Gala 2026
+                  {featuredEvent?.title || "Homecoming & Tech Gala 2026"}
                 </h3>
                 <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400">
-                  The Quadrangle Pavilion &amp; Autonomous Robotics Lab. Exclusive access for verified students, fellows, and alumni founders.
+                  {featuredEvent?.detail || featuredEvent?.description || "Exclusive gathering for verified students, fellows, and alumni leaders."}
                 </p>
               </div>
 
@@ -645,20 +660,20 @@ export function DashboardContent() {
                     CAPACITY REGISTER
                   </span>
                   <span className="text-neutral-500">
-                    {reservedCount} / 300 RESERVED ({Math.round((reservedCount / 300) * 100)}%)
+                    {reservedCount} / {eventCapacity} RESERVED ({Math.round((reservedCount / eventCapacity) * 100)}%)
                   </span>
                 </div>
                 <div className="w-full h-3 bg-white dark:bg-[#181a20] border-2 border-black p-[1px] flex gap-[2px]">
                   <div
                     className="h-full bg-[#1A1A1A] dark:bg-white transition-all duration-300"
-                    style={{ width: `${(reservedCount / 300) * 100}%` }}
+                    style={{ width: `${Math.min(100, Math.round((reservedCount / eventCapacity) * 100))}%` }}
                   />
                   <div className="h-full bg-[#e5e2dc] dark:bg-neutral-800 flex-1" />
                 </div>
                 <div className="flex justify-between text-[10px] font-mono text-neutral-500">
-                  <span>TIER 1: FULL</span>
+                  <span>{eventPlace}</span>
                   <span className="text-[#FF5500] font-bold">
-                    {300 - reservedCount} SEATS REMAINING
+                    {Math.max(0, eventCapacity - reservedCount)} SEATS REMAINING
                   </span>
                 </div>
               </div>
@@ -691,7 +706,7 @@ export function DashboardContent() {
         </div>
 
         {/* ----------------------------------------------------------------------- */}
-        {/* CELL G: QUICK SYSTEM UTILITY & WALLET LEDGER - 4 COLS */}
+        {/* CELL H: ACTIVE OPPORTUNITIES SPOTLIGHT - 4 COLS */}
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
@@ -701,88 +716,54 @@ export function DashboardContent() {
                   05
                 </span>
                 <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
-                  Ledger &amp; Vector Core
+                  Career Openings
                 </h2>
               </div>
-              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#e5e2dc] dark:bg-[#20242c] border-2 border-black text-neutral-500">
-                SYS_ID: 1536_L2
+              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border-2 border-black font-bold">
+                {dashboardData?.jobs?.length ?? 0} LIVE REQS
               </span>
             </div>
 
-            <div className="p-4 sm:p-5 space-y-4">
-              {/* Balance Panel */}
-              <div className="flex items-center justify-between p-3.5 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black shadow-[3px_3px_0px_#000000]">
-                <div>
-                  <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
-                    MEMBER CREDIT WALLET
-                  </span>
-                  <div className="flex items-baseline gap-1.5 mt-1">
-                    <span className="font-headline text-2xl font-bold text-[#1A1A1A] dark:text-white">
-                      120
-                    </span>
-                    <span className="font-mono text-xs text-[#FF5500] font-bold">
-                      ALUMN-CR
+            <div className="p-4 sm:p-5 space-y-3">
+              {(dashboardData?.jobs || []).slice(0, 2).map((job, jIdx) => (
+                <div
+                  key={job.id || jIdx}
+                  className="border-2 border-black p-3.5 bg-[#EFECE4] dark:bg-[#15181f] space-y-2 shadow-[3px_3px_0px_#000000]"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="min-w-0 pr-2">
+                      <span className="font-mono text-[10px] text-neutral-500 uppercase">
+                        {job.company}
+                      </span>
+                      <h3 className="font-headline text-sm text-[#1A1A1A] dark:text-white font-bold uppercase truncate">
+                        {job.title}
+                      </h3>
+                      <p className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
+                        {job.location || "Remote"} • {job.type || "Full-time"}
+                      </p>
+                    </div>
+                    <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#CCFF00] text-black border border-black font-bold shrink-0">
+                      ACTIVE
                     </span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="font-mono text-[9px] px-2 py-0.5 bg-[#00E676] border-2 border-black text-black font-bold">
-                    ESCROW GOOD
-                  </span>
-                  <div className="font-mono text-[10px] text-neutral-500 mt-1">
-                    Tier IV Allocation
-                  </div>
-                </div>
-              </div>
+              ))}
 
-              {/* Ledger Activity Records */}
-              <div className="space-y-1.5">
-                <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
-                  Recent Cryptographic Records
-                </span>
-                <div className="border-2 border-black divide-y-2 divide-black font-mono text-[10px]">
-                  <div className="p-2 flex justify-between items-center bg-white dark:bg-[#181a20]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#00E676] font-bold">+30</span>
-                      <span className="text-[#1A1A1A] dark:text-white">
-                        Institutional Thesis Verified
-                      </span>
-                    </div>
-                    <span className="text-neutral-400">Today</span>
-                  </div>
-                  <div className="p-2 flex justify-between items-center bg-white dark:bg-[#181a20]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#FF5500] font-bold">-15</span>
-                      <span className="text-[#1A1A1A] dark:text-white">
-                        Mentorship Escrow Reserve
-                      </span>
-                    </div>
-                    <span className="text-neutral-400">Yesterday</span>
-                  </div>
-                  <div className="p-2 flex justify-between items-center bg-white dark:bg-[#181a20]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#00E676] font-bold">+50</span>
-                      <span className="text-[#1A1A1A] dark:text-white">
-                        Referral Feedback Completed
-                      </span>
-                    </div>
-                    <span className="text-neutral-400">Mar 12</span>
-                  </div>
+              {(!dashboardData?.jobs || dashboardData.jobs.length === 0) && (
+                <div className="p-4 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-dashed border-neutral-300 dark:border-neutral-700 text-center font-mono text-xs text-neutral-500">
+                  No open requisitions posted yet. Check back soon!
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
           <div className="p-4 sm:p-5 pt-0">
-            <button
-              onClick={handleSyncVector}
-              disabled={syncingVector}
-              className="w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
-              type="button"
+            <Link
+              href="/jobs"
+              className="block w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
             >
-              <RefreshCw size={13} className={syncingVector ? "animate-spin text-[#FF5500]" : ""} />
-              <span>{syncingVector ? "Re-syncing 384-Dim..." : "Re-sync 384-Dim Embedding Vector"}</span>
-            </button>
+              Explore All {dashboardData?.jobs?.length ? `${dashboardData.jobs.length} ` : ""}Opportunities →
+            </Link>
           </div>
         </div>
 

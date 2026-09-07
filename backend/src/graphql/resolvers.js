@@ -95,40 +95,6 @@ const resolvers = {
       });
     },
 
-    referrals: async (_, { status }, context) => {
-      if (!context.user) throw new Error("Authentication required");
-      
-      const where = {
-        OR: [
-          { requestedById: context.user.id },
-          { referredById: context.user.id },
-        ],
-        ...(status && { status }),
-      };
-
-      return prisma.referralRequest.findMany({
-        where,
-        include: {
-          job: { include: { postedBy: true } },
-          requestedBy: true,
-          referredBy: true,
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-    },
-
-    referral: async (_, { id }, context) => {
-      if (!context.user) throw new Error("Authentication required");
-      return prisma.referralRequest.findUnique({
-        where: { id },
-        include: {
-          job: { include: { postedBy: true } },
-          requestedBy: true,
-          referredBy: true,
-        },
-      });
-    },
-
     events: async (_, { upcomingOnly = true }) => {
       const where = upcomingOnly
         ? { date: { gte: new Date() } }
@@ -188,40 +154,6 @@ const resolvers = {
           postedById: context.user.id,
         },
         include: { postedBy: true },
-      });
-    },
-
-    createReferralRequest: async (_, { jobId, referredById, resumeUrl, notes }, context) => {
-      if (!context.user) throw new Error("Authentication required");
-
-      return prisma.referralRequest.create({
-        data: {
-          jobId,
-          referredById,
-          requestedById: context.user.id,
-          resumeUrl,
-          notes,
-          status: 'PENDING',
-        },
-        include: {
-          job: { include: { postedBy: true } },
-          requestedBy: true,
-          referredBy: true,
-        },
-      });
-    },
-
-    updateReferralStatus: async (_, { id, status }, context) => {
-      if (!context.user) throw new Error("Authentication required");
-
-      return prisma.referralRequest.update({
-        where: { id },
-        data: { status },
-        include: {
-          job: { include: { postedBy: true } },
-          requestedBy: true,
-          referredBy: true,
-        },
       });
     },
 

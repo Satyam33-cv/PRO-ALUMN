@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/lib/api/client";
 import { useAuth } from "@/lib/context/AuthContext";
@@ -26,6 +27,8 @@ interface MatchItem {
   skills?: string;
   matchScore?: number;
   similarity?: number;
+  reasons?: string[];
+  sharedSkills?: string[];
 }
 
 function VectorScanner() {
@@ -198,37 +201,67 @@ export default function MatchingPage() {
                           </div>
                         </div>
 
-                        {a.skills && (
-                          <div className="flex flex-wrap gap-1.5 pt-2">
+                        {/* Reasons / Why this match */}
+                        {a.reasons && a.reasons.length > 0 && (
+                          <div className="flex flex-wrap gap-1 pt-1.5">
+                            {a.reasons.map((reason, rIdx) => (
+                              <span
+                                key={rIdx}
+                                className="inline-flex border border-black bg-[#D9E021] text-black px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase shadow-[1px_1px_0px_#000000]"
+                              >
+                                {reason}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Shared skills tags */}
+                        {a.sharedSkills && a.sharedSkills.length > 0 ? (
+                          <div className="flex flex-wrap gap-1 pt-1">
+                            <span className="font-mono text-[9px] text-neutral-500 uppercase font-bold self-center mr-0.5">
+                              SHARED:
+                            </span>
+                            {a.sharedSkills.map((skill, sIdx) => (
+                              <span
+                                key={sIdx}
+                                className="inline-flex border border-black bg-[#CCFF00] px-1.5 py-0.5 font-mono text-[9px] font-bold text-black"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        ) : a.skills ? (
+                          <div className="flex flex-wrap gap-1.5 pt-1.5">
                             {a.skills.split(",").slice(0, 3).map((skill, idx) => (
                               <span
                                 key={idx}
-                                className="inline-flex border-2 border-black bg-[#CCFF00] px-2 py-0.5 font-mono text-[9px] font-black uppercase text-black shadow-[1px_1px_0px_#000000]"
+                                className="inline-flex border-2 border-black bg-white px-2 py-0.5 font-mono text-[9px] font-bold uppercase text-black"
                               >
                                 {skill.trim()}
                               </span>
                             ))}
-                            {a.skills.split(",").length > 3 && (
-                              <span className="inline-flex border-2 border-black bg-neutral-100 px-2 py-0.5 font-mono text-[9px] font-bold uppercase text-black">
-                                +{a.skills.split(",").length - 3}
-                              </span>
-                            )}
                           </div>
-                        )}
+                        ) : null}
                       </div>
                       
                       <div className="shrink-0 flex flex-col items-center gap-2">
-                        <MatchRing percentage={Math.round(Number(a.matchScore || a.similarity || 0.85) * 100)} />
+                        <MatchRing percentage={typeof a.matchScore === "number" ? a.matchScore : Math.round(Number(a.similarity || 0.85) * (Number(a.similarity) > 1 ? 1 : 100))} />
                       </div>
                     </div>
 
                     <div className="mt-6 pt-4 border-t-2 border-black flex items-center gap-2 relative z-10">
-                      <button className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer">
+                      <Link
+                        href={`/chat?userId=${a.id}&recipient=${encodeURIComponent(a.name)}`}
+                        className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer text-center"
+                      >
                         <MessageSquare size={13} /> Message
-                      </button>
-                      <button className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-white text-black hover:bg-neutral-100 py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer">
+                      </Link>
+                      <Link
+                        href={`/directory?search=${encodeURIComponent(a.name)}`}
+                        className="flex-1 flex items-center justify-center gap-1.5 border-2 border-black bg-white text-black hover:bg-neutral-100 py-2 font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer text-center"
+                      >
                         Profile
-                      </button>
+                      </Link>
                     </div>
                   </motion.div>
                 ))

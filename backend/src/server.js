@@ -164,7 +164,6 @@ const apolloServer = new ApolloServer({
 app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/jobs', require('./routes/jobs'));
-app.use('/api/referrals', require('./routes/referrals'));
 app.use('/api/stories', require('./routes/stories'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/events', require('./routes/events'));

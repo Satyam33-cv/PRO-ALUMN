@@ -220,19 +220,9 @@ router.get('/resume/signed-url', authenticate, async (req, res) => {
   try {
     const targetUserId = req.query.userId || req.user.id;
 
-    // RBAC: A student can view their own resume. An ALUMNI or ADMIN can view an applicant's resume.
-    if (targetUserId !== req.user.id && req.user.role !== 'ADMIN') {
-      // If requester is an ALUMNI, verify that targetUserId has applied to one of their posted jobs
-      const applicantRef = await prisma.referralRequest.findFirst({
-        where: {
-          requestedById: targetUserId,
-          job: { postedById: req.user.id },
-        },
-      });
-
-      if (!applicantRef) {
-        return res.status(403).json({ error: 'Access denied: You do not have permission to view this candidate resume.' });
-      }
+    // RBAC: A student can view their own resume. An ALUMNI or ADMIN can view any member's resume.
+    if (targetUserId !== req.user.id && !['ALUMNI', 'ADMIN'].includes(req.user.role)) {
+      return res.status(403).json({ error: 'Access denied: You do not have permission to view this candidate resume.' });
     }
 
     const targetUser = await prisma.user.findUnique({

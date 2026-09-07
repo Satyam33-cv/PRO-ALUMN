@@ -9,16 +9,6 @@ const typeDefs = `#graphql
     FACULTY
   }
 
-  enum ReferralStatus {
-    PENDING
-    ACCEPTED
-    REJECTED
-    REFERRED
-    HIRED
-    NOT_HIRED
-    WITHDRAWN
-  }
-
   enum JobStatus {
     OPEN
     CLOSED
@@ -59,20 +49,8 @@ const typeDefs = `#graphql
     salaryMax: Int
     currency: String
     applyLink: String
-    referralSlots: Int!
     status: JobStatus!
     postedBy: User!
-    createdAt: String!
-  }
-
-  type ReferralRequest {
-    id: ID!
-    job: JobPosting!
-    requestedBy: User!
-    referredBy: User
-    status: ReferralStatus!
-    resumeUrl: String
-    notes: String
     createdAt: String!
   }
 
@@ -122,10 +100,6 @@ const typeDefs = `#graphql
     jobs(status: JobStatus, search: String, limit: Int, offset: Int): [JobPosting!]!
     job(id: ID!): JobPosting
 
-    # Referrals
-    referrals(status: ReferralStatus): [ReferralRequest!]!
-    referral(id: ID!): ReferralRequest
-
     # Community
     events(upcomingOnly: Boolean): [Event!]!
     stories(limit: Int): [SuccessStory!]!
@@ -155,21 +129,7 @@ const typeDefs = `#graphql
       skills: String
       salaryMin: Int
       salaryMax: Int
-      referralSlots: Int
     ): JobPosting!
-
-    # Referrals
-    createReferralRequest(
-      jobId: ID!
-      referredById: ID!
-      resumeUrl: String
-      notes: String
-    ): ReferralRequest!
-
-    updateReferralStatus(
-      id: ID!
-      status: ReferralStatus!
-    ): ReferralRequest!
 
     # Events
     rsvpEvent(eventId: ID!): Boolean!
