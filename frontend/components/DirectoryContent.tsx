@@ -16,9 +16,9 @@ import { Users } from "lucide-react";
 const DirectoryMap = dynamic(() => import("@/components/DirectoryMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[520px] bg-[#f7f4ee] border-2 border-black flex flex-col items-center justify-center font-mono text-xs">
+    <div className="w-full h-[520px] bg-[#FFFFFF] border-2 border-black flex flex-col items-center justify-center font-mono text-xs">
       <div className="w-6 h-6 border-2 border-black border-t-transparent animate-spin mb-3"></div>
-      <div>[ INITIALIZING SPATIAL HNSW VECTOR INDEX... ]</div>
+      <div>Loading map…</div>
     </div>
   ),
 });
@@ -158,7 +158,7 @@ export function DirectoryContent({
           isMentor: Boolean(a.isMentor),
           isVerified: Boolean(a.isVerified),
           actionType: a.isMentor ? ("mentorship" as const) : ("referral" as const),
-          avatarBg: idx % 3 === 0 ? "#000000" : idx % 3 === 1 ? "#CCFF00" : "#FF5500",
+          avatarBg: idx % 3 === 0 ? "#000000" : idx % 3 === 1 ? "#FF5500" : "#FF5500",
           avatarColor: idx % 3 === 1 ? "#000000" : "#FFFFFF",
         };
       });
@@ -248,7 +248,7 @@ export function DirectoryContent({
       {/* 0. AUTHENTICATED SYSTEM SUB-BAR (STITCH SPEC ac1a09e0) */}
       {/* ============================================================ */}
       {isMemberView && (
-        <section className="w-full bg-[#f6f3ed] border-2 border-black px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 shadow-[2px_2px_0px_#1A1A1A]">
+        <section className="w-full bg-[#FFFFFF] border-2 border-black px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 shadow-[2px_2px_0px_#0A0A0A]">
           <div className="flex items-center gap-3 flex-1 min-w-[260px] max-w-lg">
             <div className="relative w-full">
               <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-500 text-[18px]">
@@ -258,21 +258,18 @@ export function DirectoryContent({
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="[⌘K // HNSW Vector Search: e.g. 'Distributed consensus raft Go']"
-                className="w-full bg-white border-2 border-black pl-9 pr-3 py-1 font-mono text-xs text-black placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#FF5500] shadow-[2px_2px_0px_#1A1A1A] transition-all"
+                placeholder="Search by name, company, skill…"
+                className="w-full bg-white border-2 border-black pl-9 pr-3 py-1 font-mono text-xs text-black placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#FF5500] shadow-[2px_2px_0px_#0A0A0A] transition-all"
               />
             </div>
-            <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 bg-[#EFECE4] border border-black font-mono text-[10px] text-neutral-700 font-bold shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-pulse"></span>
-              <span>LATENCY: 11.8MS</span>
-            </div>
+
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#1A1A1A] font-mono text-xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#CCFF00] inline-block"></span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black text-white border-2 border-black shadow-[2px_2px_0px_#0A0A0A] font-mono text-xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] inline-block"></span>
               <span className="tracking-tight font-bold uppercase">{user?.name || "Verified Member"}</span>
               <span className="text-neutral-500">//</span>
-              <span className="text-[#CCFF00] font-bold">{user ? "VERIFIED ALUMNI" : "EXPLORER"}</span>
+              <span className="text-[#FF5500] font-bold">{user ? "VERIFIED ALUMNI" : "EXPLORER"}</span>
             </div>
           </div>
         </section>
@@ -282,81 +279,32 @@ export function DirectoryContent({
       {/* 1. HERO SECTION: ADAPTIVE (MEMBER CONSOLE vs PUBLIC BROADSHEET) */}
       {/* ============================================================ */}
       {isMemberView ? (
-        <div className="border-4 border-black bg-white p-6 sm:p-8 shadow-[5px_5px_0px_#1A1A1A] relative">
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <div className="flex items-center gap-2">
-              <span className="bg-[#FF5500] text-white px-2 py-0.5 font-mono text-xs font-bold">PILLAR 01</span>
-              <span className="font-mono text-xs text-neutral-600 uppercase">PROTOCOL 02 // 384-DIM PGVECTOR TOPOLOGY</span>
-            </div>
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-[#fcf9f3] border border-black font-mono text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#00E676] inline-block animate-pulse"></span>
-              <span className="font-bold">LIVE DIRECTORY // ACCREDITED</span>
-            </div>
-          </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-black">
-            Verified Alumni Directory &amp; Talent Topology
-          </h1>
-          <p className="font-mono text-xs sm:text-sm text-neutral-700 max-w-4xl mt-2 leading-relaxed">
-            Browse 1,200+ vetted alumni fellows across frontier engineering, research laboratories, and venture-backed institutions. Query by cosine embeddings, corporate affiliation, research specialization, or cohort graduation epoch.
+        <div className="border-4 border-black bg-white p-6 sm:p-8 shadow-[5px_5px_0px_#0A0A0A] relative">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#635f57] mb-2">
+            Directory
           </p>
-
-          {/* 4 Telemetry Tiles (Stitch Screen ac1a09e0) */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6 pt-4 border-t-2 border-black/10 font-mono">
-            <div className="p-3 bg-[#fcf9f3] border-2 border-black shadow-[2px_2px_0px_#1A1A1A]">
-              <div className="text-[10px] text-neutral-600 font-bold">INDEX CAPACITY</div>
-              <div className="text-2xl font-black text-black mt-1">1,248</div>
-              <div className="text-[11px] text-neutral-700 mt-0.5">Verified Fellows (&apos;14-&apos;25)</div>
-            </div>
-            <div className="p-3 bg-[#fcf9f3] border-2 border-black shadow-[2px_2px_0px_#1A1A1A]">
-              <div className="text-[10px] text-neutral-600 font-bold">REACH DENSITY</div>
-              <div className="text-2xl font-black text-black mt-1">42+</div>
-              <div className="text-[11px] text-neutral-700 mt-0.5">Tier-1 Tech &amp; Research Labs</div>
-            </div>
-            <div className="p-3 bg-[#fcf9f3] border-2 border-black shadow-[2px_2px_0px_#1A1A1A]">
-              <div className="text-[10px] text-neutral-600 font-bold">REFERRAL LIQUIDITY</div>
-              <div className="text-2xl font-black text-[#FF5500] mt-1">88.4%</div>
-              <div className="text-[11px] text-neutral-700 mt-0.5">Verified Vouchers Active</div>
-            </div>
-            <div className="p-3 bg-[#fcf9f3] border-2 border-black shadow-[2px_2px_0px_#1A1A1A]">
-              <div className="text-[10px] text-neutral-600 font-bold">SEARCH SPEED</div>
-              <div className="text-2xl font-black text-black mt-1">11.8ms</div>
-              <div className="text-[11px] text-neutral-700 mt-0.5">HNSW Cosine Sweep</div>
-            </div>
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-black">
+            Alumni directory
+          </h1>
+          <p className="text-sm text-[#635f57] max-w-2xl mt-2 leading-relaxed">
+            Find verified alumni by company, department, skills, or cohort. Message anyone to start a conversation.
+          </p>
         </div>
       ) : (
         <section
-          className="border-4 border-black bg-[#fcf9f3] p-6 sm:p-8 relative shadow-[5px_5px_0px_#000000]"
+          className="border-4 border-black bg-[#FFFFFF] p-6 sm:p-8 relative shadow-[5px_5px_0px_#000000]"
           data-purpose="directory-hero"
         >
-          {/* Technical Eyebrow Tag */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b-2 border-black mb-6 font-mono text-xs">
-            <div className="flex items-center space-x-2">
-              <span className="font-bold tracking-wide">
-                [ PILLAR 01 // TALENT TOPOLOGY &amp; VERIFIED FELLOWS ]
-              </span>
-              <span className="inline-flex items-center px-2 py-0.5 bg-[#CCFF00] text-black border border-black font-semibold text-[10px]">
-                <span className="w-1.5 h-1.5 bg-black mr-1 inline-block animate-pulse"></span>
-                LIVE DIRECTORY // ACCREDITED
-              </span>
-            </div>
-            <div className="text-neutral-600 text-[11px] font-mono">
-              [ 384-DIM PGVECTOR // ACTIVE ] • EMBEDDING RES: 0.9984 COSINE
-            </div>
-          </div>
-
-          {/* Headline and Subtitle Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end mb-8">
             <div className="lg:col-span-8">
-              <p className="text-xs font-mono font-semibold uppercase tracking-widest text-neutral-600 mb-2">
-                // ACCREDITED FELLOW ROSTER &amp; PRODUCTION ALUMNI CLUSTERS
+              <p className="text-xs font-mono font-bold uppercase tracking-wider text-[#635f57] mb-2">
+                Public directory
               </p>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight leading-none text-black">
-                VERIFIED ALUMNI DIRECTORY
-                <br className="hidden sm:inline" /> &amp; TALENT TOPOLOGY
+              <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none text-black">
+                Alumni directory
               </h1>
-              <p className="mt-4 text-sm sm:text-base font-normal max-w-2xl text-neutral-800 leading-relaxed">
-                Find your people. Browse 1,200+ vetted alumni fellows across frontier engineering, research laboratories, and venture-backed institutions. Search by cosine vector embeddings, company, department, or graduation cohort.
+              <p className="mt-4 text-sm sm:text-base max-w-2xl text-neutral-800 leading-relaxed">
+                Browse verified alumni by company, department, skills, or cohort. Sign in to message people and get matched.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col space-y-2 lg:items-end">
@@ -373,7 +321,7 @@ export function DirectoryContent({
               </button>
               <Link
                 href="/login"
-                className="w-full sm:w-auto text-center px-5 py-2.5 bg-[#FF5500] text-white border-2 border-black text-xs font-mono font-bold uppercase tracking-wider shadow-[4px_4px_0px_#000000] hover:bg-orange-600 transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                className="w-full sm:w-auto text-center px-5 py-2.5 bg-[#FF5500] text-white border-2 border-black text-xs font-mono font-bold uppercase tracking-wider shadow-[4px_4px_0px_#000000] hover:bg-[#B80500] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               >
                 JOIN VETTED NETWORK →
               </Link>
@@ -420,9 +368,9 @@ export function DirectoryContent({
                   setDebouncedQuery(query);
                   setViewMode("grid");
                 }}
-                className="px-6 py-3 bg-[#CCFF00] text-black font-mono font-bold text-xs uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#bbf000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center space-x-2"
+                className="px-6 py-3 bg-[#FF5500] text-white font-mono font-bold text-xs uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#bbf000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center space-x-2"
               >
-                <span>MATCH VECTORS</span>
+                <span>MATCH SCORE</span>
                 <span>↵</span>
               </button>
             </div>
@@ -433,19 +381,19 @@ export function DirectoryContent({
       {/* ============================================================ */}
       {/* SPATIAL INDEX CLUSTER QUICK-JUMPS (STITCH SPEC ac1a09e0) */}
       {/* ============================================================ */}
-      <div className="border-2 border-black bg-white p-3 shadow-[3px_3px_0px_#1A1A1A] flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
+      <div className="border-2 border-black bg-white p-3 shadow-[3px_3px_0px_#0A0A0A] flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
         <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 bg-[#1D4ED8] text-white font-bold text-[10px]">SPATIAL INDEX</span>
-          <span className="font-bold uppercase text-black">Cluster Quick-Jumps:</span>
+          <span className="px-2 py-0.5 bg-black text-white font-bold text-[10px]">LOCATION</span>
+          <span className="font-bold uppercase text-black">Filter by city:</span>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           {[
-            { label: "Global (1,248)", city: "" },
-            { label: "Bengaluru (142)", city: "Bengaluru" },
-            { label: "San Francisco (88)", city: "San Francisco" },
-            { label: "New York (64)", city: "New York" },
-            { label: "Seattle (42)", city: "Seattle" },
-            { label: "London (35)", city: "London" },
+            { label: "All locations", city: "" },
+            { label: "Bengaluru", city: "Bengaluru" },
+            { label: "San Francisco", city: "San Francisco" },
+            { label: "New York", city: "New York" },
+            { label: "Seattle", city: "Seattle" },
+            { label: "London", city: "London" },
           ].map((c) => (
             <button
               key={c.label}
@@ -456,8 +404,8 @@ export function DirectoryContent({
               }}
               className={`px-2.5 py-1 border border-black text-xs font-bold active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                 (c.city === "" && !query) || (c.city && query.toLowerCase().includes(c.city.toLowerCase()))
-                  ? "bg-black text-[#CCFF00] shadow-[2px_2px_0px_#1A1A1A]"
-                  : "bg-[#fcf9f3] text-black hover:bg-[#EFECE4]"
+                  ? "bg-black text-[#FF5500] shadow-[2px_2px_0px_#0A0A0A]"
+                  : "bg-[#FFFFFF] text-black hover:bg-[#F5F5F5]"
               }`}
             >
               {c.label}
@@ -467,102 +415,18 @@ export function DirectoryContent({
       </div>
 
       {/* ============================================================ */}
-      {/* BEGIN: TelemetryStrip (4-Column KPI Stats) */}
-      {/* ============================================================ */}
-      <section
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono"
-        data-purpose="telemetry-kpis"
-      >
-        {/* KPI 1 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">[ TEL_01 // VERIFIED FELLOWS ]</span>
-            <span className="w-2.5 h-2.5 bg-black"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">1,248</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              ACCREDITED ALUMNI MEMBERS
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>COHORTS &apos;14 - &apos;25</span>
-            <span className="bg-[#CCFF00] border border-black px-1.5 py-0.5 font-bold">
-              LIVE INDEX
-            </span>
-          </div>
-        </div>
-
-        {/* KPI 2 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">[ TEL_02 // PLACEMENT REACH ]</span>
-            <span className="w-2.5 h-2.5 bg-[#FF5500]"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">42+</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              TIER-1 TECH & RESEARCH LABS
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>2024-2026 AUDIT</span>
-            <span className="bg-white border border-black px-1.5 py-0.5 font-bold">+18% YoY</span>
-          </div>
-        </div>
-
-        {/* KPI 3 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">[ TEL_03 // REFERRAL LIQUIDITY ]</span>
-            <span className="w-2.5 h-2.5 bg-[#2E5BFF]"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">88.4%</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              WARM INTRO CONVERSION RATE
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>VERIFIED VOUCHERS</span>
-            <span className="bg-black text-white border border-black px-1.5 py-0.5 font-bold">
-              100% AUDITED
-            </span>
-          </div>
-        </div>
-
-        {/* KPI 4 */}
-        <div className="bg-[#fcf9f3] p-4 border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[11px] text-neutral-700 border-b border-black pb-2 mb-3">
-            <span className="font-semibold">[ TEL_04 // VECTOR LATENCY ]</span>
-            <span className="w-2.5 h-2.5 bg-black"></span>
-          </div>
-          <div>
-            <div className="text-3xl lg:text-4xl font-black text-black tracking-tighter">11.8ms</div>
-            <div className="text-[11px] uppercase tracking-wider text-neutral-600 mt-1">
-              HNSW COSINE SIMILARITY SEARCH
-            </div>
-          </div>
-          <div className="mt-4 pt-2 border-t border-neutral-300 flex items-center justify-between text-[10px]">
-            <span>HNSW INDEX ENGINE</span>
-            <span className="bg-[#CCFF00] border border-black px-1.5 py-0.5 font-bold">OPTIMAL</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
       {/* BEGIN: FilterTopologyAndTabs */}
       {/* ============================================================ */}
       <section className="space-y-4" data-purpose="directory-filters">
         {/* Main Category Tabs */}
         <div className="flex flex-wrap gap-2 font-mono text-xs">
           {[
-            { id: "ALL", label: "ALL FELLOWS", count: 1248 },
-            { id: "SYSTEMS & CLOUD INFRA", label: "SYSTEMS & CLOUD INFRA", count: 412 },
-            { id: "AI & LLM KERNELS", label: "AI & LLM KERNELS", count: 326 },
-            { id: "HARDWARE & ROBOTICS", label: "HARDWARE & ROBOTICS", count: 184 },
-            { id: "FINTECH & CRYPTO", label: "FINTECH & CRYPTO", count: 162 },
-            { id: "ACADEMIC & POSTDOC", label: "ACADEMIC & POSTDOC", count: 164 },
+            { id: "ALL", label: "All" },
+            { id: "SYSTEMS & CLOUD INFRA", label: "Systems & cloud" },
+            { id: "AI & LLM KERNELS", label: "AI & ML" },
+            { id: "HARDWARE & ROBOTICS", label: "Hardware & robotics" },
+            { id: "FINTECH & CRYPTO", label: "Fintech" },
+            { id: "ACADEMIC & POSTDOC", label: "Academic" },
           ].map((tab) => {
             const isActive = category === tab.id;
             return (
@@ -576,14 +440,14 @@ export function DirectoryContent({
                     : "bg-white text-black hover:bg-neutral-100"
                 }`}
               >
-                {tab.label} ({tab.count})
+                {tab.label}
               </button>
             );
           })}
         </div>
 
         {/* Secondary Sub-Filters Strip */}
-        <div className="p-3 bg-[#fcf9f3] border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-mono text-xs">
+        <div className="p-3 bg-[#FFFFFF] border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-mono text-xs">
           <div className="flex flex-wrap items-center gap-3">
             {/* Cohort Chips */}
             <div className="flex items-center space-x-1.5">
@@ -705,11 +569,11 @@ export function DirectoryContent({
               onClick={() => setViewMode("geo")}
               className={`px-3 py-1.5 text-[11px] font-mono font-bold border-2 border-black flex items-center space-x-1 shadow-[2px_2px_0px_#000000] transition-colors ${
                 viewMode === "geo"
-                  ? "bg-[#CCFF00] text-black"
+                  ? "bg-[#FF5500] text-white"
                   : "bg-white text-black hover:bg-neutral-100"
               }`}
             >
-              <span>[ ⚲ LEAFLET GEO-MAP (142 NODES) ]</span>
+              <span>Map view</span>
               <span className="w-1.5 h-1.5 bg-black rounded-none ml-1 animate-pulse"></span>
             </button>
           </div>
@@ -767,7 +631,7 @@ export function DirectoryContent({
           return (
             <article
               key={fellow.id}
-              className="bg-[#fcf9f3] border-2 border-black shadow-[5px_5px_0px_#000000] flex flex-col justify-between relative"
+              className="bg-[#FFFFFF] border-2 border-black shadow-[5px_5px_0px_#000000] flex flex-col justify-between relative"
               data-purpose="alumni-card"
             >
               <div>
@@ -777,7 +641,7 @@ export function DirectoryContent({
                     <span className="font-bold text-neutral-800">{indexNum}</span>
                     <span
                       className={`px-1.5 py-0.5 border border-black font-bold ${
-                        isHighMatch ? "bg-[#CCFF00] text-black" : "bg-white text-black"
+                        isHighMatch ? "bg-[#FF5500] text-white" : "bg-white text-black"
                       }`}
                     >
                       AI MATCH: {fellow.match}%
@@ -822,7 +686,7 @@ export function DirectoryContent({
                   {/* Skill Vectors */}
                   <div>
                     <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-bold mb-1.5">
-                      STACK & SKILL VECTORS:
+                      Skills:
                     </div>
                     <div className="flex flex-wrap gap-1.5 font-mono text-[10px]">
                       {fellow.skills.map((skill, sIdx) => (
@@ -865,7 +729,7 @@ export function DirectoryContent({
                   <button
                     type="button"
                     onClick={() => handleOpenReferral(fellow, "referral")}
-                    className="w-full py-2 bg-[#FF5500] text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 text-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                    className="w-full py-2 bg-[#FF5500] text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#B80500] text-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                   >
                     REQUEST FOUNDER INTRO →
                   </button>
@@ -881,7 +745,7 @@ export function DirectoryContent({
                   <button
                     type="button"
                     onClick={() => handleOpenReferral(fellow, "mentorship")}
-                    className="w-full py-2 bg-[#FF5500] text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 text-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                    className="w-full py-2 bg-[#FF5500] text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#B80500] text-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                   >
                     REQUEST MENTORSHIP →
                   </button>
@@ -889,7 +753,7 @@ export function DirectoryContent({
                   <button
                     type="button"
                     onClick={() => handleOpenReferral(fellow, "referral")}
-                    className="w-full py-2 bg-[#FF5500] text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-orange-600 text-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                    className="w-full py-2 bg-[#FF5500] text-white font-bold border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-[#B80500] text-center active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                   >
                     REQUEST REFERRAL →
                   </button>
@@ -911,7 +775,7 @@ export function DirectoryContent({
       {/* BEGIN: PaginationStrip */}
       {/* ============================================================ */}
       <div
-        className="p-4 bg-[#fcf9f3] border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs"
+        className="p-4 bg-[#FFFFFF] border-2 border-black shadow-[4px_4px_0px_#000000] flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs"
         data-purpose="directory-pagination"
       >
         <div className="text-neutral-700 font-medium">
@@ -962,22 +826,22 @@ export function DirectoryContent({
       {isMemberView ? (
         <div
           data-testid="directory-member-status-footer"
-          className="border-2 border-black bg-white dark:bg-[#15181f] p-4 font-mono text-xs shadow-[3px_3px_0px_#1A1A1A] flex flex-col sm:flex-row items-center justify-between gap-3 text-neutral-700 dark:text-neutral-300"
+          className="border-2 border-black bg-white dark:bg-[#15181f] p-4 font-mono text-xs shadow-[3px_3px_0px_#0A0A0A] flex flex-col sm:flex-row items-center justify-between gap-3 text-neutral-700 dark:text-neutral-300"
         >
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#00E676] inline-block animate-pulse"></span>
-            <span className="font-bold text-black dark:text-white uppercase">[ PROTOCOL 02 ACTIVE: TOPOLOGY CONNECTED ]</span>
+            <span className="w-2 h-2 rounded-full bg-[#FF5500] inline-block animate-pulse"></span>
+            <span className="font-bold text-black dark:text-white uppercase">Directory live</span>
             <span className="text-neutral-500">//</span>
-            <span>All {totalCount} verified fellow nodes mapped into HNSW cosine space</span>
+            <span>Showing {totalCount} verified alumni</span>
           </div>
           <div className="flex items-center gap-2 text-[11px]">
-            <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-bold">ED25519-SIGNED</span>
+            <span className="px-2 py-0.5 bg-black text-[#FF5500] font-bold">ED25519-SIGNED</span>
             <span className="text-neutral-500">PEER DISPATCH ENGINE READY</span>
           </div>
         </div>
       ) : (
         <section
-          className="bg-[#CCFF00] border-4 border-black p-8 sm:p-10 shadow-[7px_7px_0px_#000000] text-center"
+          className="bg-[#FF5500] border-4 border-black p-8 sm:p-10 shadow-[7px_7px_0px_#000000] text-center"
           data-purpose="conversion-banner"
         >
           <div className="max-w-3xl mx-auto space-y-4">
@@ -993,7 +857,7 @@ export function DirectoryContent({
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 font-mono text-xs">
               <Link
                 href="/login"
-                className="w-full sm:w-auto px-6 py-3.5 bg-[#FF5500] text-white font-bold uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                className="w-full sm:w-auto px-6 py-3.5 bg-[#FF5500] text-white font-bold uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
               >
                 CREATE FREE FELLOW ACCOUNT →
               </Link>
@@ -1013,13 +877,13 @@ export function DirectoryContent({
       {/* ============================================================ */}
       {activeModalFellow && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-mono">
-          <div className="w-full max-w-lg bg-[#fcf9f3] border-4 border-black shadow-[8px_8px_0px_#000000] p-6 space-y-4">
+          <div className="w-full max-w-lg bg-[#FFFFFF] border-4 border-black shadow-[8px_8px_0px_#000000] p-6 space-y-4">
             <div className="flex items-center justify-between border-b-2 border-black pb-3">
               <div className="flex items-center space-x-2">
                 <span className="font-bold text-sm uppercase">
                   {modalType === "referral" ? "[ DISPATCH REFERRAL REQUEST ]" : "[ 1-ON-1 FLASH MENTORSHIP ]"}
                 </span>
-                <span className="px-2 py-0.5 bg-[#CCFF00] text-black text-[10px] font-bold border border-black">
+                <span className="px-2 py-0.5 bg-[#FF5500] text-white text-[10px] font-bold border border-black">
                   MATCH: {activeModalFellow.match}%
                 </span>
               </div>
@@ -1043,7 +907,7 @@ export function DirectoryContent({
             </div>
 
             {modalSuccess ? (
-              <div className="p-4 bg-[#CCFF00] border-2 border-black text-center space-y-2">
+              <div className="p-4 bg-[#FF5500] border-2 border-black text-center space-y-2">
                 <div className="font-bold text-sm text-black">
                   ✓ DISPATCH TRANSMITTED TO ENCRYPTED REPO
                 </div>
@@ -1077,7 +941,7 @@ export function DirectoryContent({
                 </div>
                 <div>
                   <label className="block font-bold mb-1 uppercase text-[10px] text-neutral-600">
-                    PERSONAL STATEMENT & ALIGNMENT (COSINE VECTORS):
+                    About:
                   </label>
                   <textarea
                     rows={3}
@@ -1097,7 +961,7 @@ export function DirectoryContent({
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 bg-[#FF5500] text-white border-2 border-black font-bold shadow-[2px_2px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                    className="px-5 py-2 bg-[#FF5500] text-white border-2 border-black font-bold shadow-[2px_2px_0px_#000000] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                   >
                     CONFIRM DISPATCH →
                   </button>

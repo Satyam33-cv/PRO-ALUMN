@@ -61,21 +61,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcf9f3] text-[#1c1c18] font-sans flex flex-col justify-between selection:bg-[#FF5500] selection:text-white dark:bg-[#0c0e12] dark:text-[#f3f0ea]">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#1c1c18] font-sans flex flex-col justify-between selection:bg-[#FF5500] selection:text-white dark:bg-[#0c0e12] dark:text-[#f3f0ea]">
       {/* Top Editorial Broadsheet Bar */}
-      <header className="fixed top-0 w-full z-50 bg-[#F7F4EE]/95 dark:bg-[#0c0e12]/95 backdrop-blur-md border-b-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+      <header className="fixed top-0 w-full z-50 bg-[#FFFFFF]/95 dark:bg-[#0c0e12]/95 backdrop-blur-md border-b-[1.5px] border-[#0A0A0A] dark:border-neutral-800">
         <div className="h-16 w-full px-4 sm:px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2" aria-label="PRO-ALUMN Home">
               <span className="text-[#FF5500] font-mono text-xs font-bold tracking-tighter">/////</span>
-              <span className="font-headline text-lg sm:text-xl uppercase tracking-tight text-[#1A1A1A] dark:text-white font-bold">
+              <span className="font-headline text-lg sm:text-xl uppercase tracking-tight text-[#0A0A0A] dark:text-white font-bold">
                 PRO-ALUMN
               </span>
-              <span className="bg-[#1A1A1A] text-white px-1.5 py-0.5 font-mono text-[10px] ml-1">
+              <span className="bg-[#0A0A0A] text-white px-1.5 py-0.5 font-mono text-[10px] ml-1">
                 SYS.PUB
               </span>
             </Link>
-            <div className="h-4 w-[1.5px] bg-[#D5CEBF] dark:bg-neutral-800 hidden lg:block"></div>
+            <div className="h-4 w-[1.5px] bg-[#D4D4D4] dark:bg-neutral-800 hidden lg:block"></div>
             <span className="font-mono text-xs text-neutral-500 hidden lg:inline-block tracking-wide">
               SYS.SPEC.01 // PCM 48KHZ // HNSW-384D
             </span>
@@ -97,15 +97,15 @@ export default function LoginPage() {
 
       {/* 50/50 Desktop Broadsheet Split-Screen Interface */}
       <main className="w-full pt-16 flex-1 flex flex-col">
-        <div className="w-full min-h-[calc(100vh-4rem)] flex flex-col lg:flex-row bg-[#fcf9f3] dark:bg-[#0c0e12]">
+        <div className="w-full min-h-[calc(100vh-4rem)] flex flex-col lg:flex-row bg-[#FFFFFF] dark:bg-[#0c0e12]">
           {/* LEFT HALF: Credential Form */}
-          <div className="w-full lg:w-1/2 p-6 md:p-10 lg:p-12 flex flex-col justify-between bg-[#F7F4EE] dark:bg-[#12151b] border-r-0 lg:border-r-[1.5px] border-[#1A1A1A] dark:border-neutral-800">
+          <div className="w-full lg:w-1/2 p-6 md:p-10 lg:p-12 flex flex-col justify-between bg-[#FFFFFF] dark:bg-[#12151b] border-r-0 lg:border-r-[1.5px] border-[#0A0A0A] dark:border-neutral-800">
             <div className="flex flex-col gap-6">
               {/* Header Sub-Navigation Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b-[1.5px] border-[#D5CEBF]/60 dark:border-neutral-800">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b-[1.5px] border-[#D4D4D4]/60 dark:border-neutral-800">
                 <div className="flex items-center gap-2">
                   <span className="text-[#FF5500] font-mono text-xs tracking-wider font-bold">/////</span>
-                  <span className="font-headline text-xs uppercase font-bold tracking-tight text-[#1A1A1A] dark:text-white">
+                  <span className="font-headline text-xs uppercase font-bold tracking-tight text-[#0A0A0A] dark:text-white">
                     ID.VERIFY
                   </span>
                   <span className="bg-[#ebe8e2] dark:bg-[#1c1f26] px-2 py-0.5 font-mono text-[10px] text-neutral-600 dark:text-neutral-400">
@@ -114,7 +114,7 @@ export default function LoginPage() {
                 </div>
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-1.5 px-3 py-1 font-mono text-[11px] font-bold text-[#1A1A1A] dark:text-white bg-white dark:bg-[#1c1f26] border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 shadow-xs hover:bg-[#ebe8e2] dark:hover:bg-[#252932] transition-all"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 font-mono text-[11px] font-bold text-[#0A0A0A] dark:text-white bg-white dark:bg-[#1c1f26] border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 shadow-xs hover:bg-[#ebe8e2] dark:hover:bg-[#252932] transition-all"
                 >
                   <span>←</span> RETURN TO LANDING
                 </Link>
@@ -127,7 +127,7 @@ export default function LoginPage() {
                   <span className="text-neutral-400">/</span>
                   <span className="text-neutral-500">ENCLAVE SECURE GATE</span>
                 </div>
-                <h1 className="font-headline text-2xl md:text-3xl leading-tight font-bold tracking-tight text-[#1A1A1A] dark:text-white uppercase mb-2">
+                <h1 className="font-headline text-2xl md:text-3xl leading-tight font-bold tracking-tight text-[#0A0A0A] dark:text-white uppercase mb-2">
                   ENTER CREDENTIALS
                 </h1>
                 <p className="font-mono text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
@@ -154,7 +154,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@university.edu"
-                      className="w-full bg-white dark:bg-[#181a20] text-[#1A1A1A] dark:text-white px-3.5 py-2.5 font-mono text-xs border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 focus:border-[#FF5500] focus:outline-none transition-colors"
+                      className="w-full bg-white dark:bg-[#181a20] text-[#0A0A0A] dark:text-white px-3.5 py-2.5 font-mono text-xs border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 focus:border-[#FF5500] focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -183,7 +183,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
-                      className="w-full bg-white dark:bg-[#181a20] text-[#1A1A1A] dark:text-white px-3.5 py-2.5 font-mono text-xs border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 focus:border-[#FF5500] focus:outline-none transition-colors"
+                      className="w-full bg-white dark:bg-[#181a20] text-[#0A0A0A] dark:text-white px-3.5 py-2.5 font-mono text-xs border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 focus:border-[#FF5500] focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -198,9 +198,9 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full mt-2 bg-black text-white dark:bg-white dark:text-black py-3.5 px-6 font-headline text-sm uppercase tracking-wide font-bold border-[1.5px] border-black dark:border-white shadow-[3px_3px_0px_#1A1A1A] dark:shadow-[3px_3px_0px_#ffffff] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2.5 disabled:opacity-60"
+                  className="w-full mt-2 bg-black text-white dark:bg-white dark:text-black py-3.5 px-6 font-headline text-sm uppercase tracking-wide font-bold border-[1.5px] border-black dark:border-white shadow-[3px_3px_0px_#0A0A0A] dark:shadow-[3px_3px_0px_#ffffff] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2.5 disabled:opacity-60"
                 >
-                  <span className={`w-2.5 h-2.5 rounded-full bg-[#00E676] ${isSubmitting ? "animate-ping" : "animate-pulse"}`}></span>
+                  <span className={`w-2.5 h-2.5 rounded-full bg-[#FF5500] ${isSubmitting ? "animate-ping" : "animate-pulse"}`}></span>
                   <span>{isSubmitting ? "AUTHENTICATING ENCLAVE..." : "CONTINUE TO MEMBER DISPATCH →"}</span>
                 </button>
 
@@ -209,7 +209,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={handleGoogleSignIn}
                   disabled={isSubmitting}
-                  className="w-full bg-white dark:bg-[#181a20] hover:bg-[#F7F4EE] text-[#1A1A1A] dark:text-white py-2.5 px-4 font-mono text-xs font-semibold tracking-wider uppercase border-[1.5px] border-[#1A1A1A] dark:border-neutral-700 flex items-center justify-center gap-2.5 transition-all disabled:opacity-60"
+                  className="w-full bg-white dark:bg-[#181a20] hover:bg-[#FFFFFF] text-[#0A0A0A] dark:text-white py-2.5 px-4 font-mono text-xs font-semibold tracking-wider uppercase border-[1.5px] border-[#0A0A0A] dark:border-neutral-700 flex items-center justify-center gap-2.5 transition-all disabled:opacity-60"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -230,7 +230,7 @@ export default function LoginPage() {
             </div>
 
             {/* Left Bottom Legal Bar */}
-            <div className="pt-6 mt-6 border-t-[1.5px] border-[#D5CEBF]/40 dark:border-neutral-800 flex flex-wrap items-center justify-between text-neutral-500 font-mono text-[11px] gap-2">
+            <div className="pt-6 mt-6 border-t-[1.5px] border-[#D4D4D4]/40 dark:border-neutral-800 flex flex-wrap items-center justify-between text-neutral-500 font-mono text-[11px] gap-2">
               <span>ZERO ACCESS TELEMETRY EXPORT</span>
               <div className="flex gap-3">
                 <Link href="/privacy" className="hover:underline hover:text-[#FF5500]">Privacy Policy</Link>
@@ -251,8 +251,8 @@ export default function LoginPage() {
             {/* Top Status Readout */}
             <div className="w-full z-10 flex items-center justify-between border-b border-white/10 pb-3 font-mono text-xs">
               <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${isSubmitting ? "bg-[#D9E021] animate-ping" : "bg-[#00E676] animate-pulse"}`}></span>
-                <span className={isSubmitting ? "text-[#D9E021] font-bold" : "text-[#00E676] font-bold"}>
+                <span className={`w-2 h-2 rounded-full ${isSubmitting ? "bg-[#FF5500] animate-ping" : "bg-[#FF5500] animate-pulse"}`}></span>
+                <span className={isSubmitting ? "text-[#FF5500] font-bold" : "text-[#FF5500] font-bold"}>
                   {isSubmitting ? "NODE: VERIFYING CREDENTIALS" : "NODE: AWAITING CREDENTIALS"}
                 </span>
               </div>
@@ -266,7 +266,7 @@ export default function LoginPage() {
             {/* Idle badge stage — no identity, no role, no fake data */}
             <div className="relative w-full max-w-[380px] my-auto py-8 flex flex-col items-center z-10">
               <div className="w-full bg-[#16181b]/95 backdrop-blur-xl border border-white/20 p-6 shadow-[0px_20px_50px_rgba(0,0,0,0.8)] relative overflow-hidden transition-all duration-300">
-                <div className="absolute -right-16 -top-16 w-44 h-44 bg-gradient-to-br from-[#D9E021]/15 via-[#FF5500]/10 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute -right-16 -top-16 w-44 h-44 bg-gradient-to-br from-[#FF5500]/15 via-[#FF5500]/10 to-transparent rounded-full blur-2xl pointer-events-none"></div>
 
                 <div className="flex items-center justify-between pb-4 border-b border-white/10">
                   <div className="flex items-center gap-2">

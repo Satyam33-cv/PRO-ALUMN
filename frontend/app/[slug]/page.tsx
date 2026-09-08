@@ -137,7 +137,7 @@ export default function DynamicCustomPage() {
   const isDraft = page.status === "DRAFT";
 
   return (
-    <div className="min-h-screen bg-[#F7F4EE] text-black font-sans selection:bg-[#CCFF00] selection:text-black">
+    <div className="min-h-screen bg-[#FFFFFF] text-black font-sans selection:bg-[#FF5500] selection:text-white">
       {/* Draft Warning Banner */}
       {isDraft && (
         <div className="sticky top-0 z-50 bg-[#FF5500] text-white px-4 py-2 font-mono text-xs font-black uppercase text-center flex items-center justify-center gap-2 border-b-2 border-black shadow-md">
@@ -157,7 +157,7 @@ export default function DynamicCustomPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1 font-mono text-xs font-black uppercase border-2 border-black bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]"
+            className="inline-flex items-center gap-2 px-3.5 py-1 font-mono text-xs font-black uppercase border-2 border-black bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]"
           >
             <Layers className="w-3.5 h-3.5" />
             <span>{page.title}</span>
@@ -193,7 +193,7 @@ export default function DynamicCustomPage() {
                   return (
                     <div
                       key={block.id || idx}
-                      className="p-8 sm:p-12 border-4 border-black bg-[#CCFF00] text-black text-center space-y-4 shadow-[6px_6px_0px_#000000]"
+                      className="p-8 sm:p-12 border-4 border-black bg-[#FF5500] text-white text-center space-y-4 shadow-[6px_6px_0px_#000000]"
                     >
                       {block.title && <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight">{block.title}</h2>}
                       {block.subtitle && <p className="font-mono text-xs sm:text-sm text-neutral-800 max-w-xl mx-auto">{block.subtitle}</p>}
@@ -201,7 +201,7 @@ export default function DynamicCustomPage() {
                         <div className="pt-2">
                           <Link
                             href={block.ctaLink}
-                            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-black bg-black text-[#CCFF00] hover:bg-white hover:text-black font-mono text-xs font-black uppercase transition-all shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-black bg-black text-[#FF5500] hover:bg-white hover:text-black font-mono text-xs font-black uppercase transition-all shadow-[3px_3px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                           >
                             <span>{block.ctaText}</span>
                             <ArrowRight size={14} />
@@ -240,7 +240,7 @@ export default function DynamicCustomPage() {
                             className="p-6 border-3 border-black bg-white shadow-[4px_4px_0px_#000000] space-y-3"
                           >
                             <div className="flex items-center justify-between">
-                              <span className="w-8 h-8 border-2 border-black bg-[#CCFF00] text-black flex items-center justify-center font-mono font-black text-xs shadow-[1px_1px_0px_#000000]">
+                              <span className="w-8 h-8 border-2 border-black bg-[#FF5500] text-white flex items-center justify-center font-mono font-black text-xs shadow-[1px_1px_0px_#000000]">
                                 0{fIdx + 1}
                               </span>
                               {feat.tag && (
@@ -284,13 +284,13 @@ export default function DynamicCustomPage() {
                       key={block.id || idx}
                       className="p-8 sm:p-12 border-4 border-black bg-black text-white text-center space-y-4 shadow-[6px_6px_0px_#000000]"
                     >
-                      <h3 className="text-2xl sm:text-3xl font-black uppercase text-[#CCFF00] tracking-tight">{block.title || "Ready to Get Started?"}</h3>
+                      <h3 className="text-2xl sm:text-3xl font-black uppercase text-[#FF5500] tracking-tight">{block.title || "Ready to Get Started?"}</h3>
                       <p className="font-mono text-xs sm:text-sm text-neutral-300 max-w-lg mx-auto">{block.subtitle || block.content}</p>
                       {block.ctaText && block.ctaLink && (
                         <div className="pt-2">
                           <Link
                             href={block.ctaLink}
-                            className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-black bg-[#CCFF00] hover:bg-white text-black font-mono text-xs font-black uppercase shadow-[3px_3px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                            className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-black bg-[#FF5500] hover:bg-white text-black font-mono text-xs font-black uppercase shadow-[3px_3px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                           >
                             <span>{block.ctaText}</span>
                             <ArrowRight size={14} />

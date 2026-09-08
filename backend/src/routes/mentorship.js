@@ -131,6 +131,10 @@ router.post('/', authenticate, async (req, res) => {
       });
     });
 
+    try {
+      const { awardPoints } = require('../services/gamification');
+      await awardPoints(req.user.id, 'MENTORSHIP_REQUESTED', 15);
+    } catch (_) {}
     res.status(201).json({ mentorship: result });
   } catch (err) {
     console.error('POST /mentorship error:', err);
@@ -262,9 +266,21 @@ router.patch('/:id/status', authenticate, async (req, res) => {
       });
     });
 
+    try {
+      const { awardPoints } = require('../services/gamification');
+      const st = String(status).toUpperCase();
+      if (st === 'ACCEPTED' && mentorship.mentorId === req.user.id) {
+        await awardPoints(req.user.id, 'MENTORSHIP_ACCEPTED', 25);
+      }
+      if (st === 'COMPLETED') {
+        await awardPoints(mentorship.mentorId, 'MENTORSHIP_COMPLETED', 40);
+        await awardPoints(mentorship.studentId, 'MENTORSHIP_COMPLETED', 40);
+      }
+    } catch (_) {}
     res.json({ mentorship: updated });
   } catch (err) {
     console.error('PATCH /mentorship/:id/status error:', err);
+    // points injected in success path below
     res.status(500).json({ error: err.message || 'Failed to update mentorship status' });
   }
 });

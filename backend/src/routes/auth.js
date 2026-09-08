@@ -272,4 +272,61 @@ router.get(
   }
 );
 
+
+// =================== POST /api/auth/bootstrap-admin ===================
+// One-time: if zero ADMIN users exist, promote the logged-in user to ADMIN.
+router.post('/bootstrap-admin', authenticate, async (req, res) => {
+  try {
+    const secret = process.env.BOOTSTRAP_ADMIN_SECRET;
+    if (secret) {
+      const provided = req.headers['x-bootstrap-secret'];
+      if (provided !== secret) {
+        return res.status(403).json({ error: 'Invalid bootstrap secret' });
+      }
+    }
+
+    const adminCount = await prisma.user.count({ where: { role: 'ADMIN' } });
+    if (adminCount > 0) {
+      return res.status(409).json({
+        error: 'An admin already exists. Ask an existing admin to change your role, or update role in the database.',
+        adminCount,
+      });
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        role: 'ADMIN',
+        isVerified: true,
+        profileStatus: 'APPROVED',
+      },
+      select: {
+        id: true, name: true, email: true, role: true, profileStatus: true, isVerified: true,
+      },
+    });
+
+    const token = jwt.sign(
+      {
+        id: updated.id,
+        email: updated.email,
+        role: updated.role,
+        profileStatus: updated.profileStatus,
+      },
+      JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    res.json({
+      success: true,
+      message: 'You are now the first admin. Reload or sign out/in if the admin panel still redirects.',
+      user: updated,
+      token,
+    });
+  } catch (err) {
+    console.error('POST /auth/bootstrap-admin error:', err);
+    res.status(500).json({ error: 'Failed to bootstrap admin' });
+  }
+});
+
 module.exports = router;
+

@@ -136,7 +136,7 @@ export function EventDetailContent({ id }: { id: string }) {
       {toast && (
         <div
           role="status"
-          className="fixed top-6 right-6 z-50 bg-[#CCFF00] text-black border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
+          className="fixed top-6 right-6 z-50 bg-[#FF5500] text-white border-2 border-black px-4 py-2 font-mono text-xs font-bold shadow-[4px_4px_0px_#000000] flex items-center gap-2"
         >
           <CheckCircle2 size={16} />
           <span>{toast}</span>
@@ -147,12 +147,12 @@ export function EventDetailContent({ id }: { id: string }) {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <Link
           href="/events"
-          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
         >
           <ArrowLeft size={14} /> Back to Events
         </Link>
         <div className="flex items-center gap-2 text-xs">
-          <span className="px-2 py-0.5 bg-[#EFECE4] border border-black font-bold uppercase text-neutral-600">
+          <span className="px-2 py-0.5 bg-[#F5F5F5] border border-black font-bold uppercase text-neutral-600">
             ASSEMBLAGE
           </span>
           <span className="font-bold text-neutral-400">//</span>
@@ -165,13 +165,13 @@ export function EventDetailContent({ id }: { id: string }) {
         {/* Header Bar */}
         <header className="bg-black text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 border-b-4 border-black">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 bg-[#CCFF00] inline-block animate-pulse"></span>
+            <span className="w-2.5 h-2.5 bg-[#FF5500] inline-block animate-pulse"></span>
             <span className="font-bold text-xs tracking-wider uppercase">
               CONCLAVE SPECIFICATION // TICKETING PROTOCOL
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-[#CCFF00] text-black border border-black text-[11px] font-bold uppercase">
+            <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black text-[11px] font-bold uppercase">
               {event.mode || "PHYSICAL"}
             </span>
             <span className="px-2 py-0.5 bg-[#FF5500] text-white border border-black text-[11px] font-bold uppercase">
@@ -186,7 +186,7 @@ export function EventDetailContent({ id }: { id: string }) {
             <div className="flex items-start gap-5">
               {/* Date Block */}
               <div className="w-18 h-20 sm:w-22 sm:h-24 bg-black text-white border-3 border-black shadow-[3px_3px_0px_#000000] flex flex-col items-center justify-center shrink-0">
-                <span className="text-[11px] font-bold tracking-widest text-[#CCFF00] uppercase">
+                <span className="text-[11px] font-bold tracking-widest text-[#FF5500] uppercase">
                   {displayMonth}
                 </span>
                 <span className="text-3xl sm:text-4xl font-black font-sans text-white leading-none">
@@ -196,7 +196,7 @@ export function EventDetailContent({ id }: { id: string }) {
 
               {/* Title & Metadata */}
               <div className="space-y-2">
-                <span className="px-2 py-0.5 bg-[#F7F4EE] border border-black text-[10px] font-bold uppercase text-neutral-600 inline-block">
+                <span className="px-2 py-0.5 bg-[#FFFFFF] border border-black text-[10px] font-bold uppercase text-neutral-600 inline-block">
                   FLAGSHIP GATHERING
                 </span>
                 <h1 className="text-2xl sm:text-3xl font-black font-sans uppercase tracking-tight text-black">
@@ -221,7 +221,7 @@ export function EventDetailContent({ id }: { id: string }) {
                 navigator.clipboard?.writeText(window.location.href);
                 showToast("Event link copied to clipboard");
               }}
-              className="px-3 py-1.5 bg-[#F7F4EE] hover:bg-black hover:text-white border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] transition-colors flex items-center gap-1.5 cursor-pointer self-start"
+              className="px-3 py-1.5 bg-[#FFFFFF] hover:bg-black hover:text-white border-2 border-black text-xs font-bold uppercase shadow-[2px_2px_0px_#000000] transition-colors flex items-center gap-1.5 cursor-pointer self-start"
             >
               <Share2 size={13} /> Share
             </button>
@@ -235,7 +235,7 @@ export function EventDetailContent({ id }: { id: string }) {
                 {attendeeCount} OF {maxCapacity} SEATS RESERVED
               </span>
             </div>
-            <div className="w-full bg-[#F7F4EE] border-2 border-black h-3 overflow-hidden p-0.5">
+            <div className="w-full bg-[#FFFFFF] border-2 border-black h-3 overflow-hidden p-0.5">
               <div
                 className="bg-black h-full transition-all duration-500"
                 style={{ width: `${capacityPct}%` }}
@@ -245,7 +245,7 @@ export function EventDetailContent({ id }: { id: string }) {
         </div>
 
         {/* Description Section */}
-        <section className="p-6 sm:p-8 bg-[#F7F4EE] border-b-2 border-black space-y-3">
+        <section className="p-6 sm:p-8 bg-[#FFFFFF] border-b-2 border-black space-y-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-black inline-block"></span>
             <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-600">
@@ -264,10 +264,10 @@ export function EventDetailContent({ id }: { id: string }) {
               disabled={isSubmitting || (!attending && isFull)}
               className={`px-6 py-3 border-2 border-black text-xs font-bold uppercase shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 ${
                 attending
-                  ? "bg-black text-[#CCFF00] hover:bg-neutral-900"
+                  ? "bg-black text-[#FF5500] hover:bg-neutral-900"
                   : isFull
                   ? "bg-neutral-200 text-neutral-500 cursor-not-allowed shadow-none"
-                  : "bg-[#CCFF00] text-black hover:bg-black hover:text-[#CCFF00]"
+                  : "bg-[#FF5500] text-white hover:bg-black hover:text-white"
               }`}
             >
               <Ticket size={16} />
@@ -311,7 +311,7 @@ export function EventDetailContent({ id }: { id: string }) {
           </div>
 
           {rsvps.length === 0 ? (
-            <div className="p-8 text-center bg-[#F7F4EE] border-2 border-black text-xs space-y-2">
+            <div className="p-8 text-center bg-[#FFFFFF] border-2 border-black text-xs space-y-2">
               <p className="font-bold uppercase text-black">NO ATTENDEES ENROLLED YET</p>
               <p className="text-neutral-600 font-sans">
                 Claim your pass above to be registered as the first confirmed participant on the guest list!
@@ -331,9 +331,9 @@ export function EventDetailContent({ id }: { id: string }) {
                 return (
                   <div
                     key={rsvp.userId}
-                    className="p-3 bg-[#F7F4EE] border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center gap-3"
+                    className="p-3 bg-[#FFFFFF] border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center gap-3"
                   >
-                    <div className="w-9 h-9 bg-black text-[#CCFF00] border border-black flex items-center justify-center font-bold text-xs shrink-0">
+                    <div className="w-9 h-9 bg-black text-[#FF5500] border border-black flex items-center justify-center font-bold text-xs shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">

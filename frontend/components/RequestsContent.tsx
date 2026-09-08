@@ -33,11 +33,11 @@ const statusTabs: { label: string; value: Status | "all" }[] = [
 ];
 
 const statusStyles: Record<Status, string> = {
-  pending: "bg-[#CCFF00] border-2 border-black text-black font-mono font-bold uppercase shadow-[2px_2px_0px_#000000]",
-  accepted: "bg-[#00E676] border-2 border-black text-black font-mono font-bold uppercase shadow-[2px_2px_0px_#000000]",
+  pending: "bg-[#FF5500] border-2 border-black text-white font-mono font-bold uppercase shadow-[2px_2px_0px_#000000]",
+  accepted: "bg-[#FF5500] border-2 border-black text-black font-mono font-bold uppercase shadow-[2px_2px_0px_#000000]",
   rejected: "bg-[#FF5500] border-2 border-black text-white font-mono font-bold uppercase shadow-[2px_2px_0px_#000000]",
   referred: "bg-cyan-300 border-2 border-black text-black font-mono font-bold uppercase shadow-[2px_2px_0px_#000000]",
-  hired: "bg-[#CCFF00] border-2 border-black text-black font-mono font-black uppercase shadow-[2px_2px_0px_#000000]",
+  hired: "bg-[#FF5500] border-2 border-black text-white font-mono font-black uppercase shadow-[2px_2px_0px_#000000]",
 };
 
 const cardVariants = {
@@ -107,7 +107,7 @@ export function RequestsContent() {
     <div className="space-y-8">
       <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000]">
         <div className="flex items-center gap-2">
-          <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+          <span className="h-2 w-2 bg-[#FF5500] border border-black" />
           <p className="font-mono text-xs uppercase font-bold tracking-[0.2em] text-black">
             [ SECTION 05 // REFERRAL PIPELINE & THREADS ]
           </p>
@@ -139,7 +139,7 @@ export function RequestsContent() {
                 key={req.id}
                 className="flex items-center gap-3 border-2 border-black bg-white p-3 shadow-[3px_3px_0px_#000000]"
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-[#CCFF00] text-xs font-mono font-black text-black">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-[#FF5500] text-xs font-mono font-black text-black">
                   {req.requesterInitials}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -153,7 +153,7 @@ export function RequestsContent() {
                 <div className="flex shrink-0 gap-2">
                   <button
                     onClick={() => handleStatusChange(req.id, "accepted")}
-                    className="border-2 border-black bg-[#00E676] px-3 py-1 font-mono text-xs font-black text-black uppercase shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                    className="border-2 border-black bg-[#FF5500] px-3 py-1 font-mono text-xs font-black text-black uppercase shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
                     aria-label={`Accept referral from ${req.requesterName}`}
                   >
                     Accept
@@ -183,13 +183,13 @@ export function RequestsContent() {
               onClick={() => setActiveTab(tab.value)}
               className={`flex items-center gap-2 border-2 border-black px-4 py-2 font-mono text-xs font-bold uppercase transition-all ${
                 isActive
-                  ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                  ? "bg-black text-[#FF5500] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
                   : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
               }`}
             >
               {tab.label}
               <span className={`inline-flex items-center justify-center border border-current px-1.5 py-0.2 text-[10px] font-mono font-black ${
-                isActive ? "bg-[#CCFF00] text-black" : "bg-neutral-100 text-black"
+                isActive ? "bg-[#FF5500] text-white" : "bg-neutral-100 text-black"
               }`}>
                 {count}
               </span>
@@ -229,7 +229,7 @@ export function RequestsContent() {
                 className="border-3 border-black bg-white p-5 shadow-[4px_4px_0px_#000000]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-[#CCFF00] text-xs font-mono font-black text-black">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-[#FF5500] text-xs font-mono font-black text-black">
                     {req.requesterInitials}
                   </div>
                   <span className="font-mono text-sm font-bold text-black">{req.requesterName}</span>

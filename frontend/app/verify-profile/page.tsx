@@ -66,7 +66,7 @@ export default function VerifyProfileHoldingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F7F4EE] text-black">
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] text-black">
         <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000] flex items-center gap-3">
           <RefreshCw className="animate-spin text-black" size={24} />
           <span className="text-sm font-bold font-mono uppercase">Loading review status...</span>
@@ -78,9 +78,9 @@ export default function VerifyProfileHoldingPage() {
   const methodBadge = () => {
     switch (user?.verificationMethod) {
       case "paid":
-        return { label: "Verified Paid Application (₹29)", icon: CreditCard, color: "bg-[#00E676] text-black border-2 border-black" };
+        return { label: "Verified Paid Application (₹29)", icon: CreditCard, color: "bg-[#FF5500] text-black border-2 border-black" };
       case "college_email":
-        return { label: "Institutional Email Domain Verified", icon: Mail, color: "bg-[#CCFF00] text-black border-2 border-black" };
+        return { label: "Institutional Email Domain Verified", icon: Mail, color: "bg-[#FF5500] text-white border-2 border-black" };
       case "id_upload":
         return { label: "Institutional ID Document Attached", icon: FileText, color: "bg-purple-200 text-black border-2 border-black" };
       case "otp":
@@ -93,11 +93,11 @@ export default function VerifyProfileHoldingPage() {
   const badge = methodBadge();
 
   return (
-    <div className="min-h-screen bg-[#F7F4EE] text-black flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-[#FFFFFF] text-black flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-xl w-full mx-auto space-y-6">
         {/* Animated Status Pill */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 border-2 border-black bg-[#CCFF00] text-black text-xs font-mono font-black uppercase shadow-[2px_2px_0px_#000000]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border-2 border-black bg-[#FF5500] text-white text-xs font-mono font-black uppercase shadow-[2px_2px_0px_#000000]">
             <Clock size={14} className="stroke-[3]" />
             <span>CREDENTIAL VERIFICATION IN PROGRESS</span>
           </div>
@@ -115,7 +115,7 @@ export default function VerifyProfileHoldingPage() {
         <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000] space-y-5">
           <div className="flex items-center justify-between border-b-2 border-black pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-[#CCFF00] text-black font-mono font-black text-sm shadow-[2px_2px_0px_#000000]">
+              <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-[#FF5500] text-white font-mono font-black text-sm shadow-[2px_2px_0px_#000000]">
                 {user?.name?.split(" ").map((n: string) => n[0]).join("") || "U"}
               </div>
               <div>
@@ -176,7 +176,7 @@ export default function VerifyProfileHoldingPage() {
             <button
               onClick={() => checkStatus(true)}
               disabled={checking}
-              className="w-full sm:w-1/2 flex items-center justify-center gap-2 py-2.5 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer disabled:opacity-50"
+              className="w-full sm:w-1/2 flex items-center justify-center gap-2 py-2.5 border-2 border-black bg-black text-[#FF5500] hover:bg-[#FF5500] hover:text-black font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer disabled:opacity-50"
             >
               <RefreshCw size={13} className={checking ? "animate-spin" : ""} />
               <span>{checking ? "Checking Status..." : "Refresh Status"}</span>

@@ -65,7 +65,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
       {/* ================= HERO BANNER ================= */}
       <div className="border-4 border-black bg-white p-8 sm:p-10 shadow-[6px_6px_0px_#000000] text-black">
         <div className="max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-black bg-[#CCFF00] text-black font-mono text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-black bg-[#FF5500] text-white font-mono text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
             <Sparkles size={14} className="stroke-[3]" />
             Official University Publication
           </div>
@@ -88,7 +88,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
             placeholder="Search newsletters by title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-9 py-2 font-mono text-xs border-2 border-black bg-white text-black placeholder-neutral-400 focus:outline-none focus:bg-[#CCFF00]/10 shadow-[2px_2px_0px_#000000] transition-all"
+            className="w-full pl-10 pr-9 py-2 font-mono text-xs border-2 border-black bg-white text-black placeholder-neutral-400 focus:outline-none focus:bg-[#FF5500]/10 shadow-[2px_2px_0px_#000000] transition-all"
           />
           {isDebouncing && (
             <Loader2 size={16} className="animate-spin text-black absolute right-3 top-1/2 -translate-y-1/2" />
@@ -111,7 +111,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
               onClick={() => setSelectedYear("all")}
               className={`px-3 py-1.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
                 selectedYear === "all"
-                  ? "bg-black text-[#CCFF00] shadow-[2px_2px_0px_#000000]"
+                  ? "bg-black text-[#FF5500] shadow-[2px_2px_0px_#000000]"
                   : "bg-white text-black hover:bg-neutral-100 shadow-[1px_1px_0px_#000000]"
               }`}
             >
@@ -123,7 +123,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
                 onClick={() => setSelectedYear(yr.toString())}
                 className={`px-3 py-1.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
                   selectedYear === yr.toString()
-                    ? "bg-black text-[#CCFF00] shadow-[2px_2px_0px_#000000]"
+                    ? "bg-black text-[#FF5500] shadow-[2px_2px_0px_#000000]"
                     : "bg-white text-black hover:bg-neutral-100 shadow-[1px_1px_0px_#000000]"
                 }`}
               >
@@ -137,7 +137,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
       {/* ================= NEWSLETTER GRID ================= */}
       {loading ? (
         <div className="flex justify-center py-20 border-4 border-black bg-white shadow-[6px_6px_0px_#000000]">
-          <div className="h-8 w-8 animate-spin rounded-full border-3 border-black border-t-[#CCFF00]" />
+          <div className="h-8 w-8 animate-spin rounded-full border-3 border-black border-t-[#FF5500]" />
         </div>
       ) : filteredNewsletters.length === 0 ? (
         <div className="text-center py-16 bg-white border-4 border-black shadow-[6px_6px_0px_#000000] p-8">
@@ -154,7 +154,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
                 clearQuery();
                 setSelectedYear("all");
               }}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 border-2 border-black bg-[#CCFF00] text-black font-mono text-xs font-black uppercase hover:bg-black hover:text-[#CCFF00] shadow-[2px_2px_0px_#000000] transition-colors"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 border-2 border-black bg-[#FF5500] text-white font-mono text-xs font-black uppercase hover:bg-black hover:text-white shadow-[2px_2px_0px_#000000] transition-colors"
             >
               Reset filters
             </button>
@@ -169,7 +169,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
                   Year {yearStr}
                 </h2>
                 <div className="h-0.5 flex-1 bg-black" />
-                <span className="font-mono text-xs font-bold uppercase text-black border-2 border-black bg-[#CCFF00] px-3 py-1 shadow-[2px_2px_0px_#000000]">
+                <span className="font-mono text-xs font-bold uppercase text-black border-2 border-black bg-[#FF5500] px-3 py-1 shadow-[2px_2px_0px_#000000]">
                   {items.length} {items.length === 1 ? "Issue" : "Issues"}
                 </span>
               </div>
@@ -192,7 +192,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
                       />
 
                       {/* Year badge */}
-                      <span className="absolute top-3 left-3 px-2.5 py-1 border-2 border-black bg-[#CCFF00] text-black font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000]">
+                      <span className="absolute top-3 left-3 px-2.5 py-1 border-2 border-black bg-[#FF5500] text-white font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000]">
                         {issue.year}
                       </span>
                     </div>
@@ -216,7 +216,7 @@ export const NewsletterContent = memo(function NewsletterContent() {
                       <div className="flex items-center gap-2 pt-3 border-t-2 border-black">
                         <button
                           onClick={() => setActivePdf({ title: issue.title, url: issue.fileUrl })}
-                          className="flex-1 flex items-center justify-center gap-2 py-2 px-3 border-2 border-black bg-black text-[#CCFF00] hover:bg-[#00E676] hover:text-black font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                          className="flex-1 flex items-center justify-center gap-2 py-2 px-3 border-2 border-black bg-black text-[#FF5500] hover:bg-[#FF5500] hover:text-black font-mono text-xs font-black uppercase shadow-[2px_2px_0px_#000000] transition-all cursor-pointer active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                         >
                           <BookOpen size={14} />
                           Read Issue

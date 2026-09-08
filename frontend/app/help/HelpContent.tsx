@@ -183,9 +183,9 @@ export function HelpContent({ userSession }: { userSession?: any }) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "RESOLVED":
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-[#00E676] text-black shadow-[2px_2px_0px_#000000]"><FiCheck size={12} className="stroke-[3]" /> Resolved</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-[#FF5500] text-black shadow-[2px_2px_0px_#000000]"><FiCheck size={12} className="stroke-[3]" /> Resolved</span>;
       case "IN_PROGRESS":
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000]"><FiClock size={12} className="stroke-[3]" /> In Progress</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000]"><FiClock size={12} className="stroke-[3]" /> In Progress</span>;
       case "CLOSED":
         return <span className="inline-flex items-center gap-1 px-2.5 py-1 border-2 border-black text-xs font-mono font-black uppercase bg-neutral-200 text-neutral-800 shadow-[2px_2px_0px_#000000]">Closed</span>;
       case "OPEN":
@@ -206,7 +206,7 @@ export function HelpContent({ userSession }: { userSession?: any }) {
         {/* Header */}
         <div className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000]">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 bg-[#CCFF00] border border-black" />
+            <span className="h-2 w-2 bg-[#FF5500] border border-black" />
             <p className="font-mono text-xs uppercase font-bold tracking-[0.2em] text-black">
               [ SECTION 08 // KNOWLEDGE BASE &amp; MEMBER SUPPORT ]
             </p>
@@ -226,7 +226,7 @@ export function HelpContent({ userSession }: { userSession?: any }) {
             onClick={() => setActiveTab("submit")}
             className={`flex items-center gap-2 px-5 py-2.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
               activeTab === "submit"
-                ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                ? "bg-black text-[#FF5500] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
                 : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
             }`}
           >
@@ -239,7 +239,7 @@ export function HelpContent({ userSession }: { userSession?: any }) {
             onClick={() => setActiveTab("my-tickets")}
             className={`flex items-center gap-2 px-5 py-2.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
               activeTab === "my-tickets"
-                ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                ? "bg-black text-[#FF5500] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
                 : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
             }`}
           >
@@ -252,7 +252,7 @@ export function HelpContent({ userSession }: { userSession?: any }) {
             onClick={() => setActiveTab("faq")}
             className={`flex items-center gap-2 px-5 py-2.5 border-2 border-black font-mono text-xs font-black uppercase transition-all ${
               activeTab === "faq"
-                ? "bg-black text-[#CCFF00] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
+                ? "bg-black text-[#FF5500] shadow-[3px_3px_0px_#000000] -translate-y-0.5"
                 : "bg-white text-black hover:bg-neutral-100 shadow-[2px_2px_0px_#000000]"
             }`}
           >

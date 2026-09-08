@@ -229,7 +229,7 @@ export function StoriesContent({
         id: s.id || `srv-${idx}`,
         index: String(idx + 1).padStart(2, "0"),
         category: (s.category || "CAREER") as any,
-        categoryLabel: s.categoryLabel || "FELLOW MILESTONE",
+        categoryLabel: s.categoryLabel || "Story",
         cohort: s.batchYear ? `COHORT '${String(s.batchYear).slice(-2)}` : (s.cohort || "ALUMNI ROSTER"),
         location: s.location || "NETWORK FEED",
         topologyTag: (s.topologyTag || "REMOTE") as any,
@@ -247,13 +247,13 @@ export function StoriesContent({
           value2: "DISPATCHED",
           label3: "IMPACT",
           value3: "96/100",
-          highlightCol: "#CCFF00",
+          highlightCol: "#FF5500",
         },
         upvotes: s.upvoteCount ?? s.likes ?? s.upvotes ?? 0,
         commentsCount: s.commentsCount ?? (s.comments?.length ?? 0),
         avatarBg: s.avatarBg || "#000000",
         avatarColor: s.avatarColor || "#FFFFFF",
-        actionLabel: s.actionLabel || "VOUCH / ENDORSE",
+        actionLabel: s.actionLabel || "Endorse",
         actionHref: s.actionHref || "/directory",
       };
     });
@@ -335,12 +335,12 @@ export function StoriesContent({
   }, [allStories, categoryFilter, topologyFilter, searchQuery, myDispatchesOnly, user]);
 
   return (
-    <div className="space-y-10 selection:bg-[#CCFF00] selection:text-black font-sans">
+    <div className="space-y-10 selection:bg-[#FF5500] selection:text-white font-sans">
       {/* ========================================================================= */}
       {/* 0. AUTHENTICATED MEMBER CONSOLE SUB-HEADER OMNIBAR (STITCH SPEC 7d472871) */}
       {/* ========================================================================= */}
       {isMemberView && (
-        <div className="w-full py-2.5 px-4 sm:px-6 bg-white border-2 border-black flex flex-wrap items-center justify-between gap-3 sticky top-0 z-20 shadow-[3px_3px_0px_#1A1A1A]">
+        <div className="w-full py-2.5 px-4 sm:px-6 bg-white border-2 border-black flex flex-wrap items-center justify-between gap-3 sticky top-0 z-20 shadow-[3px_3px_0px_#0A0A0A]">
           <div className="flex-1 min-w-[260px] max-w-xl relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-500">
               <Search size={16} />
@@ -350,10 +350,10 @@ export function StoriesContent({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search alumni milestones, venture rounds, papers via HNSW Vector Index..."
-              className="w-full pl-9 pr-24 py-1.5 bg-[#fcf9f3] text-black text-xs sm:text-sm font-mono border-2 border-black placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#FF5500] shadow-[2px_2px_0px_#1A1A1A] transition-all"
+              className="w-full pl-9 pr-24 py-1.5 bg-[#FFFFFF] text-black text-xs sm:text-sm font-mono border-2 border-black placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#FF5500] shadow-[2px_2px_0px_#0A0A0A] transition-all"
             />
             <div className="absolute inset-y-0 right-0 pr-2 flex items-center gap-1 pointer-events-none">
-              <kbd className="px-1.5 py-0.5 bg-[#EFECE4] text-neutral-600 font-mono text-[10px] border border-neutral-400 rounded">
+              <kbd className="px-1.5 py-0.5 bg-[#F5F5F5] text-neutral-600 font-mono text-[10px] border border-neutral-400 rounded">
                 ⌘K
               </kbd>
               <span className="font-mono text-[9px] text-[#FF5500] font-bold">EMBED:384D</span>
@@ -364,13 +364,13 @@ export function StoriesContent({
               type="button"
               id="myMilestonesBtn"
               onClick={() => setMyDispatchesOnly(!myDispatchesOnly)}
-              className={`px-3 py-1.5 font-mono text-xs font-bold border-2 border-black rounded-sm shadow-[2px_2px_0px_#1A1A1A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 ${
-                myDispatchesOnly ? "bg-black text-[#CCFF00]" : "bg-white text-black hover:bg-[#EFECE4]"
+              className={`px-3 py-1.5 font-mono text-xs font-bold border-2 border-black rounded-sm shadow-[2px_2px_0px_#0A0A0A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 ${
+                myDispatchesOnly ? "bg-black text-[#FF5500]" : "bg-white text-black hover:bg-[#F5F5F5]"
               }`}
             >
               <span className="text-[#FF5500] font-bold text-sm">✦</span>
               <span>MY DISPATCHES</span>
-              <span className="px-1.5 py-0.2 bg-[#EFECE4] text-black font-mono text-[10px] border border-black font-bold">
+              <span className="px-1.5 py-0.2 bg-[#F5F5F5] text-black font-mono text-[10px] border border-black font-bold">
                 {myDispatchesCount}
               </span>
             </button>
@@ -378,7 +378,7 @@ export function StoriesContent({
               type="button"
               id="openTransmitModalBtn"
               onClick={() => setModalOpen(true)}
-              className="px-4 py-1.5 bg-[#FF5500] text-white font-mono text-xs font-bold border-2 border-black rounded-sm shadow-[3px_3px_0px_#1A1A1A] hover:bg-[#d04400] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 uppercase"
+              className="px-4 py-1.5 bg-[#FF5500] text-white font-mono text-xs font-bold border-2 border-black rounded-sm shadow-[3px_3px_0px_#0A0A0A] hover:bg-[#d04400] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 uppercase"
             >
               <Plus size={16} />
               <span>+ TRANSMIT MILESTONE STORY</span>
@@ -398,14 +398,14 @@ export function StoriesContent({
           <div className="flex flex-col lg:flex-row justify-between lg:items-end gap-6 pb-4 border-b-2 border-dashed border-black">
             <div className="flex flex-col gap-2 max-w-3xl">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2 py-0.5 bg-black text-[#CCFF00] font-mono text-[11px] font-bold uppercase tracking-wider border border-black">
-                  [PILLAR // 05] PROTOCOL 06
+                <span className="px-2 py-0.5 bg-black text-[#FF5500] font-mono text-[11px] font-bold uppercase tracking-wider border border-black">
+                  Stories
                 </span>
                 <span className="font-mono text-xs text-neutral-600 uppercase">
-                  VERIFIED MILESTONES &amp; VENTURE DISPATCHES
+                  Alumni stories
                 </span>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#EFECE4] border border-neutral-400 rounded-full">
-                  <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#F5F5F5] border border-neutral-400 rounded-full">
+                  <span className="w-2 h-2 rounded-full bg-[#FF5500] animate-pulse"></span>
                   <span className="font-mono text-[10px] text-black font-bold">BROADCAST STREAM ACTIVE</span>
                 </div>
               </div>
@@ -413,13 +413,13 @@ export function StoriesContent({
                 Success Spotlight Wall &amp; Peer Chronicles
               </h1>
               <p className="font-mono text-xs sm:text-sm text-neutral-700 max-w-2xl leading-relaxed">
-                Peer-attested achievements, career pivots, venture funding rounds, and research breakthroughs from verified alumni fellows. Transparent cryptographic upvoting and direct mentorship routing.
+                Milestones and career stories from verified alumni. Endorse people you know.
               </p>
             </div>
 
             {/* FELLOW PARTICIPATION POOL REWARD WIDGET */}
-            <div className="bg-[#F7F4EE] border-2 border-black p-3.5 rounded-sm shadow-[3px_3px_0px_#1A1A1A] flex items-center gap-3.5 shrink-0">
-              <div className="w-12 h-12 bg-[#CCFF00] border border-black flex items-center justify-center font-bold text-black shadow-[2px_2px_0px_#1A1A1A]">
+            <div className="bg-[#FFFFFF] border-2 border-black p-3.5 rounded-sm shadow-[3px_3px_0px_#0A0A0A] flex items-center gap-3.5 shrink-0">
+              <div className="w-12 h-12 bg-[#FF5500] border border-black flex items-center justify-center font-bold text-black shadow-[2px_2px_0px_#0A0A0A]">
                 <Award size={26} />
               </div>
               <div className="flex flex-col">
@@ -441,7 +441,7 @@ export function StoriesContent({
               <span className="bg-black text-white px-2.5 py-1 uppercase tracking-wide">
                 [ PILLAR 05 // PUBLIC DISPATCHES &amp; PROOF OF IMPACT ]
               </span>
-              <span className="bg-[#CCFF00] border-2 border-black px-2 py-0.5 uppercase tracking-wide flex items-center gap-1.5 text-black">
+              <span className="bg-[#FF5500] border-2 border-black px-2 py-0.5 uppercase tracking-wide flex items-center gap-1.5 text-black">
                 <span className="w-2 h-2 bg-[#00A859] inline-block animate-pulse" />
                 LIVE FEED // UNRESTRICTED
               </span>
@@ -479,7 +479,7 @@ export function StoriesContent({
               </a>
               <button
                 onClick={() => setModalOpen(true)}
-                className="w-full text-center px-5 py-3.5 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
+                className="w-full text-center px-5 py-3.5 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
               >
                 <span>Transmit New Milestone</span>
                 <span>+</span>
@@ -500,7 +500,7 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_01 // MILESTONES ]</span>
+              <span className="text-neutral-500">Milestones</span>
               <span className="w-3 h-3 bg-black" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
@@ -512,7 +512,7 @@ export function StoriesContent({
           </div>
           <div className="mt-4 pt-3 border-t-2 border-black/10 flex items-center justify-between font-mono text-[11px]">
             <span className="text-neutral-600">COHORTS '14-'26</span>
-            <span className="bg-[#CCFF00] border border-black px-1.5 py-0.5 font-bold">LIVE FEED</span>
+            <span className="bg-[#FF5500] border border-black px-1.5 py-0.5 font-bold">LIVE FEED</span>
           </div>
         </div>
 
@@ -520,7 +520,7 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_02 // VENTURE CAPITAL ]</span>
+              <span className="text-neutral-500">Funding</span>
               <span className="w-3 h-3 bg-[#FF5500]" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
@@ -532,7 +532,7 @@ export function StoriesContent({
           </div>
           <div className="mt-4 pt-3 border-t-2 border-black/10 flex items-center justify-between font-mono text-[11px]">
             <span className="text-neutral-600">2024-2026 AUDIT</span>
-            <span className="bg-black text-[#CCFF00] px-1.5 py-0.5 font-bold">+38% YoY</span>
+            <span className="bg-black text-[#FF5500] px-1.5 py-0.5 font-bold">+38% YoY</span>
           </div>
         </div>
 
@@ -540,8 +540,8 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_03 // ATTESTATIONS ]</span>
-              <span className="w-3 h-3 bg-[#2E5BFF]" />
+              <span className="text-neutral-500">Endorsements</span>
+              <span className="w-3 h-3 bg-[#FF5500]" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
               1,420
@@ -560,7 +560,7 @@ export function StoriesContent({
         <div className="border-4 border-black bg-white p-5 sm:p-6 shadow-[4px_4px_0px_#000000] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between font-mono text-xs font-bold uppercase mb-2">
-              <span className="text-neutral-500">[ TEL_04 // CONVERSIONS ]</span>
+              <span className="text-neutral-500">Referrals</span>
               <span className="w-3 h-3 bg-black" />
             </div>
             <div className="text-4xl sm:text-5xl font-black tracking-tighter my-2 font-sans">
@@ -588,7 +588,7 @@ export function StoriesContent({
           {/* Card Header Bar */}
           <div className="bg-black text-white px-5 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3 font-mono text-xs font-bold">
             <div className="flex items-center gap-3">
-              <span className="bg-[#CCFF00] text-black px-2 py-0.5 font-black uppercase">
+              <span className="bg-[#FF5500] text-white px-2 py-0.5 font-black uppercase">
                 01 PINNED ANCHOR
               </span>
               <span className="tracking-wide uppercase text-neutral-300">
@@ -627,7 +627,7 @@ export function StoriesContent({
                 <div className="border-2 border-black px-3 py-1.5 bg-neutral-100 shadow-[1px_1px_0px_#000000]">
                   LOCATION: <span className="font-semibold">{flagshipStory.location}</span>
                 </div>
-                <div className="border-2 border-black px-3 py-1.5 bg-[#CCFF00] shadow-[1px_1px_0px_#000000]">
+                <div className="border-2 border-black px-3 py-1.5 bg-[#FF5500] shadow-[1px_1px_0px_#000000]">
                   IMPACT: <span className="font-bold">{flagshipStory.metrics.value3}</span>
                 </div>
               </div>
@@ -638,8 +638,8 @@ export function StoriesContent({
                   onClick={handleFlagshipEndorse}
                   className={`px-5 py-3 border-2 border-black shadow-[4px_4px_0px_#000000] flex items-center gap-2 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                     flagshipEndorsed
-                      ? "bg-black text-[#CCFF00]"
-                      : "bg-[#CCFF00] text-black hover:bg-black hover:text-white"
+                      ? "bg-black text-[#FF5500]"
+                      : "bg-[#FF5500] text-white hover:bg-black hover:text-white"
                   }`}
                 >
                   <span>👍</span>
@@ -693,7 +693,7 @@ export function StoriesContent({
                     <div className="font-bold text-[10px] uppercase">{flagshipStory.metrics.label2}</div>
                     <div className="text-neutral-700 text-[10px]">{flagshipStory.metrics.value2}</div>
                   </div>
-                  <div className="border border-black p-2 bg-[#CCFF00]/40">
+                  <div className="border border-black p-2 bg-[#FF5500]/40">
                     <div className="font-bold text-[10px] uppercase">{flagshipStory.metrics.label3}</div>
                     <div className="text-neutral-700 text-[10px]">{flagshipStory.metrics.value3}</div>
                   </div>
@@ -754,7 +754,7 @@ export function StoriesContent({
                 onClick={() => setTopologyFilter(top)}
                 className={`px-2.5 py-1 border border-black font-bold text-xs ${
                   topologyFilter === top
-                    ? "bg-[#CCFF00] text-black shadow-[1px_1px_0px_#000000]"
+                    ? "bg-[#FF5500] text-white shadow-[1px_1px_0px_#000000]"
                     : "bg-neutral-100 text-black hover:bg-black hover:text-white"
                 }`}
               >
@@ -801,10 +801,10 @@ export function StoriesContent({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-white border-4 border-black p-3.5 pl-4 text-xs font-mono font-bold placeholder:text-neutral-400 focus:outline-none focus:ring-0 focus:border-black shadow-[4px_4px_0px_#000000]"
-            placeholder="SEARCH BY FELLOW NAME, COMPANY (SNOWFLAKE, GOOGLE, STRIPE), OR RESEARCH TOKEN..."
+            placeholder="Search by name or company…"
             type="text"
           />
-          <div className="absolute right-3.5 top-3.5 font-mono text-xs font-bold bg-[#CCFF00] border border-black px-2 py-0.5">
+          <div className="absolute right-3.5 top-3.5 font-mono text-xs font-bold bg-[#FF5500] border border-black px-2 py-0.5">
             ⌘K SEARCH
           </div>
         </div>
@@ -840,14 +840,14 @@ export function StoriesContent({
                       setSearchQuery("");
                       setMyDispatchesOnly(false);
                     }}
-                    className="px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase bg-[#CCFF00] text-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00]"
+                    className="px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white"
                   >
                     Reset All Filters
                   </button>
                 ) : (
                   <button
                     onClick={() => setModalOpen(true)}
-                    className="px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00]"
+                    className="px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase bg-[#FF5500] text-white shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white"
                   >
                     + Transmit Milestone Story
                   </button>
@@ -872,7 +872,7 @@ export function StoriesContent({
                   <div className="flex items-center justify-between gap-2 pb-4 mb-5 border-b-2 border-black font-mono text-xs font-bold">
                     <div className="flex items-center gap-2">
                       <span className="bg-black text-white px-2 py-0.5">{storyItem.index}</span>
-                      <span className="bg-[#CCFF00] border border-black px-2 py-0.5 uppercase text-black">
+                      <span className="bg-[#FF5500] border border-black px-2 py-0.5 uppercase text-black">
                         {storyItem.categoryLabel}
                       </span>
                       <span className="text-neutral-500">
@@ -888,7 +888,7 @@ export function StoriesContent({
                   <div className="flex items-start gap-4 mb-4">
                     <div
                       style={{
-                        backgroundColor: storyItem.avatarBg || "#CCFF00",
+                        backgroundColor: storyItem.avatarBg || "#FF5500",
                         color: storyItem.avatarColor || "#000000",
                       }}
                       className="w-14 h-14 border-2 border-black shadow-[2px_2px_0px_#000000] flex items-center justify-center font-black text-xl font-mono shrink-0"
@@ -930,7 +930,7 @@ export function StoriesContent({
                     </div>
                     <div
                       style={{
-                        backgroundColor: storyItem.metrics.highlightCol || "#2E5BFF",
+                        backgroundColor: storyItem.metrics.highlightCol || "#FF5500",
                       }}
                       className="border-2 border-black p-2 text-white shadow-[1px_1px_0px_#000000]"
                     >
@@ -951,7 +951,7 @@ export function StoriesContent({
                       onClick={() => handleCardUpvote(storyItem.id)}
                       className={`px-3 py-1.5 border border-black shadow-[2px_2px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1.5 ${
                         localVote.voted
-                          ? "bg-black text-[#CCFF00]"
+                          ? "bg-black text-[#FF5500]"
                           : "bg-neutral-100 hover:bg-black hover:text-white"
                       }`}
                     >
@@ -968,7 +968,7 @@ export function StoriesContent({
                   <div className="flex items-center gap-2">
                     <Link
                       href={storyItem.actionHref || "/jobs"}
-                      className="px-3.5 py-1.5 bg-[#FF5500] text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                      className="px-3.5 py-1.5 bg-[#FF5500] text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                     >
                       {storyItem.actionLabel}
                     </Link>
@@ -978,7 +978,7 @@ export function StoriesContent({
                       }}
                       className="px-3 py-1.5 border-2 border-black hover:bg-black hover:text-white transition-all"
                     >
-                      SEND KUDOS
+                      Kudos
                     </button>
                   </div>
                 </div>
@@ -999,10 +999,10 @@ export function StoriesContent({
           <div className="flex items-center gap-2">
             <span className="bg-black text-white px-2 py-0.5">SYS_SPEC // RFC-088</span>
             <span className="uppercase">
-              PEER ATTESTATION PROTOCOL &amp; MILESTONE VERIFICATION PIPELINE
+              How verification works
             </span>
           </div>
-          <span className="bg-[#CCFF00] border border-black px-2 py-0.5 text-[11px] text-black">
+          <span className="bg-[#FF5500] border border-black px-2 py-0.5 text-[11px] text-black">
             HASH ENCLAVE: SHA-256 / ED25519-STAMP
           </span>
         </div>
@@ -1010,7 +1010,7 @@ export function StoriesContent({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
           <div className="border-2 border-black p-4 bg-neutral-50 space-y-2 shadow-[2px_2px_0px_#000000]">
             <div className="text-[#FF5500] font-bold text-[11px] uppercase">
-              01 // CRYPTOGRAPHIC VOUCHING
+              01 // Verification
             </div>
             <h4 className="font-black text-sm uppercase text-black font-sans">
               CONSENSUS ATTESTATIONS
@@ -1025,11 +1025,11 @@ export function StoriesContent({
           </div>
 
           <div className="border-2 border-black p-4 bg-neutral-50 space-y-2 shadow-[2px_2px_0px_#000000]">
-            <div className="text-[#2E5BFF] font-bold text-[11px] uppercase">
-              02 // ZERO-NOISE MODERATION
+            <div className="text-[#FF5500] font-bold text-[11px] uppercase">
+              02 // Quality filter
             </div>
             <h4 className="font-black text-sm uppercase text-black font-sans">
-              PGVECTOR SEMANTIC INDEXING
+              Smart ranking
             </h4>
             <p className="text-neutral-600 leading-relaxed text-[11px]">
               Dispatches are vector-ranked against alumni career trajectories and domain expertise to
@@ -1042,7 +1042,7 @@ export function StoriesContent({
 
           <div className="border-2 border-black p-4 bg-neutral-50 space-y-2 shadow-[2px_2px_0px_#000000]">
             <div className="text-black font-bold text-[11px] uppercase">
-              03 // TALENT LIQUIDITY DROPS
+              03 // Rewards
             </div>
             <h4 className="font-black text-sm uppercase text-black font-sans">
               +100 ALUMN-CR REWARD
@@ -1061,7 +1061,7 @@ export function StoriesContent({
         <div className="mt-6 pt-4 border-t-2 border-dashed border-black/30 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] text-neutral-600 font-bold">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 bg-[#00A859]" />
-            <span>POSTGRES 16.2 / PGVECTOR 0.6.0 COMPILED</span>
+            <span></span>
           </div>
           <div className="bg-black text-white px-2 py-0.5">SECURITY ENCLAVE: ACTIVE [FIPS 140-3]</div>
         </div>
@@ -1076,10 +1076,10 @@ export function StoriesContent({
           className="border-4 border-black bg-white p-6 shadow-[6px_6px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs"
         >
           <div className="flex items-center gap-3">
-            <span className="w-3 h-3 rounded-full bg-[#CCFF00] border-2 border-black animate-pulse" />
+            <span className="w-3 h-3 rounded-full bg-[#FF5500] border-2 border-black animate-pulse" />
             <div>
               <span className="font-bold text-black uppercase tracking-wider">
-                MEMBER CHRONICLE PROTOCOL ACTIVE // ROLE: {user?.role || "FELLOW"}
+                Signed in as {user?.role || "FELLOW"}
               </span>
               <p className="text-neutral-600 text-[11px] mt-0.5">
                 Dispatch your milestone breakthrough to earn +100 ALUMN-CR and peer attestations.
@@ -1090,7 +1090,7 @@ export function StoriesContent({
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="flex-1 md:flex-none px-6 py-3 bg-[#FF5500] text-white border-2 border-black font-bold uppercase tracking-wider shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
+              className="flex-1 md:flex-none px-6 py-3 bg-[#FF5500] text-white border-2 border-black font-bold uppercase tracking-wider shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
             >
               <span>+ TRANSMIT MILESTONE STORY</span>
             </button>
@@ -1105,7 +1105,7 @@ export function StoriesContent({
       ) : (
         <section
           data-testid="conversion-cta-banner"
-          className="border-4 border-black bg-[#CCFF00] p-8 sm:p-12 shadow-[8px_8px_0px_#000000] text-black"
+          className="border-4 border-black bg-[#FF5500] p-8 sm:p-12 shadow-[8px_8px_0px_#000000] text-black"
         >
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <div className="inline-block bg-black text-white px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider">
@@ -1121,7 +1121,7 @@ export function StoriesContent({
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs uppercase font-bold">
               <Link
                 href="/login"
-                className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-center"
+                className="w-full sm:w-auto px-8 py-4 bg-[#FF5500] text-white border-2 border-black shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all text-center"
               >
                 Create Free Fellow Account →
               </Link>
@@ -1146,7 +1146,7 @@ export function StoriesContent({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-2xl bg-[#fcf9f3] border-4 border-black p-6 sm:p-8 shadow-[8px_8px_0px_#000000] relative max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-2xl bg-[#FFFFFF] border-4 border-black p-6 sm:p-8 shadow-[8px_8px_0px_#000000] relative max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between pb-4 mb-6 border-b-2 border-black">
                 <div className="flex items-center gap-2 font-mono text-xs font-bold">
@@ -1264,7 +1264,7 @@ export function StoriesContent({
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-6 py-3 bg-[#FF5500] text-white border-2 border-black font-bold uppercase shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-[#CCFF00] flex items-center gap-2"
+                    className="px-6 py-3 bg-[#FF5500] text-white border-2 border-black font-bold uppercase shadow-[4px_4px_0px_#000000] hover:bg-black hover:text-white flex items-center gap-2"
                   >
                     {submitting && <Loader2 size={16} className="animate-spin" />}
                     <span>Transmit Milestone Dispatch →</span>
@@ -1278,7 +1278,7 @@ export function StoriesContent({
 
       {/* Floating Notification Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 bg-black text-[#CCFF00] border-2 border-black shadow-[4px_4px_0px_#000000] font-mono text-xs font-bold flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 p-4 bg-black text-[#FF5500] border-2 border-black shadow-[4px_4px_0px_#000000] font-mono text-xs font-bold flex items-center gap-2 animate-bounce">
           <Sparkles size={16} className="text-[#FF5500]" />
           <span>{toast}</span>
         </div>

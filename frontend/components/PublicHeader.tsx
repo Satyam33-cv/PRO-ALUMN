@@ -83,7 +83,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
   return (
     <header
       data-testid="public-global-header"
-      className="w-full border-b-2 border-black bg-[#fcf9f3] sticky top-0 z-50 selection:bg-[#CCFF00] selection:text-black"
+      className="w-full border-b-2 border-black bg-[#FFFFFF] sticky top-0 z-50 selection:bg-[#FF5500] selection:text-white"
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Left: Logo & System Indicator */}
@@ -96,7 +96,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
             <span className="text-black font-extrabold tracking-tight">///// PRO-ALUMN</span>
           </Link>
           <span className="hidden md:inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-semibold border border-black bg-white shadow-[1px_1px_0px_#000000]">
-            <span className="w-2 h-2 bg-[#00E676] mr-1.5 inline-block animate-pulse" />
+            <span className="w-2 h-2 bg-[#FF5500] mr-1.5 inline-block animate-pulse" />
             SYS.V24 // NODE-ALPHA [PUBLIC_GUEST]
           </span>
         </div>
@@ -112,7 +112,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="px-3 py-1.5 bg-[#CCFF00] border-2 border-black text-black font-extrabold shadow-[2px_2px_0px_#000000]"
+                  className="px-3 py-1.5 bg-[#FF5500] border-2 border-black text-white font-extrabold shadow-[2px_2px_0px_#000000]"
                 >
                   {item.label}
                 </Link>
@@ -136,7 +136,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
             <div className="flex items-center space-x-2">
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono font-bold tracking-wider uppercase bg-[#CCFF00] text-black border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono font-bold tracking-wider uppercase bg-[#FF5500] text-white border-2 border-black shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white transition-all"
               >
                 <span>Console [Dashboard →]</span>
               </Link>
@@ -151,7 +151,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
               </Link>
               <Link
                 href="/login"
-                className="px-4 py-1.5 text-xs font-mono font-bold tracking-wider uppercase bg-[#FF5500] text-white border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-orange-600 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1"
+                className="px-4 py-1.5 text-xs font-mono font-bold tracking-wider uppercase bg-[#FF5500] text-white border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#B80500] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-1"
               >
                 <span>Get Started</span>
                 <span className="font-bold">→</span>
@@ -173,7 +173,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden w-full bg-[#fcf9f3] border-t-2 border-black p-4 space-y-3 font-mono text-xs font-bold uppercase shadow-[0_4px_0_#000000]">
+        <div className="lg:hidden w-full bg-[#FFFFFF] border-t-2 border-black p-4 space-y-3 font-mono text-xs font-bold uppercase shadow-[0_4px_0_#000000]">
           <div className="flex items-center justify-between pb-2 border-b border-black text-[10px] text-neutral-600">
             <span>PUBLIC SHOWCASE DIRECTORY</span>
             <span className="text-[#00A859]">NODE-ALPHA ONLINE</span>
@@ -186,7 +186,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`p-2.5 border-2 border-black text-center ${
                   item.active
-                    ? "bg-[#CCFF00] font-extrabold shadow-[2px_2px_0px_#000000]"
+                    ? "bg-[#FF5500] font-extrabold shadow-[2px_2px_0px_#000000]"
                     : "bg-white hover:bg-black hover:text-white"
                 }`}
               >
@@ -199,7 +199,7 @@ export function PublicHeader({ activeRoute }: PublicHeaderProps) {
               <Link
                 href="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2 bg-[#CCFF00] text-black border-2 border-black font-extrabold shadow-[2px_2px_0px_#000000]"
+                className="w-full text-center py-2 bg-[#FF5500] text-white border-2 border-black font-extrabold shadow-[2px_2px_0px_#000000]"
               >
                 Open Member Console →
               </Link>

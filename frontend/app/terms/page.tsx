@@ -6,13 +6,13 @@ import { ArrowLeft, BookOpen, CheckCircle, AlertTriangle, Scale, Mail } from "lu
 
 export default function TermsOfServicePage() {
   return (
-    <div className="min-h-screen bg-[#F7F4EE] text-black font-sans selection:bg-[#CCFF00] selection:text-black py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFFFFF] text-black font-sans selection:bg-[#FF5500] selection:text-white py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Navigation & Header */}
         <div className="flex items-center justify-between font-mono text-xs">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-[#CCFF00] transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-black font-bold uppercase shadow-[2px_2px_0px_#000000] hover:bg-black hover:text-white transition-colors"
           >
             <ArrowLeft size={14} /> Back to Portal
           </Link>
@@ -48,7 +48,7 @@ export default function TermsOfServicePage() {
             {/* Acceptance */}
             <section className="space-y-3">
               <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2 font-mono">
-                <span className="w-3 h-3 bg-[#CCFF00] inline-block"></span>
+                <span className="w-3 h-3 bg-[#FF5500] inline-block"></span>
                 1. Acceptance of Terms
               </h2>
               <p className="text-sm text-neutral-700">
@@ -74,9 +74,9 @@ export default function TermsOfServicePage() {
                 3. Network Code of Conduct
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-                <div className="p-4 bg-[#F7F4EE] border-2 border-black space-y-2">
+                <div className="p-4 bg-[#FFFFFF] border-2 border-black space-y-2">
                   <div className="flex items-center gap-2 font-bold text-black">
-                    <CheckCircle size={16} className="text-[#00E676]" />
+                    <CheckCircle size={16} className="text-[#FF5500]" />
                     <span>ACCEPTABLE CONDUCT</span>
                   </div>
                   <ul className="text-neutral-700 font-sans text-xs space-y-1 list-disc pl-4">
@@ -86,7 +86,7 @@ export default function TermsOfServicePage() {
                   </ul>
                 </div>
 
-                <div className="p-4 bg-[#F7F4EE] border-2 border-black space-y-2">
+                <div className="p-4 bg-[#FFFFFF] border-2 border-black space-y-2">
                   <div className="flex items-center gap-2 font-bold text-black">
                     <AlertTriangle size={16} className="text-[#FF5500]" />
                     <span>PROHIBITED ACTIVITIES</span>
@@ -103,10 +103,10 @@ export default function TermsOfServicePage() {
             {/* Mentorship & Referral Disclaimer */}
             <section className="space-y-3">
               <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2 font-mono">
-                <span className="w-3 h-3 bg-[#2E5BFF] inline-block"></span>
+                <span className="w-3 h-3 bg-[#FF5500] inline-block"></span>
                 4. Advisory Disclaimer: No Employment Guarantee
               </h2>
-              <div className="p-4 bg-[#EFECE4] border-2 border-black font-mono text-xs leading-relaxed text-neutral-800">
+              <div className="p-4 bg-[#F5F5F5] border-2 border-black font-mono text-xs leading-relaxed text-neutral-800">
                 <p className="font-bold mb-1 uppercase">IMPORTANT NOTICE:</p>
                 PRO ALUMN is a networking conduit. Acceptance of a referral request or completion of a mentorship session does NOT constitute a guarantee or offer of employment from any alumni or sponsoring corporation. All corporate hiring decisions remain exclusively with hiring organizations.
               </div>
@@ -115,7 +115,7 @@ export default function TermsOfServicePage() {
             {/* Paid Verification & Fees */}
             <section className="space-y-3">
               <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-2 font-mono">
-                <span className="w-3 h-3 bg-[#CCFF00] inline-block"></span>
+                <span className="w-3 h-3 bg-[#FF5500] inline-block"></span>
                 5. Paid Verification & Transaction Terms
               </h2>
               <p className="text-sm text-neutral-700">
@@ -136,7 +136,7 @@ export default function TermsOfServicePage() {
           </div>
 
           {/* Footer Strip */}
-          <footer className="bg-[#F7F4EE] border-t-4 border-black p-4 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+          <footer className="bg-[#FFFFFF] border-t-4 border-black p-4 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
             <div className="flex items-center gap-2 text-neutral-600">
               <Mail size={14} />
               <span>Questions? Contact: admin@proalumn.edu</span>

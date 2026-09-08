@@ -209,9 +209,9 @@ export function DashboardContent() {
       {/* ========================================================================= */}
       {/* SECTION 00: TELEMETRY & ACADEMIC DOSSIER BANNER */}
       {/* ========================================================================= */}
-      <section className="bg-[#F7F4EE] dark:bg-[#12151b] border-4 border-black p-6 lg:p-8 shadow-[6px_6px_0px_#000000] relative overflow-hidden">
+      <section className="bg-[#FFFFFF] dark:bg-[#12151b] border-4 border-black p-6 lg:p-8 shadow-[6px_6px_0px_#000000] relative overflow-hidden">
         {/* Architectural Watermark */}
-        <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 opacity-5 pointer-events-none select-none font-headline text-[150px] lg:text-[180px] leading-none text-[#1A1A1A] dark:text-white font-bold">
+        <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 opacity-5 pointer-events-none select-none font-headline text-[150px] lg:text-[180px] leading-none text-[#0A0A0A] dark:text-white font-bold">
           01
         </div>
 
@@ -223,7 +223,7 @@ export function DashboardContent() {
                 {userInitials}
               </div>
               <span
-                className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#00E676] border-2 border-black rounded-full shadow-[0_0_6px_#00E676]"
+                className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#FF5500] border-2 border-black rounded-full shadow-[0_0_6px_#FF5500]"
                 title="Node Online"
               />
             </div>
@@ -236,11 +236,11 @@ export function DashboardContent() {
                 <span className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
                   {cohortText}
                 </span>
-                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#CCFF00] text-black border-2 border-black uppercase font-bold">
+                <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border-2 border-black uppercase font-bold">
                   {roleBadge}
                 </span>
               </div>
-              <h1 className="font-headline text-2xl sm:text-3xl lg:text-4xl text-[#1A1A1A] dark:text-white font-bold tracking-tight uppercase">
+              <h1 className="font-headline text-2xl sm:text-3xl lg:text-4xl text-[#0A0A0A] dark:text-white font-bold tracking-tight uppercase">
                 Welcome back, {userName}
               </h1>
               <p className="font-mono text-xs text-neutral-600 dark:text-neutral-400 max-w-2xl leading-relaxed">
@@ -250,7 +250,7 @@ export function DashboardContent() {
           </div>
 
           {/* Sync Gauge & Algorithmic Health */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4 xl:pt-0 border-t xl:border-t-0 border-[#D5CEBF] dark:border-neutral-800">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4 xl:pt-0 border-t xl:border-t-0 border-[#D4D4D4] dark:border-neutral-800">
             {/* Vector Completeness Progress */}
             <div className="bg-white dark:bg-[#181a20] border-2 border-black p-3.5 shadow-[4px_4px_0px_#000000] min-w-[210px]">
               <div className="flex justify-between items-center mb-1.5">
@@ -261,15 +261,15 @@ export function DashboardContent() {
                   {syncStatus}
                 </span>
               </div>
-              <div className="w-full h-2 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black overflow-hidden p-[1px]">
+              <div className="w-full h-2 bg-[#FFFFFF] dark:bg-[#12151b] border-2 border-black overflow-hidden p-[1px]">
                 <div
-                  className="h-full bg-[#1A1A1A] dark:bg-white transition-all duration-500"
+                  className="h-full bg-[#0A0A0A] dark:bg-white transition-all duration-500"
                   style={{ width: syncStatus === "100% SYNCHRONIZED" ? "100%" : "92%" }}
                 />
               </div>
               <div className="mt-1.5 flex items-center justify-between font-mono text-[10px] text-neutral-500">
                 <span>HNSW-COSINE</span>
-                <span className="text-[#00E676] font-bold">• 384-DIM OK</span>
+                <span className="text-[#FF5500] font-bold">• 384-DIM OK</span>
               </div>
             </div>
 
@@ -280,12 +280,12 @@ export function DashboardContent() {
                   COMMUNITY POINTS
                 </span>
                 <div className="flex items-baseline gap-1 my-1">
-                  <span className="font-headline text-lg font-bold text-[#1A1A1A] dark:text-white">
+                  <span className="font-headline text-lg font-bold text-[#0A0A0A] dark:text-white">
                     {dashboardData?.gamification?.totalPoints ?? 0}
                   </span>
                   <span className="font-mono text-[10px] text-neutral-500">PTS</span>
                 </div>
-                <span className="font-mono text-[9px] text-[#1D4ED8] dark:text-blue-400 font-bold">
+                <span className="font-mono text-[9px] text-[#000000] dark:text-blue-400 font-bold">
                   LVL {Math.max(1, Math.floor(((dashboardData?.gamification?.totalPoints || 0) / 100)) + 1)}: RANK #{dashboardData?.gamification?.rank ?? 1}
                 </span>
               </div>
@@ -318,12 +318,12 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-12 xl:col-span-8 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col">
           {/* Card Frame Header */}
-          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-[#FFFFFF] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                 01 // TOPOLOGICAL MATCH
               </span>
-              <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
+              <h2 className="font-headline text-sm sm:text-base text-[#0A0A0A] dark:text-white font-bold uppercase">
                 AI Vector Matches (Similarity &gt; 94%)
               </h2>
             </div>
@@ -333,14 +333,14 @@ export function DashboardContent() {
               </span>
               <button
                 onClick={handleRecompute}
-                className="p-1 border-2 border-black bg-white dark:bg-[#181a20] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                className="p-1 border-2 border-black bg-white dark:bg-[#181a20] hover:bg-[#FFFFFF] dark:hover:bg-[#252932] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                 title="Recompute vector matches"
                 type="button"
                 aria-label="Recompute vector matches"
               >
                 <RefreshCw
                   size={14}
-                  className={`text-[#1A1A1A] dark:text-white ${
+                  className={`text-[#0A0A0A] dark:text-white ${
                     isRecomputing ? "animate-spin" : ""
                   }`}
                 />
@@ -353,10 +353,10 @@ export function DashboardContent() {
             {matches.map((match) => (
               <div
                 key={match.id}
-                className="p-4 sm:p-5 hover:bg-[#F7F4EE]/60 dark:hover:bg-[#15181f] transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                className="p-4 sm:p-5 hover:bg-[#FFFFFF]/60 dark:hover:bg-[#15181f] transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-3.5 min-w-0">
-                  <div className="relative w-12 h-12 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black shadow-[2px_2px_0px_#000000] shrink-0 overflow-hidden">
+                  <div className="relative w-12 h-12 bg-[#FFFFFF] dark:bg-[#12151b] border-2 border-black shadow-[2px_2px_0px_#000000] shrink-0 overflow-hidden">
                     <img
                       src={match.avatar}
                       alt={match.name}
@@ -369,13 +369,13 @@ export function DashboardContent() {
 
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-headline text-sm text-[#1A1A1A] dark:text-white font-bold uppercase">
+                      <span className="font-headline text-sm text-[#0A0A0A] dark:text-white font-bold uppercase">
                         {match.name}
                       </span>
                       <span className="font-mono text-xs text-neutral-500">
                         • {match.role}
                       </span>
-                      <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#CCFF00] border-2 border-black text-black font-bold">
+                      <span className="font-mono text-[10px] px-1.5 py-0.5 bg-[#FF5500] border-2 border-black text-white font-bold">
                         {match.similarity}
                       </span>
                     </div>
@@ -388,7 +388,7 @@ export function DashboardContent() {
                       {match.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="font-mono text-[10px] px-2 py-0.5 bg-[#EFECE4] dark:bg-[#20242c] border-2 border-black text-neutral-700 dark:text-neutral-300"
+                          className="font-mono text-[10px] px-2 py-0.5 bg-[#F5F5F5] dark:bg-[#20242c] border-2 border-black text-neutral-700 dark:text-neutral-300"
                         >
                           {skill}
                         </span>
@@ -405,7 +405,7 @@ export function DashboardContent() {
                       </span>
                       <Link
                         href={`/directory?search=${encodeURIComponent(match.name)}`}
-                        className="px-3 py-1.5 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#F7F4EE] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                        className="px-3 py-1.5 bg-white dark:bg-[#181a20] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#FFFFFF] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                       >
                         Profile
                       </Link>
@@ -414,7 +414,7 @@ export function DashboardContent() {
                     <>
                       <Link
                         href={`/mentorship?mentorId=${match.id}`}
-                        className="px-3 py-1.5 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+                        className="px-3 py-1.5 bg-[#FFFFFF] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] dark:hover:bg-[#252932] font-headline text-xs uppercase font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
                       >
                         Flash 15m
                       </Link>
@@ -433,7 +433,7 @@ export function DashboardContent() {
           </div>
 
           {/* Vector Footer Note */}
-          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-2.5 border-t-2 border-black flex flex-wrap items-center justify-between gap-2">
+          <div className="bg-[#FFFFFF] dark:bg-[#12151b] px-4 sm:px-6 py-2.5 border-t-2 border-black flex flex-wrap items-center justify-between gap-2">
             <span className="font-mono text-[10px] text-neutral-500">
               VECTOR SPACE INDEX REFRESHED: TODAY, 04:00 UTC
             </span>
@@ -452,12 +452,12 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
+            <div className="bg-[#FFFFFF] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   02
                 </span>
-                <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
+                <h2 className="font-headline text-sm sm:text-base text-[#0A0A0A] dark:text-white font-bold uppercase">
                   Community Wallet
                 </h2>
               </div>
@@ -468,13 +468,13 @@ export function DashboardContent() {
 
             <div className="p-4 sm:p-5 space-y-4">
               {/* Balance Panel */}
-              <div className="flex items-center justify-between p-3.5 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black shadow-[3px_3px_0px_#000000]">
+              <div className="flex items-center justify-between p-3.5 bg-[#FFFFFF] dark:bg-[#12151b] border-2 border-black shadow-[3px_3px_0px_#000000]">
                 <div>
                   <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
                     MEMBER CREDIT BALANCE
                   </span>
                   <div className="flex items-baseline gap-1.5 mt-1">
-                    <span className="font-headline text-2xl font-bold text-[#1A1A1A] dark:text-white">
+                    <span className="font-headline text-2xl font-bold text-[#0A0A0A] dark:text-white">
                       {dashboardData?.gamification?.totalPoints ?? 0}
                     </span>
                     <span className="font-mono text-xs text-[#FF5500] font-bold">
@@ -483,7 +483,7 @@ export function DashboardContent() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="font-mono text-[9px] px-2 py-0.5 bg-[#00E676] border-2 border-black text-black font-bold">
+                  <span className="font-mono text-[9px] px-2 py-0.5 bg-[#FF5500] border-2 border-black text-black font-bold">
                     LVL {Math.max(1, Math.floor(((dashboardData?.gamification?.totalPoints || 0) / 100)) + 1)}
                   </span>
                   <div className="font-mono text-[10px] text-neutral-500 mt-1">
@@ -502,8 +502,8 @@ export function DashboardContent() {
                     dashboardData.gamification.recentActivities.slice(0, 3).map((act: any) => (
                       <div key={act.id} className="p-2 flex justify-between items-center bg-white dark:bg-[#181a20]">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[#00E676] font-bold">+{act.pointsEarned}</span>
-                          <span className="text-[#1A1A1A] dark:text-white uppercase truncate max-w-[170px]">
+                          <span className="text-[#FF5500] font-bold">+{act.pointsEarned}</span>
+                          <span className="text-[#0A0A0A] dark:text-white uppercase truncate max-w-[170px]">
                             {act.actionType.replace(/_/g, " ")}
                           </span>
                         </div>
@@ -526,7 +526,7 @@ export function DashboardContent() {
             <button
               onClick={handleSyncVector}
               disabled={syncingVector}
-              className="w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+              className="w-full py-2 bg-[#FFFFFF] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
               type="button"
             >
               <RefreshCw size={13} className={syncingVector ? "animate-spin text-[#FF5500]" : ""} />
@@ -540,12 +540,12 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-6 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
+            <div className="bg-[#FFFFFF] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   03
                 </span>
-                <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
+                <h2 className="font-headline text-sm sm:text-base text-[#0A0A0A] dark:text-white font-bold uppercase">
                   Next Mentorship 1:1
                 </h2>
               </div>
@@ -557,16 +557,16 @@ export function DashboardContent() {
 
             <div className="p-4 sm:p-5 space-y-4">
               {/* Digital Countdown Timer */}
-              <div className="bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-black p-4 text-center shadow-[3px_3px_0px_#000000]">
+              <div className="bg-[#FFFFFF] dark:bg-[#12151b] border-2 border-black p-4 text-center shadow-[3px_3px_0px_#000000]">
                 <span className="font-headline text-[10px] uppercase font-bold text-neutral-500 tracking-widest">
                   COMMENCING IN
                 </span>
-                <div className="font-mono text-2xl sm:text-3xl tracking-wider text-[#1A1A1A] dark:text-white my-1 font-bold">
+                <div className="font-mono text-2xl sm:text-3xl tracking-wider text-[#0A0A0A] dark:text-white my-1 font-bold">
                   {String(countdown.hours).padStart(2, "0")} :{" "}
                   {String(countdown.minutes).padStart(2, "0")} :{" "}
                   {String(countdown.seconds).padStart(2, "0")}
                 </div>
-                <span className="font-mono text-[10px] text-[#1D4ED8] dark:text-blue-400 font-bold uppercase">
+                <span className="font-mono text-[10px] text-[#000000] dark:text-blue-400 font-bold uppercase">
                   SLOT: 15-MINUTE ARCHITECTURAL FLASH
                 </span>
               </div>
@@ -582,7 +582,7 @@ export function DashboardContent() {
                     />
                   </div>
                   <div>
-                    <h4 className="font-headline text-sm font-bold text-[#1A1A1A] dark:text-white uppercase leading-tight">
+                    <h4 className="font-headline text-sm font-bold text-[#0A0A0A] dark:text-white uppercase leading-tight">
                       Ananya Deshmukh
                     </h4>
                     <p className="font-mono text-[11px] text-neutral-500">
@@ -590,7 +590,7 @@ export function DashboardContent() {
                     </p>
                   </div>
                 </div>
-                <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400 bg-[#EFECE4] dark:bg-[#15181f] p-2.5 border-2 border-black leading-relaxed">
+                <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400 bg-[#F5F5F5] dark:bg-[#15181f] p-2.5 border-2 border-black leading-relaxed">
                   &ldquo;Discussion on asynchronous state machine handlers in DynamoDB &amp; how to defend your distributed storage honors thesis.&rdquo;
                 </p>
               </div>
@@ -609,7 +609,7 @@ export function DashboardContent() {
             </a>
             <Link
               href="/mentorship"
-              className="px-3 py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer"
+              className="px-3 py-2 bg-[#FFFFFF] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center cursor-pointer"
             >
               Reschedule
             </Link>
@@ -621,16 +621,16 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-6 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
+            <div className="bg-[#FFFFFF] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   04
                 </span>
-                <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
+                <h2 className="font-headline text-sm sm:text-base text-[#0A0A0A] dark:text-white font-bold uppercase">
                   Featured Assemblage
                 </h2>
               </div>
-              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#CCFF00] text-black border-2 border-black font-bold uppercase">
+              <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border-2 border-black font-bold uppercase">
                 RSVP OPEN
               </span>
             </div>
@@ -645,7 +645,7 @@ export function DashboardContent() {
                     • {featuredEvent?.date ? new Date(featuredEvent.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).toUpperCase() : "MARCH 28, 2026"}
                   </span>
                 </div>
-                <h3 className="font-headline text-base sm:text-lg text-[#1A1A1A] dark:text-white font-bold uppercase tracking-tight">
+                <h3 className="font-headline text-base sm:text-lg text-[#0A0A0A] dark:text-white font-bold uppercase tracking-tight">
                   {featuredEvent?.title || "Homecoming & Tech Gala 2026"}
                 </h3>
                 <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400">
@@ -654,9 +654,9 @@ export function DashboardContent() {
               </div>
 
               {/* Capacity Meter */}
-              <div className="border-2 border-black p-3 bg-[#F7F4EE] dark:bg-[#12151b] space-y-1.5 shadow-[3px_3px_0px_#000000]">
+              <div className="border-2 border-black p-3 bg-[#FFFFFF] dark:bg-[#12151b] space-y-1.5 shadow-[3px_3px_0px_#000000]">
                 <div className="flex justify-between items-center font-mono text-[10px]">
-                  <span className="text-[#1A1A1A] dark:text-white font-bold">
+                  <span className="text-[#0A0A0A] dark:text-white font-bold">
                     CAPACITY REGISTER
                   </span>
                   <span className="text-neutral-500">
@@ -665,7 +665,7 @@ export function DashboardContent() {
                 </div>
                 <div className="w-full h-3 bg-white dark:bg-[#181a20] border-2 border-black p-[1px] flex gap-[2px]">
                   <div
-                    className="h-full bg-[#1A1A1A] dark:bg-white transition-all duration-300"
+                    className="h-full bg-[#0A0A0A] dark:bg-white transition-all duration-300"
                     style={{ width: `${Math.min(100, Math.round((reservedCount / eventCapacity) * 100))}%` }}
                   />
                   <div className="h-full bg-[#e5e2dc] dark:bg-neutral-800 flex-1" />
@@ -685,7 +685,7 @@ export function DashboardContent() {
               onClick={handleToggleRsvp}
               className={`w-full py-2 border-2 border-black shadow-[3px_3px_0px_#000000] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-1.5 cursor-pointer ${
                 rsvpConfirmed
-                  ? "bg-[#00E676] text-black"
+                  ? "bg-[#FF5500] text-black"
                   : "bg-black text-white dark:bg-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200"
               }`}
               type="button"
@@ -710,12 +710,12 @@ export function DashboardContent() {
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-12 xl:col-span-4 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col justify-between">
           <div>
-            <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
+            <div className="bg-[#FFFFFF] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                   05
                 </span>
-                <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
+                <h2 className="font-headline text-sm sm:text-base text-[#0A0A0A] dark:text-white font-bold uppercase">
                   Career Openings
                 </h2>
               </div>
@@ -728,21 +728,21 @@ export function DashboardContent() {
               {(dashboardData?.jobs || []).slice(0, 2).map((job, jIdx) => (
                 <div
                   key={job.id || jIdx}
-                  className="border-2 border-black p-3.5 bg-[#EFECE4] dark:bg-[#15181f] space-y-2 shadow-[3px_3px_0px_#000000]"
+                  className="border-2 border-black p-3.5 bg-[#F5F5F5] dark:bg-[#15181f] space-y-2 shadow-[3px_3px_0px_#000000]"
                 >
                   <div className="flex justify-between items-start">
                     <div className="min-w-0 pr-2">
                       <span className="font-mono text-[10px] text-neutral-500 uppercase">
                         {job.company}
                       </span>
-                      <h3 className="font-headline text-sm text-[#1A1A1A] dark:text-white font-bold uppercase truncate">
+                      <h3 className="font-headline text-sm text-[#0A0A0A] dark:text-white font-bold uppercase truncate">
                         {job.title}
                       </h3>
                       <p className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
                         {job.location || "Remote"} • {job.type || "Full-time"}
                       </p>
                     </div>
-                    <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#CCFF00] text-black border border-black font-bold shrink-0">
+                    <span className="font-mono text-[9px] px-1.5 py-0.5 bg-[#FF5500] text-white border border-black font-bold shrink-0">
                       ACTIVE
                     </span>
                   </div>
@@ -750,7 +750,7 @@ export function DashboardContent() {
               ))}
 
               {(!dashboardData?.jobs || dashboardData.jobs.length === 0) && (
-                <div className="p-4 bg-[#F7F4EE] dark:bg-[#12151b] border-2 border-dashed border-neutral-300 dark:border-neutral-700 text-center font-mono text-xs text-neutral-500">
+                <div className="p-4 bg-[#FFFFFF] dark:bg-[#12151b] border-2 border-dashed border-neutral-300 dark:border-neutral-700 text-center font-mono text-xs text-neutral-500">
                   No open requisitions posted yet. Check back soon!
                 </div>
               )}
@@ -760,7 +760,7 @@ export function DashboardContent() {
           <div className="p-4 sm:p-5 pt-0">
             <Link
               href="/jobs"
-              className="block w-full py-2 bg-[#F7F4EE] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+              className="block w-full py-2 bg-[#FFFFFF] dark:bg-[#20242c] border-2 border-black shadow-[3px_3px_0px_#000000] hover:bg-[#ebe8e2] font-headline text-xs font-bold uppercase text-center transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer"
             >
               Explore All {dashboardData?.jobs?.length ? `${dashboardData.jobs.length} ` : ""}Opportunities →
             </Link>
@@ -771,18 +771,18 @@ export function DashboardContent() {
         {/* CELL E: NETWORK MILESTONE WIRE - 12 COLS */}
         {/* ----------------------------------------------------------------------- */}
         <div className="md:col-span-12 xl:col-span-12 bg-white dark:bg-[#181a20] border-4 border-black shadow-[6px_6px_0px_#000000] flex flex-col">
-          <div className="bg-[#F7F4EE] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
+          <div className="bg-[#FFFFFF] dark:bg-[#12151b] px-4 sm:px-6 py-3 border-b-2 border-black flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-mono text-[10px] px-2 py-0.5 border-2 border-black bg-white dark:bg-[#181a20] font-bold">
                 06
               </span>
-              <h2 className="font-headline text-sm sm:text-base text-[#1A1A1A] dark:text-white font-bold uppercase">
+              <h2 className="font-headline text-sm sm:text-base text-[#0A0A0A] dark:text-white font-bold uppercase">
                 Network Milestone Wire
               </h2>
             </div>
             <Link
               href="/stories"
-              className="font-headline text-xs font-bold px-3 py-1 bg-white dark:bg-[#181a20] border-2 border-black hover:bg-[#F7F4EE] dark:hover:bg-[#252932] shadow-[2px_2px_0px_#000000] uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              className="font-headline text-xs font-bold px-3 py-1 bg-white dark:bg-[#181a20] border-2 border-black hover:bg-[#FFFFFF] dark:hover:bg-[#252932] shadow-[2px_2px_0px_#000000] uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             >
               + Transmit Story
             </Link>
@@ -790,7 +790,7 @@ export function DashboardContent() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black">
             {/* Story 01 */}
-            <div className="p-4 sm:p-6 space-y-2.5 hover:bg-[#F7F4EE]/40 dark:hover:bg-[#15181f] transition-colors">
+            <div className="p-4 sm:p-6 space-y-2.5 hover:bg-[#FFFFFF]/40 dark:hover:bg-[#15181f] transition-colors">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono text-[10px] px-2 py-0.5 bg-[#FF5500] text-white border-2 border-black font-bold uppercase">
@@ -805,8 +805,8 @@ export function DashboardContent() {
                   onClick={() => handleUpvote("story1")}
                   className={`flex items-center gap-1 px-2 py-0.5 border-2 border-black text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
                     hasUpvoted.story1
-                      ? "bg-[#CCFF00] text-black"
-                      : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#CCFF00] hover:text-black"
+                      ? "bg-[#FF5500] text-white"
+                      : "bg-[#FFFFFF] dark:bg-[#20242c] text-[#0A0A0A] dark:text-white hover:bg-[#FF5500] hover:text-black"
                   }`}
                 >
                   <ArrowUp size={12} />
@@ -814,7 +814,7 @@ export function DashboardContent() {
                 </button>
               </div>
 
-              <h3 className="font-headline text-base sm:text-lg text-[#1A1A1A] dark:text-white font-bold uppercase tracking-tight">
+              <h3 className="font-headline text-base sm:text-lg text-[#0A0A0A] dark:text-white font-bold uppercase tracking-tight">
                 Kinetix Robotics raises $10M Seed for Distributed Actuator Firmwares
               </h3>
               <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
@@ -830,10 +830,10 @@ export function DashboardContent() {
             </div>
 
             {/* Story 02 */}
-            <div className="p-4 sm:p-6 space-y-2.5 hover:bg-[#F7F4EE]/40 dark:hover:bg-[#15181f] transition-colors">
+            <div className="p-4 sm:p-6 space-y-2.5 hover:bg-[#FFFFFF]/40 dark:hover:bg-[#15181f] transition-colors">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-[10px] px-2 py-0.5 bg-[#1D4ED8] text-white border-2 border-black font-bold uppercase">
+                  <span className="font-mono text-[10px] px-2 py-0.5 bg-[#000000] text-white border-2 border-black font-bold uppercase">
                     OPEN RESEARCH
                   </span>
                   <span className="font-mono text-[10px] text-neutral-500">
@@ -845,8 +845,8 @@ export function DashboardContent() {
                   onClick={() => handleUpvote("story2")}
                   className={`flex items-center gap-1 px-2 py-0.5 border-2 border-black text-xs font-mono font-bold transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer ${
                     hasUpvoted.story2
-                      ? "bg-[#CCFF00] text-black"
-                      : "bg-[#F7F4EE] dark:bg-[#20242c] text-[#1A1A1A] dark:text-white hover:bg-[#CCFF00] hover:text-black"
+                      ? "bg-[#FF5500] text-white"
+                      : "bg-[#FFFFFF] dark:bg-[#20242c] text-[#0A0A0A] dark:text-white hover:bg-[#FF5500] hover:text-black"
                   }`}
                 >
                   <ArrowUp size={12} />
@@ -854,7 +854,7 @@ export function DashboardContent() {
                 </button>
               </div>
 
-              <h3 className="font-headline text-base sm:text-lg text-[#1A1A1A] dark:text-white font-bold uppercase tracking-tight">
+              <h3 className="font-headline text-base sm:text-lg text-[#0A0A0A] dark:text-white font-bold uppercase tracking-tight">
                 Decentralized Byzantine Consensus in LLM Multi-Agent Clusters
               </h3>
               <p className="font-sans text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
