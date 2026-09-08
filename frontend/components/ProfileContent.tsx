@@ -191,7 +191,7 @@ export function ProfileContent() {
   }, [user, router]);
 
   const { data: fullProfile, refresh: refreshProfile } = useApi("profile:me", () => apiClient.auth.me());
-  const { data: gamificationData, reload: reloadGamification } = useApi("profile:gamification", () =>
+  const { data: gamificationData, reload: reloadGamification } = useApi(user?.id ? `profile:gamification:${user.id}` : "profile:gamification", () =>
     apiClient.gamification.getStatus()
   );
 
@@ -628,6 +628,22 @@ export function ProfileContent() {
             <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed max-w-2xl font-sans">
               Your public profile, skills, and documents. Edit anything that looks wrong.
             </p>
+            {gamificationData && (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="nb-chip-accent">
+                  {gamificationData.totalPoints ?? 0} pts
+                </span>
+                {gamificationData.rank != null ? (
+                  <span className="nb-chip">Rank #{gamificationData.rank}</span>
+                ) : null}
+                {gamificationData.streak?.current ? (
+                  <span className="nb-chip">{gamificationData.streak.current}d streak</span>
+                ) : null}
+                <a href="/rewards" className="text-xs font-bold uppercase text-[#FF5500] underline">
+                  Rewards →
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Tactical Action Triggers */}

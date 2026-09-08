@@ -44,8 +44,9 @@ const PROTOCOLS: NavProtocolItem[] = [
   { id: "education", index: "08", title: "Learn", href: "/education" },
   { id: "announcements", index: "09", title: "Announcements", href: "/announcements" },
   { id: "chat", index: "10", title: "Messages", href: "/chat" },
-  { id: "profile", index: "11", title: "Profile", href: "/profile" },
-  { id: "admin", index: "12", title: "Admin", href: "/admin", adminOnly: true },
+  { id: "rewards", index: "11", title: "Rewards", href: "/rewards" },
+  { id: "profile", index: "12", title: "Profile", href: "/profile" },
+  { id: "admin", index: "13", title: "Admin", href: "/admin", adminOnly: true },
 ];
 
 export interface NotificationShellItem {

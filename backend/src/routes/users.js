@@ -94,6 +94,16 @@ router.patch('/me', authenticate, async (req, res) => {
     // Award points for active profile updates (+20 pts)
     await awardPoints(req.user.id, 'PROFILE_UPDATED', 20).catch(() => {});
 
+    // One-time bonus when profile completeness first reaches 80%
+    if (completeness >= 80) {
+      const already = await prisma.activityLog.findFirst({
+        where: { userId: req.user.id, actionType: 'PROFILE_COMPLETE_BONUS' },
+      });
+      if (!already) {
+        await awardPoints(req.user.id, 'PROFILE_COMPLETE_BONUS', 50).catch(() => {});
+      }
+    }
+
     const freshness = checkProfileFreshness(user);
     res.json({ user: { ...user, freshness } });
   } catch (err) {

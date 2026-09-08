@@ -54,6 +54,7 @@ export function DashboardContent() {
   const { user } = useAuth();
   const matchKey = user?.id ? `dashboard:matches:${user.id}` : "dashboard:matches";
   const jobsKey = user?.id ? `dashboard:jobs:${user.id}` : "dashboard:jobs";
+  const rewardsKey = user?.id ? `dashboard:rewards:${user.id}` : "dashboard:rewards";
 
   const {
     data: matches,
@@ -68,6 +69,8 @@ export function DashboardContent() {
     isLoading: jobsLoading,
     refresh: refreshJobs,
   } = useApi(jobsKey, fetchJobs);
+
+  const { data: rewards } = useApi(rewardsKey, () => apiClient.gamification.getStatus());
 
   const firstName = (user?.name || "there").split(" ")[0];
   const loading = matchLoading || jobsLoading;
@@ -121,6 +124,23 @@ export function DashboardContent() {
       }
     >
       <div className="grid gap-8 lg:grid-cols-2">
+        {(rewards?.totalPoints != null || rewards?.streak?.current != null) && (
+          <Link
+            href="/rewards"
+            className="nb-card mb-6 flex flex-wrap items-center gap-4 p-4 transition-colors hover:bg-[#f5f5f5]"
+          >
+            <span className="font-mono text-xs font-bold uppercase text-[#525252]">Your rewards</span>
+            <span className="font-mono text-sm font-black tabular-nums">{rewards?.totalPoints ?? 0} pts</span>
+            {rewards?.rank != null ? (
+              <span className="nb-chip">Rank #{rewards.rank}</span>
+            ) : null}
+            {rewards?.streak?.current ? (
+              <span className="nb-chip">{rewards.streak.current}d streak</span>
+            ) : null}
+            <span className="ml-auto text-xs font-bold uppercase text-[#FF5500]">View all →</span>
+          </Link>
+        )}
+
         {/* Matches */}
         <section aria-labelledby="dash-matches" className="nb-card flex flex-col">
           <div className="flex items-center justify-between border-b-2 border-black bg-[#f7f4ef] px-4 py-3">

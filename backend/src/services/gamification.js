@@ -176,8 +176,37 @@ function checkProfileFreshness(user) {
 /**
  * Award points, log activity, and check for badge unlocks
  */
+const DAILY_CAPS = {
+  PROFILE_UPDATED: 3,
+  PROFILE_ENGAGEMENT: 5,
+  CAREER_VERIFIED: 1,
+  MENTORSHIP_REQUESTED: 5,
+  MENTORSHIP_ACCEPTED: 10,
+  MENTORSHIP_COMPLETED: 5,
+};
+
 async function awardPoints(userId, actionType, points, metadata = {}) {
   try {
+    const cap = DAILY_CAPS[actionType];
+    if (cap != null) {
+      const start = new Date();
+      start.setUTCHours(0, 0, 0, 0);
+      const count = await prisma.activityLog.count({
+        where: {
+          userId,
+          actionType,
+          createdAt: { gte: start },
+        },
+      });
+      if (count >= cap) {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { totalPoints: true },
+        });
+        return { totalPoints: user?.totalPoints || 0, pointsEarned: 0, capped: true };
+      }
+    }
+
     // Update user points
     const user = await prisma.user.update({
       where: { id: userId },
